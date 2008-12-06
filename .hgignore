@@ -1,0 +1,8 @@
+syntax: glob
+auto-save-list
+backups
+.emacs.desktop*
+.semantic
+*.elc
+file-cache-*
+*~

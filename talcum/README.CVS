@@ -1,0 +1,54 @@
+Note on the current (2005/08/23) CVS version: 
+
+ * This is planned to be a feature freeze version for the next
+ release. Still missing, however: more customization thingies,
+ more docs. Don't hold your breath, I really should be writing
+ my thesis. (That's where all the useful features come from -- 
+ exposure to real-life biggish documents.) And yes, Scotty has
+ still not been ported to 0.5+.
+
+ * The docs are out of date in respect to installation:
+ Talcum can now be loaded by the following standard way:
+  (add-to-list 'load-path "~/Projekte/Emacs/Talcum/talcum/src/")
+  (autoload 'talcum-mode "talcum")
+  (add-hook 'latex-mode-hook 'talcum-mode)
+ where, of course, you adapt the path in the first line. The old way
+ might still work, but I recommend switching.
+
+ * All parts of Talcum should be able to stand on their own, the
+ variable talcum-desired-features governs which are loaded. The
+ default is to honour talcum-use-{render,prod,newcmd}-flag. The
+ new features (pikeman, tabdance) do not have such a flag.
+
+ * The TREXes to be loaded are now listed in talcum-render-trexes,
+ which is a list of lists (REQ TREX1 TREX2...): (require REQ) and
+ (talcum-add-render-feature TREX1), (talcum-add-render-feature TREX2),...
+ will be executed.
+
+ * Pikeman will not by default work with AucTeX, but compiler specs
+ %(Talcum-options) and %(Talcum-line1) are provided. Insert these
+ in appropriate places: %(Talcum-options) contains only command line
+ options, %(Talcum-line1) contains _unquoted_ TeX commands to be passed.
+
+ * In the release version, Pikeman will be extensible just like Render; 
+ for now, useful (IMO) things are given as examples towards the end of
+ talcum-pikeman.el. They are currently insufficiently customizable etc.
+
+ * The menu still looks kind of ugly. At least, that means we have a menu :)
+
+ * To activate tabdance, you will need to designate a key combination for 
+ escalation. You can do M-x talcum-tabdance-query-key for that and save 
+ the corresponding variable talcum-tabdance-key through Customize.
+
+ * To make tabdance more useful, latex-insert-block is replaced with a
+ history-aware skeleton. The replacement does not include asking for
+ options etc. in any way. If you absolutely insist on keeping the old
+ definition (without tabdance, or you tweak it to have a history yourself),
+ set talcum-no-hijacking to a non-nil value. There will not be an
+ official Talcum version to ask for options. If latex-mode adds history
+ functionality, it will automatically benefit from tabdance.
+
+ * Maybe, AucTeX main file bugs have been fixed. I have no idea why they 
+ have no function to give the master file's full name, with extension.
+ Frankly, if they overwrite latex-mode, they should fscking well overwrite
+ tex-main-file as well.

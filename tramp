@@ -1,0 +1,104 @@
+;; -*- emacs-lisp -*- <08/11/21 11:29:25 /home/gbr/.emacs.d/tramp>
+;; Tramp connection history.  Don't change this file.
+;; You can delete it, forcing Tramp to reapply the checks.
+
+((["scp" nil "pocoo.org" nil]
+  ("uname" "Linux 2.6.18-6-xen-amd64")
+  ("test" "test")
+  ("/bin" t)
+  ("/usr/bin" t)
+  ("/usr/sbin" t)
+  ("/usr/local/bin" t)
+  ("/local/bin" nil)
+  ("/local/freeware/bin" nil)
+  ("/local/gnu/bin" nil)
+  ("/usr/freeware/bin" nil)
+  ("/usr/pkg/bin" nil)
+  ("/usr/contrib/bin" nil)
+  ("remote-path"
+   ("/bin" "/usr/bin" "/usr/sbin" "/usr/local/bin"))
+  ("remote-shell" "/bin/sh")
+  ("~" "/home/birkenfeld")
+  ("file-exists" "test -e")
+  ("stat" "\\stat")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 1002)
+  ("perl" "\\perl")
+  ("local-encoding" base64-encode-region)
+  ("local-decoding" base64-decode-region)
+  ("remote-encoding" tramp-perl-encode-with-module)
+  ("remote-decoding" tramp-perl-decode-with-module))
+ ([#("ssh" 0 1
+     (auto-composed t)
+     1 2
+     (auto-composed t)
+     2 3
+     (auto-composed t))
+   #("gbrandl" 0 1
+     (auto-composed t)
+     1 2
+     (auto-composed t)
+     2 3
+     (auto-composed t)
+     3 4
+     (auto-composed t)
+     4 5
+     (auto-composed t)
+     5 6
+     (auto-composed t)
+     6 7
+     (auto-composed t))
+   #("localhost#2222" 0 1
+     (auto-composed t)
+     1 2
+     (auto-composed t)
+     2 3
+     (auto-composed t)
+     3 4
+     (auto-composed t)
+     4 5
+     (auto-composed t)
+     5 6
+     (auto-composed t)
+     6 7
+     (auto-composed t)
+     7 8
+     (auto-composed t)
+     8 9
+     (auto-composed t)
+     9 10
+     (auto-composed t)
+     10 11
+     (auto-composed t)
+     11 12
+     (auto-composed t)
+     12 13
+     (auto-composed t)
+     13 14
+     (auto-composed t))
+   nil]
+  ("uname" "Linux 2.6.13-15.18-default")
+  ("test" "test")
+  ("/bin" t)
+  ("/usr/bin" t)
+  ("/usr/sbin" t)
+  ("/usr/local/bin" t)
+  ("/local/bin" nil)
+  ("/local/freeware/bin" nil)
+  ("/local/gnu/bin" nil)
+  ("/usr/freeware/bin" nil)
+  ("/usr/pkg/bin" nil)
+  ("/usr/contrib/bin" nil)
+  ("remote-path"
+   ("/bin" "/usr/bin" "/usr/sbin" "/usr/local/bin"))
+  ("remote-shell" "/bin/sh")
+  ("~" "/home/mira/gbrandl")
+  ("ls" "/bin/ls")
+  ("file-exists" "test -e")
+  ("stat" "\\stat")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 2000)
+  ("local-encoding" base64-encode-region)
+  ("local-decoding" base64-decode-region)
+  ("remote-encoding" "recode data..base64")
+  ("remote-decoding" "recode base64..data")))
