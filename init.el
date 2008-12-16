@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2008-12-06 15:21 by gbr
+;; last modified: 2008-12-16 10:43 by gbr
 
 ;; set up load path
 (setq load-path `("/home/gbr/.emacs.d/emacs-goodies-el"
@@ -781,9 +781,10 @@ mouse-3: Remove current window from display")))))
  '(rst-level-face-base-color "grey")
  '(rst-level-face-base-light 85)
  '(rst-level-face-step-light -7)
- '(rst-mode-hook nil)
+ '(rst-mode-hook nil t)
  '(rst-mode-lazy nil)
  '(save-place t nil (saveplace))
+ '(save-place-file "~/.emacs.d/places")
  '(screen-lines-minor-mode-string " \\/")
  '(scroll-bar-mode (quote right))
  '(scroll-conservatively 0)
