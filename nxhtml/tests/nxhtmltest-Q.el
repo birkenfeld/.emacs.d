@@ -48,6 +48,7 @@
 (defvar nxhtmltest-bin-Q
   (file-name-directory (if load-file-name load-file-name buffer-file-name)))
 
+;;;###autoload
 (defun nxhtmltest-run-Q ()
   "Run all tests defined for nXhtml in fresh Emacs.
 See `nxhtmltest-run' for more information about the tests."
@@ -55,8 +56,11 @@ See `nxhtmltest-run' for more information about the tests."
   (let* ((test-el (expand-file-name "nxhtmltest-suites.el" nxhtmltest-bin-Q))
          (nxhtml-auto-start (expand-file-name "../autostart.el" nxhtmltest-bin-Q))
          (temp-eval-file (expand-file-name "temp-test.el" nxhtmltest-bin-Q))
-         (temp-eval-buf (find-file-noselect temp-eval-file)))
-    (load (expand-file-name "nxhtmltest-helpers" nxhtmltest-bin-Q))
+         (temp-eval-buf (find-file-noselect temp-eval-file))
+         (load-path load-path))
+    ;;(load (expand-file-name "nxhtmltest-helpers" nxhtmltest-bin-Q))
+    (add-to-list 'load-path nxhtmltest-bin-Q)
+    (require 'nxhtmltest-helpers)
     (nxhtmltest-get-fontification-method)
     (with-current-buffer temp-eval-buf
       (erase-buffer)
@@ -83,7 +87,8 @@ See `nxhtmltest-run' for more information about the tests."
     (message "nxhtmltest-bin-Q=%s" nxhtmltest-bin-Q)
     (message "nxhtml-auto-start=%s" nxhtml-auto-start)
     (setenv "nxhtmltest-run-Q" "run")
-    (message "After set nxhtmltest-run-Q=%s" (getenv "nxhtmltest-run-Q"))
+    (message "After setenv nxhtmltest-run-Q=%s" (getenv "nxhtmltest-run-Q"))
+    (message "(ourcomments-find-emacs) => %s" (ourcomments-find-emacs))
     (call-process (ourcomments-find-emacs) nil 0 nil "-Q"
                   "-l" temp-eval-file
                   "-l" nxhtml-auto-start

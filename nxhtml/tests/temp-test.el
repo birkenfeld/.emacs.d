@@ -3,3 +3,4 @@
 (delete-other-windows)
 (eval-after-load 'nxhtml '(setq nxhtml-skip-welcome t))
 (setq nxhtmltest-default-fontification-method 'fontify-w-timer-handlers)
+(pushnew "c:/emacs/p/081219/emacs/lisp/progmodes/" load-path)

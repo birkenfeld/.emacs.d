@@ -377,9 +377,11 @@
 
 
 (defun mlinks-goto ()
-  "Follow then `mlinks-mode' link at current point.
+  "Follow `mlinks-mode' link at current point.
 Save the current position so that they can be move to again by
-`mlinks-prev-saved-position' and `mlinks-next-saved-position'."
+`mlinks-prev-saved-position' and `mlinks-next-saved-position'.
+
+Return non-nil if link was followed, otherewise nil."
   (interactive)
   (mlinks-goto-1 nil))
 
@@ -402,7 +404,9 @@ Uses `switch-to-buffer-other-frame'."
          (mlinks-temp-buffer-where where)
          (res (run-hook-with-args-until-success 'funs)))
     (if (not res)
-        (message "No MLink link here")
+        (progn
+          (message "No MLink link here")
+          nil)
       (unless (= old (point-marker))
         (let* ((prev (car mlinks-places)))
           (when (or (not prev)
@@ -604,15 +608,16 @@ Uses `switch-to-buffer-other-frame'."
           (delete-overlay o)))))
   (cons min max))
 
+;;;###autoload
 (define-minor-mode mlinks-mode
   "Recognizes certain parts of a buffer as hyperlinks.
 The hyperlinks are created in different ways for different major
 modes with the help of the functions in the list
 `mlinks-mode-functions'.
 
-The hyperlinks can be hilighted when the point is over them.
-Use `mlinks-toggle-hilight' to toggle this feature for the
-current buffer.
+The hyperlinks can be hilighted when point is over them.  Use
+`mlinks-toggle-hilight' to toggle this feature for the current
+buffer.
 
 All keybindings in this mode are by default done under the prefi§x
 key
@@ -810,12 +815,27 @@ Any command cancels this state."
 (defun mlinks-html-style-hili ()
   (mlinks-html-style-mode-fun nil))
 
-;; Fix-me: All on one line now
-;; Fix-me: This is where Shaowei Dai get
+;; Fix-me: All must be on one line now. Can that be changed?
+;; This is where Shaowei Dai got
 ;;   Debugger entered--Lisp error: (invalid-read-syntax "] in a list")
+(require 'rx)
 (defvar mlinks-html-link-regex
   ;; This value takes care of nxhtml-strval-mode (and is therefore a little bit incorrect ...)
-  "\\(?:^\\|[[:space:]]\\)\\(?:href\\|src\\)[[:space:]]*=[[:space:]]*\"\\([^<«\"]*\\)\"")
+  ;;"\\(?:^\\|[[:space:]]\\)\\(?:href\\|src\\)[[:space:]]*=[[:space:]]*\"\\([^<«\"]*\\)\""
+  (rx (or "^" space)
+      (or "href" "src")
+      (0+ space)
+      "="
+      (0+ space)
+      (or
+        (seq "\""
+             (submatch
+              (0+ (not (any "\""))))
+             "\"")
+        (seq "'"
+             (submatch
+              (0+ (not (any "'"))))
+             "'"))))
 
 ;;(require 'rx)
 ;;(rx
@@ -826,7 +846,9 @@ Any command cancels this state."
               (goto-char from)
               (re-search-forward mlinks-html-link-regex nil t))
           (re-search-forward mlinks-html-link-regex nil t))
-    (cons (match-beginning 1) (match-end 1))))
+    ;;(message "mlinks-html-link-regex match-string0=%s, 1=%s, 2=%s" (match-string-no-properties 0) (match-string-no-properties 1) (match-string-no-properties 2))
+    (let ((which (if (match-beginning 1) 1 2)))
+      (cons (match-beginning which) (match-end which)))))
 
 (defun mlinks-html-backward-link (&optional from)
   (when (if from
@@ -834,20 +856,25 @@ Any command cancels this state."
               (goto-char from)
               (re-search-backward mlinks-html-link-regex nil t))
           (re-search-backward mlinks-html-link-regex nil t))
-    (cons (match-beginning 1) (match-end 1))))
+    ;;(cons (match-beginning 1) (match-end 1))))
+    (let ((which (if (match-beginning 1) 1 2)))
+      (cons (match-beginning which) (match-end which)))))
 
 (defun mlinks-html-style-mode-fun (goto)
   (let (start
         end
         bounds)
     (save-excursion
-      (when (search-forward "\"" (line-end-position) t)
+      ;;(when (search-forward "\"" (line-end-position) t)
+      (when (< 0 (skip-chars-forward "^\"'" (line-end-position)))
+        (forward-char)
         (save-match-data
           (when (looking-back
                  mlinks-html-link-regex
                  (line-beginning-position -1))
-            (setq start (match-beginning 1))
-            (setq end   (match-end 1))
+            (let ((which (if (match-beginning 1) 1 2)))
+              (setq start (match-beginning which))
+              (setq end   (match-end which)))
             (setq bounds (cons start end))))))
     (when start
       (if (not goto)
@@ -1103,7 +1130,7 @@ Any command cancels this state."
                        (stralts (mapcar (lambda (elt)
                                           (car elt))
                                         alts))
-                       (setq case-fold-search t)
+                       (case-fold-search t)
                        (stralt (completing-read "Type: " stralts nil t))
                        (alt (assoc stralt alts)))
                   (setq def (cdr alt))))))

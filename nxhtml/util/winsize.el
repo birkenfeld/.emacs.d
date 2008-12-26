@@ -3,7 +3,7 @@
 ;; Author: Lennart Borgman <lennart dot borgman at gmail dot com >
 ;; Maintainer:
 ;; Created: Wed Dec 07 15:35:09 2005
-;; Version: 0.96
+;; Version: 0.97
 ;; Lxast-Updated: Sun Nov 18 02:14:52 2007 (3600 +0100)
 ;; Keywords:
 ;; Compatibility:
@@ -198,6 +198,7 @@ give a short help message unless last command gave some message."
       (winsize-set-border winsize-border-ver t)))
   (winsize-tell-user))
 
+;;;###autoload
 (defun resize-windows ()
   "Start window resizing.
 During resizing a window is selected.  You can move its
@@ -213,6 +214,8 @@ bindings during resizing:\\<winsize-keymap>
   `winsize-balance-siblings'             \\[winsize-balance-siblings]
   `fit-window-to-buffer'                 \\[fit-window-to-buffer]
   `shrink-window-if-larger-than-buffer'  \\[shrink-window-if-larger-than-buffer]
+
+  `winsav-rotate'                        \\[winsav-rotate]
 
   `winsize-move-border-up'      \\[winsize-move-border-up]
   `winsize-move-border-down'    \\[winsize-move-border-down]
@@ -549,6 +552,7 @@ Select the window marked during resizing."
   (interactive)
   (winsize-exit-resizing nil))
 
+;;;###autoload
 (defun winsize-balance-siblings ()
   "Make current window siblings the same height or width.
 It works the same way as `balance-windows', but only for the
@@ -982,6 +986,7 @@ should be one of 'left, 'up, 'right and 'down."
       (winsize-ring-rotate ring forward)
       (set-window-configuration (ring-ref ring 0)))))
 
+;;;###autoload
 (defun winsize-save-window-configuration ()
   (interactive)
   (let* ((curr-conf (current-window-configuration))

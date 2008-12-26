@@ -34,7 +34,7 @@
     <div id="container">
 
       <div id="rgtcol">
-        <p id="nxhtml-home"><a href="nxhtml.html">To nXhtml main page</a></p>
+        <p id="nxhtml-home"><a href='nxhtml.html'>To nXhtml main page</a></p>
 
         <h1>News and Notes about nXhtml</h1>
 
@@ -86,29 +86,6 @@
               degree of maturity.  I believe that is not that valid
               any more. To my delight the second part, mumamo is now
               also quite stable (from version 1.27).
-            </p>
-          </dd>
-
-          <dt id="magic-problems" style="margin-top:1em;">Magic major mode selection</dt>
-          <dd>
-            <p>
-              Sometimes the major mode that Emacs opens a file in is
-              not what you expect. This can happen with files like PHP
-              files.  The reason might be that magic-mode-alist have
-              choosen a mode based on the content of the file. The way
-              this is done does not take files with mixes a mix of for
-              example XHTML and PHP into account.
-            </p>
-            <p>
-              You may try setting magic-mode-alist to nil if this is a
-              problem for you.
-            </p>
-            <p>
-              <em>
-                This is now no longer necessary since the introduction
-                of magic-fallback-mode-alist in CVS Emacs on 2007-05-16.
-                (If you have an Emacs newer than that, of course.)
-              </em>
             </p>
           </dd>
 
@@ -273,6 +250,19 @@
           <a href="#v1.46">v1.46</a>
           <a href="#v1.47">v1.47</a>
           <a href="#v1.48">v1.48</a>
+          <a href="#v1.49">v1.49</a>
+          <a href="#v1.50">v1.50</a>
+          <a href="#v1.51">v1.51</a>
+          <a href="#v1.52">v1.52</a>
+          <a href="#v1.53">v1.53</a>
+          <a href="#v1.54">v1.54</a>
+          <a href="#v1.55">v1.56</a>
+          <a href="#v1.56">v1.56</a>
+          <a href="#v1.57">v1.57</a>
+          <a href="#v1.58">v1.58</a>
+          <a href="#v1.59">v1.59</a>
+          <a href="#v1.60">v1.60</a>
+          <a href="#v1.61">v1.61</a>
         </div>
 
         <dl>
@@ -1010,9 +1000,7 @@
                 Images:
                 <ul>
                   <li>
-                    Added image-mode to those that are encompassed by
-                    nxhtml-global-minor-mode so that images can be
-                    uploaded more easily.
+                    Added image-mode to those that are encompassed by nxhtml-global-minor-mode so that images can be uploaded more easily.
                   </li>
                   <li>
                     Added <em>edit with GIMP</em> and <em>upload</em> to the popup menu for links.
@@ -1978,6 +1966,355 @@
               </li>
             </ul>
           </dd>
+          <dt id="v1.49">1.49</dt>
+          <dd id="v1.49-dd">
+            <ul>
+              <li>
+                Added a CEDET loader which can fetch CVS version of CEDET.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.50">1.50</dt>
+          <dd id="v1.50-dd">
+            <ul>
+              <li>
+                Added a Rinari loader which can fetch SVN version of Rinari and ruby-mode.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.51">1.51</dt>
+          <dd id="v1.51-dd">
+            <ul>
+              <li>
+                Fixed a regression bug in MuMaMo. If a major mode was
+                not defined Emacs could hang badly.
+              </li>
+              <li>
+                Added an ECB loader which can fetch CVS version of ECB.
+              </li>
+              <li>
+                Enhancements to the routines for fetching and setting
+                up CEDET, ECT and Rinari.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.52">1.52</dt>
+          <dd id="v1.52-dd">
+            <ul>
+              <li>
+                Added a tool to give major modes priority when
+                choosing a major mode for a buffer.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.53">1.53</dt>
+          <dd id="v1.53-dd">
+            <ul>
+              <li>
+                Quick fix for left-over which made it impossible to
+                edit php files in version 1.52.  If you are using
+                version 1.52 you may for the moment just add (require
+                'fmode) to your .emacs after loading nXhtml.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.54">1.54</dt>
+          <dd id="v1.54-dd">
+            <ul>
+              <li>
+                MuMaMo:
+                <ul>
+                  <li>
+                    Added better error handling for problems such as
+                    those that occured in version 1.52 with php-mode.
+                  </li>
+                  <li>
+                    There was a bug when changing from a mumamo multi
+                    major mode.
+                  </li>
+                  <li>
+                    Tried to fix <a href="https://answers.launchpad.net/nxhtml/+question/43320">question 43320</a>.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                php-mode:
+                <ul>
+                  <li>
+                    Made the indentation check up to date with current
+                    MuMaMo.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.55">1.55</dt>
+          <dd id="v1.55-dd">
+            <ul>
+              <li>
+                Tried to fix https://answers.launchpad.net/nxhtml/+question/43320 again.
+              </li>
+              <li>
+                Better test of when to end tabkey2-mode completion function state.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.56">1.56</dt>
+          <dd id="v1.56-dd">
+            <ul>
+              <li>
+                Allowed both single and double quotes in mlinks for html files.
+              </li>
+              <li>
+                Added initial support for Mako template language.
+                (There is no support for the tags yet, like in
+                Genshi. Additions are welcome!)
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.57">1.57</dt>
+          <dd id="v1.57-dd">
+            <ul>
+              <li>
+                Fixed another part of question 43320 (see above) regarding php indentation.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.58">1.58</dt>
+          <dd id="v1.58-dd">
+            <ul>
+              <li>
+                MuMaMo:
+                <ul>
+                  <li>
+                    The change of major mode when moving between
+                    chunks could occur in the wrong buffer because I
+                    had misunderstood how with-selected-window
+                    works. Fixed.
+                  </li>
+                  <li>
+                    Added ${...} python chunks to Mako (ie mako-html-mumamo).
+                  </li>
+                  <li>
+                    Added mako-nxhtml-mumamo.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Appmenu:
+                <ul>
+                  <li>
+                    Fixed problem with point keymap.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Php:
+                <ul>
+                  <li>
+                    Fixed <a href="https://answers.launchpad.net/nxhtml/+question/44504">https://answers.launchpad.net/nxhtml/+question/44504</a>.
+                  </li>
+                  <li>
+                    Fixed a typo regarding indentation check.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Tabkey2:
+                <ul>
+                  <li>
+                    Better support for YASnippet.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.59">1.59</dt>
+          <dd id="v1.59-dd">
+            <ul>
+              <li>
+                Fixed a bug that was revealed by the better support for YASnippet.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.60">1.60</dt>
+          <dd id="v1.60-dd">
+            <ul>
+              <li>
+                Bug fixes:
+                <ul>
+                  <li>
+                    Fix some bugs in Tidy XHTML support.
+                  </li>
+                  <li>
+                    Also Some small improvements to Tidy GUI.
+                  </li>
+                  <li>
+                    Added a test case for bug
+                    https://bugs.launchpad.net/nxhtml/+bug/271497 (which I
+                    can't reproduce).
+                  </li>
+                  <li>
+                    Bug fixes to ffip.el
+                  </li>
+                  <li>
+                    Added fix for <a href="http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1013"
+                   >Emacs bug 1013</a>.
+                  </li>
+                  <li>
+                    Fixed some minor bugs in as-external.el.
+                  </li>
+                  <li>
+                    New handling of minor modes (buffer local variables).
+                    I hope this should fix the problem reported in
+                    <a href="https://bugs.launchpad.net/bugs/272526">nXhtml bug 272526: Imenu on menubar doesn't work after switching modes</a>.
+                  </li>
+                  <li>
+                    Fixed a bug that could make buffer marked as modified
+                    during fontification.
+                  </li>
+                  <li>
+                    Changed <i>php-mode</i> binding for TAB to follow Emacs normal standard.
+                  </li>
+                  <li>
+                    Fixed a bug that sometimes caused rng-validate-mode to be
+                    turned on in wrong buffer when setting xhtml fictive
+                    validation header.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Finished a replacement for the usual help command on
+                [f1 ?c]. This will in addition to the command show the
+                keymap. To use it add
+                <i>(global-set-key [f1 ?c] 'find-keymap-binding-key)</i> to your .emacs.
+              </li>
+              <li>
+                Let tabkey2-mode first look for [tab] and then [?\t].
+              </li>
+              <li>
+                Added an <a href="http://ourcomments.org/Emacs/nXhtml/tut/tutorials.html"
+                >nXhtml tutorial page</a> with video tutorials.
+              </li>
+              <li>
+                After question
+                <a href="https://answers.launchpad.net/nxhtml/+question/45721"
+                   >nXhtml question 45721</a>
+                there was a short discussion on Emacs Devel where I
+                was convinced to change the name convention for multi
+                major modes. They are now supposed to end
+                in <i>-mumamo-mode</i> (instead of the old <i>-mumamo</i>).
+              </li>
+              <li>
+                Added <i>ourcomments-ediff-files</i> to start ediff
+                from a shell with Emacs Client.
+              </li>
+              <li>
+                Took a look at autoloading. nXhtml now uses
+                autoloading in many more cases and loads much faster.
+              </li>
+              <li>
+                Added new general functions for search and replace:
+                <i>grep-query-replace</i>, <i>ldir-query-replace</i> and
+                <i>rdir-query-replace</i>.  Also added similar
+                functions to search and replace in a site (they are in
+                the nXhtml menu).
+              </li>
+              <li>
+                Added <i>better-fringes-mode</i> for my personal preferences
+                for fringe symbols ...
+              </li>
+              <li>
+                Enhancement for (X)HTML editing:
+                <ul>
+                  <li>
+                    Added a minimal one-line display version of fictive
+                    validation headers and made it the default.
+                  </li>
+                  <li>
+                    Some enhancements to <i>nxml-where-mode</i>.
+                  </li>
+                  <li>
+                    Display of images inline. Can be used in different major modes/files.
+                  </li>
+                  <li>
+                    Added the minor mode <i>wrap-to-fill-column-mode</i> and
+                    replaced longlines-mode in the Tools menu with this.
+                  </li>
+                  <li>
+                    Added the minor mode <i>html-write-mode</i> that can hide
+                    some simple tags and just show the inner html with a
+                    user defined face.  This is meant to make it easier to
+                    write html files.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.61">1.61</dt>
+          <dd id="v1.61-dd">
+            <ul>
+              <li>
+                Bug fixes in html-write-mode and as-external.el.
+              </li>
+              <li>
+                Removed left over autoloads (maybe there was a problem with ruby-mode, not sure).
+              </li>
+              <li>
+                Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/290364">290364</a>,
+                see below about MuMaMo important changes.
+              </li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/272526">272526</a>.</li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/292393">292393</a>.</li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/300946">300946</a>.</li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/304569">304569</a>.</li>
+              <li>
+                Added some support for editing gmail messages in
+                as-external.el (to be used with It's All Text for
+                Firefox).
+              </li>
+              <li>
+                Some changes to face handling in Emacs had made htmlfontify.el fail.
+                Some changes in CSS handling in Firefox and IE made hfyview.el fail even more.
+                Tried to fix this.
+              </li>
+              <li>
+                Updated vline.el
+              </li>
+              <li>
+                Aaron Hawley merged in some changes he made to php-mode.el. Thanks Aaron!
+                Now nXhtml uses a slightly modified version of php-mode 1.5.0 is used
+              </li>
+              <li>
+                <b>MuMaMo important changes</b>
+                <p>
+                  Unfortunately the chunk dividing routines in
+                  mumamo.el can loop, see bug 290364 above.  The
+                  reason is that I tried to find chunks at current
+                  point in a buffer without looking through the buffer
+                  from the beginning.  Fontification works this way in
+                  Emacs.  It is a heuristic that sometimes fails
+                  however, but the consequences are merely just local
+                  errors in fontification.
+                </p>
+                <p>
+                  Chunk dividing must be more stable since it has a
+                  global impact on the files fontification. It
+                  therefore have to be done from the beginning of the
+                  buffer - just like a parser reading the file will
+                  do.
+                </p>
+                <p>
+                  I have done first part of this rewrite and I hope
+                  chunk dividing can not loop any more. Chunk dividing
+                  is now always done from the beginning.  However the
+                  routines actually finding the chunks still looks
+                  both upwards and downwards.  I will try to remove
+                  this unnecessary complexity later.
+                </p>
+              </li>
+            </ul>
+          </dd>
         </dl>
       </div>
     </div>
@@ -1986,7 +2323,7 @@
     <p class="footer">
       Copyright &copy; <!-- this year -->2008<!-- end this year --> OurComments.org
       --
-      Latest update <!-- today -->2008-08-20<!-- end today -->
+      Latest update <!-- today -->2008-09-06<!-- end today -->
     </p>
   </body>
 </html>

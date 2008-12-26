@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2008-12-16 10:43 by gbr
+;; last modified: 2008-12-25 16:46 by gbr
 
 ;; set up load path
 (setq load-path `("/home/gbr/.emacs.d/emacs-goodies-el"
@@ -116,6 +116,9 @@
 
 ;; get a buffer menu with the right mouse button.
 (global-set-key (kbd "<mouse-3>") 'mouse-buffer-menu)
+
+;; split window into 3
+(global-set-key (kbd "C-x 7") 'split-window-horizontally-into-3)
 
 ;; windmove: easily move between windows
 (global-set-key (kbd "C-x <down>")  'windmove-down)
@@ -367,6 +370,14 @@
 
 
 ;; ---------- Custom interactive functions -------------------------------------
+
+(defun split-window-horizontally-into-3 ()
+  "Split current window horizontally into three windows of equal width."
+  (interactive)
+  (let* ((edges (window-edges))
+         (width (- (caddr edges) (car edges)))
+         (newwin (split-window nil (/ width 3) t)))
+    (split-window newwin (/ width 3) t)))
 
 (defun display-same-buffer-other-window ()
   "Display the current buffer in the other window too."
@@ -784,7 +795,6 @@ mouse-3: Remove current window from display")))))
  '(rst-mode-hook nil t)
  '(rst-mode-lazy nil)
  '(save-place t nil (saveplace))
- '(save-place-file "~/.emacs.d/places")
  '(screen-lines-minor-mode-string " \\/")
  '(scroll-bar-mode (quote right))
  '(scroll-conservatively 0)
@@ -837,7 +847,7 @@ mouse-3: Remove current window from display")))))
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 95 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 85 :width normal :foundry "microsoft" :family "Consolas"))))
  '(company-pseudo-tooltip-selection-face ((t (:inherit company-pseudo-tooltip-face :background "#ff6600"))))
  '(custom-button ((t (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 90 :family "tahoma"))))
  '(custom-button-face ((((type x w32 mac) (class color)) (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 1.1 :family "tahoma"))) t)

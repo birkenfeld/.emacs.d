@@ -62,6 +62,7 @@ This form is suitable for `popup-menu'."
          (pos (list (list x (+ y 20)) (selected-window))))
     pos))
 
+;;;###autoload
 (defun popup-menu-at-point (menu &optional prefix)
   "Popup the given menu at point.
 This is similar to `popup-menu' and MENU and PREFIX has the same
@@ -76,6 +77,7 @@ the window point is."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Toggles in menus
 
+;;;###autoload
 (defmacro define-toggle (symbol value doc &rest args)
   "Declare SYMBOL as a customizable variable with a toggle function.
 The purpose of this macro is to define a defcustom and a toggle
@@ -316,16 +318,19 @@ To create a menu item something similar to this can be used:
 ;; The idea is from
 ;;   http://interglacial.com/~sburke/pub/emacs/sburke_dot_emacs.config
 
+;;;###autoload
 (defun unfill-paragraph ()
   "Unfill the current paragraph."
   (interactive) (with-unfilling 'fill-paragraph))
 ;;(defalias 'unwrap-paragraph 'unfill-paragraph)
 
+;;;###autoload
 (defun unfill-region ()
   "Unfill the current region."
   (interactive) (with-unfilling 'fill-region))
 ;;(defalias 'unwrap-region 'unfill-region)
 
+;;;###autoload
 (defun unfill-individual-paragraphs ()
   "Unfill individual paragraphs in the current region."
   (interactive) (with-unfilling 'fill-individual-paragraphs))
@@ -340,29 +345,33 @@ To create a menu item something similar to this can be used:
 ;;;; Widgets
 
 
-;; (rassq 'genshi-nxhtml-mumamo mumamo-defined-turn-on-functions)
+;; (rassq 'genshi-nxhtml-mumamo-mode mumamo-defined-turn-on-functions)
 ;; (major-modep 'nxhtml-mode)
-;; (major-modep 'nxhtml-mumamo)
-;; (major-modep 'jsp-nxhtml-mumamo)
-;; (major-modep 'asp-nxhtml-mumamo)
-;; (major-modep 'django-nxhtml-mumamo)
-;; (major-modep 'eruby-nxhtml-mumamo)
-;; (major-modep 'eruby-nxhtml-mumamo)
-;; (major-modep 'smarty-nxhtml-mumamo)
-;; (major-modep 'embperl-nxhtml-mumamo)
-;; (major-modep 'laszlo-nxml-mumamo)
-;; (major-modep 'genshi-nxhtml-mumamo)
+;; (major-modep 'nxhtml-mumamo-mode)
+;; (major-modep 'jsp-nxhtml-mumamo-mode)
+;; (major-modep 'asp-nxhtml-mumamo-mode)
+;; (major-modep 'django-nxhtml-mumamo-mode)
+;; (major-modep 'eruby-nxhtml-mumamo-mode)
+;; (major-modep 'eruby-nxhtml-mumamo-mode)
+;; (major-modep 'smarty-nxhtml-mumamo-mode)
+;; (major-modep 'embperl-nxhtml-mumamo-mode)
+;; (major-modep 'laszlo-nxml-mumamo-mode)
+;; (major-modep 'genshi-nxhtml-mumamo-mode)
 ;; (major-modep 'javascript-mode)
 ;; (major-modep 'css-mode)
+
+;;;###autoload
 (defun major-or-multi-majorp (value)
   (or (multi-major-modep value)
       (major-modep value)))
 
+;;;###autoload
 (defun multi-major-modep (value)
   "Return t if VALUE is a multi major mode function."
   (and (fboundp value)
        (rassq value mumamo-defined-turn-on-functions)))
 
+;;;###autoload
 (defun major-modep (value)
   "Return t if VALUE is a major mode function."
   (let ((sym-name (symbol-name value)))
@@ -402,6 +411,7 @@ To create a menu item something similar to this can be used:
                    ))
       t)))
 
+;;;###autoload
 (define-widget 'major-mode-function 'function
   "A major mode lisp function."
   :complete-function (lambda ()
@@ -424,6 +434,7 @@ To create a menu item something similar to this can be used:
 
 ;; Changed from move-beginning-of-line to beginning-of-line to support
 ;; physical-line-mode.
+;;;###autoload
 (defun ourcomments-move-beginning-of-line(arg)
   "Move point to beginning of line or indentation.
 See `beginning-of-line' for ARG.
@@ -434,9 +445,13 @@ first tried."
   (let ((pos (point)))
     (call-interactively 'beginning-of-line arg)
     (when (= pos (point))
-      (skip-chars-forward " \t"))))
+      (if (= 0 (current-column))
+          (skip-chars-forward " \t")
+        (backward-char)
+        (beginning-of-line)))))
 (put 'ourcomments-move-beginning-of-line 'CUA 'move)
 
+;;;###autoload
 (defun ourcomments-move-end-of-line(arg)
   "Move point to end of line or indentation.
 See `end-of-line' for ARG.
@@ -448,19 +463,32 @@ first tried."
   (let ((pos (point)))
     (call-interactively 'end-of-line arg)
     (when (= pos (point))
-      (skip-chars-backward " \t"))))
+      (if (= (line-end-position) (point))
+          (skip-chars-backward " \t")
+        (forward-char)
+        (end-of-line)))))
 (put 'ourcomments-move-end-of-line 'CUA 'move)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Keymaps
 
-(defun ourcomments-find-keymap-variables (keymap---)
-  "Return a list of keymap variables with value KEYMAP--.
+(defun ourcomments-find-keymap-variables (key--- binding--- keymap---)
+  "Return a list of matching keymap variables.
+They should have key KEY--- bound to BINDING--- and have value
+KEYMAP---.
+
 Ignore `special-event-map', `global-map', `overriding-local-map'
 and `overriding-terminal-local-map'."
-  (let ((vars nil))
+  (let ((vars--- nil)
+        (ancestors--- nil))
+    (let ((parent (keymap-parent keymap---)))
+      (while parent
+        (setq ancestors--- (cons parent ancestors---))
+        (setq parent (keymap-parent parent))))
     (mapatoms (lambda (symbol)
                 (unless (memq symbol '(keymap---
+                                       ancestors---
+                                       vars---
                                        special-event-map
                                        global-map
                                        overriding-local-map
@@ -471,13 +499,223 @@ and `overriding-terminal-local-map'."
                         (setq val (symbol-value symbol))
                       (when (keymapp symbol)
                         (setq val (symbol-function symbol))))
-                    (when (equal val keymap---)
-                      (push symbol vars))))))
-    vars))
+                    (when (and val
+                               (keymapp val)
+                               (eq binding--- (lookup-key val key--- t)))
+                      (if (equal val keymap---)
+                          (push symbol vars---)
+                        (when ancestors---
+                          (catch 'found
+                            (dolist (ancestor ancestors---)
+                              (when (equal val ancestor)
+                                (push symbol vars---)
+                                (throw 'found nil)))))))))))
+;;;     (let ((childs nil))
+;;;       (dolist (var vars---)
+;;;         (dolist (ancestor ancestors---)
+;;;         (when (equal (keymap-parent var)
+;;;                      (
+    vars---))
+
+;; This is modelled after `current-active-maps'.
+(defun key-bindings (key &optional olp position)
+  "Return list of bindings for key sequence KEY in current keymaps.
+The first binding is the active binding and the others are
+bindings shadowed by this in the order of their priority level
+\(see Info node `(elisp) Searching Keymaps').
+
+The entries in the list have the form
+
+  \(BINDING (MAPS) MORE-INFO)
+
+where BINDING is the command bound to and MAPS are matching maps
+\(according to `ourcomments-find-keymap-variables').
+
+MORE-INFO is a list with more information
+
+  \(PRIORITY-LEVEL \[ACTIVE-WHEN])
+
+where PRIORITY-LEVEL is a symbol matching the level where the
+keymap is found and ACTIVE-WHEN is a symbol which must be non-nil
+for the keymap to be active \(minor mode levels only)."
+  ;;(message "\nkey-bindings %s %s %s" key olp position)
+  (let* ((bindings nil)
+        (maps (current-active-maps))
+        map
+        map-sym
+        binding
+        keymaps
+        minor-maps
+        where
+        map-where
+        where-map
+        (local-map (current-local-map))
+        (pt (or position (point)))
+        (point-keymap (get-char-property pt 'keymap))
+        (point-local-map (get-char-property pt 'local-map))
+        )
+    (setq keymaps
+          (cons (list global-map 'global-map)
+                keymaps))
+    (when overriding-terminal-local-map
+      (setq keymaps
+            (cons (list overriding-terminal-local-map 'overriding-terminal-local-map)
+                  keymaps)))
+    (when overriding-local-map
+      (setq keymaps
+            (cons (list overriding-local-map 'overriding-local-map)
+                  keymaps)))
+    (unless (cdr keymaps)
+      (when point-local-map
+        (setq keymaps
+              (cons (list point-local-map 'point-local-map)
+                    keymaps)))
+      ;; Fix-me:
+      ;;/* If on a mode line string with a local keymap,
+
+      (when local-map
+        (setq keymaps
+              (cons (list local-map 'local-map)
+                    keymaps)))
+
+      ;; Minor-modes
+      ;;(message "================ Minor-modes")
+      (dolist (list '(emulation-mode-map-alists
+                      minor-mode-overriding-map-alist
+                      minor-mode-map-alist))
+        ;;(message "------- %s" list)
+        (let ((alists (if (eq list 'emulation-mode-map-alists)
+                          (symbol-value list)
+                        (list (symbol-value list)))))
+          (dolist (alist alists)
+            ;;(message "\n(symbolp alist)=%s alist= %s (symbol-value alist)=%s" (symbolp alist) "dum" "dum2") ;alist "dummy");(when (symbolp alist) (symbol-value alist)))
+            (when (symbolp alist)
+              (setq alist (symbol-value alist)))
+            (dolist (assoc alist)
+              (let* (;(assoc (car alist-rec))
+                     (var (when (consp assoc) (car assoc)))
+                     (val (when (and (symbolp var)
+                                     (boundp var))
+                            (symbol-value var))))
+                ;;(message "var= %s, val= %s" var val)
+                (when (and
+                       val
+                       (or (not (eq list 'minor-mode-map-alist))
+                           (not (assq var minor-mode-overriding-map-alist))))
+                  ;;(message "** Adding this")
+                  (setq minor-maps
+                        (cons (list (cdr assoc) list var)
+                              minor-maps)))
+                )))))
+      (dolist (map minor-maps)
+        ;;(message "cdr map= %s" (cdr map))
+        (setq keymaps
+              (cons map
+                    keymaps)))
+      (when point-keymap
+        (setq keymaps
+              (cons (list point-keymap 'point-keymap)
+                    keymaps))))
+
+    ;; Fix-me: compare with current-active-maps
+    (let ((ca-maps (current-active-maps))
+          (wh-maps keymaps)
+          ca
+          wh)
+      (while (or ca-maps wh-maps)
+        (setq ca (car ca-maps))
+        (setq wh (car wh-maps))
+        (setq ca-maps (cdr ca-maps))
+        (setq wh-maps (cdr wh-maps))
+        ;;(message "\nca= %s" ca)
+        ;;(message "cdr wh= %s" (cdr wh))
+        (unless (equal ca (car wh))
+          (error "Did not match: %s" (cdr wh)))))
+
+    (while keymaps
+      (setq map-rec (car keymaps))
+      (setq map (car map-rec))
+      (when (setq binding (lookup-key map key t))
+        (setq map-sym (ourcomments-find-keymap-variables key binding map))
+        (setq map-sym (delq 'map map-sym))
+        (setq map-sym (delq 'local-map map-sym))
+        (setq map-sym (delq 'point-keymap map-sym))
+        (setq map-sym (delq 'point-local-map map-sym))
+        (setq bindings (cons (list binding map-sym (cdr map-rec)) bindings)))
+      (setq keymaps (cdr keymaps)))
+
+    (nreverse bindings)))
+
+(defun describe-keymap-placement (keymap-sym)
+  "Find minor mode keymap KEYMAP-SYM in the keymaps searched for key lookup.
+See Info node `Searching Keymaps'."
+  ;;(info "(elisp) Searching Keymaps")
+  (interactive (list (ourcomments-read-symbol "Describe minor mode keymap symbol"
+                                              (lambda (sym)
+                                                (and (boundp sym)
+                                                     (keymapp (symbol-value sym)))))))
+  (unless (symbolp keymap-sym)
+    (error "Argument KEYMAP-SYM must be a symbol"))
+  (unless (keymapp (symbol-value keymap-sym))
+    (error "The value of argument KEYMAP-SYM must be a keymap"))
+  (with-output-to-temp-buffer (help-buffer)
+    (help-setup-xref (list #'describe-keymap-placement keymap-sym) (interactive-p))
+    (with-current-buffer (help-buffer)
+      (insert "Placement of keymap `")
+      (insert-text-button (symbol-name keymap-sym)
+                          'action
+                          (lambda (btn)
+                            (describe-variable keymap-sym)))
+      (insert "'\nin minor modes activation maps:\n")
+      (let (found)
+        (dolist (map-root '(emulation-mode-map-alists
+                            minor-mode-overriding-map-alist
+                            minor-mode-map-alist
+                            ))
+          (dolist (emul-alist (symbol-value map-root))
+            ;;(message "emul-alist=%s" emul-alist)
+            (dolist (keymap-alist
+                     (if (memq map-root '(emulation-mode-map-alists))
+                         (symbol-value emul-alist)
+                       (list emul-alist)))
+              (let* ((map (cdr keymap-alist))
+                     (first (catch 'first
+                              (map-keymap (lambda (key def)
+                                            (throw 'first (cons key def)))
+                                          map)))
+                     (key (car first))
+                     (def (cdr first))
+                     (keymap-variables (when (and key def)
+                                         (ourcomments-find-keymap-variables
+                                          (vector key) def map)))
+                     (active-var (car keymap-alist))
+                     )
+                (assert (keymapp map))
+                ;;(message "keymap-alist=%s, %s" keymap-alist first)
+                ;;(message "active-var=%s, %s" active-var keymap-variables)
+                (when (memq keymap-sym keymap-variables)
+                  (setq found t)
+                  (insert (format "\n`%s' " map-root))
+                  (insert (propertize "<= Minor mode keymap list holding this map"
+                                      'face 'font-lock-doc-face))
+                  (insert "\n")
+                  (when (symbolp emul-alist)
+                    (insert (format "  `%s' " emul-alist))
+                    (insert (propertize "<= Keymap alist variable" 'face 'font-lock-doc-face))
+                    (insert "\n"))
+                  ;;(insert (format "    `%s'\n" keymap-alist))
+                  (insert (format "      `%s' " active-var))
+                  (insert (propertize "<= Activation variable" 'face 'font-lock-doc-face))
+                  (insert "\n")
+                  )))))
+        (unless found
+          (insert (propertize "Not found." 'face 'font-lock-warning-face)))
+        ))))
 
 ;; This is a replacement for describe-key-briefly.
-;;(global-set-key [f1 ?c] 'find-keymap-binding-key)
-(defun find-keymap-binding-key (&optional key insert untranslated)
+;;(global-set-key [f1 ?c] 'describe-key-and-map-briefly)
+;;;###autoload
+(defun describe-key-and-map-briefly (&optional key insert untranslated)
   "Try to print names of keymap from which KEY fetch its definition.
 Look in current active keymaps and find keymap variables with the
 same value as the keymap where KEY is bound.  Print a message
@@ -550,6 +788,7 @@ what they will do ;-)."
     ;; End of part from describe-key-briefly.
     ;; <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+    ;;(message "bindings=%s" (key-bindings key)) (sit-for 2)
     ;; Find the keymap:
     (let* ((maps (current-active-maps))
            ret
@@ -560,7 +799,7 @@ what they will do ;-)."
           (while (< 1 (length maps))
             (setq lk (lookup-key (car maps) key t))
             (when (and lk (not (numberp lk)))
-              (setq ret (ourcomments-find-keymap-variables (car maps)))
+              (setq ret (ourcomments-find-keymap-variables key lk (car maps)))
               (when ret
                 (throw 'mapped (car maps))))
             (setq maps (cdr maps))))
@@ -576,7 +815,7 @@ what they will do ;-)."
             (message "%s%s is bound to `%s', but don't know where"
                      key-desc mouse-msg defn)
           (if (= 1 (length ret))
-              (message "%s%s is bound to `%s' in keymap variable `%s'"
+              (message "%s%s is bound to `%s' in `%s'"
                        key-desc mouse-msg defn (car ret))
             (message "%s%s is bound to `%s' in keymap variables `%s'"
                      key-desc mouse-msg defn ret))))
@@ -590,9 +829,332 @@ what they will do ;-)."
 ;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Wrapping
+
+;; Fix-me: There is a confusion between buffer and window margins
+;; here. Also the doc says that left-margin-width and dito right may
+;; be nil. However they seem to be 0 by default, but when displaying a
+;; buffer in a window then window-margins returns (nil).
+(defun wrap-to-fill-set-values ()
+  "Use `fill-column' display columns in buffer windows."
+  ;;(message "wrap-to-fill-set-values here")
+  (let ((buf-windows (get-buffer-window-list (current-buffer))))
+    (dolist (win buf-windows)
+      (if wrap-to-fill-column-mode
+          (let* ((edges (window-edges win))
+                 (win-width (- (nth 2 edges) (nth 0 edges)))
+                 (extra-width (- win-width fill-column))
+                 (left-marg (if wrap-to-fill-left-marg-use
+                                wrap-to-fill-left-marg-use
+                              (- (/ extra-width 2) 1)))
+                 (right-marg (- win-width fill-column left-marg))
+                 (win-margs (window-margins win))
+                 (old-left (or (car win-margs) 0))
+                 (old-right (or (cdr win-margs) 0)))
+            (unless (> left-marg 0) (setq left-marg 0))
+            (unless (> right-marg 0) (setq right-marg 0))
+            (unless (and (= old-left left-marg)
+                         (= old-right right-marg))
+              (set-window-margins win left-marg right-marg)))
+        (set-window-buffer win (current-buffer))))))
+
+;;;###autoload
+(defcustom wrap-to-fill-left-marg nil
+  "Left margin handling for `wrap-to-fill-column-mode'.
+Used by `wrap-to-fill-column-mode'. If nil then center the
+display columns. Otherwise it should be a number which will be
+the left margin."
+  :type '(choice (const :tag "Center" nil)
+                 (integer :tag "Left margin"))
+  :group 'convenience)
+(make-variable-buffer-local 'wrap-to-fill-left-marg)
+
+(defvar wrap-to-fill-left-marg-use 0)
+(make-variable-buffer-local 'wrap-to-fill-left-marg-use)
+(put 'wrap-to-fill-left-marg-use 'permanent-local t)
+
+;;;###autoload
+(defcustom wrap-to-fill-left-marg-modes
+  '(text-mode
+    fundamental-mode)
+  "Major modes where `wrap-to-fill-left-margin' may be nil."
+  :type '(repeat commandp)
+  :group 'convenience)
+
+(defun wrap-to-fill-set-prefix (min max)
+  "Set `wrap-prefix' text property from point MIN to MAX."
+  ;; Fix-me: If first word gets wrapped we have a problem.
+  ;;(message "wrap-to-fill-set-prefix here")
+  (let ((here (point))
+        beg-pos
+        end-pos
+        ind-str
+        max-word-len
+        (inhibit-field-text-motion t)
+        )
+    (goto-char min)
+    (forward-line 0)
+    (when (< (point) min) (forward-line))
+    (mumamo-with-buffer-prepared-for-jit-lock
+     (while (and (<= (point) max)
+                 (< (point) (point-max)))
+       (setq beg-pos (point))
+       (setq end-pos (line-end-position))
+       (when (equal (get-text-property beg-pos 'wrap-prefix)
+                    (get-text-property beg-pos 'wrap-to-fill-prefix))
+         (skip-chars-forward "[:blank:]")
+         (setq ind-str (buffer-substring-no-properties beg-pos (point)))
+         (setq max-word-len
+               (apply
+                'max
+                0
+                (mapcar (lambda (word)
+                              (length word))
+                            (split-string
+                             (buffer-substring-no-properties
+                              (point) end-pos)))))
+         ;;(message "max-word-len=%s, %s, %s" max-word-len (length ind-str) (buffer-substring-no-properties (point) end-pos))
+         (unless (< fill-column (+ max-word-len
+                                   ;;(current-indentation)
+                                   (length ind-str)
+                                   5 ;; Fix-me: From where?? This is the diff between the usable area and fill-column ...
+                                   ))
+           (put-text-property beg-pos end-pos 'wrap-prefix ind-str)
+           (put-text-property beg-pos end-pos 'wrap-to-fill-prefix ind-str)))
+       (forward-line)))
+    (goto-char here)))
+
+(defun wrap-to-fill-after-change (min max old-len)
+  "For `after-change-functions'.
+See the hook for MIN, MAX and OLD-LEN."
+  (let ((here (point))
+        (inhibit-field-text-motion t))
+    (goto-char min)
+    (setq min (line-beginning-position))
+    (goto-char max)
+    (setq max (line-end-position))
+    (wrap-to-fill-set-prefix min max)))
+
+(defun wrap-to-fill-scroll-fun (window start-pos)
+  "For `window-scroll-functions'.
+See the hook for WINDOW and START-POS."
+  (let ((min (or start-pos (window-start window)))
+        (max (window-end window t)))
+    (wrap-to-fill-set-prefix min max)))
+
+(defun wrap-to-fill-wider ()
+  "Increase `fill-column' with 10."
+  (interactive)
+  (setq fill-column (+ fill-column 10))
+  (wrap-to-fill-set-values))
+
+(defun wrap-to-fill-narrower ()
+  "Decrease `fill-column' with 10."
+  (interactive)
+  (setq fill-column (- fill-column 10))
+  (wrap-to-fill-set-values))
+
+(defvar wrap-to-fill-column-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [(control ?c) right] 'wrap-to-fill-wider)
+    (define-key map [(control ?c) left] 'wrap-to-fill-narrower)
+    map))
+
+(put 'wrap-to-fill-column-mode 'permanent-local t)
+;;;###autoload
+(define-minor-mode wrap-to-fill-column-mode
+  "Use `fill-column' display columns in buffer windows.
+By default the display columns are centered, but see the option
+`wrap-to-fill-left-marg'.
+
+Note 1: When turning this on `visual-line-mode' is also turned on. This
+is not reset when turning off this mode.
+
+Note 2: The text property `wrap-prefix' is set by this mode to
+indent continuation lines.  This is not recorded in the undo
+list.
+
+Key bindings added by this minor mode:
+
+\\{wrap-to-fill-column-mode-map}"
+  ;; Fix-me: make the `wrap-prefix' behavior an option.
+  :lighter " WrapFill"
+  :group 'convenience
+  ;;(message "wrap-to-fill-column-mode here %s" wrap-to-fill-column-mode)
+  (if wrap-to-fill-column-mode
+      (progn
+        (setq wrap-to-fill-left-marg-use wrap-to-fill-left-marg)
+        (unless (or wrap-to-fill-left-marg-use
+                    (memq major-mode wrap-to-fill-left-marg-modes))
+          (setq wrap-to-fill-left-marg-use
+                (default-value 'wrap-to-fill-left-marg-use)))
+        (add-hook 'window-configuration-change-hook 'wrap-to-fill-set-values nil t)
+        (add-hook 'after-change-functions 'wrap-to-fill-after-change nil t)
+        (add-hook 'window-scroll-functions 'wrap-to-fill-scroll-fun nil t)
+        (if (fboundp 'visual-line-mode)
+            (visual-line-mode 1)
+          (longlines-mode 1))
+        (dolist (window (get-buffer-window-list (current-buffer)))
+          (wrap-to-fill-scroll-fun window nil)))
+    (remove-hook 'window-configuration-change-hook 'wrap-to-fill-set-values t)
+    (remove-hook 'after-change-functions 'wrap-to-fill-after-change t)
+    (remove-hook 'window-scroll-functions 'wrap-to-fill-scroll-fun t)
+    (if (fboundp 'visual-line-mode)
+        (visual-line-mode -1)
+      (longlines-mode -1))
+    (let ((here (point))
+          (inhibit-field-text-motion t)
+          beg-pos
+          end-pos)
+      (mumamo-with-buffer-prepared-for-jit-lock
+       (save-restriction
+         (widen)
+         (goto-char (point-min))
+         (while (< (point) (point-max))
+           (setq beg-pos (point))
+           (setq end-pos (line-end-position))
+           (when (equal (get-text-property beg-pos 'wrap-prefix)
+                        (get-text-property beg-pos 'wrap-to-fill-prefix))
+             (remove-list-of-text-properties
+              beg-pos end-pos
+              '(wrap-prefix)))
+           (forward-line))
+         (remove-list-of-text-properties
+          (point-min) (point-max)
+          '(wrap-to-fill-prefix)))
+       (goto-char here))))
+  (wrap-to-fill-set-values))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Fringes.
+
+(defvar better-bottom-angles-defaults nil)
+(defun better-fringes-bottom-angles (on)
+  ;;(bottom bottom-left-angle bottom-right-angle top-right-angle top-left-angle)
+  (if (not on)
+      (when better-bottom-angles-defaults
+        (set-default 'fringe-indicator-alist better-bottom-angles-defaults))
+    (unless better-bottom-angles-defaults
+      (setq better-bottom-angles-defaults fringe-indicator-alist))
+    (let ((better
+           '(bottom
+             bottom-right-angle bottom-right-angle
+             bottom-left-angle bottom-left-angle
+             ))
+          (indicators (copy-list fringe-indicator-alist)))
+      (setq indicators (assq-delete-all 'bottom indicators))
+      (set-default 'fringe-indicator-alist (cons better indicators)))))
+
+(defun better-fringes-faces (face face-important)
+  (dolist (bitmap '(bottom-left-angle
+                    bottom-right-angle
+                    top-left-angle
+                    top-right-angle
+
+                    right-curly-arrow
+                    left-arrow right-arrow
+                    left-curly-arrow right-curly-arrow
+                    up-arrow
+                    down-arrow
+                    left-bracket right-bracket
+                    empty-line))
+    (set-fringe-bitmap-face bitmap face))
+  (dolist (bitmap '(right-triangle
+                    question-mark))
+    (set-fringe-bitmap-face bitmap face-important)))
+
+(defface better-fringes-bitmap
+  '((t (:foreground "khaki")))
+  "Face for bitmap fringes."
+  :group 'better-fringes
+  :group 'nxhtml)
+
+(defface better-fringes-important-bitmap
+  '((t (:foreground "red")))
+  "Face for bitmap fringes."
+  :group 'better-fringes
+  :group 'nxhtml)
+
+;;;###autoload
+(define-minor-mode better-fringes-mode
+  "Choose another fringe bitmap color and bottom angle."
+  :global t
+  :group 'better-fringes
+  (if better-fringes-mode
+      (progn
+        (better-fringes-faces 'better-fringes-bitmap
+                              'better-fringes-important-bitmap)
+        (better-fringes-bottom-angles t))
+    (better-fringes-faces nil nil)
+    (better-fringes-bottom-angles nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Misc.
 
+;;;###autoload
+(defun find-emacs-other-file (display-file)
+  "Find corresponding file to source or installed elisp file.
+If you have checked out and compiled Emacs yourself you may have
+Emacs lisp files in two places, the checked out source tree and
+the installed Emacs tree.  If buffer contains an Emacs elisp file
+in one of these places then find the corresponding elisp file in
+the other place. Return the file name of this file.
+
+When DISPLAY-FILE is non-nil display this file in other window
+and go to the same line number as in the current buffer."
+  (interactive (list t))
+  (unless (buffer-file-name)
+    (error "This buffer is not visiting a file"))
+  (unless source-directory
+    (error "Can't find the checked out Emacs sources"))
+  (let* ((installed-directory (file-name-as-directory
+                               (expand-file-name ".." exec-directory)))
+         (relative-installed (file-relative-name
+                              (buffer-file-name) installed-directory))
+         (relative-source (file-relative-name
+                           (buffer-file-name) source-directory))
+         (name-nondir (file-name-nondirectory (buffer-file-name)))
+         source-file
+         installed-file
+         other-file
+         (line-num (save-restriction
+                     (widen)
+                     (line-number-at-pos))))
+    (cond
+     ((and relative-installed
+           (not (string= name-nondir relative-installed))
+           (not (file-name-absolute-p relative-installed))
+           (not (string= ".." (substring relative-installed 0 2))))
+      (setq source-file (expand-file-name relative-installed source-directory)))
+     ((and relative-source
+           (not (string= name-nondir relative-source))
+           (not (file-name-absolute-p relative-source))
+           (not (string= ".." (substring relative-source 0 2))))
+      (setq installed-file (expand-file-name relative-source installed-directory))))
+    (setq other-file (or source-file installed-file))
+    (unless other-file
+      (error "This file is not in Emacs source or installed lisp tree"))
+    (unless (file-exists-p other-file)
+      (error "Can't find the corresponding file %s" other-file))
+    (when display-file
+      (find-file-other-window other-file)
+      (goto-line line-num))
+    other-file))
+
+;;;###autoload
+(defun ourcomments-ediff-files (def-dir file-a file-b)
+  "In directory DEF-DIR run `ediff-files' on files FILE-A and FILE-B.
+The purpose of this function is to make it eaiser to start
+`ediff-files' from a shell through Emacs Client.
+
+This is used in EmacsW32 in the file ediff.cmd."
+  (let ((default-directory def-dir))
+    (ediff-files file-a file-b)))
+
+
 (defun ourcomments-latest-changelog ()
+  "not ready"
   (let ((changelogs
          '("ChangeLog"
            "admin/ChangeLog"
@@ -648,6 +1210,7 @@ PREDICATE.  PREDICATE takes one argument, the symbol."
     (when (commandp fun)
       fun)))
 
+;;;###autoload
 (defun describe-command (command)
   "Like `describe-function', but prompts only for interactive commands."
   (interactive
@@ -754,6 +1317,7 @@ The can include 'variable, 'function and variaus 'cl-*."
                 (not (get symbol 'custom-autoload)))
            (get symbol 'custom-group))))
 
+;;;###autoload
 (defun describe-custom-group (symbol)
   "Describe customization group SYMBOL."
   (interactive
@@ -765,6 +1329,7 @@ The can include 'variable, 'function and variaus 'cl-*."
 
 ;; Added this to current-load-list in cl-macs.el
 ;; (describe-defstruct 'ert-stats)
+;;;###autoload
 (defun describe-defstruct (symbol)
   (interactive (list (ourcomments-read-symbol "Describe defstruct"
                                               'ourcomments-defstruct-p)))
@@ -794,6 +1359,7 @@ The can include 'variable, 'function and variaus 'cl-*."
           (insert "  No information about some slots, maybe :conc-name was used\n")))))))
 
 ;;(defun describe-deftype (type)
+;;;###autoload
 (defun describe-symbol(symbol)
   "Show information about SYMBOL.
 Show SYMBOL plist and whether is is a variable or/and a
@@ -921,18 +1487,21 @@ function."
 
 (defvar ourcomments-ido-visit-method nil)
 
+;;;###autoload
 (defun ourcomments-ido-buffer-other-window ()
   "Show buffer in other window."
   (interactive)
   (setq ourcomments-ido-visit-method 'other-window)
   (call-interactively 'ido-exit-minibuffer))
 
+;;;###autoload
 (defun ourcomments-ido-buffer-other-frame ()
   "Show buffer in other frame."
   (interactive)
   (setq ourcomments-ido-visit-method 'other-frame)
   (call-interactively 'ido-exit-minibuffer))
 
+;;;###autoload
 (defun ourcomments-ido-buffer-raise-frame ()
   "Raise frame showing buffer."
   (interactive)
@@ -1030,9 +1599,14 @@ of those in for example common web browsers."
 ;;;; New Emacs instance
 
 (defun ourcomments-find-emacs ()
-  (let ((exec-path (list exec-directory)))
-    (executable-find "emacs")))
+  (locate-file invocation-name
+               (list invocation-directory)
+               exec-suffixes
+               ;; 1 ;; Fix-me: This parameter is depreceated, but used
+               ;; in executable-find, why?
+               ))
 
+;;;###autoload
 (defun emacs()
   "Start a new Emacs."
   (interactive)
@@ -1040,6 +1614,7 @@ of those in for example common web browsers."
   (call-process (ourcomments-find-emacs) nil 0 nil)
   (message "Started 'emacs' - it will be ready soon ..."))
 
+;;;###autoload
 (defun emacs-buffer-file()
   "Start a new Emacs showing current buffer file.
 If there is no buffer file start with `dired'."
@@ -1054,22 +1629,27 @@ If there is no buffer file start with `dired'."
       (call-process (ourcomments-find-emacs) nil 0 nil "--eval"
                     (format "(dired \"%s\")" default-directory)))))
 
+;;;###autoload
 (defun emacs--debug-init()
   (interactive)
   (call-process (ourcomments-find-emacs) nil 0 nil "--debug-init")
   (message "Started 'emacs --debug-init' - it will be ready soon ..."))
 
+;;;###autoload
 (defun emacs-Q()
   "Start new Emacs without any customization whatsoever."
   (interactive)
   (call-process (ourcomments-find-emacs) nil 0 nil "-Q")
   (message "Started 'emacs -Q' - it will be ready soon ..."))
 
+;;;###autoload
 (defun emacs-Q-nxhtml()
   "Start new Emacs with -Q and load nXhtml."
   (interactive)
-  (let ((autostart (expand-file-name "../../EmacsW32/nxhtml/autostart.el"
-                                     exec-directory)))
+  (let ((autostart (if (boundp 'nxhtml-install-dir)
+                       (expand-file-name "autostart.el" nxhtml-install-dir)
+                     (expand-file-name "../../EmacsW32/nxhtml/autostart.el"
+                                       exec-directory))))
     (call-process (ourcomments-find-emacs) nil 0 nil "-Q"
                   "--debug-init"
                   "--load" autostart
@@ -1081,16 +1661,16 @@ If there is no buffer file start with `dired'."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Searching
 
-(defun grep-get-files ()
-  "Return list of files in a grep-mode buffer."
-  (or (compilation-buffer-p (current-buffer))
-      (error "Not in a compilation buffer"))
+(defun grep-get-buffer-files ()
+  "Return list of files in a `grep-mode' buffer."
+  (or (and (compilation-buffer-p (current-buffer))
+           (derived-mode-p 'grep-mode))
+      (error "Not in a grep buffer"))
   (let ((here (point))
         files
         loc)
-    (goto-char (point-min))
-    ;; fix-me: How do you check if all is fontified?
     (font-lock-fontify-buffer)
+    (goto-char (point-min))
     (while (setq loc
                  (condition-case err
                      (compilation-next-error 1)
@@ -1107,30 +1687,142 @@ If there is no buffer file start with `dired'."
     ;;(message "files=%s" files)
     files))
 
-;; Mostly copied from dired-do-query-replace-regexp. Fix-me: finish, test
-(defun grep-do-query-replace-regexp (from to &optional delimited)
+(defvar grep-query-replace-defaults nil
+  "Default values of FROM-STRING and TO-STRING for `grep-query-replace'.
+This is a cons cell (FROM-STRING . TO-STRING), or nil if there is
+no default value.")
+
+;; Mostly copied from `dired-do-query-replace-regexp'. Fix-me: finish, test
+;;;###autoload
+(defun grep-query-replace(from to &optional delimited)
   "Do `query-replace-regexp' of FROM with TO, on all files in *grep*.
 Third arg DELIMITED (prefix arg) means replace only word-delimited matches.
 If you exit (\\[keyboard-quit], RET or q), you can resume the query replace
 with the command \\[tags-loop-continue]."
-  ;;'grep-regexp-history
   (interactive
    (let ((common
-	  (query-replace-read-args
-	   "Query replace regexp in files in *grep*" t t)))
+          ;; Use the regexps that have been used in grep
+          (let ((query-replace-from-history-variable 'grep-regexp-history)
+                (query-replace-defaults (or grep-query-replace-defaults
+                                            query-replace-defaults)))
+            (query-replace-read-args
+             "Query replace regexp in files in *grep*" t t))))
+     (setq grep-query-replace-defaults (cons (nth 0 common)
+                                             (nth 1 common)))
      (list (nth 0 common) (nth 1 common) (nth 2 common))))
-  (dolist (file (grep-get-files))
+  (dolist (file (grep-get-buffer-files))
     (let ((buffer (get-file-buffer file)))
       (if (and buffer (with-current-buffer buffer
 			buffer-read-only))
 	  (error "File `%s' is visited read-only" file))))
   (tags-query-replace from to delimited
-		      '(grep-get-files)))
+		      '(grep-get-buffer-files)))
 
+(defun ldir-query-replace (from to files dir &optional delimited)
+  "Replace FROM with TO in FILES in directory DIR.
+This runs `query-replace-regexp' in selected files.
+
+See `dired-do-query-replace-regexp' for DELIMETED and more
+information."
+  (interactive (dir-replace-read-parameters nil nil))
+  (message "%s" (list from to file-regexp root delimited))
+  ;;(let ((files (directory-files root nil file-regexp))) (message "files=%s" files))
+  (tags-query-replace from to delimited
+                      `(directory-files ,root t ,file-regexp)))
+
+(defun rdir-query-replace (from to file-regexp root &optional delimited)
+  "Replace FROM with TO in FILES in directory tree ROOT.
+This runs `query-replace-regexp' in selected files.
+
+See `dired-do-query-replace-regexp' for DELIMETED and more
+information."
+  (interactive (dir-replace-read-parameters nil t))
+  (message "%s" (list from to file-regexp root delimited))
+  ;;(let ((files (directory-files root nil file-regexp))) (message "files=%s" files))
+  (tags-query-replace from to delimited
+                      `(rdir-get-files ,root ,file-regexp)))
+
+;; (rdir-get-files ".." "^a.*\.el$")
+(defun rdir-get-files (root file-regexp)
+  (let ((files (directory-files root t file-regexp))
+        (subdirs (directory-files root t)))
+    (dolist (subdir subdirs)
+      (when (and (file-directory-p subdir)
+                 (not (or (string= "/." (substring subdir -2))
+                          (string= "/.." (substring subdir -3)))))
+        (setq files (append files (rdir-get-files subdir file-regexp) nil))))
+    files))
+
+(defun dir-replace-read-parameters (has-dir recursive)
+  (let* ((common
+          (let (;;(query-replace-from-history-variable 'grep-regexp-history)
+                ;;(query-replace-defaults (or grep-query-replace-defaults
+                ;;                            query-replace-defaults))
+                )
+            (query-replace-read-args
+             "Query replace regexp in files" t t)))
+         (from (nth 0 common))
+         (to   (nth 1 common))
+         (delimited (nth 2 common))
+         (files (replace-read-files from to))
+         (root (unless has-dir (read-directory-name (if recursive "Root directory: "
+                                                      "In single directory: ")))))
+    (list from to files root delimited)))
+
+;; Mostly copied from `grep-read-files'. Could possible be merged with
+;; that.
+(defvar replace-read-files-history nil)
+(defun replace-read-files (regexp &optional replace)
+  "Read files arg for replace."
+  (let* ((bn (or (buffer-file-name) (buffer-name)))
+	 (fn (and bn
+		  (stringp bn)
+		  (file-name-nondirectory bn)))
+	 (default
+           (let ((pre-default
+                  (or (and fn
+                           (let ((aliases grep-files-aliases)
+                                 alias)
+                             (while aliases
+                               (setq alias (car aliases)
+                                     aliases (cdr aliases))
+                               (if (string-match (wildcard-to-regexp
+                                                  (cdr alias)) fn)
+                                   (setq aliases nil)
+			  (setq alias nil)))
+                             (cdr alias)))
+                      (and fn
+                           (let ((ext (file-name-extension fn)))
+                             (and ext (concat "^.*\." ext))))
+                      (car replace-read-files-history)
+                      (car (car grep-files-aliases)))))
+             (if (string-match-p "^\\*\\.[a-zA-Z0-9]*$" pre-default)
+                 (concat "\\." (substring pre-default 2) "$")
+               pre-default)))
+	 (files (read-string
+                 (if replace
+                     (concat "Replace \"" regexp
+                             "\" with \"" replace "\" in files"
+                             (if default (concat " (default " default
+                                                 ", regexp or *.EXT)"))
+                             ": ")
+                   (concat "Search for \"" regexp
+                           "\" in files"
+                           (if default (concat " (default " default ")"))
+                           ": "))
+		 nil 'replace-read-files-history default)))
+    (let ((pattern (and files
+                        (or (cdr (assoc files grep-files-aliases))
+                            files))))
+      (if (and pattern
+               (string-match-p "^\\*\\.[a-zA-Z0-9]*$" pattern))
+          (concat "\\." (substring pattern 2) "$")
+        pattern))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Info
 
+;;;###autoload
 (defun info-open-file (info-file)
   "Open an info file in `Info-mode'."
   (interactive

@@ -2,15 +2,15 @@
 ;;
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: 2008-07-08T19:10:54+0200 Tue
-;; Version: 0.1
-;; Last-Updated: 2008-07-08T19:11:22+0200 Tue
+;; Version: 0.2
+;; Last-Updated: 2008-09-01T01:13:15+0200 Sun
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   Cannot open load file: test-helpers.
+;;   `button', `help-fns', `help-mode', `view'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -44,6 +44,8 @@
 ;;
 ;;; Code:
 
+(require 'ert2)
+
 (defun nxhtmltest-mumamo-error-messages ()
   (ert-get-messages "^MuMaMo error"))
 
@@ -72,100 +74,8 @@
 
 ;;(nxhtmltest-be-really-idle 4 "HERE I AM!!")
 
-(defmacro* nxhtmltest-with-temp-buffer (file-name-form &body body)
-  (declare (indent 1) (debug t))
-  (let ((file-name (gensym "file-name-")))
-    `(let ((,file-name (nxhtml-get-test-file-name ,file-name-form)))
-       (with-temp-buffer
-         ;; Give the buffer a name that allows us to switch to it
-         ;; quickly when debugging a failure.
-         (rename-buffer (format "Test input %s"
-                                (file-name-nondirectory ,file-name))
-                        t)
-         (insert-file-contents ,file-name)
-         (save-window-excursion
-           ;; Switch to buffer so it will show immediately when
-           ;; debugging a failure.
-           (switch-to-buffer (current-buffer))
-           ,@body)))))
 
-;; Fix-me: This does not work as I intended. A lot of buffers lying
-;; around ...
-(defvar nxhtmltest-bufnum 0)
-(defvar nxhtmltest-test-buffers nil)
-
-(defun nxhtmltest-kill-test-buffers ()
-  "Delete test buffers from unsuccessful tests."
-  (interactive)
-  (dolist (buf nxhtmltest-test-buffers)
-    (when (buffer-live-p buf)
-      (kill-buffer buf)))
-  (setq nxhtmltest-test-buffers nil))
-
-(defun nxhtmltest-list-test-buffers ()
-  "List test buffers from unsuccessful tests."
-  (interactive)
-  (setq nxhtmltest-test-buffers
-        (delq nil
-              (mapcar (lambda (buf)
-                        (when (buffer-live-p buf)
-                          buf))
-                      nxhtmltest-test-buffers)))
-  (if nxhtmltest-test-buffers
-      (switch-to-buffer (list-buffers-noselect nil nxhtmltest-test-buffers))
-    (message "No test buffers from unsuccessful tests")))
-
-(defmacro* nxhtmltest-with-persistent-buffer (file-name-form &body body)
-  "Insert FILE-NAME-FORM in a temporary buffer and eval BODY.
-If success then delete the temporary buffer, otherwise keep it.
-
-To delete all temporary buffers from unsuccessful test you can
-use `nxhtmltest-kill-test-buffers'."
-  (declare (indent 1) (debug t))
-  (let ((file-name (gensym "file-name-")))
-    `(let* ((,file-name (nxhtml-get-test-file-name ,file-name-form))
-            ;; Give the buffer a name that allows us to switch to it
-            ;; quickly when debugging a failure.
-            (temp-buf-name
-             (format "Test input %s, %s"
-                     (setq nxhtmltest-bufnum (1+ nxhtmltest-bufnum))
-                     (file-name-nondirectory ,file-name)
-                     ;; Fix-me: I would like to have the test name
-                     ;; here. Is that possible?
-                     ))
-            (temp-buf (get-buffer temp-buf-name)))
-       (unless (file-readable-p ,file-name)
-         (if (file-exists-p ,file-name)
-             (error "Can't read %s" ,file-name)
-           (error "Can't find %s" ,file-name)))
-       (message "Testing with file %s" ,file-name)
-       (when temp-buf (kill-buffer temp-buf))
-       (setq temp-buf (get-buffer-create temp-buf-name))
-       (setq nxhtmltest-test-buffers (cons temp-buf nxhtmltest-test-buffers))
-       (with-current-buffer temp-buf
-         ;; Avoid global font lock
-         (set (make-local-variable 'font-lock-global-modes) nil)
-         ;; Fix-me: Can't see how to avoid this in a simple way.  It
-         ;; will probably do no harm, but be aware that it has been
-         ;; done!
-         (put 'font-lock-global-modes 'permanent-local t)
-         ;; Turn off font lock in buffer
-         (font-lock-mode -1)
-         (when (> emacs-major-version 22)
-           (assert (not font-lock-mode) t "%s %s" "in nxhtmltest-with-persistent-buffer"))
-         (insert-file-contents ,file-name)
-         (save-window-excursion
-           ;; Switch to buffer so it will show immediately when
-           ;; debugging a failure.
-           (switch-to-buffer-other-window (current-buffer))
-           ,@body)
-         (kill-buffer temp-buf)))))
-
-
-(defun nxhtml-get-test-file-name (file-name)
-  (expand-file-name file-name nxhtmltest-files-root))
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Fontification methods
 
 (defvar nxhtmltest-default-fontification-method nil)
@@ -181,12 +91,15 @@ use `nxhtmltest-kill-test-buffers'."
          (hist (mapcar (lambda (rec)
                          (car rec))
                        collection))
-         (method-name (completing-read "Default fontification method: "
-                                       collection nil t
-                                       (car (nth 1 collection))
-                                       'hist)))
+         (method-name (or t
+                          (completing-read "Default fontification method: "
+                                           collection nil t
+                                           (car (nth 1 collection))
+                                           'hist))))
     (setq nxhtmltest-default-fontification-method
-          (nth 1 (assoc method-name collection)))))
+          ;;(nth 1 (assoc method-name collection))
+          'fontify-w-timer-handlers
+          )))
 
 (defun nxhtmltest-fontify-as-usual (seconds prompt-mark)
   (font-lock-mode 1)
@@ -209,6 +122,7 @@ use `nxhtmltest-kill-test-buffers'."
     (fontify-buffer           (nxhtmltest-fontify-buffer))
     (t (error "Unrecognized default fontification method: %s"
               nxhtmltest-default-fontification-method))))
+
 
 
 (provide 'nxhtmltest-helpers)
