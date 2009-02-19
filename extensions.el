@@ -4,8 +4,8 @@
 (require 'python-mode)
 
 ;; PySmell: autocompletion for Python code
-(require 'pysmell)
-(require 'completion-ui)
+;(require 'pysmell)
+;(require 'completion-ui)
 (defun cui-pysmell-wrapper (prefix maxnum)
   (let ((completions (pysmell-get-all-completions)))
     (when maxnum
@@ -55,8 +55,11 @@
   (pymacs-load "paste")
   (paste-menu))
 
+;; twitter
+(autoload 'twit-post "twit" "post to twitter" t)
+
 ;; ReST mode
-(autoload 'rst-mode "rst" "mode for editing reStructuredText documents" t)
+(require 'rst)
 (setq auto-mode-alist
       (append '(("\\.rst$" . rst-mode)
                 ("\\.rest$" . rst-mode)
