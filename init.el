@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-02-20 00:40 by gbr
+;; last modified: 2009-03-20 23:00 by gbr
 
 ;; set up load path
 (setq load-path `("/home/gbr/.emacs.d/emacs-goodies-el"
@@ -211,6 +211,12 @@
 
 ;; find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
+
+;; for console mode
+;(global-set-key (kbd "C-M-d") 'backward-kill-word)
+;(global-set-key (kbd "C-d") 'backward-delete-char-untabify)
+
+(global-set-key (kbd "<f12>") 'compare-windows)
 
 
 ;; ---------- Modes ------------------------------------------------------------
@@ -466,6 +472,15 @@
     (search-forward-regexp current-this-regex))
   (while (not (looking-at current-this-regex))
     (backward-char 1)))
+
+(defun count-words ()
+  "Count words in region or buffer."
+  (interactive)
+  (if (region-active-p)
+      (message "Word count: %s" (how-many "\\w+"
+                                          (region-beginning) (region-end)))
+    (message "Word count: %s" (how-many "\\w+"
+                                        (point-min) (point-max)))))
 
 (require 'grep)
 (defun grep (regexp &optional files)
@@ -861,7 +876,7 @@ mouse-3: Remove current window from display")))))
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 95 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(default ((t (:stipple nil :background "gray96" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "microsoft" :family "Consolas"))))
  '(company-pseudo-tooltip-selection-face ((t (:inherit company-pseudo-tooltip-face :background "#ff6600"))))
  '(custom-button ((t (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 90 :family "tahoma"))))
  '(custom-button-face ((((type x w32 mac) (class color)) (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 1.1 :family "tahoma"))) t)
@@ -911,7 +926,7 @@ mouse-3: Remove current window from display")))))
  '(font-lock-string-face ((t (:foreground "firebrick" :height 1.0))))
  '(font-lock-type-face ((t (:foreground "#0a6"))))
  '(font-lock-warning-face ((((class color) (min-colors 88) (background light)) (:background "yellow" :foreground "Red1" :slant normal :weight extra-bold))))
- '(fringe ((((class color) (background light)) (:background "grey96"))))
+ '(fringe ((((class color) (background light)) (:background "gray96"))))
  '(grep-edit-face ((t (:background "#77ff55" :weight bold))))
  '(grep-edit-file-face ((t (:background "#77ff55" :weight bold))))
  '(highlight ((((class color) (min-colors 88) (background light)) (:background "#FAFABF"))))
@@ -920,7 +935,7 @@ mouse-3: Remove current window from display")))))
  '(ido-only-match-face ((((class color)) (:inherit font-lock-comment-face))))
  '(margin-face ((t (:background "red"))) t)
  '(minibuffer-prompt ((t (:foreground "dark blue"))))
- '(mode-line ((t (:background "#FFBB44" :foreground "black" :box (:line-width 3 :color "#FFBB44") :height 99 :family "tahoma"))))
+ '(mode-line ((t (:background "#FFBB44" :foreground "black" :box (:line-width 3 :color "#FFBB44") :height 94 :family "tahoma"))))
  '(mode-line-buffer-id ((t (:foreground "#990000" :weight bold))))
  '(mode-line-highlight ((((class color) (min-colors 88) (background light)) (:inherit mode-line :background "RoyalBlue4" :foreground "white" :box (:line-width 2 :color "RoyalBlue4")))))
  '(mode-line-inactive ((t (:inherit mode-line :background "grey80" :foreground "grey20" :box (:line-width 3 :color "grey80")))))
@@ -945,7 +960,7 @@ mouse-3: Remove current window from display")))))
  '(speedbar-tag-face ((((class color) (background light)) (:inherit speedbar-file-face :foreground "brown"))))
  '(tabbar-button ((t (:inherit tabbar-default :foreground "dark red"))))
  '(tabbar-button-highlight ((t (:inherit tabbar-default :background "white" :box (:line-width 2 :color "white")))))
- '(tabbar-default ((t (:inherit variable-pitch :background "gray90" :foreground "gray50" :box (:line-width 3 :color "gray90") :height 99))))
+ '(tabbar-default ((t (:inherit variable-pitch :background "gray90" :foreground "gray50" :box (:line-width 3 :color "gray90") :height 94))))
  '(tabbar-highlight ((t (:underline t))))
  '(tabbar-selected ((t (:inherit tabbar-default :foreground "blue" :weight bold))))
  '(tabbar-separator ((t (:inherit tabbar-default))))

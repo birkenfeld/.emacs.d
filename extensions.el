@@ -52,7 +52,7 @@
 (defun pastebin ()
   (interactive)
   (require 'pymacs)
-  (pymacs-load "paste")
+  (pymacs-load "pastemacs" "paste-")
   (paste-menu))
 
 ;; twitter
@@ -122,7 +122,7 @@
 
 ;; org-mode (organizer, agenda, ...)
 (require 'org)
-(global-set-key (kbd "<f12>") 'org-agenda)
+;(global-set-key (kbd "<f12>") 'org-agenda)
 
 ;; color dabbrev-expanded phrases
 (require 'dabbrev-highlight)

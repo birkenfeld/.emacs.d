@@ -5,5 +5,7 @@ places
 .emacs.desktop*
 .semantic
 *.elc
+*.pyc
+url/
 file-cache-*
 *~
