@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-03-20 23:00 by gbr
+;; last modified: 2009-04-11 12:43 by gbr
 
 ;; set up load path
 (setq load-path `("/home/gbr/.emacs.d/emacs-goodies-el"
@@ -876,7 +876,7 @@ mouse-3: Remove current window from display")))))
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "gray96" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(default ((t (:stipple nil :background "gray96" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "microsoft" :family "Consolas"))))
  '(company-pseudo-tooltip-selection-face ((t (:inherit company-pseudo-tooltip-face :background "#ff6600"))))
  '(custom-button ((t (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 90 :family "tahoma"))))
  '(custom-button-face ((((type x w32 mac) (class color)) (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 1.1 :family "tahoma"))) t)

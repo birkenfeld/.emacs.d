@@ -9,3 +9,5 @@ places
 url/
 file-cache-*
 *~
+init.el.before*
+nxhtml/etc/schema/xhtml-loader.rnc
