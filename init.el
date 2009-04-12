@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-04-11 12:43 by gbr
+;; last modified: 2009-04-12 13:31 by gbr
 
 ;; set up load path
 (setq load-path `("/home/gbr/.emacs.d/emacs-goodies-el"
@@ -595,6 +595,27 @@
     (looking-at "\\_>")))
 
 
+(defun same-file-in-py3k ()
+  "Find this file in py3k instead of trunk."
+  (interactive)
+  (let* ((fn (buffer-file-name))
+         (m (string-match "/python\\(3k\\|30\\|26\\|\\)/" fn))
+         (rfn (replace-match "/python3k/" t t fn)))
+    (if (not (string= fn rfn))
+        (find-file-other-window rfn)
+      (message "already in py3k, or not in python at all"))))
+
+(defun same-file-in-trunk ()
+  "Find this file in trunk instead of py3k."
+  (interactive)
+  (let* ((fn (buffer-file-name))
+         (m (string-match "/python\\(3k\\|30\\|26\\|\\)/" fn))
+         (rfn (replace-match "/python/" t t fn)))
+    (if (not (string= fn rfn))
+        (find-file-other-window rfn)
+      (message "already in trunk, or not in python at all"))))
+
+
 ;; ---------- Stuff managed by Emacs -------------------------------------------
 
 (custom-set-variables
@@ -919,12 +940,12 @@ mouse-3: Remove current window from display")))))
  '(font-latex-verbatim-face ((((class color) (background light)) (:inherit monotype-courier\ new :foreground "SaddleBrown"))))
  '(font-lock-comment-delimiter-face ((default (:inherit font-lock-comment-face :slant normal)) (((class color) (min-colors 16)) nil)))
  '(font-lock-comment-face ((t (:foreground "#0a0" :slant oblique :height 1.0))))
- '(font-lock-doc-face ((t (:foreground "#c0c" :slant italic))))
+ '(font-lock-doc-face ((t (:foreground "#c6c" :slant italic))))
  '(font-lock-function-name-face ((t (:foreground "Blue" :weight bold))))
  '(font-lock-keyword-face ((t (:foreground "Purple" :weight bold))))
  '(font-lock-preprocessor-face ((t (:inherit font-lock-builtin-face :foreground "#999"))))
  '(font-lock-string-face ((t (:foreground "firebrick" :height 1.0))))
- '(font-lock-type-face ((t (:foreground "#0a6"))))
+ '(font-lock-type-face ((t (:foreground "#084"))))
  '(font-lock-warning-face ((((class color) (min-colors 88) (background light)) (:background "yellow" :foreground "Red1" :slant normal :weight extra-bold))))
  '(fringe ((((class color) (background light)) (:background "gray96"))))
  '(grep-edit-face ((t (:background "#77ff55" :weight bold))))

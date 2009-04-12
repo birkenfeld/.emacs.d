@@ -4,7 +4,6 @@
 /fontlock.hs/1.5/Sat Feb 10 07:07:38 2007//
 /haskell-c.el/1.1/Wed Sep 26 19:51:29 2007//
 /haskell-cabal.el/1.7/Fri May 23 20:07:33 2008//
-/haskell-font-lock.el/1.33/Fri May 30 16:01:43 2008//
 /haskell-ghci.el/1.15/Wed Dec 12 04:05:13 2007//
 /haskell-hugs.el/1.14/Wed Dec 12 04:05:13 2007//
 /haskell-indentation.el/1.2/Thu Feb 28 23:07:53 2008//
@@ -17,4 +16,5 @@
 /haskell-doc.el/1.30/Sat Apr 11 20:44:10 2009//
 /haskell-indent.el/1.36/Sat Apr 11 20:44:10 2009//
 /inf-haskell.el/1.47/Sat Apr 11 20:44:10 2009//
+/haskell-font-lock.el/1.33/Sat Apr 11 20:49:21 2009//
 D

@@ -15,11 +15,11 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (setq completion-function 'cui-pysmell-wrapper)
-            ;(setf 'smart-expand-function 'comp
             ))
 
 ;; CVS haskell mode
 (require 'haskell-mode)
+(require 'inf-haskell)
 
 (add-to-list 'auto-mode-alist '("\\.\\(?:[gh]s\\|hi\\)\\'" . haskell-mode))
 (add-to-list 'auto-mode-alist '("\\.l[gh]s\\'" . literate-haskell-mode))
@@ -28,6 +28,7 @@
   (imenu-add-menubar-index)
   (turn-on-haskell-doc-mode)
   (turn-on-haskell-indent)
+  (inferior-haskell-process)
   (setq comment-start "--")
   (add-to-list 'filladapt-token-table '("-- " haskell-comment))
   (add-to-list 'filladapt-token-match-table '(haskell-comment haskell-comment))
