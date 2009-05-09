@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-04-12 13:31 by gbr
+;; last modified: 2009-05-09 11:59 by gbr
 
 ;; set up load path
 (setq load-path `("/home/gbr/.emacs.d/emacs-goodies-el"
@@ -92,6 +92,9 @@
 ;; electric bindings for help mode
 (require 'ehelp)
 
+;; color theme support
+(require 'color-theme)
+(color-theme-initialize)
 
 ;; ---------- Keybindings ------------------------------------------------------
 
@@ -109,6 +112,9 @@
 
 ;; file cache
 (define-key minibuffer-local-map (kbd "C-f") 'file-cache-minibuffer-complete)
+
+;; in the minibuffer, do not kill but delete
+(define-key minibuffer-local-map (kbd "M-DEL") 'backward-delete-word)
 
 ;; useful mouse behavior
 (global-set-key (kbd "<s-mouse-1>") 'mouse-delete-other-windows)
@@ -387,6 +393,11 @@
 
 
 ;; ---------- Custom interactive functions -------------------------------------
+
+(defun backward-delete-word (arg)
+  "Delete word before point."
+  (interactive "p")
+  (delete-region (point) (progn (forward-word (- arg)) (point))))
 
 (defun split-window-horizontally-into-3 ()
   "Split current window horizontally into three windows of equal width."
@@ -842,6 +853,7 @@ mouse-3: Remove current window from display")))))
  '(rst-mode-hook nil)
  '(rst-mode-lazy nil)
  '(save-place t nil (saveplace))
+ '(save-place-file "~/.emacs.d/places")
  '(screen-lines-minor-mode-string " \\/")
  '(scroll-bar-mode (quote right))
  '(scroll-conservatively 0)
@@ -897,7 +909,7 @@ mouse-3: Remove current window from display")))))
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "gray96" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(default ((t (:stipple nil :background "gray96" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 95 :width normal :foundry "microsoft" :family "Consolas"))))
  '(company-pseudo-tooltip-selection-face ((t (:inherit company-pseudo-tooltip-face :background "#ff6600"))))
  '(custom-button ((t (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 90 :family "tahoma"))))
  '(custom-button-face ((((type x w32 mac) (class color)) (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 1.1 :family "tahoma"))) t)
@@ -956,7 +968,7 @@ mouse-3: Remove current window from display")))))
  '(ido-only-match-face ((((class color)) (:inherit font-lock-comment-face))))
  '(margin-face ((t (:background "red"))) t)
  '(minibuffer-prompt ((t (:foreground "dark blue"))))
- '(mode-line ((t (:background "#FFBB44" :foreground "black" :box (:line-width 3 :color "#FFBB44") :height 94 :family "tahoma"))))
+ '(mode-line ((t (:background "#FFBB44" :foreground "black" :box (:line-width 3 :color "#FFBB44") :height 90 :family "sans"))))
  '(mode-line-buffer-id ((t (:foreground "#990000" :weight bold))))
  '(mode-line-highlight ((((class color) (min-colors 88) (background light)) (:inherit mode-line :background "RoyalBlue4" :foreground "white" :box (:line-width 2 :color "RoyalBlue4")))))
  '(mode-line-inactive ((t (:inherit mode-line :background "grey80" :foreground "grey20" :box (:line-width 3 :color "grey80")))))
@@ -990,7 +1002,7 @@ mouse-3: Remove current window from display")))))
  '(tool-bar ((default (:foreground "black" :box (:line-width 1 :style released-button))) (((type x w32 mac) (class color)) (:background "grey75"))))
  '(trailing-whitespace ((((class color) (background light)) (:background "#ffcccc"))))
  '(trex-unicode-face ((t nil)))
- '(variable-pitch ((t (:height 105 :family "tahoma"))))
+ '(variable-pitch ((t (:height 105 :family "sans"))))
  '(vline ((t (:inherit highlight))))
  '(widget-documentation ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))
  '(woman-addition ((t (:inherit default :foreground "orange"))))
