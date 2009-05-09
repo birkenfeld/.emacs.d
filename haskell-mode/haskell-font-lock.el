@@ -512,6 +512,11 @@ that should be commented under LaTeX-style literate scripts."
                       doc)))))
     (set (make-local-variable 'haskell-font-lock-seen-haddock) t)
     font-lock-doc-face)
+   ;; Highlight pragmas {-# ... #-} using the preprocessor directive font.
+   ((save-excursion
+      (goto-char (nth 8 state))
+      (looking-at "{-#"))
+    font-lock-preprocessor-face)
    (t font-lock-comment-face)))
 
 (defconst haskell-font-lock-keywords
