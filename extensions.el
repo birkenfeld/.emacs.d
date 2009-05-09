@@ -3,19 +3,13 @@
 ;; better, patched Python mode
 (require 'python-mode)
 
-;; PySmell: autocompletion for Python code
-;(require 'pysmell)
-;(require 'completion-ui)
-(defun cui-pysmell-wrapper (prefix maxnum)
-  (let ((completions (pysmell-get-all-completions)))
-    (when maxnum
-      (setq completions
-            (butlast completions (- (length completions) maxnum))))
-    completions))
-(add-hook 'python-mode-hook
-          (lambda ()
-            (setq completion-function 'cui-pysmell-wrapper)
-            ))
+;; auto-completion setup
+(require 'auto-complete)
+(require 'auto-complete-python)
+(setq ac-auto-start nil)
+(setq ac-auto-start-chars '("."))
+(global-auto-complete-mode t)
+(ac-ropemacs-init)
 
 ;; CVS haskell mode
 (require 'haskell-mode)
@@ -47,14 +41,25 @@
 (bar-cursor-mode t)
 
 ;; load path for Python modules, must be set before loading pymacs
-(setq pymacs-load-path '("~/.emacs.d/pymacs" "~/devel/ropemacs"))
+(setq pymacs-load-path '("~/.emacs.d/pymacs"
+                         "~/devel/ext/ropemacs" "~/devel/ext/ropemode"))
 
-;; enable Python in Emacs
+;; load the pastebin connector
 (defun pastebin ()
   (interactive)
   (require 'pymacs)
   (pymacs-load "pastemacs" "paste-")
   (paste-menu))
+
+;; load ropemacs
+(defun load-ropemacs ()
+  "Load pymacs and ropemacs"
+  (interactive)
+  (require 'pymacs)
+  (pymacs-load "ropemacs" "rope-")
+  ;; Automatically save project python buffers before refactorings
+  (setq ropemacs-confirm-saving 'nil)
+)
 
 ;; twitter
 (autoload 'twit-post "twit" "post to twitter" t)
