@@ -1,8 +1,5 @@
 ;; ---------- distext.el init file: extensions installed by distribution -------
 
-;; redo
-(require 'redo)
-
 ;; load path for Python modules, must be set before loading pymacs
 (setq pymacs-load-path '("~/.emacs.d/pymacs"
                          "~/devel/ext/ropemacs" "~/devel/ext/ropemode"))

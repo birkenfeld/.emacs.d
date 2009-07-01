@@ -1,5 +1,8 @@
 ;; ---------- extensions.el init file: extensions bundled in .emacs.d ----------
 
+;; redo
+(require 'redo)
+
 ;; better, patched Python mode
 (require 'python-mode)
 
