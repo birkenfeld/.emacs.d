@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-07-01 15:06 by gbr
+;; last modified: 2009-07-01 15:20 by gbr
 
 ;; set up load path
 (setq load-path `("~/.emacs.d/emacs-goodies-el"
@@ -738,8 +738,6 @@
  '(glasses-uncapitalize-regexp "[a-z]")
  '(global-font-lock-mode t nil (font-core))
  '(global-hl-line-mode t)
- '(global-semantic-decoration-mode nil nil (semantic-decorate-mode))
- '(global-semantic-show-unmatched-syntax-mode t nil (semantic-util-modes))
  '(grep-files-aliases (quote (("asm" . "*.[sS]") ("c" . "*.c") ("cc" . "*.cc") ("ch" . "*.[ch]") ("el" . "*.el") ("h" . "*.h") ("l" . "[Cc]hange[Ll]og*") ("m" . "[Mm]akefile*") ("tex" . "*.tex") ("texi" . "*.texi") (rst . "*.rst") (py . "*.py"))))
  '(grep-find-command "find . -name .svn -prune -o -type f -print0 | xargs -0 -e grep -nHE -e ")
  '(grep-find-ignored-directories (quote ("CVS" ".svn" ".git" ".hg" ".bzr" "_darcs")))
