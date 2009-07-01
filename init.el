@@ -686,6 +686,7 @@
  '(cua-enable-cursor-indications t)
  '(cua-enable-region-auto-help nil)
  '(cua-mode t nil (cua-base))
+ '(cua-overwrite-cursor-color "red")
  '(cua-prefix-override-inhibit-delay 0.3)
  '(cua-remap-control-z nil)
  '(cursor-in-non-selected-windows t)
