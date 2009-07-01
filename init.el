@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-07-01 15:40 by gbr
+;; last modified: 2009-07-01 15:42 by gbr
 
 ;; set up load path
 (setq load-path `("~/.emacs.d/emacs-goodies-el"
@@ -630,6 +630,8 @@
 (defun prompt-face-color (face)
   "Repeatedly prompt for new color for a given face."
   (interactive (list (read-face-name "Face" "default")))
+  (if (member face '(nil ""))
+      (setq face 'default))
   (while t
     (set-face-attribute face nil :foreground (read-color "Color: "))))
 
