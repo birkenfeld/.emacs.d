@@ -3,7 +3,7 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-07-01 15:20 by gbr
+;; last modified: 2009-07-01 15:37 by gbr
 
 ;; set up load path
 (setq load-path `("~/.emacs.d/emacs-goodies-el"
@@ -627,6 +627,11 @@
         (find-file-other-window rfn)
       (message "already in trunk, or not in python at all"))))
 
+(defun set-face-color (face)
+  "Repeatedly prompt for new color for a given face."
+  (interactive "SFace: ")
+  (while t
+    (set-face-attribute face nil :foreground (read-color "Color: "))))
 
 ;; ---------- Stuff managed by Emacs -------------------------------------------
 
