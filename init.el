@@ -3,8 +3,6 @@
 ;; This file should load with every stock Emacs 22 and higher, while custom
 ;; extensions only present on my machine are loaded in extensions.el.
 
-;; last modified: 2009-07-01 15:42 by gbr
-
 ;; set up load path
 (setq load-path `("~/.emacs.d/emacs-goodies-el"
                   "~/.emacs.d/predictive"
