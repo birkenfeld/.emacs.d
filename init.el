@@ -96,6 +96,7 @@
 
 ;; find file at point
 (ffap-bindings)
+(setq ffap-url-regexp nil)
 
 ;; find files with ":linenum"
 (global-set-key (kbd "C-x C-f") 'find-file-with-linenum)
@@ -211,6 +212,10 @@
 ;; repeat simple and complex commands
 (global-set-key (kbd "C-.") 'repeat)
 
+;; better replacing commands
+(global-set-key (kbd "M-%") 'query-replace-all)
+(global-set-key (kbd "C-M-%") 'query-replace-regexp-all)
+
 ;; find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
 
@@ -228,6 +233,11 @@
 
 ;; nice xterm mouse handling
 ;(xterm-mouse-mode t)
+
+;; terminal mode
+(require 'term)
+(setq ansi-term-color-vector [unspecified "black" "red3" "green3" "yellow3"
+                                          "blue2" "magenta3" "cyan3" "gray80"])
 
 ;; abbrev file for abbrev-mode
 (read-abbrev-file "~/.abbrevs" t)
@@ -393,6 +403,51 @@
   "Delete word before point."
   (interactive "p")
   (delete-region (point) (progn (forward-word (- arg)) (point))))
+
+(defun query-replace-all (from-string to-string &optional delimited start end)
+  "Like \\[query-replace], but replaces from start of document and returns to
+location where point was before calling it after finish."
+  (interactive
+   (let ((common
+	  (query-replace-read-args
+	   (concat "Query replace"
+		   (if current-prefix-arg " word" "")
+		   (if (and transient-mark-mode mark-active) " in region" ""))
+	   nil)))
+     (list (nth 0 common) (nth 1 common) (nth 2 common)
+	   ;; These are done separately here
+	   ;; so that command-history will record these expressions
+	   ;; rather than the values they had this time.
+	   (if (and transient-mark-mode mark-active)
+	       (region-beginning))
+	   (if (and transient-mark-mode mark-active)
+	       (region-end)))))
+  (save-excursion
+    (beginning-of-buffer)
+    (perform-replace from-string to-string t nil delimited nil nil start end)))
+
+(defun query-replace-regexp-all (regexp to-string &optional delimited start end)
+  "Like \\[query-replace-regexp], but replaces from start of document and returns
+to location where point was before calling it after finish."
+  (interactive
+   (let ((common
+	  (query-replace-read-args
+	   (concat "Query replace"
+		   (if current-prefix-arg " word" "")
+		   " regexp"
+		   (if (and transient-mark-mode mark-active) " in region" ""))
+	   t)))
+     (list (nth 0 common) (nth 1 common) (nth 2 common)
+	   ;; These are done separately here
+	   ;; so that command-history will record these expressions
+	   ;; rather than the values they had this time.
+	   (if (and transient-mark-mode mark-active)
+	       (region-beginning))
+	   (if (and transient-mark-mode mark-active)
+	       (region-end)))))
+  (save-excursion
+    (beginning-of-buffer)
+    (perform-replace regexp to-string t t delimited nil nil start end)))
 
 (defun split-window-horizontally-into-3 ()
   "Split current window horizontally into three windows of equal width."
