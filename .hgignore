@@ -2,6 +2,7 @@ syntax: glob
 auto-save-list
 backups
 places
+twitter
 .emacs.desktop*
 .semantic
 *.elc

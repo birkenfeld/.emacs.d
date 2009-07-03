@@ -1,4 +1,4 @@
 #!/bin/zsh
 emacs --batch -f batch-byte-compile **/*.el
 # don't compile often-edited files
-rm init.elc extensions.elc
+rm -f init.elc extensions.elc

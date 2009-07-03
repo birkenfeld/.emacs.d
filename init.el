@@ -95,8 +95,9 @@
 ;; ---------- Keybindings ------------------------------------------------------
 
 ;; find file at point
-(ffap-bindings)
-(setq ffap-url-regexp nil)
+(require 'ffap)
+;(ffap-bindings)
+;(setq ffap-url-regexp nil)
 
 ;; find files with ":linenum"
 (global-set-key (kbd "C-x C-f") 'find-file-with-linenum)
@@ -212,9 +213,9 @@
 ;; repeat simple and complex commands
 (global-set-key (kbd "C-.") 'repeat)
 
-;; better replacing commands
-(global-set-key (kbd "M-%") 'query-replace-all)
-(global-set-key (kbd "C-M-%") 'query-replace-regexp-all)
+;; better replacing commands (BAD)
+;(global-set-key (kbd "M-%") 'query-replace-all)
+;(global-set-key (kbd "C-M-%") 'query-replace-regexp-all)
 
 ;; find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
@@ -904,7 +905,7 @@ mouse-3: Remove current window from display")))))
  '(reftex-save-parse-info t)
  '(reftex-use-multiple-selection-buffers t)
  '(reftex-vref-is-default t)
- '(require-final-newline (quote ask))
+ '(require-final-newline (quote visit))
  '(rng-nxml-auto-validate-flag nil)
  '(ropemacs-completing-read-function (quote ido-completing-read))
  '(rst-definition-face (quote font-lock-function-name-face))
@@ -954,8 +955,11 @@ mouse-3: Remove current window from display")))))
  '(tramp-verbose 5)
  '(trex-unicode-mappings (quote (("forall" . 8704) ("complement" . 8705) ("partial" . 8706) ("exists" . 8707) ("emptyset" . 8709) ("nabla" . 8711) ("in" . 8712) ("notin" . 8713) ("ni" . 8715) ("qedhere" . 8718) ("prod" . 8719) ("coprod" . 8720) ("sum" . 8721) ("mp" . 8723) ("setminus" . 8726) ("circ" . 8728) ("cdot" . 8729) ("sqrt" . 8730) ("infty" . 8734) ("land" . 8743) ("wedge" . 8743) ("lor" . 8744) ("vee" . 8744) ("cap" . 8745) ("cup" . 8746) ("int" . 8747) ("iint" . 8748) ("iiiint" . 8749) ("neq" . 8800) ("ne" . 8800) ("leq" . 8804) ("le" . 8804) ("geq" . 8805) ("ge" . 8805) ("prec" . 8826) ("succ" . 8827) ("subset" . 8834) ("supset" . 8835) ("subseteq" . 8838) ("supseteq" . 8839) ("subsetneq" . 8842) ("supsetneq" . 8843) ("unlhd" . 8884) ("lhd" . 8882) ("unrhd" . 8885) ("rhd" . 8883) ("implies" . 10233) ("iff" . 10234) ("mapsto" . 10236) ("to" . 10230) ("longleftarrow" . 10229) ("longrightarrow" . 10230) ("longleftrightarrow" . 10231) ("Longleftarrow" . 10232) ("Longrightarrow" . 10233) ("leftarrow" . 8592) ("uparrow" . 8593) ("rightarrow" . 8594) ("downarrow" . 8595) ("leftrightarrow" . 8596) ("updownarrow" . 8597) ("dots" . 8230) ("ldots" . 8230) ("textperthousand" . 8240) ("bigodot" . 10752) ("bigoplus" . 10753) ("bigotimes" . 10754) ("lneq" . 10887) ("gneq" . 10888) ("wp" . 8472) ("ell" . 8467) ("Im" . 8465) ("Re" . 8476) ("Finv" . 8498) ("Game" . 8513) ("aleph" . 8501) ("beth" . 8502) ("gimel" . 8503) ("daleth" . 8504) ("alpha" . 945) ("beta" . 946) ("gamma" . 947) ("delta" . 948) ("epsilon" . 1013) ("varepsilon" . 949) ("zeta" . 950) ("eta" . 951) ("theta" . 952) ("vartheta" . 977) ("iota" . 953) ("kappa" . 954) ("varkappa" . 1008) ("lambda" . 955) ("mu" . 956) ("nu" . 957) ("xi" . 958) ("pi" . 960) ("varpi" . 982) ("rho" . 961) ("varrho" . 1009) ("sigma" . 963) ("varsigma" . 962) ("tau" . 964) ("upsilon" . 965) ("varphi" . 966) ("phi" . 981) ("chi" . 967) ("psi" . 968) ("omega" . 969) ("digamma" . 989) ("Gamma" . 915) ("Delta" . 916) ("Theta" . 920) ("Lambda" . 923) ("Xi" . 926) ("Pi" . 928) ("Sigma" . 931) ("Upsilon" . 933) ("Phi" . 934) ("Psi" . 936) ("Omega" . 937) ("N" . 8469) ("R" . 8477) ("Q" . 8474) ("C" . 8450) ("Z" . 8484) ("pm" . 177))))
  '(truncate-partial-width-windows nil)
+ '(twit-new-tweet-hook (quote (twit-todochiku)))
  '(twit-pass "6tgstw")
+ '(twit-show-user-images t)
  '(twit-user "birkenfeld")
+ '(twit-user-image-dir "~/.emacs.d/twitter")
  '(undo-limit 200000)
  '(undo-strong-limit 300000)
  '(uniquify-buffer-name-style (quote reverse) nil (uniquify))
@@ -1064,6 +1068,9 @@ mouse-3: Remove current window from display")))))
  '(tool-bar ((default (:foreground "black" :box (:line-width 1 :style released-button))) (((type x w32 mac) (class color)) (:background "grey75"))))
  '(trailing-whitespace ((((class color) (background light)) (:background "#ffcccc"))))
  '(trex-unicode-face ((t nil)))
+ '(twit-author-face ((t (:inherit twit-message-face :weight bold))))
+ '(twit-info-face ((t (:inherit twit-message-face :slant italic))))
+ '(twit-message-face ((nil (:inherit custom-documentation :family "tahoma"))))
  '(variable-pitch ((t (:height 105 :family "sans"))))
  '(vline ((t (:inherit highlight))))
  '(widget-documentation ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))

@@ -40,7 +40,11 @@
 (bar-cursor-mode t)
 
 ;; twitter
+(require 'todochiku)
 (autoload 'twit-post "twit" "post to twitter" t)
+(defun my-twit-hook ()
+  (message (format "New tweet from %s:\n%s" (cadr twit-last-tweet)
+                   (caddr twit-last-tweet))))
 
 ;; ReST mode
 (require 'rst)
