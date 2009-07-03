@@ -42,6 +42,13 @@
 ;; twitter
 (require 'todochiku)
 (autoload 'twit-post "twit" "post to twitter" t)
+(defun my-twit-todochiku ()
+  "Helper function for use by the todochiku package."
+  (todochiku-message "Twitter"
+                     (format "From %s:\n%s"
+                             (cadr twit-last-tweet)
+                             (caddr twit-last-tweet))
+                     (expand-file-name "~/.emacs.d/twittericon-48x48.png")))
 
 ;; ReST mode
 (require 'rst)
