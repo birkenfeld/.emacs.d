@@ -49,6 +49,29 @@
                              (cadr twit-last-tweet)
                              (caddr twit-last-tweet))
                      (expand-file-name "~/.emacs.d/twittericon-48x48.png")))
+(defun my-twit-knotify ()
+  (let* ((body (caddr twit-last-tweet))
+         (body-repl (replace-regexp-in-string "\\(#[a-zA-Z_]*\\)"
+                                              "<font color='#88f'>\\1</font>" body))
+         (body-repl (replace-regexp-in-string "\\(@[a-zA-Z_]*\\)"
+                                              "<font color='#f88'>\\1</font>" body))
+         (not-id (dbus-call-method
+                  :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
+                  "event" "test" "twit"
+                  '(:array (:variant nil))
+                  (format "Tweet from <b>%s</b>:<br>%s"
+                          (cadr twit-last-tweet) body-repl)
+                  '(:array :byte 0 :byte 0 :byte 0 :byte 0)
+                  '(:array ) :int64 0)))
+    (if (> not-id 0)
+        (run-with-timer 5 nil 'my-twit-knotify-close not-id))))
+(defun my-twit-knotify-close (not-id)
+  (dbus-call-method
+   :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
+   "closeNotification" :int32 not-id))
+(setq twit-new-tweet-hook 'my-twit-knotify)
+
+;(my-twit-knotify)
 
 ;; ReST mode
 (require 'rst)
