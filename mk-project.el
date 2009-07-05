@@ -26,12 +26,15 @@
 ;; documentation of the following project operation functions for
 ;; more details.
 ;;
-;; project-load        - set project variables, run startup hook
-;; project-unload      - run shutdown hook, unset project variables
+;; project-load        - set project variables, open files named in the
+;;                       open-files-cache, run startup hook
+;; project-unload      - save open files names to the open-files-cache,
+;;                       run shutdown hook, unset project variables
 ;; project-status      - print values of project variables
 ;; project-close-files - close all files in this project
 ;; project-compile     - run the compile command
-;; project-grep        - fun find-grep on the project's basedir
+;; project-grep        - run find-grep from the project's basedir
+;; project-ack         - run ack from the project's basedir
 ;; project-find-file   - quickly open a file in basedir by regex
 ;; project-index       - re-index the project files
 ;; project-home        - cd to the project's basedir
@@ -43,21 +46,24 @@
 ;; (require 'mk-project)
 ;;
 ;; (project-def "my-proj"
-;;       '((basedir "/home/me/my-proj/")
-;;         (src-patterns ("*.lisp" "*.c"))
-;;         (ignore-patterns ("*.elc" "*.o"))
-;;         (tags-file "/home/me/my-proj/TAGS")
-;;         (file-list-cache "/home/mk/.my-proj-files")
-;;         (vcs git)
-;;         (compile-cmd "make")
-;;         (startup-hook myproj-startup-hook)
-;;         (shutdown-hook nil)))
+;;       '((basedir          "/home/me/my-proj/")
+;;         (src-patterns     ("*.java" "*.jsp"))
+;;         (ignore-patterns  ("*.class" "*.wsdl"))
+;;         (tags-file        "/home/me/my-proj/TAGS")
+;;         (file-list-cache  "/home/me/.my-proj-files")
+;;         (open-files-cache "/home/me/.my-proj-open-files")
+;;         (vcs              git)
+;;         (compile-cmd      "ant")
+;;         (ack-args         "--java")
+;;         (startup-hook     myproj-startup-hook)
+;;         (shutdown-hook    nil)))
 ;;
 ;; (defun myproj-startup-hook ()
-;;   (find-file "/home/me/my-proj/foo.el"))
+;;   (setq c-basic-offset 3))
 ;;
 ;; (global-set-key (kbd "C-c p c") 'project-compile)
 ;; (global-set-key (kbd "C-c p g") 'project-grep)
+;; (global-set-key (kbd "C-c p a") 'project-ack)
 ;; (global-set-key (kbd "C-c p l") 'project-load)
 ;; (global-set-key (kbd "C-c p u") 'project-unload)
 ;; (global-set-key (kbd "C-c p f") 'project-find-file)
@@ -70,14 +76,17 @@
 ;; See the "Project Variables" documentation below for an explanation of
 ;; each project setting.
 
-;; The latest version of this file can be found at:
-;; http://www.littleredbat.net/mk/cgi-bin/gitweb/gitweb.cgi?p=elisp.git;a=blob;f=mk-project.el;hb=HEAD
+;; More information about this library, including the most recent version,
+;; is available at http://www.littleredbat.net/mk/code/mk-project.html
 
 ;;; Code:
 
 (require 'grep)
 (require 'thingatpt)
 (require 'cl)
+
+(defvar mk-proj-version "1.1"
+  "As tagged at http://github.com/mattkeller/mk-project/tree/master")
 
 ;; ---------------------------------------------------------------------
 ;; Project Variables
@@ -95,18 +104,23 @@
 expand-file-name. Example: ~me/my-proj/.")
 
 (defvar mk-proj-src-patterns nil
-  "List of shell patterns to search with grep-find and include in the TAGS
-file. Optional. Example: '(\"*.java\" \"*.jsp\").")
+  "List of shell patterns to include in the TAGS file. Optional. Example:
+'(\"*.java\" \"*.jsp\").")
 
 (defvar mk-proj-ignore-patterns nil
-  "List of shell patterns to avoid searching for with project-find-file.
-Optional. Example: '(\"*.class\").")
+  "List of shell patterns to avoid searching for with project-find-file and
+project-grep. Optional. Example: '(\"*.class\").")
+
+(defvar mk-proj-ack-args nil
+  "String of arguments to pass to the `ack' command. Optional.
+Example: \"--java\".")
 
 ; TODO: generalize this to ignore-paths variable
 (defvar mk-proj-vcs nil
   "When set to one of the VCS types in mk-proj-vcs-path, grep and index
-commands will ignore the VCS's private files (e.g., .CVS/). Example: 'git")
+commands will ignore the VCS's private files (e.g., .CVS/). Example: 'git.")
 
+; TODO: support multiple tags file via tags-table-list
 (defvar mk-proj-tags-file nil
   "Path to the TAGS file for this project. Optional. Use an absolute path,
 not one relative to basedir. Value is expanded with expand-file-name.")
@@ -130,18 +144,37 @@ buffer will take its initial value from this file and updates to the buffer
 via 'project-index' will save to this file. Value is expanded with
 expand-file-name.")
 
+(defvar mk-proj-open-files-cache nil
+  "Cache the names of open project files in this file. Optional. If set,
+project-load will open all files listed in this file and project-unload will
+write all open project files to this file. Value is expanded with
+expand-file-name.")
+
 (defconst mk-proj-fib-name "*file-index*"
   "Buffer name of the file-list cache. This buffer contains a list of all
 the files under the project's basedir - minus those matching ignore-patterns.
 The list is used by 'project-find-file' to quickly locate project files.")
 
 (defconst mk-proj-vcs-path '((git . "'*/.git/*'")
-                              (cvs . "'*/.CVS/*'")
-                              (svn . "'*/.svn/*'")
-                              (bzr . "'*/.bzr/*'")
-                              (hg . "'*/.hg/*'"))
+                             (cvs . "'*/.CVS/*'")
+                             (svn . "'*/.svn/*'")
+                             (bzr . "'*/.bzr/*'")
+                             (hg  . "'*/.hg/*'"))
   "When mk-proj-vcs is one of the VCS types listed here, ignore the associated
 paths when greping or indexing the project.")
+
+;; ---------------------------------------------------------------------
+;; Customization
+;; ---------------------------------------------------------------------
+
+(defgroup mk-project nil
+  "A programming project management library."
+  :group 'tools)
+
+(defcustom mk-proj-ack-respect-case-fold t
+  "If on and case-fold-search is true, project-ack will ignore case by passing \"-i\" to ack."
+  :type 'boolean
+  :group 'mk-project)
 
 ;; ---------------------------------------------------------------------
 ;; Utils
@@ -165,6 +198,9 @@ paths when greping or indexing the project.")
       (cdr (assoc mk-proj-vcs mk-proj-vcs-path))
     nil))
 
+(defun mk-proj-has-univ-arg ()
+  (eql (prefix-numeric-value current-prefix-arg) 4))
+
 ;; ---------------------------------------------------------------------
 ;; Project Configuration
 ;; ---------------------------------------------------------------------
@@ -180,11 +216,18 @@ paths when greping or indexing the project.")
 
 (defun mk-proj-defaults ()
   "Set all default values for project variables"
-  (dolist (v '(mk-proj-name mk-proj-basedir mk-proj-src-patterns
-               mk-proj-ignore-patterns mk-proj-vcs mk-proj-tags-file
-               mk-proj-compile-cmd mk-proj-startup-hook
-               mk-proj-shutdown-hook mk-proj-file-list-cache))
-    (setf (symbol-value v) nil)))
+  (setq mk-proj-name             nil
+        mk-proj-basedir          nil
+        mk-proj-src-patterns     nil
+        mk-proj-ignore-patterns  nil
+        mk-proj-ack-args         nil
+        mk-proj-vcs              nil
+        mk-proj-tags-file        nil
+        mk-proj-compile-cmd      nil
+        mk-proj-startup-hook     nil
+        mk-proj-shutdown-hook    nil
+        mk-proj-file-list-cache  nil
+        mk-proj-open-files-cache nil))
 
 (defun mk-proj-load-vars (proj-name proj-alist)
   "Set project variables from proj-alist"
@@ -201,11 +244,12 @@ paths when greping or indexing the project.")
     (setq mk-proj-name proj-name)
     (setq mk-proj-basedir (expand-file-name (config-val 'basedir)))
     ;; optional vars
-    (dolist (v '(src-patterns ignore-patterns vcs tags-file compile-cmd
-                 startup-hook shutdown-hook))
+    (dolist (v '(src-patterns ignore-patterns ack-args vcs tags-file
+                 compile-cmd startup-hook shutdown-hook))
       (maybe-set-var v))
     (maybe-set-var 'tags-file #'expand-file-name)
-    (maybe-set-var 'file-list-cache #'expand-file-name)))
+    (maybe-set-var 'file-list-cache #'expand-file-name)
+    (maybe-set-var 'open-files-cache #'expand-file-name)))
 
 (defun project-load ()
   "Load a project's settings."
@@ -228,18 +272,26 @@ paths when greping or indexing the project.")
         (throw 'project-load t))
       (message "Loading project %s" name)
       (cd mk-proj-basedir)
-      (mk-proj-set-tags-file mk-proj-tags-file)
+      (mk-proj-tags-load)
       (mk-proj-fib-init)
+      (mk-proj-visit-saved-open-files)
+      (add-hook 'kill-emacs-hook 'mk-proj-kill-emacs-hook)
       (when mk-proj-startup-hook
         (run-hooks 'mk-proj-startup-hook)))))
+
+(defun mk-proj-kill-emacs-hook ()
+  "Ensure we save the open-files-cache info on emacs exit"
+  (when (and mk-proj-name mk-proj-open-files-cache)
+    (mk-proj-save-open-file-info)))
 
 (defun project-unload ()
   "Unload the current project's settings after runnin the shutdown hook."
   (interactive)
   (when mk-proj-name
     (message "Unloading project %s" mk-proj-name)
-    (mk-proj-set-tags-file nil)
+    (mk-proj-tags-clear)
     (mk-proj-maybe-kill-buffer mk-proj-fib-name)
+    (mk-proj-save-open-file-info)
     (when (and (mk-proj-buffers)
                (y-or-n-p (concat "Close all " mk-proj-name " project files? "))
       (project-close-files)))
@@ -283,21 +335,63 @@ paths when greping or indexing the project.")
   "View project's variables."
   (interactive)
   (mk-proj-assert-proj)
-  (message "Name=%s; Basedir=%s; Src=%s; Ignore=%s; VCS=%s; Tags=%s; Compile=%s; File-Cache=%s; Startup=%s; Shutdown=%s"
+  (message "Name=%s; Basedir=%s; Src=%s; Ignore=%s; VCS=%s; Tags=%s; Compile=%s; File-Cache=%s; Open-Files-Cache=%s; Startup=%s; Shutdown=%s"
            mk-proj-name mk-proj-basedir mk-proj-src-patterns mk-proj-ignore-patterns mk-proj-vcs
-           mk-proj-tags-file mk-proj-compile-cmd mk-proj-file-list-cache mk-proj-startup-hook mk-proj-shutdown-hook))
+           mk-proj-tags-file mk-proj-compile-cmd mk-proj-file-list-cache mk-proj-open-files-cache
+           mk-proj-startup-hook mk-proj-shutdown-hook))
+
+;; ---------------------------------------------------------------------
+;; Save/Restore open files
+;; ---------------------------------------------------------------------
+
+(defun mk-proj-save-open-file-info ()
+  "Write the list of `files' to a file"
+  (when mk-proj-open-files-cache
+    (with-temp-buffer
+      (dolist (f (mapcar (lambda (b) (buffer-file-name b)) (mk-proj-buffers)))
+        (unless (string-equal mk-proj-tags-file f)
+          (insert f "\n")))
+      (if (file-writable-p mk-proj-open-files-cache)
+          (progn
+            (write-region (point-min)
+                          (point-max)
+                          mk-proj-open-files-cache)
+            (message "Wrote open files to %s" mk-proj-open-files-cache))
+        (message "Cannot write to %s" mk-proj-open-files-cache)))))
+
+(defun mk-proj-visit-saved-open-files ()
+  (when mk-proj-open-files-cache
+    (when (file-readable-p mk-proj-open-files-cache)
+      (message "Reading open files from %s" mk-proj-open-files-cache)
+      (with-temp-buffer
+        (insert-file-contents mk-proj-open-files-cache)
+        (goto-char (point-min))
+        (while (not (eobp))
+          (let ((start (point)))
+            (while (not (eolp)) (forward-char)) ; goto end of line
+            (let ((line (buffer-substring start (point))))
+              (message "Attempting to open %s" line)
+              (find-file-noselect line t)))
+          (forward-line))))))
 
 ;; ---------------------------------------------------------------------
 ;; Etags
 ;; ---------------------------------------------------------------------
 
-(defun mk-proj-set-tags-file (tags-file)
-  "Setup TAGS file when given a valid file name; otherwise clean the TAGS"
-  (mk-proj-maybe-kill-buffer "TAGS")
-  (setq tags-file-name tags-file
+(defun mk-proj-tags-load ()
+  "Load TAGS file (if tags-file set)"
+  (mk-proj-tags-clear)
+  (setq tags-file-name  mk-proj-tags-file
         tags-table-list nil)
-  (when (and tags-file (file-readable-p tags-file))
-    (visit-tags-table tags-file)))
+  (when (and mk-proj-tags-file (file-readable-p mk-proj-tags-file))
+    (visit-tags-table mk-proj-tags-file)))
+
+(defun mk-proj-tags-clear ()
+  "Clear the TAGS file (if tags-file set)"
+  (when (and mk-proj-tags-file (get-file-buffer mk-proj-tags-file))
+    (mk-proj-maybe-kill-buffer (get-file-buffer mk-proj-tags-file)))
+  (setq tags-file-name  nil
+        tags-table-list nil))
 
 (defun mk-proj-etags-cb (process event)
   "Visit tags table when the etags process finishes."
@@ -305,7 +399,7 @@ paths when greping or indexing the project.")
   (kill-buffer (get-buffer "*etags*"))
   (cond
    ((string= event "finished\n")
-    (mk-proj-set-tags-file mk-proj-tags-file)
+    (mk-proj-tags-load)
     (message "Refreshing TAGS file %s...done" mk-proj-tags-file))
    (t (message "Refreshing TAGS file %s...failed" mk-proj-tags-file))))
 
@@ -314,49 +408,84 @@ paths when greping or indexing the project.")
   (interactive)
   (mk-proj-assert-proj)
   (if mk-proj-tags-file
-    (progn
-      (cd mk-proj-basedir)
-      (message "Refreshing TAGS file %s..." mk-proj-tags-file)
-      (let ((etags-cmd (concat "find " mk-proj-basedir " -type f "
-                               (mk-proj-find-cmd-src-args mk-proj-src-patterns)
-                               " | etags -o " mk-proj-tags-file " - "))
-            (proc-name "etags-process"))
+    (let ((default-directory mk-proj-basedir)
+          (etags-cmd (concat "find " mk-proj-basedir " -type f "
+                             (mk-proj-find-cmd-src-args mk-proj-src-patterns)
+                             " | etags -o " mk-proj-tags-file " - "))
+          (proc-name "etags-process"))
+        (message "Refreshing TAGS file %s..." mk-proj-tags-file)
         (start-process-shell-command proc-name "*etags*" etags-cmd)
-        (set-process-sentinel (get-process proc-name) 'mk-proj-etags-cb)))
+        (set-process-sentinel (get-process proc-name) 'mk-proj-etags-cb))
     (message "mk-proj-tags-file is not set")))
 
 (defun mk-proj-find-cmd-src-args (src-patterns)
   "Generate the ( -name <pat1> -o -name <pat2> ...) pattern for find cmd"
-  (let ((name-expr " \\("))
-    (dolist (pat src-patterns)
-      (setq name-expr (concat name-expr " -name \"" pat "\" -o ")))
-    (concat (mk-proj-replace-tail name-expr "-o " "") "\\) ")))
+  (if src-patterns
+      (let ((name-expr " \\("))
+        (dolist (pat src-patterns)
+          (setq name-expr (concat name-expr " -name \"" pat "\" -o ")))
+        (concat (mk-proj-replace-tail name-expr "-o " "") "\\) "))
+    ""))
 
 (defun mk-proj-find-cmd-ignore-args (ignore-patterns)
   "Generate the -not ( -name <pat1> -o -name <pat2> ...) pattern for find cmd"
-  (concat " -not " (mk-proj-find-cmd-src-args ignore-patterns)))
+  (if ignore-patterns
+      (concat " -not " (mk-proj-find-cmd-src-args ignore-patterns))
+    ""))
 
 ;; ---------------------------------------------------------------------
 ;; Grep
 ;; ---------------------------------------------------------------------
 
 (defun project-grep ()
-  "Run find-grep using this project's settings for basedir and src files."
+  "Run find-grep on the project's basedir, excluding files in mk-proj-ignore-patterns, tag files, etc.
+With C-u prefix, start from the current directory."
   (interactive)
   (mk-proj-assert-proj)
   (let* ((wap (word-at-point))
          (regex (if wap (read-string (concat "Grep project for (default \"" wap "\"): ") nil nil wap)
-                 (read-string "Grep project for: "))))
-    (cd mk-proj-basedir)
-    (let ((find-cmd (concat "find . -type f"))
-          (grep-cmd (concat "grep -i -n \"" regex "\"")))
-      (when mk-proj-src-patterns
-        (setq find-cmd (concat find-cmd (mk-proj-find-cmd-src-args mk-proj-src-patterns))))
-      (when mk-proj-tags-file
-        (setq find-cmd (concat find-cmd " -not -name 'TAGS'")))
-      (when (mk-proj-get-vcs-path)
-        (setq find-cmd (concat find-cmd " -not -path " (mk-proj-get-vcs-path))))
-      (grep-find (concat find-cmd " -print0 | xargs -0 -e " grep-cmd)))))
+                  (read-string "Grep project for: ")))
+         (find-cmd "find . -type f")
+         (grep-cmd (concat "grep -i -n \"" regex "\""))
+         (default-directory (if (mk-proj-has-univ-arg) default-directory mk-proj-basedir)))
+    (when mk-proj-ignore-patterns
+      (setq find-cmd (concat find-cmd (mk-proj-find-cmd-ignore-args mk-proj-ignore-patterns))))
+    (when mk-proj-tags-file
+      (setq find-cmd (concat find-cmd " -not -name 'TAGS'")))
+    (when (mk-proj-get-vcs-path)
+      (setq find-cmd (concat find-cmd " -not -path " (mk-proj-get-vcs-path))))
+    (let* ((whole-cmd (concat find-cmd " -print0 | xargs -0 -e " grep-cmd))
+           (confirmed-cmd (read-string "Grep command: " whole-cmd nil whole-cmd)))
+      (grep-find confirmed-cmd))))
+
+;; ---------------------------------------------------------------------
+;; Ack (betterthangrep.com)
+;; ---------------------------------------------------------------------
+
+(define-compilation-mode ack-mode "Ack" "Ack compilation mode." nil)
+
+(defvar mk-proj-ack-default-args "--nocolor --nogroup")
+
+(defun mk-proj-ack-cmd (regex)
+  "Generate the ack command string given a regex to search for."
+  (concat "ack "
+          mk-proj-ack-default-args " "
+          (if (and mk-proj-ack-respect-case-fold case-fold-search) "-i " "")
+          mk-proj-ack-args " "
+          regex))
+
+(defun project-ack ()
+  "Run ack from project's basedir, using the `ack-args' configuration.
+With C-u prefix, start ack from the current directory."
+  (interactive)
+  (mk-proj-assert-proj)
+  (let* ((wap (word-at-point))
+         (regex (if wap (read-string (concat "Ack project for (default \"" wap "\"): ") nil nil wap)
+                  (read-string "Ack project for: ")))
+         (whole-cmd (mk-proj-ack-cmd regex))
+         (confirmed-cmd (read-string "Ack command: " whole-cmd nil whole-cmd))
+         (default-directory (if (mk-proj-has-univ-arg) default-directory mk-proj-basedir)))
+    (compilation-start whole-cmd 'ack-mode)))
 
 ;; ---------------------------------------------------------------------
 ;; Compile
@@ -416,7 +545,8 @@ paths when greping or indexing the project.")
     (with-current-buffer (get-buffer mk-proj-fib-name)
       (setq buffer-read-only t)
       (when mk-proj-file-list-cache
-        (write-file mk-proj-file-list-cache)))
+        (write-file mk-proj-file-list-cache)
+        (rename-buffer mk-proj-fib-name)))
     (message "Refreshing %s buffer...done" mk-proj-fib-name))
    (t
     (mk-proj-fib-clear)
@@ -426,18 +556,19 @@ paths when greping or indexing the project.")
   "Regenerate the *file-index* buffer that is used for project-find-file"
   (interactive)
   (mk-proj-assert-proj)
-  (message "Refreshing %s buffer..." mk-proj-fib-name)
-  (mk-proj-fib-clear)
-  (let ((find-cmd (concat "find " mk-proj-basedir " -type f "
-                          (mk-proj-find-cmd-ignore-args mk-proj-ignore-patterns)))
-        (proc-name "index-process"))
-    (when (mk-proj-get-vcs-path)
-      (setq find-cmd (concat find-cmd " -not -path " (mk-proj-get-vcs-path))))
-    (with-current-buffer (get-buffer-create mk-proj-fib-name)
-      (buffer-disable-undo) ;; this is a large change we don't need to undo
-      (setq buffer-read-only nil))
-    (start-process-shell-command proc-name mk-proj-fib-name find-cmd)
-    (set-process-sentinel (get-process proc-name) 'mk-proj-fib-cb)))
+  (when mk-proj-file-list-cache
+    (message "Refreshing %s buffer..." mk-proj-fib-name)
+    (mk-proj-fib-clear)
+    (let ((find-cmd (concat "find " mk-proj-basedir " -type f "
+                            (mk-proj-find-cmd-ignore-args mk-proj-ignore-patterns)))
+          (proc-name "index-process"))
+      (when (mk-proj-get-vcs-path)
+        (setq find-cmd (concat find-cmd " -not -path " (mk-proj-get-vcs-path))))
+      (with-current-buffer (get-buffer-create mk-proj-fib-name)
+        (buffer-disable-undo) ;; this is a large change we don't need to undo
+        (setq buffer-read-only nil))
+      (start-process-shell-command proc-name mk-proj-fib-name find-cmd)
+      (set-process-sentinel (get-process proc-name) 'mk-proj-fib-cb))))
 
 (defun* project-find-file (regex)
   "Find file in the current project matching the given regex.
