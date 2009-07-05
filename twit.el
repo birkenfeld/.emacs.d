@@ -887,6 +887,7 @@ The value returned is the current buffer."
   `(with-current-buffer (get-buffer-create ,buffer-name)
      (buffer-disable-undo)
      (toggle-read-only 0)
+     (show-paren-mode 0)
      (delete-region (point-min) (point-max))
      ,@forms
      (set-buffer-modified-p nil)

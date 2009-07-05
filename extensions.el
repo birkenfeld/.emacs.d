@@ -40,15 +40,16 @@
 (bar-cursor-mode t)
 
 ;; twitter
-(require 'todochiku)
-(autoload 'twit-post "twit" "post to twitter" t)
-(defun my-twit-todochiku ()
-  "Helper function for use by the todochiku package."
-  (todochiku-message "Twitter"
-                     (format "From %s:\n%s"
-                             (cadr twit-last-tweet)
-                             (caddr twit-last-tweet))
-                     (expand-file-name "~/.emacs.d/twittericon-48x48.png")))
+;(require 'todochiku)
+;(defun my-twit-todochiku ()
+;  "Helper function for use by the todochiku package."
+;  (todochiku-message "Twitter"
+;                     (format "From %s:\n%s"
+;                             (cadr twit-last-tweet)
+;                             (caddr twit-last-tweet))
+;                     (expand-file-name "~/.emacs.d/twittericon-48x48.png")))
+
+(require 'twit)
 (defun my-twit-knotify ()
   (let* ((body (caddr twit-last-tweet))
          (body-repl (replace-regexp-in-string "\\(#[a-zA-Z_]*\\)"
@@ -64,14 +65,13 @@
                   '(:array :byte 0 :byte 0 :byte 0 :byte 0)
                   '(:array ) :int64 0)))
     (if (> not-id 0)
-        (run-with-timer 5 nil 'my-twit-knotify-close not-id))))
+        (run-with-timer 5 nil 'my-twit-knotify-close not-id)))
+  nil)
 (defun my-twit-knotify-close (not-id)
   (dbus-call-method
    :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
    "closeNotification" :int32 not-id))
-(setq twit-new-tweet-hook 'my-twit-knotify)
-
-;(my-twit-knotify)
+(add-hook 'twit-new-tweet-hook 'my-twit-knotify)
 
 ;; ReST mode
 (require 'rst)
