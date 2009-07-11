@@ -13,6 +13,7 @@
 (setq ac-auto-start-chars '("."))
 (global-auto-complete-mode t)
 
+
 ;; CVS haskell mode
 (require 'haskell-mode)
 (require 'inf-haskell)
@@ -171,6 +172,7 @@
 
 (global-set-key (kbd "C-c p c") 'project-compile)
 (global-set-key (kbd "C-c p g") 'project-grep)
+(global-set-key (kbd "C-c p a") 'project-ack)
 (global-set-key (kbd "C-c p l") 'project-load)
 (global-set-key (kbd "C-c p u") 'project-unload)
 (global-set-key (kbd "C-c p f") 'project-find-file)

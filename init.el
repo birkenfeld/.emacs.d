@@ -1,7 +1,8 @@
-;; ---------- .emacs customization file ----------------------------------------
+;; ---------- .emacs.d/init.el customization file ------------------------------
 
-;; This file should load with every stock Emacs 22 and higher, while custom
-;; extensions only present on my machine are loaded in extensions.el.
+;; This file should load with every stock Emacs 22 and higher.
+;; Extensions only present in my .emacs.d are loaded in extensions.el.
+;; Extensions I install via my distribution are loaded in distext.el.
 
 ;; set up load path
 (setq load-path `("~/.emacs.d/emacs-goodies-el"
@@ -69,7 +70,7 @@
 ;; make file executable if it's a script
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
-;; hippie-expand functions
+;; useful hippie-expand functions
 (setq hippie-expand-try-functions-list
       '(try-complete-with-calc-result
         try-complete-file-name-partially
@@ -86,16 +87,18 @@
 
 ;; ---------- Additional packages to load --------------------------------------
 
+;; find file at point
+(require 'ffap)
+
 ;; nice config file modes
 (require 'generic-x)
 
 ;; electric bindings for help mode
 (require 'ehelp)
 
+
 ;; ---------- Keybindings ------------------------------------------------------
 
-;; find file at point
-(require 'ffap)
 ;(ffap-bindings)
 ;(setq ffap-url-regexp nil)
 
@@ -166,10 +169,11 @@
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
 (global-set-key (kbd "<f7>") '(lambda () (interactive) (register-to-point ?1)))
 
+;; sometimes it's useful to re-highlight the whole buffer
+(global-set-key (kbd "<f8>") 'font-lock-fontify-buffer)
+
 ;; really useful feature to avoid over-long lines in source code
 (global-set-key (kbd "<f9>") 'highlight-beyond-fill-column)
-
-(global-set-key (kbd "<f8>") 'font-lock-fontify-buffer)
 
 ;; Alt-space expands
 ;(global-set-key (kbd "M-SPC") 'dabbrev-expand)
@@ -213,10 +217,6 @@
 ;; repeat simple and complex commands
 (global-set-key (kbd "C-.") 'repeat)
 
-;; better replacing commands (BAD)
-;(global-set-key (kbd "M-%") 'query-replace-all)
-;(global-set-key (kbd "C-M-%") 'query-replace-regexp-all)
-
 ;; find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
 
@@ -235,7 +235,7 @@
 ;; nice xterm mouse handling
 ;(xterm-mouse-mode t)
 
-;; terminal mode
+;; terminal mode: display gray color a bit darker
 (require 'term)
 (setq ansi-term-color-vector [unspecified "black" "red3" "green3" "yellow3"
                                           "blue2" "magenta3" "cyan3" "gray80"])
@@ -405,51 +405,6 @@
   (interactive "p")
   (delete-region (point) (progn (forward-word (- arg)) (point))))
 
-(defun query-replace-all (from-string to-string &optional delimited start end)
-  "Like \\[query-replace], but replaces from start of document and returns to
-location where point was before calling it after finish."
-  (interactive
-   (let ((common
-	  (query-replace-read-args
-	   (concat "Query replace"
-		   (if current-prefix-arg " word" "")
-		   (if (and transient-mark-mode mark-active) " in region" ""))
-	   nil)))
-     (list (nth 0 common) (nth 1 common) (nth 2 common)
-	   ;; These are done separately here
-	   ;; so that command-history will record these expressions
-	   ;; rather than the values they had this time.
-	   (if (and transient-mark-mode mark-active)
-	       (region-beginning))
-	   (if (and transient-mark-mode mark-active)
-	       (region-end)))))
-  (save-excursion
-    (beginning-of-buffer)
-    (perform-replace from-string to-string t nil delimited nil nil start end)))
-
-(defun query-replace-regexp-all (regexp to-string &optional delimited start end)
-  "Like \\[query-replace-regexp], but replaces from start of document and returns
-to location where point was before calling it after finish."
-  (interactive
-   (let ((common
-	  (query-replace-read-args
-	   (concat "Query replace"
-		   (if current-prefix-arg " word" "")
-		   " regexp"
-		   (if (and transient-mark-mode mark-active) " in region" ""))
-	   t)))
-     (list (nth 0 common) (nth 1 common) (nth 2 common)
-	   ;; These are done separately here
-	   ;; so that command-history will record these expressions
-	   ;; rather than the values they had this time.
-	   (if (and transient-mark-mode mark-active)
-	       (region-beginning))
-	   (if (and transient-mark-mode mark-active)
-	       (region-end)))))
-  (save-excursion
-    (beginning-of-buffer)
-    (perform-replace regexp to-string t t delimited nil nil start end)))
-
 (defun split-window-horizontally-into-3 ()
   "Split current window horizontally into three windows of equal width."
   (interactive)
@@ -474,7 +429,7 @@ to location where point was before calling it after finish."
 (defun fullscreen ()
   "Toggle fullscreen editing."
   (interactive)
-  (menu-bar-mode nil)
+  (menu-bar-mode 0)
   (set-frame-parameter nil 'fullscreen
                        (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 
@@ -630,7 +585,6 @@ to location where point was before calling it after finish."
 	  (he-init-string b e)
 	  (he-substitute-string (concat " " r))
 	  t)))))))
-
 
 (defun smart-tab ()
   "This smart tab is minibuffer compliant: it acts as usual in
@@ -889,10 +843,9 @@ mouse-3: Remove current window from display")))))
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 11)
  '(preview-transparent-color t)
- '(py-honor-comment-indentation (quote other))
+ '(py-honor-comment-indentation t)
  '(py-imenu-show-method-args-p t)
  '(py-shell-switch-buffers-on-execute nil)
- '(python-honour-comment-indentation nil)
  '(python-use-skeletons nil)
  '(read-quoted-char-radix 10)
  '(recentf-max-saved-items 100)
@@ -976,29 +929,22 @@ mouse-3: Remove current window from display")))))
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "gray96" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "microsoft" :family "Consolas"))))
  '(company-pseudo-tooltip-selection-face ((t (:inherit company-pseudo-tooltip-face :background "#ff6600"))))
  '(custom-button ((t (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 90 :family "tahoma"))))
- '(custom-button-face ((((type x w32 mac) (class color)) (:background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 1.1 :family "tahoma"))) t)
  '(custom-button-mouse ((((type x w32 mac) (class color)) (:inherit custom-button :background "grey90" :foreground "black" :box (:line-width 2 :style released-button)))))
  '(custom-button-pressed ((((type x w32 mac) (class color)) (:inherit custom-button :background "lightgrey" :foreground "black" :box (:line-width 2 :style pressed-button)))))
- '(custom-button-pressed-face ((((type x w32 mac) (class color)) (:inherit custom-button-face :box (:line-width 2 :style pressed-button)))) t)
- '(custom-changed-face ((((class color)) (:inherit custom-documentation-face :background "blue" :foreground "white"))) t)
+ '(custom-changed ((((class color)) (:inherit custom-documentation-face :background "blue" :foreground "white"))))
  '(custom-comment ((((class grayscale color) (background light)) (:inherit custom-documentation :background "gray85"))))
- '(custom-comment-face ((((class grayscale color) (background light)) (:inherit custom-documentation-face :background "gray85"))) t)
  '(custom-comment-tag ((((class color) (background light)) (:inherit custom-documentation :foreground "blue4"))))
- '(custom-comment-tag-face ((((class color) (background light)) (:inherit custom-documentation-face :foreground "blue4"))) t)
  '(custom-documentation ((t (:height 90 :family "tahoma"))))
- '(custom-documentation-face ((t (:family "tahoma"))) t)
  '(custom-group-tag ((((min-colors 88) (class color) (background light)) (:inherit variable-pitch :foreground "blue1" :weight bold :height 1.2))))
- '(custom-group-tag-face ((((class color) (background light)) (:inherit variable-pitch :foreground "red" :weight bold :height 1.2))) t)
- '(custom-invalid-face ((((class color)) (:inherit custom-documentation-face :background "red" :foreground "yellow"))) t)
- '(custom-modified-face ((((class color)) (:inherit custom-documentation-face :background "blue" :foreground "white"))) t)
- '(custom-rogue-face ((((class color)) (:inherit custom-documentation-face :background "black" :foreground "pink"))) t)
- '(custom-saved-face ((t (:inherit custom-documentation-face :underline t))) t)
- '(custom-set-face ((((class color)) (:inherit custom-documentation-face :background "white" :foreground "blue"))) t)
+ '(custom-invalid ((((class color)) (:inherit custom-documentation-face :background "red" :foreground "yellow"))))
+ '(custom-modified ((((class color)) (:inherit custom-documentation-face :background "blue" :foreground "white"))))
+ '(custom-rogue ((((class color)) (:inherit custom-documentation-face :background "black" :foreground "pink"))))
+ '(custom-saved ((t (:inherit custom-documentation-face :underline t))))
+ '(custom-set ((((class color)) (:inherit custom-documentation-face :background "white" :foreground "blue"))))
  '(custom-state ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))
- '(custom-state-face ((((class color) (background light)) (:inherit custom-documentation-face :foreground "dark green"))) t)
  '(diff-added ((t (:inherit diff-changed :background "#EEFFEE" :foreground "green4"))))
  '(diff-changed ((nil (:background "grey95"))))
  '(diff-context ((((class color grayscale) (min-colors 88)) (:inherit shadow :foreground "#333333"))))
