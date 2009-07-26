@@ -2,10 +2,11 @@ syntax: glob
 auto-save-list
 backups
 places
-session
 twitter
 .emacs.desktop*
 .semantic
+session
+projects.ede
 *.elc
 *.pyc
 url/

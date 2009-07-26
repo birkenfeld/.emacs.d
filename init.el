@@ -660,6 +660,7 @@
  '(ecb-use-speedbar-instead-native-tree-buffer nil)
  '(ecb-version-check t)
  '(ecb-windows-width 0.25)
+ '(ede-project-placeholder-cache-file "/home/gbr/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(file-cache-buffer "*File Cache*")
  '(file-cache-filter-regexps (quote ("~$" "\\.o$" "\\.exe$" "\\.a$" "\\.elc$" ",v$" "\\.output$" "\\.$" "#$" "\\.class$" "\\.pyc$" "\\.svn/.*$")))
