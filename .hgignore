@@ -6,6 +6,7 @@ twitter
 .emacs.desktop*
 .semantic
 session
+recentf
 projects.ede
 *.elc
 *.pyc
