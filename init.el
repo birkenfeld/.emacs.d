@@ -240,7 +240,8 @@
                                           "blue2" "magenta3" "cyan3" "gray80"])
 
 ;; abbrev file for abbrev-mode
-(read-abbrev-file "~/.abbrevs" t)
+(when (file-exists-p "~/.emacs.d/abbrevs")
+  (read-abbrev-file "~/.emacs.d/abbrevs" t))
 
 ;; ignore alltt environments in spell checking
 (eval-after-load "ispell"
@@ -910,7 +911,7 @@ mouse-3: Remove current window from display")))))
  '(ido-only-match-face ((((class color)) (:inherit font-lock-comment-face))))
  '(margin-face ((t (:background "red"))) t)
  '(minibuffer-prompt ((t (:foreground "dark blue"))))
- '(mode-line ((t (:background "#FFBB44" :foreground "black" :box (:line-width 3 :color "#FFBB44") :height 90 :family "sans"))))
+ '(mode-line ((t (:inherit variable-pitch :background "#FFBB44" :foreground "black" :box (:line-width 3 :color "#FFBB44") :height 90))))
  '(mode-line-buffer-id ((t (:foreground "#990000" :weight bold))))
  '(mode-line-highlight ((((class color) (min-colors 88) (background light)) (:inherit mode-line :background "RoyalBlue4" :foreground "white" :box (:line-width 2 :color "RoyalBlue4")))))
  '(mode-line-inactive ((t (:inherit mode-line :background "grey80" :foreground "grey20" :box (:line-width 3 :color "grey80")))))
@@ -948,7 +949,7 @@ mouse-3: Remove current window from display")))))
  '(twit-info-face ((t (:inherit twit-message-face :slant italic))))
  '(twit-logo-face ((((class color)) (:family "mono" :weight bold :height 1.5 :background "Yellow3" :foreground "#00f" :underline "DeepSkyBlue")) (t (:inverse nil))))
  '(twit-message-face ((nil (:inherit custom-documentation :family "tahoma"))))
- '(variable-pitch ((t (:height 105 :family "sans"))))
+ '(variable-pitch ((t (:height 105 :family "Tahoma"))))
  '(vline ((t (:inherit highlight))))
  '(widget-documentation ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))
  '(woman-addition ((t (:inherit default :foreground "orange"))))
