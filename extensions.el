@@ -104,9 +104,6 @@
 (tabbar-mode 1)
 (tabbar-mwheel-mode 1)
 
-;; screen lines
-(require 'screen-lines)
-
 ;; replace recent character
 (require 'rrc)
 
@@ -114,7 +111,7 @@
 (require 'color-grep)
 
 ;; C eldoc mode (automatic function signature tips)
-(load "c-eldoc")
+(require 'c-eldoc)
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
 ;; color dabbrev-expanded phrases
