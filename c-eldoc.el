@@ -1,31 +1,38 @@
-;;; c-eldoc.el
-;; Provides helpful description of the arguments to C functions.
-;; Uses child process grep and preprocessor commands for speed.
-;; v0.4 01/16/05
-;;
-;; Comments and suggestions are appreciated
-;; mstrange at wans dot net
-;;
+;;; c-eldoc.el --- helpful description of the arguments to C functions
+
 ;; Copyright (C) 2004 Paul Pogonyshev
 ;; Copyright (C) 2004, 2005 Matt Strange
+
 ;; This file is NOT a part of GNU Emacs
-;;
+
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2 of the
 ;; License, or (at your option) any later version.
-;;
+
 ;; This program is distributed in the hope that it will be useful, but
 ;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 ;; General Public License for more details.
-;;
+
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ;; USA
 
+;;; Commentary:
+
+;; Provides helpful description of the arguments to C functions.
+;; Uses child process grep and preprocessor commands for speed.
+;; v0.4 01/16/05
+
+;; Comments and suggestions are appreciated
+;; mstrange at wans dot net
+
+;;; Code:
+
 (require 'eldoc)
+(require 'cc-defs)
 
 ;; make sure that the opening parenthesis in C will work
 (eldoc-add-command 'c-electric-paren)
@@ -49,7 +56,7 @@
 ;; add in your commonly used packages/include directories here, for
 ;; example, SDL or OpenGL. this shouldn't slow down cpp, even if
 ;; you've got a lot of them
-(defvar c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I/usr/include/python2.5 -I./ -I../ ")
+(defvar c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")
 
 ;; how expansive is your code? if you've split your declarations into
 ;; one variable per line AND write functions w/ a ridiculously large
@@ -219,4 +226,5 @@
           (kill-buffer tag-buffer)
           (set-buffer current-buffer))))))
 
+(provide 'c-eldoc)
 ;;; c-eldoc.el ends here
