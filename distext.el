@@ -24,6 +24,9 @@
 ;; load ropemacs automatically for python-mode
 (ac-ropemacs-init)
 
+;; load preview-latex
+(require 'preview)
+
 ;; colored moccur
 (require 'color-moccur)
 
