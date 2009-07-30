@@ -243,12 +243,6 @@
 (when (file-exists-p "~/.emacs.d/abbrevs")
   (read-abbrev-file "~/.emacs.d/abbrevs" t))
 
-;; ignore alltt environments in spell checking
-(eval-after-load "ispell"
-  '(let ((list (cadr ispell-tex-skip-alists)))
-     (add-to-list 'list '("alltt" . "\\\\end[ \t\n]*{[ \t\n]*alltt[ \t\n]*}"))
-     (setcdr ispell-tex-skip-alists (list list))))
-
 ;; highlight XXX style code tags in source files
 (font-lock-add-keywords 'python-mode
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
@@ -260,13 +254,19 @@
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 
 ;; in po-mode, remove fuzzy mark after editing an entry
-(require 'po-mode)
-(defadvice po-subedit-exit (after po-remove-fuzzy-after-edit activate)
-  "Advised."
-  (po-decrease-type-counter)
-  (po-delete-attribute "fuzzy")
-  (po-current-entry)
-  (po-increase-type-counter))
+(eval-after-load 'po-mode
+  '(defadvice po-subedit-exit (after po-remove-fuzzy-after-edit activate)
+     "Advised."
+     (po-decrease-type-counter)
+     (po-delete-attribute "fuzzy")
+     (po-current-entry)
+     (po-increase-type-counter)))
+
+;; ignore alltt environments in spell checking
+(eval-after-load 'ispell
+  '(let ((list (cadr ispell-tex-skip-alists)))
+     (add-to-list 'list '("alltt" . "\\\\end[ \t\n]*{[ \t\n]*alltt[ \t\n]*}"))
+     (setcdr ispell-tex-skip-alists (list list))))
 
 ;; org-mode (organizer, agenda, ...)
 ;(require 'org)
