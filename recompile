@@ -2,3 +2,5 @@
 emacs --batch -f batch-byte-compile **/*.el
 # don't compile often-edited files
 rm -f init.elc extensions.elc
+# talcum-tools doesn't like to be compiled?
+rm -f talcum/*.elc
