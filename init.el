@@ -267,7 +267,11 @@
   (po-delete-attribute "fuzzy")
   (po-current-entry)
   (po-increase-type-counter))
-  
+
+;; org-mode (organizer, agenda, ...)
+;(require 'org)
+;(global-set-key (kbd "<f12>") 'org-agenda)
+
 
 ;; ---------- Mode-specific keybindings ----------------------------------------
 

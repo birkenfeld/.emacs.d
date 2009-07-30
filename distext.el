@@ -46,10 +46,6 @@
 (global-set-key (kbd "C-c <left>") 'semantic-tag-folding-fold-block)
 (global-set-key (kbd "C-c <right>") 'semantic-tag-folding-show-block)
 
-;; org-mode (organizer, agenda, ...)
-(require 'org)
-;(global-set-key (kbd "<f12>") 'org-agenda)
-
 ;; adaptive fill
 (require 'filladapt)
 (setq-default filladapt-mode t)
