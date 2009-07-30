@@ -10,6 +10,7 @@
 
 ;; redo
 (require 'redo)
+(global-set-key (kbd "C-x U") 'redo)
 
 ;; better, patched Python mode
 (require 'python-mode)
@@ -29,6 +30,7 @@
 (add-to-list 'auto-mode-alist '("\\.l[gh]s\\'" . literate-haskell-mode))
 
 (add-hook 'haskell-mode-hook (lambda ()
+  (load-library "inf-haskell")
   (imenu-add-menubar-index)
   (turn-on-haskell-doc-mode)
   (turn-on-haskell-indent)
