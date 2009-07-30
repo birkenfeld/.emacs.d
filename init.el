@@ -161,9 +161,6 @@
 ;; sometimes it's useful to re-highlight the whole buffer
 (global-set-key (kbd "<f8>") 'font-lock-fontify-buffer)
 
-;; really useful feature to avoid over-long lines in source code
-(global-set-key (kbd "<f9>") 'highlight-beyond-fill-column)
-
 ;; Alt-space expands
 ;(global-set-key (kbd "M-SPC") 'dabbrev-expand)
 (global-set-key (kbd "M-SPC") 'hippie-expand)
@@ -687,6 +684,7 @@
  '(haskell-indent-after-keywords (quote (("where" 2 0) ("of" 2) ("do" 2) ("in" 2 0) ("{" 2) ("if" 2) "then" "else" "let")))
  '(haskell-indent-offset 2)
  '(haskell-program-name "ghci")
+ '(highlight-beyond-fill-column-in-modes (quote ("python-mode")))
  '(history-delete-duplicates t)
  '(icomplete-mode nil)
  '(ido-decorations (quote ("[" "]" ", " ", ..." "[" "]" " [No match]" " [Matched]")))
@@ -902,6 +900,8 @@ mouse-3: Remove current window from display")))))
  '(mode-line-inactive ((t (:inherit mode-line :background "grey80" :foreground "grey20" :box (:line-width 3 :color "grey80")))))
  '(mumamo-background-chunk-major ((t nil)))
  '(mumamo-background-chunk-submode ((((class color) (min-colors 88) (background light)) (:background "#efefff"))))
+ '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :weight bold))))
+ '(mumamo-border-face-out ((t (:inherit mumamo-border-face-out))))
  '(nxml-comment-content-face ((t (:inherit font-lock-comment-face))))
  '(org-special-keyword ((((class color) (min-colors 16) (background light)) (:foreground "#66aa00"))))
  '(pesche-tab ((t (:background "red"))))

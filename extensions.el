@@ -151,6 +151,9 @@
 ;; highlight symbol at point
 (require 'highlight-symbol)
 
+;; highlight beyond fill column
+(require 'highlight-beyond-fill-column)
+
 ;; Martin Blais' dubious paragraphs
 (require 'dubious-paragraphs)
 (global-set-key [(meta n)] 'dubious-forward-paragraph)
