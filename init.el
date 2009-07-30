@@ -5,12 +5,7 @@
 ;; Extensions I install via my distribution are loaded in distext.el.
 
 ;; set up load path
-(setq load-path `("~/.emacs.d/emacs-goodies-el"
-                  "~/.emacs.d/predictive"
-                  "~/.emacs.d/talcum"
-                  "~/.emacs.d/haskell-mode"
-                  "~/.emacs.d"
-                  ,@load-path))
+(setq load-path `("~/.emacs.d" ,@load-path))
 
 ;; don't show so many messages on startup
 (setq inhibit-startup-message t)
@@ -597,7 +592,7 @@
  '(ansi-color-for-comint-mode t)
  '(auto-completion-min-chars 0)
  '(auto-completion-syntax-alist (quote (accept . word)))
- '(bm-repository-file "/home/gbr/.emacs.d/bm-repository")
+ '(bm-repository-file "~/.emacs.d/bm-repository")
  '(browse-kill-ring-quit-action (quote save-and-restore))
  '(browse-url-browser-function (quote browse-url-mozilla))
  '(browse-url-mozilla-program "firefox")
@@ -660,7 +655,7 @@
  '(ecb-use-speedbar-instead-native-tree-buffer nil)
  '(ecb-version-check t)
  '(ecb-windows-width 0.25)
- '(ede-project-placeholder-cache-file "/home/gbr/.emacs.d/projects.ede")
+ '(ede-project-placeholder-cache-file "~/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(file-cache-buffer "*File Cache*")
  '(file-cache-filter-regexps (quote ("~$" "\\.o$" "\\.exe$" "\\.a$" "\\.elc$" ",v$" "\\.output$" "\\.$" "#$" "\\.class$" "\\.pyc$" "\\.svn/.*$")))
@@ -754,15 +749,6 @@ mouse-3: Remove current window from display")))))
  '(nxhtml-skip-welcome t)
  '(nxml-sexp-element-flag t)
  '(nxml-slash-auto-complete-flag t)
- '(org-agenda-files (quote ("/home/gbr/.org/python.org")))
- '(org-cycle-global-at-bob t)
- '(org-ellipsis nil)
- '(org-fontify-done-headline t)
- '(org-hide-emphasis-markers t)
- '(org-hide-leading-stars t)
- '(org-highlight-latex-fragments-and-specials t)
- '(org-replace-disputed-keys t)
- '(org-special-ctrl-a/e t)
  '(outline-blank-line t t)
  '(overflow-newline-into-fringe t)
  '(paste-kill-url t)
@@ -812,7 +798,7 @@ mouse-3: Remove current window from display")))))
  '(semantic-tag-folding-show-tooltips t)
  '(semanticdb-default-file-name ".semantic.cache")
  '(semanticdb-default-save-directory "~/.emacs.d/.semantic")
- '(session-save-file "/home/gbr/.emacs.d/session")
+ '(session-save-file "~/.emacs.d/session")
  '(show-paren-mode t)
  '(show-ws-style (quote color))
  '(size-indication-mode t)

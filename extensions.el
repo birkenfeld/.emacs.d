@@ -1,5 +1,13 @@
 ;; ---------- extensions.el init file: extensions bundled in .emacs.d ----------
 
+;; more load-path
+(setq load-path `("~/.emacs.d/emacs-goodies-el"
+                  "~/.emacs.d/predictive"
+                  "~/.emacs.d/talcum"
+                  "~/.emacs.d/haskell-mode"
+                  ,@load-path))
+
+
 ;; redo
 (require 'redo)
 
@@ -15,9 +23,8 @@
 
 
 ;; CVS haskell mode
-(require 'haskell-mode)
-(require 'inf-haskell)
-
+(autoload 'haskell-mode "haskell-mode")
+(autoload 'literate-haskell-mode "haskell-mode")
 (add-to-list 'auto-mode-alist '("\\.\\(?:[gh]s\\|hi\\)\\'" . haskell-mode))
 (add-to-list 'auto-mode-alist '("\\.l[gh]s\\'" . literate-haskell-mode))
 
