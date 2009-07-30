@@ -16,11 +16,6 @@
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
 
-;; load my extensions if they are present
-(load "extensions.el" t)
-;; and separately, those provided by the distribution
-(load "distext.el" t)
-
 ;; Enable the Emacs server, allows thin editing sessions via emacsclient
 (server-start)
 
@@ -960,3 +955,11 @@ mouse-3: Remove current window from display")))))
  '(woman-bold ((((min-colors 88) (background light)) (:inherit default :foreground "blue1" :weight bold))))
  '(woman-italic ((((min-colors 88) (background light)) (:inherit default :foreground "red1" :underline t :slant italic))))
  '(woman-unknown ((((background light)) (:inherit default :foreground "brown")))))
+
+
+;; ---------- Extension configuration ------------------------------------------
+
+;; load my extensions if they are present
+(load "extensions.el" t)
+;; and separately, those provided by the distribution
+(load "distext.el" t)

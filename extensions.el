@@ -75,15 +75,16 @@
 (add-hook 'twit-new-tweet-hook 'my-twit-knotify)
 
 ;; ReST mode
-(require 'rst)
+(autoload 'rst-mode "rst")
 (setq auto-mode-alist
       (append '(("\\.rst$" . rst-mode)
                 ("\\.rest$" . rst-mode)
                 ("CHANGES$" . rst-mode)
                 ("NEWS$" . rst-mode))
               auto-mode-alist))
-(add-hook 'rst-mode-hook
-          (lambda () (set-variable 'show-trailing-whitespace 1)))
+(eval-after-load 'rst
+  '(add-hook 'rst-mode-hook
+             (lambda () (set-variable 'show-trailing-whitespace 1))))
 
 ;; tabbar
 (require 'tabbar)
