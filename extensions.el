@@ -125,7 +125,7 @@
 (require 'rrc)
 
 ;; color-grep (automatic syncing between grep and source buffers)
-(require 'color-grep)
+;(require 'color-grep)
 
 ;; C eldoc mode (automatic function signature tips)
 (require 'c-eldoc)

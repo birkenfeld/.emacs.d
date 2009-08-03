@@ -35,6 +35,9 @@
 
 ;; grep-edit (edit in grep results)
 (require 'grep-edit)
+;; need to unset ordinary character bindings...
+(loop for key in '("n" "p" "{" "}" " ") do
+      (define-key grep-mode-map key nil))
 
 ;; session (saves histories, variables, ...)
 (require 'session)

@@ -5,6 +5,7 @@ places
 twitter
 .emacs.desktop*
 .semantic
+abbrevs
 session
 recentf
 tramp
