@@ -33,11 +33,14 @@
 ;; no bells please
 (setq ring-bell-function 'ignore)
 
+;; prefer UTF-8 coding system
+(prefer-coding-system 'utf-8)
+
 ;; make all backups in a single directory
 (setq backup-directory-alist
       `(("." . ,(expand-file-name "~/.emacs.d/backups"))))
 
-;; mouse scroll
+;; use a nicer mouse scroll behavior
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
 
 ;; enable otherwise disabled commands
@@ -74,28 +77,20 @@
         try-complete-lisp-symbol))
 
 
-;; ---------- Additional packages to load --------------------------------------
-
-;; find file at point
-(require 'ffap)
-
-;; nice config file modes
-(require 'generic-x)
-
-;; electric bindings for help mode
-(require 'ehelp)
-
-
 ;; ---------- Keybindings ------------------------------------------------------
 
-;(ffap-bindings)
-;(setq ffap-url-regexp nil)
+;; enable "find file at point", but don't try to find URLs
+(ffap-bindings)
+(setq ffap-url-regexp nil)
 
-;; find files with ":linenum"
+;; support file and lineno finding with "filename:linenum"
 (global-set-key (kbd "C-x C-f") 'find-file-with-linenum)
 
+;; shortcut for reverting a buffer
+(global-set-key (kbd "C-x C-r") 'revert-buffer)
+
 ;; display same buffer in other window too
-(global-set-key (kbd "C-x C-o") 'display-same-buffer-other-window)
+(global-set-key (kbd "C-x C-o") 'clone-indirect-buffer-other-window)
 
 ;; indent automatically
 (global-set-key (kbd "RET") 'newline-and-indent)
@@ -117,10 +112,10 @@
 (global-set-key (kbd "C-x 7") 'split-window-horizontally-into-3)
 
 ;; windmove: easily move between windows
-(global-set-key (kbd "C-x <down>")  'windmove-down)
-(global-set-key (kbd "C-x <up>")    'windmove-up)
-(global-set-key (kbd "C-x <right>") 'windmove-right)
 (global-set-key (kbd "C-x <left>")  'windmove-left)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+(global-set-key (kbd "C-x <up>")    'windmove-up)
+(global-set-key (kbd "C-x <down>")  'windmove-down)
 
 ;; custom margin keys (useful for Python indentation)
 (global-set-key (kbd "C-M-+") 'increase-left-margin)
@@ -136,20 +131,13 @@
 (global-set-key (kbd "<f5>")   'recompile)
 (global-set-key (kbd "S-<f5>") 'compile)
 
-;; switch menu-bar on/off
-(global-set-key (kbd "<f10>") 'menu-bar-mode)
-
-;; fullscreen editing
-(global-set-key (kbd "<f11>") 'fullscreen)
-
 ;; C-k is kill-whole-line
 (global-set-key (kbd "C-k") 'kill-whole-line)
 
 ;; shortcuts for killing buffers
-(global-set-key (kbd "C-x k")     'kill-this-buffer)
-(global-set-key (kbd "C-x K")     'kill-other-buffer)
-(global-set-key (kbd "C-x C-k")   'kill-buffer-and-window)
-(global-set-key (kbd "C-x C-M-k") 'kill-other-buffer-and-window)
+(global-set-key (kbd "C-x k")   'kill-this-buffer)
+(global-set-key (kbd "C-x K")   'kill-other-buffer)
+(global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 
 ;; align code in a pretty way
 (global-set-key (kbd "C-x \\") 'align-regexp)
@@ -161,13 +149,22 @@
 ;; sometimes it's useful to re-highlight the whole buffer
 (global-set-key (kbd "<f8>") 'font-lock-fontify-buffer)
 
+;; switch menu-bar on/off
+(global-set-key (kbd "<f10>") 'menu-bar-mode)
+
+;; fullscreen editing
+(global-set-key (kbd "<f11>") 'fullscreen)
+
+;; quickly compare two windows with almost same content
+(global-set-key (kbd "<f12>") 'compare-windows)
+
 ;; Alt-space expands
-;(global-set-key (kbd "M-SPC") 'dabbrev-expand)
 (global-set-key (kbd "M-SPC") 'hippie-expand)
 
-;; make commenting easy ;)
-(global-set-key (kbd "M-#") 'comment-region)
+;; make commenting easy; uncommenting with prefix arg
 (global-set-key (kbd "C-#") 'comment-region)
+(global-set-key (kbd "M-#") 'comment-region)
+
 ;; toggle line numer display
 (global-set-key (kbd "C-c n") 'global-linum-mode)
 
@@ -184,9 +181,9 @@
 (global-set-key (kbd "M-<down>") '(lambda () (interactive) (scroll-up 5)))
 
 ;; like vim's '*' binding
-(global-set-key (kbd "C-+") 'search-for-this-word)
+(global-set-key (kbd "C-+")   'search-for-this-word)
 (global-set-key (kbd "C-x *") 'search-for-this-word)
-(global-set-key (kbd "C-*") 'isearch-lazy-highlight-cleanup)
+(global-set-key (kbd "C-*")   'isearch-lazy-highlight-cleanup)
 
 ;; fixup-whitespace puts the "right" amount of whitespace at the point
 (global-set-key (kbd "S-SPC") 'fixup-whitespace)
@@ -210,16 +207,17 @@
 ;(global-set-key (kbd "C-M-d") 'backward-kill-word)
 ;(global-set-key (kbd "C-d") 'backward-delete-char-untabify)
 
-(global-set-key (kbd "<f12>") 'compare-windows)
-
 
 ;; ---------- Modes ------------------------------------------------------------
 
 ;; auto-fill in text mode
 (add-hook 'text-mode-hook 'auto-fill-mode)
 
-;; nice xterm mouse handling
-;(xterm-mouse-mode t)
+;; nice config file modes
+(require 'generic-x)
+
+;; electric bindings for help mode
+(require 'ehelp)
 
 ;; terminal mode: display gray color a bit darker
 (require 'term)
@@ -227,8 +225,13 @@
                                           "blue2" "magenta3" "cyan3" "gray80"])
 
 ;; abbrev file for abbrev-mode
-(when (file-exists-p "~/.emacs.d/abbrevs")
-  (read-abbrev-file "~/.emacs.d/abbrevs" t))
+(setq abbrev-file-name "~/.emacs.d/abbrevs")
+(when (file-exists-p abbrev-file-name)
+  (read-abbrev-file abbrev-file-name t))
+
+;; enable wdired, editing filenames in dired renames files
+(require 'wdired)
+(define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
 
 ;; highlight XXX style code tags in source files
 (font-lock-add-keywords 'python-mode
@@ -258,6 +261,12 @@
 ;; org-mode (organizer, agenda, ...)
 ;(require 'org)
 ;(global-set-key (kbd "<f12>") 'org-agenda)
+
+;; nice xterm mouse handling
+;(xterm-mouse-mode t)
+
+;; move mouse out of the way, not needed in Emacs 23.2+
+;(mouse-avoidance-mode 'exile)
 
 
 ;; ---------- Mode-specific keybindings ----------------------------------------
@@ -404,19 +413,6 @@
          (newwin (split-window nil (/ width 3) t)))
     (split-window newwin (/ width 3) t)))
 
-(defun display-same-buffer-other-window ()
-  "Display the current buffer in the other window too."
-  (interactive)
-  (let* ((buffer (current-buffer)))
-    (other-window 1)
-    (switch-to-buffer buffer)))
-
-(defun kill-other-buffer-and-window ()
-  "Kill other window's buffer and the window."
-  (interactive "")
-  (other-window 1)
-  (kill-buffer-and-window))
-
 (defun fullscreen ()
   "Toggle fullscreen editing."
   (interactive)
@@ -427,9 +423,10 @@
 (defun kill-other-buffer ()
   "Kill other window's buffer."
   (interactive)
-  (other-window 1)
-  (kill-buffer nil)
-  (other-window 1))
+  (let ((window (selected-window)))
+    (other-window 1)
+    (kill-buffer nil)
+    (select-window window)))
 
 (defun find-file-with-linenum ()
   "Find file and go to line number specifed with :num."
@@ -653,6 +650,7 @@
  '(ecb-windows-width 0.25)
  '(ede-project-placeholder-cache-file "~/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(ffap-newfile-prompt t)
  '(file-cache-buffer "*File Cache*")
  '(file-cache-filter-regexps (quote ("~$" "\\.o$" "\\.exe$" "\\.a$" "\\.elc$" ",v$" "\\.output$" "\\.$" "#$" "\\.class$" "\\.pyc$" "\\.svn/.*$")))
  '(file-cache-find-command-posix-flag t)
@@ -804,12 +802,12 @@ mouse-3: Remove current window from display")))))
  '(trex-unicode-mappings (quote (("forall" . 8704) ("complement" . 8705) ("partial" . 8706) ("exists" . 8707) ("emptyset" . 8709) ("nabla" . 8711) ("in" . 8712) ("notin" . 8713) ("ni" . 8715) ("qedhere" . 8718) ("prod" . 8719) ("coprod" . 8720) ("sum" . 8721) ("mp" . 8723) ("setminus" . 8726) ("circ" . 8728) ("cdot" . 8729) ("sqrt" . 8730) ("infty" . 8734) ("land" . 8743) ("wedge" . 8743) ("lor" . 8744) ("vee" . 8744) ("cap" . 8745) ("cup" . 8746) ("int" . 8747) ("iint" . 8748) ("iiiint" . 8749) ("neq" . 8800) ("ne" . 8800) ("leq" . 8804) ("le" . 8804) ("geq" . 8805) ("ge" . 8805) ("prec" . 8826) ("succ" . 8827) ("subset" . 8834) ("supset" . 8835) ("subseteq" . 8838) ("supseteq" . 8839) ("subsetneq" . 8842) ("supsetneq" . 8843) ("unlhd" . 8884) ("lhd" . 8882) ("unrhd" . 8885) ("rhd" . 8883) ("implies" . 10233) ("iff" . 10234) ("mapsto" . 10236) ("to" . 10230) ("longleftarrow" . 10229) ("longrightarrow" . 10230) ("longleftrightarrow" . 10231) ("Longleftarrow" . 10232) ("Longrightarrow" . 10233) ("leftarrow" . 8592) ("uparrow" . 8593) ("rightarrow" . 8594) ("downarrow" . 8595) ("leftrightarrow" . 8596) ("updownarrow" . 8597) ("dots" . 8230) ("ldots" . 8230) ("textperthousand" . 8240) ("bigodot" . 10752) ("bigoplus" . 10753) ("bigotimes" . 10754) ("lneq" . 10887) ("gneq" . 10888) ("wp" . 8472) ("ell" . 8467) ("Im" . 8465) ("Re" . 8476) ("Finv" . 8498) ("Game" . 8513) ("aleph" . 8501) ("beth" . 8502) ("gimel" . 8503) ("daleth" . 8504) ("alpha" . 945) ("beta" . 946) ("gamma" . 947) ("delta" . 948) ("epsilon" . 1013) ("varepsilon" . 949) ("zeta" . 950) ("eta" . 951) ("theta" . 952) ("vartheta" . 977) ("iota" . 953) ("kappa" . 954) ("varkappa" . 1008) ("lambda" . 955) ("mu" . 956) ("nu" . 957) ("xi" . 958) ("pi" . 960) ("varpi" . 982) ("rho" . 961) ("varrho" . 1009) ("sigma" . 963) ("varsigma" . 962) ("tau" . 964) ("upsilon" . 965) ("varphi" . 966) ("phi" . 981) ("chi" . 967) ("psi" . 968) ("omega" . 969) ("digamma" . 989) ("Gamma" . 915) ("Delta" . 916) ("Theta" . 920) ("Lambda" . 923) ("Xi" . 926) ("Pi" . 928) ("Sigma" . 931) ("Upsilon" . 933) ("Phi" . 934) ("Psi" . 936) ("Omega" . 937) ("N" . 8469) ("R" . 8477) ("Q" . 8474) ("C" . 8450) ("Z" . 8484) ("pm" . 177))))
  '(truncate-partial-width-windows nil)
  '(twit-show-user-images t)
- '(twit-user "birkenfeld")
  '(twit-user-image-dir "~/.emacs.d/twitter")
  '(undo-limit 200000)
  '(undo-strong-limit 300000)
  '(uniquify-buffer-name-style (quote reverse) nil (uniquify))
  '(url-show-status nil)
+ '(vc-delete-logbuf-window nil)
  '(visible-cursor t)
  '(vline-face (quote vline))
  '(wdired-allow-to-change-permissions t)
@@ -823,6 +821,7 @@ mouse-3: Remove current window from display")))))
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(button ((((supports :underline t)) (:foreground "#00b" :underline t))))
  '(company-pseudo-tooltip-selection-face ((t (:inherit company-pseudo-tooltip-face :background "#ff6600"))))
  '(custom-button ((t (:inherit variable-pitch :background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 0.9))))
  '(custom-button-mouse ((((type x w32 mac) (class color)) (:inherit custom-button :background "grey90" :foreground "black" :box (:line-width 2 :style released-button)))))
@@ -869,6 +868,7 @@ mouse-3: Remove current window from display")))))
  '(grep-edit-face ((t (:background "#77ff55" :weight bold))))
  '(grep-edit-file-face ((t (:background "#77ff55" :weight bold))))
  '(highlight ((((class color) (min-colors 88) (background light)) (:background "#FAFABF"))))
+ '(log-view-file ((((class color) (background light)) (:background "#66f" :foreground "#fff" :weight bold))))
  '(margin-face ((t (:background "red"))) t)
  '(minibuffer-prompt ((t (:foreground "dark blue"))))
  '(mode-line ((t (:inherit variable-pitch :background "#FFBB44" :foreground "black" :box (:line-width 3 :color "#FFBB44") :height 90))))
@@ -881,6 +881,12 @@ mouse-3: Remove current window from display")))))
  '(mumamo-border-face-out ((t (:inherit mumamo-border-face-out))))
  '(nxml-comment-content-face ((t (:inherit font-lock-comment-face))))
  '(org-special-keyword ((((class color) (min-colors 16) (background light)) (:foreground "#66aa00"))))
+ '(outline-1 ((t (:inherit font-lock-keyword-face))))
+ '(outline-2 ((t (:inherit font-lock-function-name-face))))
+ '(outline-3 ((t (:inherit font-lock-variable-name-face))))
+ '(outline-4 ((t (:inherit font-lock-type-face))))
+ '(outline-5 ((t (:inherit font-lock-string-face))))
+ '(outline-8 ((t (:inherit font-lock-comment-face))))
  '(pesche-tab ((t (:background "red"))))
  '(py-XXX-tag-face ((t (:background "yellow" :foreground "#f00"))) t)
  '(py-builtins-face ((t (:inherit font-lock-keyword-face :weight normal))) t)
@@ -926,3 +932,5 @@ mouse-3: Remove current window from display")))))
 (load "extensions.el" t)
 ;; and separately, those provided by the distribution
 (load "distext.el" t)
+;; and finally, local settings that don't go into the repo
+(load "local.el" t)

@@ -41,6 +41,11 @@
 (session-initialize)
 
 ;; semantic
+(setq semantic-load-turn-useful-things-on t)
+(require 'semantic)
+(require 'semanticdb) 
+(semantic-load-enable-code-helpers)
+
 (require 'semantic-tag-folding)
 (global-semantic-tag-folding-mode 1)
 (global-set-key (kbd "C-c <left>") 'semantic-tag-folding-fold-block)
@@ -141,3 +146,8 @@ def depart_$1(self, node):
 ;; browse-kill-ring
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
+(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
+  "If last action was not a yank, run `browse-kill-ring' instead."
+  (if (not (eq last-command 'yank))
+      (browse-kill-ring)
+    ad-do-it))

@@ -7,6 +7,10 @@
                   "~/.emacs.d/haskell-mode"
                   ,@load-path))
 
+;; ELPA package system
+(when (load "~/.emacs.d/elpa/package.el")
+  (package-initialize))
+
 
 ;; redo
 (require 'redo)
@@ -20,7 +24,7 @@
 (require 'auto-complete-python)
 (setq ac-auto-start nil)
 (setq ac-auto-start-chars '("."))
-(global-auto-complete-mode t)
+(add-hook 'python-mode-hook 'auto-complete-mode)
 
 
 ;; CVS haskell mode
@@ -61,26 +65,29 @@
 
 (require 'twit)
 (defun my-twit-knotify ()
-  (let* ((body (caddr twit-last-tweet))
-         (body-repl (replace-regexp-in-string "\\(#[a-zA-Z_]*\\)"
-                                              "<font color='#88f'>\\1</font>" body))
-         (body-repl (replace-regexp-in-string "\\(@[a-zA-Z_]*\\)"
-                                              "<font color='#f88'>\\1</font>" body))
-         (not-id (dbus-call-method
-                  :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
-                  "event" "test" "twit"
-                  '(:array (:variant nil))
-                  (format "Tweet from <b>%s</b>:<br>%s"
-                          (cadr twit-last-tweet) body-repl)
-                  '(:array :byte 0 :byte 0 :byte 0 :byte 0)
-                  '(:array ) :int64 0)))
-    (if (> not-id 0)
-        (run-with-timer 5 nil 'my-twit-knotify-close not-id)))
+  "Display a tweet notification via KNotify."
+  (let* ((from (cadr twit-last-tweet))
+         (body (caddr twit-last-tweet))
+         ;; highlight #hashtags and @usernames
+         (body (replace-regexp-in-string "\\(#[a-zA-Z_]*\\)"
+                                         "<font color='#88f'>\\1</font>" body))
+         (body (replace-regexp-in-string "\\(@[a-zA-Z_]*\\)"
+                                         "<font color='#f88'>\\1</font>" body))
+         (notif-id (dbus-call-method
+                    :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
+                    "event" "test" "twit"
+                    '(:array (:variant nil))
+                    (format "Tweet from <b>%s</b>:<br>%s" from body)
+                    '(:array :byte 0 :byte 0 :byte 0 :byte 0)
+                    '(:array ) :int64 0)))
+    (if (> notif-id 0)
+        (run-with-timer 5 nil 'my-twit-knotify-close notif-id)))
   nil)
-(defun my-twit-knotify-close (not-id)
+(defun my-twit-knotify-close (notif-id)
+  "Close a tweet notification via KNotify."
   (dbus-call-method
    :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
-   "closeNotification" :int32 not-id))
+   "closeNotification" :int32 notif-id))
 (add-hook 'twit-new-tweet-hook 'my-twit-knotify)
 
 ;; ReST mode
@@ -169,17 +176,6 @@
 
 ;; mk-project: project management
 (require 'mk-project)
-(project-def "Sphinx"
-      '((basedir "/home/gbr/devel/sphinx")
-        (src-patterns ("*.py" "*.rst"))
-        (ignore-patterns ("*.pyc" "*.pyo" "doc/_build/*"))
-        (tags-file "/home/gbr/devel/sphinx/TAGS")
-        (file-list-cache "/home/gbr/.emacs.d/file-cache-sphinx")
-        (vcs hg)
-        (compile-cmd "make")
-        (startup-hook nil)
-        (shutdown-hook nil)))
-
 (global-set-key (kbd "C-c p c") 'project-compile)
 (global-set-key (kbd "C-c p g") 'project-grep)
 (global-set-key (kbd "C-c p a") 'project-ack)
@@ -191,14 +187,3 @@
 (global-set-key (kbd "C-c p h") 'project-home)
 (global-set-key (kbd "C-c p d") 'project-dired)
 (global-set-key (kbd "C-c p t") 'project-tags)
-
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))

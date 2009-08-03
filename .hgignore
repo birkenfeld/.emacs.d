@@ -9,6 +9,7 @@ session
 recentf
 tramp
 projects.ede
+local.el
 *.elc
 *.pyc
 url/
