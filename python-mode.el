@@ -1258,13 +1258,13 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
 	mode-name               "Python"
 	local-abbrev-table      python-mode-abbrev-table
  	font-lock-defaults      '(python-font-lock-keywords
-                              nil nil nil nil
-                              (font-lock-syntactic-keywords
-                               . py-font-lock-syntactic-keywords))
+                                  nil nil nil nil
+                                  (font-lock-syntactic-keywords
+                                   . py-font-lock-syntactic-keywords))
  	parse-sexp-lookup-properties t
 	paragraph-separate      "^[ \t]*$"
 	paragraph-start         "^[ \t]*$"
-	require-final-newline   t
+	require-final-newline   mode-require-final-newline
 	comment-start           "# "
 	comment-end             ""
 	comment-start-skip      "# *"
@@ -3927,20 +3927,17 @@ These are Python temporary files awaiting execution."
       ;; if the string is the first token on a line and doesn't start with
       ;; a newline, fill as if the string starts at the beginning of the
       ;; line. this helps with one line docstrings
-      (save-excursion
-	(beginning-of-line)
-	(and (/= (char-before string-start) ?\n)
-	     (looking-at (concat "[ \t]*" delim))
-	     (setq string-start (point))))
+      ;(save-excursion
+      ;  (beginning-of-line)
+      ;  (and (/= (char-before string-start) ?\n)
+      ;       (looking-at (concat "[ \t]*" delim))
+      ;       (setq string-start (point))))
 
-      (forward-sexp (if (= delim-length 3) 2 1))
+      (forward-sexp)
 
-      ;; with both triple quoted strings and single/double quoted strings
-      ;; we're now directly behind the first char of the end delimiter
-      ;; (this doesn't work correctly when the triple quoted string
-      ;; contains the quote mark itself). The end of the string's contents
-      ;; is one less than point
-      (setq string-end (1- (point))))
+      ;; with both triple quoted strings and single/double quoted strings we're
+      ;; now after the end delimiter.
+      (setq string-end (- (point) delim-length)))
 
     ;; Narrow to the string's contents and fill the current paragraph
     (save-restriction
@@ -3992,9 +3989,8 @@ If point is inside a string, narrow to that string and fill.
 	  (eq (py-in-literal) 'string))
 	(save-excursion
 	  (py-fill-string (py-point 'boi))))
-       ;; otherwise use the default
-       (t
-	(fill-paragraph justify))))))
+       ;; otherwise don't do anything
+       (t nil)))))
 
 
 
