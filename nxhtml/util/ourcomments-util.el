@@ -1,9 +1,9 @@
 ;;; ourcomments-util.el --- Utility routines
 ;;
 ;; Author: Lennart Borgman <lennart dot borgman at gmail dot com>
-;; Created: Wed Feb 21 23:19:07 2007
-(defconst ourcomments-util:version "0.24") ;;Version:
-;; Last-Updated: 2008-08-11T12:25:12+0200 Mon
+;; Created: Wed Feb 21 2007
+(defconst ourcomments-util:version "0.25") ;;Version:
+;; Last-Updated: 2009-08-04 Tue
 ;; Keywords:
 ;; Compatibility: Emacs 22
 ;;
@@ -363,6 +363,7 @@ To create a menu item something similar to this can be used:
 ;; (major-modep 'laszlo-nxml-mumamo-mode)
 ;; (major-modep 'genshi-nxhtml-mumamo-mode)
 ;; (major-modep 'javascript-mode)
+;; (major-modep 'espresso-mode)
 ;; (major-modep 'css-mode)
 
 ;;;###autoload
@@ -400,6 +401,7 @@ To create a menu item something similar to this can be used:
                            nxhtml-mode
                            css-mode
                            javascript-mode
+                           espresso-mode
                            php-mode
                            ))
                    (and (intern-soft (concat sym-name "-hook"))
@@ -1004,7 +1006,11 @@ Key bindings added by this minor mode:
   :group 'convenience
   ;;(message "wrap-to-fill-column-mode here %s" wrap-to-fill-column-mode)
   (if wrap-to-fill-column-mode
-      (progn
+      (let* ((win (get-buffer-window (current-buffer)))
+             (win-margs (when win (window-margins win))))
+        (when win-margs
+          (setq wrap-to-fill-left-marg (or (car win-margs)
+                                           wrap-to-fill-left-marg)))
         (setq wrap-to-fill-left-marg-use wrap-to-fill-left-marg)
         (unless (or wrap-to-fill-left-marg-use
                     (memq major-mode wrap-to-fill-left-marg-modes))
@@ -1208,7 +1214,13 @@ and go to the same line number as in the current buffer."
 The purpose of this function is to make it eaiser to start
 `ediff-files' from a shell through Emacs Client.
 
-This is used in EmacsW32 in the file ediff.cmd."
+This is used in EmacsW32 in the file ediff.cmd where Emacs Client
+is called like this:
+
+  @%emacs_client% -e \"(setq default-directory \\\"%emacs_cd%\\\")\"
+  @%emacs_client% -n  -e \"(ediff-files \\\"%f1%\\\" \\\"%f2%\\\")\"
+
+It can of course be done in a similar way with other shells."
   (let ((default-directory def-dir))
     (ediff-files file-a file-b)))
 
@@ -1291,6 +1303,26 @@ PREDICATE.  PREDICATE takes one argument, the symbol."
   (/= (buffer-size)
       (- (point-max)
          (point-min))))
+
+;;;###autoload
+(defun narrow-to-comment ()
+  (interactive)
+  (let* ((here (point-marker))
+         (size 1000)
+         (beg (progn (forward-comment (- size))
+                     ;; It looks like the wrong syntax-table is used here:
+                     ;;(message "skipped %s " (skip-chars-forward "[:space:]"))
+                     (message "skipped %s " (skip-chars-forward " \t\r\n"))
+                     (point)))
+         (end (progn (forward-comment size)
+                     ;;(message "skipped %s " (skip-chars-backward "[:space:]"))
+                     (message "skipped %s " (skip-chars-backward " \t\r\n"))
+                     (point))))
+    (goto-char here)
+    (if (not (and (>= here beg)
+                  (<= here end)))
+        (error "Not in a comment")
+      (narrow-to-region beg end))))
 
 (defvar describe-symbol-alist nil)
 
@@ -1383,6 +1415,7 @@ The can include 'variable, 'function and variaus 'cl-*."
    (list
     (ourcomments-read-symbol "Customization group"
                              'ourcomments-custom-group-p)))
+  ;; Fix-me:
   (message "g=%s" symbol))
 ;; nxhtml
 
@@ -1739,6 +1772,30 @@ of those in for example common web browsers."
                ;; in executable-find, why?
                ))
 
+(defvar ourcomments-restart-server-mode nil)
+
+(defun emacs-restart-in-kill ()
+  "Last step in restart Emacs and start `server-mode' if on before."
+  (let ((restart-args (when ourcomments-restart-server-mode
+                        ;; Delay 3+2 sec to be sure the old server has stopped.
+                        (list "--eval=(run-with-idle-timer 5 nil 'server-mode 1)"))))
+    (apply 'call-process (ourcomments-find-emacs) nil 0 nil restart-args)
+    ;; Wait to give focus to new Emacs instance:
+    (sleep-for 3)))
+
+;;;###autoload
+(defun emacs-restart ()
+  "Restart Emacs and start `server-mode' if on before."
+  (interactive)
+  (let ((wait 4))
+    (while (> (setq wait (1- wait)) 0)
+      (message (propertize (format "Will restart Emacs in %d seconds..." wait)
+                           'face 'secondary-selection))
+      (sit-for 1)))
+  (setq ourcomments-restart-server-mode server-mode)
+  (add-hook 'kill-emacs-hook 'emacs-restart-in-kill t)
+  (save-buffers-kill-emacs))
+
 ;;;###autoload
 (defun emacs()
   "Start a new Emacs."
@@ -1988,7 +2045,8 @@ information."
   "Look for first program PROG in `exec-path' using `exec-suffixes'.
 Return full path if found."
   (interactive "sProgram: ")
-  (let ((path (locate-file prog exec-path exec-suffixes 'executable)))
+  ;;(let ((path (locate-file prog exec-path exec-suffixes 'executable)))
+  (let ((path (executable-find prog)))
     (when (called-interactively-p) (message "%s found in %s" prog path))
     path))
 
@@ -2034,6 +2092,133 @@ Return full path if found."
   (local-set-key "\177" 'scroll-down)
   (local-set-key "n" 'widget-forward)
   (local-set-key "p" 'widget-backward))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Bookmarks
+
+(defun bookmark-next-marked ()
+  (interactive)
+  (let ((bb (get-buffer "*Bookmark List*"))
+        pos)
+    (when bb
+      (with-current-buffer bb
+        (setq pos (re-search-forward "^>" nil t))
+        (unless pos
+          (goto-char (point-min))
+          (setq pos (re-search-forward "^>" nil t)))))
+    (if pos
+        (with-current-buffer bb
+	  ;; Defined in bookmark.el, should be loaded now.
+          (bookmark-bmenu-this-window))
+      (call-interactively 'bookmark-bmenu-list)
+      (message "Please select bookmark for bookmark next command, then press n"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Org Mode
+
+(defun ourcomments-org-complete-and-replace-file-link ()
+  "If on a org file link complete file name and replace it."
+  (interactive)
+  (let* ((here (point-marker))
+         (on-link (eq 'org-link (get-text-property (point) 'face)))
+         (link-beg (when on-link
+                     (previous-single-property-change (1+ here) 'face)))
+         (link-end (when on-link
+                     (next-single-property-change here 'face)))
+         (link (when on-link (buffer-substring-no-properties link-beg link-end)))
+         type+link
+         link-link
+         link-link-beg
+         link-link-end
+         new-link
+         dir
+         ovl)
+    (when (and on-link
+               (string-match (rx string-start "[["
+                                 (group (0+ (not (any "]"))))) link))
+      (setq type+link (match-string 1 link))
+      (when (string-match "^file:\\(.*\\)" type+link)
+        (setq link-link (match-string 1 type+link))
+        (setq link-link-beg (+ 2 link-beg (match-beginning 1)))
+        (setq link-link-end (+ 2 link-beg (match-end 1)))
+        (unwind-protect
+            (progn
+              (setq ovl (make-overlay link-link-beg link-link-end))
+              (overlay-put ovl 'face 'highlight)
+              (when link-link
+                (setq link-link (org-link-unescape link-link))
+                (setq dir (when (and link-link (> (length link-link) 0))
+                            (file-name-directory link-link)))
+                (setq new-link (read-file-name "Org file:" dir nil nil (file-name-nondirectory link-link)))
+                (delete-overlay ovl)
+                (setq new-link (expand-file-name new-link))
+                (setq new-link (file-relative-name new-link))
+                (delete-region link-link-beg link-link-end)
+                (goto-char link-link-beg)
+                (insert (org-link-escape new-link))
+                t))
+          (delete-overlay ovl)
+          (goto-char here))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Menu commands to M-x history
+
+;; (where-is-internal 'mumamo-mark-chunk nil nil)
+;; (where-is-internal 'mark-whole-buffer nil nil)
+;; (where-is-internal 'save-buffer nil nil)
+;; (where-is-internal 'revert-buffer nil nil)
+;; (setq extended-command-history nil)
+(defun ourcomments-M-x-menu-pre ()
+  "Add menu command to M-x history."
+  (let ((is-menu-command (equal '(menu-bar)
+                                (elt (this-command-keys-vector) 0)))
+        (pre-len (length extended-command-history)))
+    (when (and is-menu-command
+               (not (memq this-command '(ourcomments-M-x-menu-mode))))
+      (pushnew (symbol-name this-command) extended-command-history)
+      (when (< pre-len (length extended-command-history))
+        ;; This message is given pre-command and is therefore likely
+        ;; to be overwritten, but that is ok in this case. If the user
+        ;; has seen one of these messages s?he knows.
+        (message (propertize "(Added %s to M-x history so you can run it from there)"
+                             'face 'file-name-shadow)
+                 this-command)))))
+
+;;;###autoload
+(define-minor-mode ourcomments-M-x-menu-mode
+  "Add commands started from Emacs menus to M-x history.
+The purpose of this is to make it easier to redo them and easier
+to learn how to do them from the command line \(which is often
+faster if you know how to do it).
+
+Only commands that are not already in M-x history are added."
+  :global t
+  (if ourcomments-M-x-menu-mode
+      (add-hook 'pre-command-hook 'ourcomments-M-x-menu-pre)
+    (remove-hook 'pre-command-hook 'ourcomments-M-x-menu-pre)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Warnings etc
+
+(defvar ourcomments-warnings nil)
+
+(defun ourcomments-display-warnings ()
+  (condition-case err
+      (let ((msg (mapconcat 'identity (reverse ourcomments-warnings) "\n")))
+        (setq ourcomments-warnings nil)
+        (message "%s" (propertize msg 'face 'secondary-selection)))
+    (error (message "ourcomments-display-warnings: %s" err))))
+
+(defun ourcomments-warning-post ()
+  (condition-case err
+      (run-with-idle-timer 0.5 nil 'ourcomments-display-warnings)
+    (error (message "ourcomments-warning-post: %s" err))))
+
+;;;###autoload
+(defun ourcomments-warning (format-string &rest args)
+  (setq ourcomments-warnings (cons (apply 'format format-string args)
+                                   ourcomments-warnings))
+  (add-hook 'post-command-hook 'ourcomments-warning-post))
 
 (provide 'ourcomments-util)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -61,6 +61,7 @@
 (eval-when-compile
   (require 'cl)
   (require 'appmenu-fold)
+  (require 'xhtml-help)
   ;;(require 'nxhtml-menu)
   (require 'fold-dwim)
   (require 'typesetter nil t)
@@ -215,12 +216,13 @@
          (normal "Normal page")
          ;;(vlhead "Validation header")
          ;;popcmp-popup-completion
-         (initial (unless popcmp-popup-completion normal))
+         (initial nil) ;;(unless popcmp-popup-completion normal))
          (hist (if (and (boundp 'mumamo-multi-major-mode) mumamo-multi-major-mode)
                    ;;(list vlhead frames normal)
                    (list frames normal)
                  (list frames normal)))
-         res)
+         res
+         (completion-ignore-case t))
     (setq res (popcmp-completing-read "Insert: " hist nil t initial (cons 'hist (length hist))))
     (cond ((string= res frames)
            (nxhtml-insert-empty-frames-page))
@@ -770,6 +772,7 @@ just copying region when you press C-c."
          (parsed-url (url-generic-parse-url url-beginning))
          (beg-type (url-type parsed-url))
          (allowed-u allowed)
+         (completion-ignore-case t)
          choices
          choice)
     ;; (url-type (url-generic-parse-url "#some-id"))
@@ -1569,6 +1572,19 @@ by `nxml-complete' (with the special setup of this function for
 The list is handled as an association list, ie only the first
 occurence of a tag name is used.")
 
+(defun nxhtml-complete-tag-do-also-for-state-completion (dummy-completed)
+  "Add this to state completion functions completed hook."
+  (when (and nxhtml-tag-do-also
+             (derived-mode-p 'nxhtml-mode))
+    ;; Find out tag
+    (let ((tag nil))
+      (save-match-data
+        ;;(when (looking-back "<\\([a-z]+\\)[[:blank:]]+")
+        (when (looking-back "<\\([a-z]+\\)")
+          (setq tag (match-string 1))))
+      (when tag
+        (insert " ")
+        (nxhtml-complete-tag-do-also tag)))))
 
 (defun nxhtml-complete-tag-do-also (tag)
   ;; First required attributes:
@@ -1663,12 +1679,13 @@ This mode may be turned on automatically in two ways:
                                    table
                                    &optional predicate require-match
                                    initial-input hist def inherit-input-method)
-  (popcmp-completing-read prompt
-                          table
-                          predicate require-match
-                          initial-input hist def inherit-input-method
-                          nxhtml-help-tag
-                          nxhtml-tag-sets))
+  (let ((popcmp-in-buffer-allowed t))
+    (popcmp-completing-read prompt
+                            table
+                            predicate require-match
+                            initial-input hist def inherit-input-method
+                            nxhtml-help-tag
+                            nxhtml-tag-sets)))
 
 (defun nxhtml-add-required-to-attr-set (tag)
   (let ((missing (when tag
@@ -1703,6 +1720,7 @@ This mode may be turned on automatically in two ways:
                   (match-string 1))))
          (attr-sets (nxhtml-add-required-to-attr-set tag))
          (help-attr (nxhtml-get-tag-specific-attr-help tag))
+         (popcmp-in-buffer-allowed t)
          )
     (popcmp-completing-read prompt
                             table
@@ -1717,9 +1735,10 @@ This mode may be turned on automatically in two ways:
                                                initial-input hist def inherit-input-method)
   (let (val)
     (if table
-        (setq val (popcmp-completing-read prompt table
-                                          predicate require-match
-                                          initial-input hist def inherit-input-method))
+        (let ((popcmp-in-buffer-allowed t))
+          (setq val (popcmp-completing-read prompt table
+                                            predicate require-match
+                                            initial-input hist def inherit-input-method)))
       (let* (init
              delimiter
              (lt-pos (save-excursion (search-backward "<" nil t)))
@@ -2264,7 +2283,8 @@ This is called because there was no validation header."
   (with-current-buffer buffer
     (unless nxhtml-current-validation-header
       ;;(message "nxhtml-validation-header-empty")
-      (nxhtml-validation-header-mode -1)
+      (save-match-data ;; runs in timer
+        (nxhtml-validation-header-mode -1))
       ;;(message "No validation header was needed")
       )))
 

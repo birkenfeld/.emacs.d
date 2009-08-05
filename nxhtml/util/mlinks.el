@@ -301,23 +301,24 @@
 
 (defun mlinks-hilighter (buffer)
   ;;(message "mlinks-hilighter, buffer=%s, p=%s, live-p=%s" buffer (bufferp buffer) (buffer-live-p buffer))
-  (if (or (not (bufferp buffer))
-          (not (buffer-live-p buffer)))
-      ;;(mlinks-stop-hilighter)
-      ;;(cancel-timer timer-event-last)
-      (cancel-timer mlinks-mark-links-timer)
-    (with-current-buffer buffer
-      (when mlinks-mode ;t ;mlinks-hilight-this-buffer
-        (let* ((funs-- (mlinks-get-action 'hili))
-               bounds--)
-          (when funs--
-            (setq bounds-- (run-hook-with-args-until-success 'funs--)))
-          (if bounds--
-              (if mlinks-hilight-point-ovl
-                  (move-overlay mlinks-hilight-point-ovl (car bounds--) (cdr bounds--))
-                (mlinks-make-point-ovl bounds--))
-            (when mlinks-hilight-point-ovl
-              (delete-overlay mlinks-hilight-point-ovl))))))))
+  (save-match-data ;; runs in timer
+    (if (or (not (bufferp buffer))
+            (not (buffer-live-p buffer)))
+        ;;(mlinks-stop-hilighter)
+        ;;(cancel-timer timer-event-last)
+        (cancel-timer mlinks-mark-links-timer)
+      (with-current-buffer buffer
+        (when mlinks-mode ;t ;mlinks-hilight-this-buffer
+          (let* ((funs-- (mlinks-get-action 'hili))
+                 bounds--)
+            (when funs--
+              (setq bounds-- (run-hook-with-args-until-success 'funs--)))
+            (if bounds--
+                (if mlinks-hilight-point-ovl
+                    (move-overlay mlinks-hilight-point-ovl (car bounds--) (cdr bounds--))
+                  (mlinks-make-point-ovl bounds--))
+              (when mlinks-hilight-point-ovl
+                (delete-overlay mlinks-hilight-point-ovl)))))))))
 
 (defvar mlinks-active-hilight-keymap
   (let ((m (make-sparse-keymap)))
@@ -745,44 +746,44 @@ Any command cancels this state."
 (make-variable-buffer-local 'mlinks-mark-links-timer)
 (put 'mlinks-mark-links-timer 'permanent-local t)
 
-(defun mlinks-mark-next-link (buffer)
-  (when (buffer-live-p buffer)
-    (with-current-buffer buffer
-      (when (timerp mlinks-mark-links-timer)
-        (cancel-timer mlinks-mark-links-timer))
-      (let ((funs (mlinks-get-action 'next))
-            res
-            start-at)
-        (unless funs
-          (setq funs (mlinks-get-action 'next-mark)))
-        ;; When using mumamo-mode we can not be sure that funs is
-        ;; non-nil here:
-        (when funs
-          (save-excursion
-            (setq start-at
-                  (if mlinks-link-update-pos-min
-                      mlinks-link-update-pos-min
-                    (point-min)))
-            (goto-char start-at)
-            (save-match-data
-              (setq res (funcall (car funs)))))
-          ;; Fix-me: old links
-          (when res
-            (let ((ovl-chg start-at)
-                  (end-at (cdr res)))
-              (while (< ovl-chg end-at)
-                (dolist (o (overlays-at ovl-chg))
-                  (when (overlay-get o 'mlink)
-                    (if (= (overlay-start o) (car res))
-                        (delete-overlay o)
-                      (move-overlay o (car res) (cdr res)))))
-                (setq ovl-chg (next-overlay-change (+ ovl-chg)))))
-            (setq mlinks-link-update-pos-min (cdr res))
-            (mlinks-mark-link res)
-            (when (or (not mlinks-link-update-pos-max)
-                      (< (point) mlinks-link-update-pos-max))
-              (setq mlinks-mark-links-timer (run-with-idle-timer 0 nil 'mlinks-mark-next-link buffer))
-              )))))))
+;; (defun mlinks-mark-next-link (buffer)
+;;   (when (buffer-live-p buffer)
+;;     (with-current-buffer buffer
+;;       (when (timerp mlinks-mark-links-timer)
+;;         (cancel-timer mlinks-mark-links-timer))
+;;       (let ((funs (mlinks-get-action 'next))
+;;             res
+;;             start-at)
+;;         (unless funs
+;;           (setq funs (mlinks-get-action 'next-mark)))
+;;         ;; When using mumamo-mode we can not be sure that funs is
+;;         ;; non-nil here:
+;;         (when funs
+;;           (save-excursion
+;;             (setq start-at
+;;                   (if mlinks-link-update-pos-min
+;;                       mlinks-link-update-pos-min
+;;                     (point-min)))
+;;             (goto-char start-at)
+;;             (save-match-data
+;;               (setq res (funcall (car funs)))))
+;;           ;; Fix-me: old links
+;;           (when res
+;;             (let ((ovl-chg start-at)
+;;                   (end-at (cdr res)))
+;;               (while (< ovl-chg end-at)
+;;                 (dolist (o (overlays-at ovl-chg))
+;;                   (when (overlay-get o 'mlink)
+;;                     (if (= (overlay-start o) (car res))
+;;                         (delete-overlay o)
+;;                       (move-overlay o (car res) (cdr res)))))
+;;                 (setq ovl-chg (next-overlay-change (+ ovl-chg)))))
+;;             (setq mlinks-link-update-pos-min (cdr res))
+;;             (mlinks-mark-link res)
+;;             (when (or (not mlinks-link-update-pos-max)
+;;                       (< (point) mlinks-link-update-pos-max))
+;;               (setq mlinks-mark-links-timer (run-with-idle-timer 0 nil 'mlinks-mark-next-link buffer))
+;;               )))))))
 
 (defvar mlinks-link-update-pos-min nil)
 (make-variable-buffer-local 'mlinks-link-update-pos-min)
@@ -794,18 +795,10 @@ Any command cancels this state."
 
 (defun mlinks-stop-marking-links ()
   (mlink-font-lock nil))
-  ;; (when (timerp mlinks-mark-links-timer)
-  ;;   (cancel-timer mlinks-mark-links-timer)))
 
 (defun mlinks-start-marking-links ()
   (when (mlinks-want-marked-links)
-    ;;(message "start-marking-links, buffer=%s" (current-buffer))
-    (mlink-font-lock t)
-    ;; (mlinks-stop-marking-links)
-    ;; (setq mlinks-link-update-pos-min nil)
-    ;; (setq mlinks-link-update-pos-max nil)
-    ;; (setq mlinks-mark-links-timer (run-with-idle-timer 0 nil 'mlinks-mark-next-link (current-buffer)))
-    ))
+    (mlink-font-lock t)))
 
 ;; Fix-me: old links, range handling?
 (defvar mlinks-after-change-extra 100)
@@ -822,7 +815,8 @@ Any command cancels this state."
              (max (cdr range)))
         (when (< min mlinks-link-update-pos-min) (setq mlinks-link-update-pos-min (- min mlinks-after-change-extra)))
         (when (> max mlinks-link-update-pos-max) (setq mlinks-link-update-pos-max (+ max mlinks-after-change-extra))))
-      (mlinks-mark-next-link (current-buffer)))))
+      ;;(mlinks-mark-next-link (current-buffer))
+      )))
 (put 'mlinks-after-change 'permanent-local t)
 
 
@@ -1202,7 +1196,7 @@ Any command cancels this state."
               (error "Back goto-- value again: %s" goto--)))))))))
 
 (defun mlinks-elisp-mode-require (module)
-  (let ((mlinks-temp-buffer-where where))
+  (let ((where mlinks-temp-buffer-where))
     (cond
      ((null where)
       (find-library module))

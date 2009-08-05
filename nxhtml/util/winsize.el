@@ -3,7 +3,7 @@
 ;; Author: Lennart Borgman <lennart dot borgman at gmail dot com >
 ;; Maintainer:
 ;; Created: Wed Dec 07 15:35:09 2005
-;; Version: 0.97
+(defconst winsize:version "0.98") ;;Version: 0.97
 ;; Lxast-Updated: Sun Nov 18 02:14:52 2007 (3600 +0100)
 ;; Keywords:
 ;; Compatibility:
@@ -1101,17 +1101,18 @@ should be one of 'left, 'up, 'right and 'down."
 
 (defun winsize-move-mouse ()
   ;;(setq winsize-move-mouse (- winsize-move-mouse))
-  (let* ((fxy (mouse-pixel-position))
-         (f (car fxy))
-         (x (cadr fxy))
-         (y (cddr fxy))
-         (m (mod winsize-move-mouse 2))
-         (d (* (if (= 0 m) 1 -1) 1)))
-    (set-mouse-pixel-position f (+ d x) (+ d y))
-    (when (< 1 winsize-move-mouse)
-      (setq winsize-move-mouse (1- winsize-move-mouse))
-      (setq winsize-make-mouse-prominent-timer
-            (run-with-timer 0.2 nil 'winsize-move-mouse)))))
+  (save-match-data ;; runs in timer
+    (let* ((fxy (mouse-pixel-position))
+           (f (car fxy))
+           (x (cadr fxy))
+           (y (cddr fxy))
+           (m (mod winsize-move-mouse 2))
+           (d (* (if (= 0 m) 1 -1) 1)))
+      (set-mouse-pixel-position f (+ d x) (+ d y))
+      (when (< 1 winsize-move-mouse)
+        (setq winsize-move-mouse (1- winsize-move-mouse))
+        (setq winsize-make-mouse-prominent-timer
+              (run-with-timer 0.2 nil 'winsize-move-mouse))))))
 
 (defun winsize-make-mouse-prominent-f (doit)
   (when (and winsize-make-mouse-prominent-timer
