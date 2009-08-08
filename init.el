@@ -255,15 +255,6 @@
 (font-lock-add-keywords 'latex-mode
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 
-;; in po-mode, remove fuzzy mark after editing an entry
-(eval-after-load 'po-mode
-  '(defadvice po-subedit-exit (after po-remove-fuzzy-after-edit activate)
-     "Advised."
-     (po-decrease-type-counter)
-     (po-delete-attribute "fuzzy")
-     (po-current-entry)
-     (po-increase-type-counter)))
-
 ;; ignore alltt environments in spell checking
 (eval-after-load 'ispell
   '(let ((list (cadr ispell-tex-skip-alists)))

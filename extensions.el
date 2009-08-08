@@ -121,6 +121,9 @@
 (tabbar-mode 1)
 (tabbar-mwheel-mode 1)
 
+;; fixes and enhancements for po-mode
+(eval-after-load 'po-mode '(require 'gb-po-mode))
+
 ;; replace recent character
 (require 'rrc)
 
