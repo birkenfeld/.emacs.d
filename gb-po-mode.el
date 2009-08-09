@@ -138,31 +138,31 @@ If FORM is itself a string, then this string is used for insertion."
 
 (defadvice po-edit-string (around po-subedit-window-logic-begin activate)
   "Implements better subedit window logic."
-  (setq po--orig-pop-to-buffer (symbol-function 'pop-to-buffer))
-  (fset 'pop-to-buffer
-        (lambda (buffer)
-          (if po-pop-to-edit-buffer
-              (funcall po--orig-pop-to-buffer buffer)
-            ;; "string" is an argument of po-edit-string (the msgstr)
-            (let ((newline-count (count-if (lambda (c) (eq c 10)) string)))
-              (split-window-vertically (+ newline-count 6))
-              (switch-to-buffer buffer)))))
-  ad-do-it
-  (fset 'pop-to-buffer po--orig-pop-to-buffer))
+  (let ((orig-pop-to-buffer (symbol-function 'pop-to-buffer)))
+    (defun pop-to-buffer (buffer)
+      (if po-pop-to-edit-buffer
+          (funcall orig-pop-to-buffer buffer)
+        ;; "string" is an argument of po-edit-string (the msgstr)
+        (let ((newline-count (count-if (lambda (c) (eq c 10)) string)))
+          (split-window-vertically (+ newline-count 6))
+          (switch-to-buffer buffer))))
+    (unwind-protect
+        ad-do-it
+      (fset 'pop-to-buffer orig-pop-to-buffer))))
 
 (defadvice po-subedit-abort (around po-subedit-window-logic-end activate)
   "Implements better subedit window logic."
-  (setq po--orig-switch-to-buffer (symbol-function 'switch-to-buffer))
-  (fset 'switch-to-buffer
-        (lambda (buffer)
-          (let ((buffer-window (get-buffer-window buffer)))
-            (if po-pop-to-edit-buffer
-                (if buffer-window
-                    (select-window buffer-window)
-                  (funcall po--orig-switch-to-buffer buffer))
-              (delete-window)))))
-  ad-do-it
-  (fset 'switch-to-buffer po--orig-switch-to-buffer))
+  (let ((orig-switch-to-buffer (symbol-function 'switch-to-buffer)))
+    (defun switch-to-buffer (buffer)
+      (let ((buffer-window (get-buffer-window buffer)))
+        (if po-pop-to-edit-buffer
+            (if buffer-window
+                (select-window buffer-window)
+              (funcall orig-switch-to-buffer buffer))
+          (delete-window))))
+    (unwind-protect
+        ad-do-it
+      (fset 'switch-to-buffer orig-switch-to-buffer))))
 
 ;;; use a better end marker for the msgstr
 
