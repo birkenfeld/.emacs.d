@@ -22,7 +22,7 @@
 )
 
 ;; load ropemacs automatically for python-mode
-(ac-ropemacs-init)
+(eval-after-load 'python-mode '(ac-ropemacs-init))
 
 ;; load preview-latex
 (require 'preview)
@@ -31,7 +31,7 @@
 (require 'color-moccur)
 
 ;; pylint (call pylint from python-mode)
-(require 'pylint)
+(eval-after-load 'python-mode '(require 'pylint))
 
 ;; grep-edit (edit in grep results)
 (require 'grep-edit)
@@ -47,7 +47,7 @@
 (setq semantic-load-turn-useful-things-on t)
 (require 'semantic)
 (require 'semanticdb) 
-(semantic-load-enable-code-helpers)
+;(semantic-load-enable-code-helpers)
 
 (require 'semantic-tag-folding)
 (global-semantic-tag-folding-mode 1)

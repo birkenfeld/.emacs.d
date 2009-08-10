@@ -106,6 +106,7 @@
 (define-key minibuffer-local-map (kbd "M-DEL") 'backward-delete-word)
 
 ;; useful mouse behavior
+(global-set-key (kbd "<left-fringe> <down-mouse-1>") 'mouse-drag-region)
 (global-set-key (kbd "<s-mouse-1>") 'mouse-delete-other-windows)
 (global-set-key (kbd "<s-mouse-3>") 'mouse-delete-window)
 

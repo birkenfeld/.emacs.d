@@ -12,24 +12,94 @@
   (package-initialize))
 
 
+;; ---------- always enabled ---------------------------------------------------
+
+;; bar cursor
+(require 'bar-cursor)
+(bar-cursor-mode t)
+
+;; tabbar
+(require 'tabbar)
+(global-set-key [C-prior] 'tabbar-backward)
+(global-set-key [C-next] 'tabbar-forward)
+;; kill buffer on left click, switch mode on right click
+(defun my-tabbar-home-function (event)
+  (let ((mouse-button (event-basic-type event)))
+    (cond
+     ((eq mouse-button 'mouse-3)
+      (tabbar-buffer-show-groups (not tabbar--buffer-show-groups)))
+     ((eq mouse-button 'mouse-1)
+      (kill-buffer nil))
+     )))
+(add-hook 'tabbar-init-hook
+          (lambda () (setq tabbar-home-function 'my-tabbar-home-function))
+          t)  ; append
+(tabbar-mode 1)
+(tabbar-mwheel-mode 1)
+
+;; replace recent character
+(require 'rrc)
+
+;; winpoint (remember point location by window)
+(require 'winpoint)
+(window-point-remember-mode 1)
+
+;; Martin Blais' dubious paragraphs
+(require 'dubious-paragraphs)
+(global-set-key [(meta n)] 'dubious-forward-paragraph)
+(global-set-key [(meta N)] 'dubious-forward-paragraph-scroll)
+(global-set-key [(meta p)] 'dubious-backward-paragraph)
+(global-set-key [(meta P)] 'dubious-backward-paragraph-scroll)
+
+;; Martin Blais' repeatable macros
+(require 'repeatable)
+(repeatable-command-advice kmacro-end-and-call-macro)
+(repeatable-substitute-binding 'search-for-this-word)
+(repeatable-command-advice hl-symbol-and-jump)
+
+;; mk-project: project management
+(require 'mk-project)
+(global-set-key (kbd "C-c p c") 'project-compile)
+(global-set-key (kbd "C-c p g") 'project-grep)
+(global-set-key (kbd "C-c p a") 'project-ack)
+(global-set-key (kbd "C-c p l") 'project-load)
+(global-set-key (kbd "C-c p u") 'project-unload)
+(global-set-key (kbd "C-c p f") 'project-find-file)
+(global-set-key (kbd "C-c p i") 'project-index)
+(global-set-key (kbd "C-c p s") 'project-status)
+(global-set-key (kbd "C-c p h") 'project-home)
+(global-set-key (kbd "C-c p d") 'project-dired)
+(global-set-key (kbd "C-c p t") 'project-tags)
+
+
+;; ---------- autoloaded -------------------------------------------------------
+
 ;; redo
-(require 'redo)
+(autoload 'redo "redo" nil t)
 (global-set-key (kbd "C-x U") 'redo)
 
 ;; better, patched Python mode
-(require 'python-mode)
+(autoload 'python-mode "python-mode" nil t)
 
 ;; auto-completion setup
-(require 'auto-complete)
-(require 'auto-complete-python)
-(setq ac-auto-start nil)
-(setq ac-auto-start-chars '("."))
-(add-hook 'python-mode-hook 'auto-complete-mode)
+(eval-after-load 'python-mode
+  '(progn
+     (require 'auto-complete)
+     (require 'auto-complete-python)
+     (setq ac-auto-start nil)
+     (setq ac-auto-start-chars '("."))
+     (add-hook 'python-mode-hook 'auto-complete-mode)))
+
+;; show tabs
+(eval-after-load 'python-mode
+  '(progn
+     (require 'show-wspace)
+     (add-hook 'python-mode-hook 'highlight-tabs)))
 
 
 ;; CVS haskell mode
-(autoload 'haskell-mode "haskell-mode")
-(autoload 'literate-haskell-mode "haskell-mode")
+(autoload 'haskell-mode "haskell-mode" nil t)
+(autoload 'literate-haskell-mode "haskell-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.\\(?:[gh]s\\|hi\\)\\'" . haskell-mode))
 (add-to-list 'auto-mode-alist '("\\.l[gh]s\\'" . literate-haskell-mode))
 
@@ -49,20 +119,7 @@
 (font-lock-add-keywords 'haskell-mode
  '(("\\<\\(return\\)\\>" 1 font-lock-builtin-face prepend)))
 
-;; bar cursor
-(require 'bar-cursor)
-(bar-cursor-mode t)
-
 ;; twitter
-;(require 'todochiku)
-;(defun my-twit-todochiku ()
-;  "Helper function for use by the todochiku package."
-;  (todochiku-message "Twitter"
-;                     (format "From %s:\n%s"
-;                             (cadr twit-last-tweet)
-;                             (caddr twit-last-tweet))
-;                     (expand-file-name "~/.emacs.d/twittericon-48x48.png")))
-
 (require 'twit)
 (defun my-twit-knotify ()
   "Display a tweet notification via KNotify."
@@ -91,7 +148,7 @@
 (add-hook 'twit-new-tweet-hook 'my-twit-knotify)
 
 ;; ReST mode
-(autoload 'rst-mode "rst")
+(autoload 'rst-mode "rst" nil t)
 (setq auto-mode-alist
       (append '(("\\.rst$" . rst-mode)
                 ("\\.rest$" . rst-mode)
@@ -102,91 +159,36 @@
   '(add-hook 'rst-mode-hook
              (lambda () (set-variable 'show-trailing-whitespace 1))))
 
-;; tabbar
-(require 'tabbar)
-(global-set-key [C-prior] 'tabbar-backward)
-(global-set-key [C-next] 'tabbar-forward)
-;; kill buffer on left click, switch mode on right click
-(defun my-tabbar-home-function (event)
-  (let ((mouse-button (event-basic-type event)))
-    (cond
-     ((eq mouse-button 'mouse-3)
-      (tabbar-buffer-show-groups (not tabbar--buffer-show-groups)))
-     ((eq mouse-button 'mouse-1)
-      (kill-buffer nil))
-     )))
-(add-hook 'tabbar-init-hook
-          (lambda () (setq tabbar-home-function 'my-tabbar-home-function))
-          t)  ; append
-(tabbar-mode 1)
-(tabbar-mwheel-mode 1)
-
 ;; fixes and enhancements for po-mode
 (eval-after-load 'po-mode '(require 'gb-po-mode))
-
-;; replace recent character
-(require 'rrc)
 
 ;; color-grep (automatic syncing between grep and source buffers)
 ;(require 'color-grep)
 
 ;; C eldoc mode (automatic function signature tips)
-(require 'c-eldoc)
+(autoload 'c-turn-on-eldoc-mode "c-eldoc" nil t)
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
 ;; color dabbrev-expanded phrases
 (require 'dabbrev-highlight)
 
-;; winpoint (remember point location by window)
-(require 'winpoint)
-(window-point-remember-mode 1)
-
 ;; bookmarks
-(require 'bm)
+(autoload 'bm-toggle "bm" nil t)
+(autoload 'bm-next "bm" nil t)
+(autoload 'bm-previous "bm" nil t)
 (global-set-key (kbd "C-c b t") 'bm-toggle)
 (global-set-key (kbd "C-c b n") 'bm-next)
 (global-set-key (kbd "C-c b p") 'bm-previous)
-
-;; show tabs
-(require 'show-wspace)
-(add-hook 'python-mode-hook 'highlight-tabs)
 
 ;; nxhtml
 (load "~/.emacs.d/nxhtml/autostart.el")
 
 ;; talcum-mode: replaces LaTeX commands by Unicode symbols
-(autoload 'talcum-mode "talcum")
+(autoload 'talcum-mode "talcum" nil t)
 (add-hook 'LaTeX-mode-hook 'talcum-mode)
 
 ;; highlight symbol at point
-(require 'highlight-symbol)
+;(require 'highlight-symbol)
 
 ;; highlight beyond fill column
 (require 'highlight-beyond-fill-column)
-
-;; Martin Blais' dubious paragraphs
-(require 'dubious-paragraphs)
-(global-set-key [(meta n)] 'dubious-forward-paragraph)
-(global-set-key [(meta N)] 'dubious-forward-paragraph-scroll)
-(global-set-key [(meta p)] 'dubious-backward-paragraph)
-(global-set-key [(meta P)] 'dubious-backward-paragraph-scroll)
-
-;; Martin Blais' repeatable macros
-(require 'repeatable)
-(repeatable-command-advice kmacro-end-and-call-macro)
-(repeatable-substitute-binding 'search-for-this-word)
-(repeatable-command-advice hl-symbol-and-jump)
-
-;; mk-project: project management
-(require 'mk-project)
-(global-set-key (kbd "C-c p c") 'project-compile)
-(global-set-key (kbd "C-c p g") 'project-grep)
-(global-set-key (kbd "C-c p a") 'project-ack)
-(global-set-key (kbd "C-c p l") 'project-load)
-(global-set-key (kbd "C-c p u") 'project-unload)
-(global-set-key (kbd "C-c p f") 'project-find-file)
-(global-set-key (kbd "C-c p i") 'project-index)
-(global-set-key (kbd "C-c p s") 'project-status)
-(global-set-key (kbd "C-c p h") 'project-home)
-(global-set-key (kbd "C-c p d") 'project-dired)
-(global-set-key (kbd "C-c p t") 'project-tags)
