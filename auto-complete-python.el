@@ -10,7 +10,7 @@
 (defvar ac-ropemacs-loaded nil)
 (defun ac-ropemacs-require ()
   (unless ac-ropemacs-loaded
-    ;; Almost people hate rope to use `C-x p'.
+    ;; Almost all people hate rope to use `C-x p'.
     (if (not (boundp 'ropemacs-global-prefix))
         (setq ropemacs-global-prefix nil))
     (pymacs-load "ropemacs" "rope-")
