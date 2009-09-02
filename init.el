@@ -401,6 +401,52 @@
  '("^\\(\.+\.hs\\|\.lhs\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
    1 2 3 4) flymake-err-line-patterns)
 
+;; ---------- Mercurial SMerge mode support ------------------------------------
+
+;; Enters SMerge mode if it finds a file with conflicts in a merge, and
+;; calls hg resolve on saving if all conflict markers have been removed.
+;; Mostly from vc-hg.el and vc-svn.el.
+
+(defun vc-hg-has-two-parents (file)
+  "Hg-specific version of `vc-working-revision'."
+  (let*
+      ((status nil)
+       (out
+	(with-output-to-string
+	  (with-current-buffer
+	      standard-output
+	    (setq status
+		  (condition-case nil
+		      ;; Ignore all errors.
+		      (call-process
+		       "hg" nil t nil "--cwd" (file-name-directory file)
+		       "parents" "--template" "x")
+		    ;; Some problem happened.  E.g. We can't find an `hg'
+		    ;; executable.
+		    (error nil)))))))
+    (and (equal 0 status)
+         (equal out "xx"))))
+
+(defun vc-hg-resolve-when-done ()
+  "Call \"hg resolve -m\" if the conflict markers have been removed."
+  (save-excursion
+    (goto-char (point-min))
+    (unless (re-search-forward "^<<<<<<< local" nil t)
+      (vc-hg-command nil 0 buffer-file-name "resolve" "-m")
+      ;; Remove the hook so that it is not called multiple times.
+      (remove-hook 'after-save-hook 'vc-hg-resolve-when-done t))))
+
+(defun vc-hg-find-file-hook ()
+  (when (vc-hg-has-two-parents buffer-file-name))
+    ;; If a merge has occurred, then we should try and highlight conflicts.
+    (when (save-excursion
+            (goto-char (point-min))
+            (re-search-forward "^<<<<<<< local" nil t))
+      ;; There are conflict markers.
+      (smerge-start-session)
+      (add-hook 'after-save-hook 'vc-hg-resolve-when-done nil t)
+      (message-box "There are unresolved conflicts in this file.")))
+
 
 ;; ---------- Custom interactive functions -------------------------------------
 
