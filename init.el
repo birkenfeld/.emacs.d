@@ -445,7 +445,7 @@
       ;; There are conflict markers.
       (smerge-start-session)
       (add-hook 'after-save-hook 'vc-hg-resolve-when-done nil t)
-      (message-box "There are unresolved conflicts in this file.")))
+      (message "There are unresolved conflicts in this file.")))
 
 
 ;; ---------- Custom interactive functions -------------------------------------
