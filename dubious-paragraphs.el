@@ -101,8 +101,7 @@ This is not really dubious but used here so we define it privately.  N is the
 number of lines to scroll."
   (let ((nn (or n 1)))
     (scroll-up nn)
-    (if (not running-precisely-emacs-21)
-	(forward-line nn)) ))
+    (forward-line nn)) )
 
 (defvar dubious-min 3
   "Minimum number of lines to travel for a dubious paragraph movement.")
@@ -172,14 +171,14 @@ Otherwise move a fixed number of lines."
   "Scroll forward to end of N paragraphs, if within a set range of lines.
 Otherwise scroll a fixed number of lines."
   (interactive)
-  (scroll-up-still
+  (dubious-scroll-up-still
    (dubious-forward-paragraph-lines n)))
 
 (defun dubious-backward-paragraph-scroll (&optional n)
   "Scroll backward to end of N paragraphs, if within a set range of lines.
 Otherwise scroll a fixed number of lines."
   (interactive)
-  (scroll-up-still
+  (dubious-scroll-up-still
    (dubious-forward-paragraph-lines (- (or n 1)))))
 
 ;(global-set-key [(meta n)] 'dubious-forward-paragraph)
