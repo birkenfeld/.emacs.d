@@ -192,3 +192,53 @@
 
 ;; highlight beyond fill column
 (require 'highlight-beyond-fill-column)
+
+;; test-case-mode: add a nose backend
+(require 'test-case-mode)
+(global-set-key (kbd "<f9>") 'test-case-enable-and-run)
+(global-set-key (kbd "S-<f9>") 'test-case-run-all)
+
+(defun test-case-enable-and-run ()
+  (interactive)
+  (when (not test-case-mode) (test-case-mode 1))
+  (test-case-run))
+
+(eval-after-load 'python-mode
+  '(add-hook 'python-mode-hook 'enable-test-case-mode-if-test))
+
+(defcustom test-case-nosetests-executable "nosetests -d"
+  "*The nosetests executable."
+  :group 'test-case :type 'file)
+(defcustom test-cwd "."
+  "*The directory from which to run nosetests. Should be set per-buffer."
+  :group 'test-case :type 'file :safe 'stringp)
+(defcustom test nil
+  "*The test file to run instead of this file."
+  :group 'test-case :type 'file :safe 'stringp)
+
+(defvar test-case-python-nose-font-lock-keywords
+  (eval-when-compile
+    `((,(concat "\\_<\\(?:assert\\|raises\\)\\_>")
+       (0 'test-case-assertion append)))))
+
+(defun test-case-python-nose-failure-pattern ()
+  (let ((file (regexp-quote buffer-file-name)))
+    (list (concat "  File \"\\(\\(" file "\\)\", line \\([0-9]+\\)\\).*\n"
+                  "\\(?:  .*\n\\)*"
+                  "\\([^ ].*\\)"
+                  )
+          2 3 nil nil 4)))
+
+(defun test-case-python-nose-backend (command)
+  "Python nose back-end for `test-case-mode'."
+  (case command
+    ('name "Nose")
+    ('supported (derived-mode-p 'python-mode))
+    ('command (concat "cd " test-cwd
+                      "; " test-case-nosetests-executable " "
+                      (or test buffer-file-name)))
+    ('save t)
+    ('failure-pattern (test-case-python-nose-failure-pattern))
+    ('font-lock-keywords test-case-python-nose-font-lock-keywords)))
+
+(add-to-list 'test-case-backends 'test-case-python-nose-backend t)
