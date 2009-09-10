@@ -727,6 +727,7 @@ and `test-case-mode-line-info-position'."
 
 (defun test-case-run-internal (test-buffer result-buffer &optional out-buffer)
   (let ((inhibit-read-only t)
+        (backend test-case-backend)
         (default-directory (file-name-directory (buffer-file-name test-buffer)))
         command beg process)
 
@@ -736,6 +737,8 @@ and `test-case-mode-line-info-position'."
       (goto-char (setq beg (point-max)))
       (insert-char ?= fill-column)
       (newline)
+      ;; set the backend in the test process as well, for filter support below
+      (set (make-local-variable 'test-case-backend) backend)
       (condition-case err
           (insert (format "Test run: %s\n\n"
                           (setq command
@@ -754,6 +757,9 @@ and `test-case-mode-line-info-position'."
     (process-put process 'test-case-beg beg)
 
     (set-process-sentinel process 'test-case-process-sentinel)
+
+    ;; "run hook": e.g. to add a process filter
+    (test-case-call-backend 'run-hook out-buffer)
     t))
 
 (defun test-case-run-buffers (buffers)
