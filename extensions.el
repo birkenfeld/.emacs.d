@@ -56,6 +56,8 @@
 (repeatable-command-advice kmacro-end-and-call-macro)
 (repeatable-substitute-binding 'search-for-this-word)
 (repeatable-command-advice hl-symbol-and-jump)
+(repeatable-command-advice next-error)
+(repeatable-command-advice previous-error)
 
 ;; mk-project: project management
 (require 'mk-project)
@@ -192,6 +194,12 @@
 
 ;; highlight beyond fill column
 (require 'highlight-beyond-fill-column)
+
+;; full-ack mode
+(autoload 'ack-same "full-ack" nil t)
+(autoload 'ack "full-ack" nil t)
+(global-set-key (kbd "<f2>") 'ack-same)
+(global-set-key (kbd "S-<f2>") 'ack)
 
 ;; test-case-mode: add a nose backend
 (require 'test-case-mode)

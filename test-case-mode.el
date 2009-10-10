@@ -361,7 +361,7 @@ mode-line is local before installing."
             (running (test-case-make-dot "orange"))
             (success (test-case-make-dot "dark olive green"))
             (success-modified (test-case-make-dot "dark olive green" "orange"))
-            (otherwise (test-case-make-dot "gray10")))))
+            (otherwise (test-case-make-dot "None")))))
 
 ;;; states ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
