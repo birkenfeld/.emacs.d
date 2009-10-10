@@ -2,7 +2,7 @@
 ;;
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: Sat Apr 21 2007
-(defconst nxhtml-menu:version "1.93") ;;Version:
+(defconst nxhtml-menu:version "1.95") ;;Version:
 ;; Last-Updated: 2009-05-29 Fri
 ;; URL:
 ;; Keywords:
@@ -76,7 +76,7 @@
 (eval-when-compile (require 'flymake-php))
 (eval-when-compile (require 'flymake-js))
 (eval-when-compile (require 'udev-ecb))
-(eval-when-compile (require 'udev-cedet))
+;;(eval-when-compile (require 'udev-cedet))
 (eval-when-compile (require 'udev-rinari))
 
 (defun nxhtml-nxhtml-in-buffer ()
@@ -288,7 +288,7 @@
     (let ((tools-map (make-sparse-keymap)))
       (define-key map [nxhtml-tools-map]
         (list 'menu-item "Tools" tools-map
-              :visible `(not (derived-mode-p 'dired-mode))
+              ;;:visible `(not (derived-mode-p 'dired-mode))
               ))
       (define-key tools-map [nxhtml-last-resort]
         (list 'menu-item "Last Resort" 'n-back-game))
@@ -306,6 +306,52 @@
               'ourcomments-M-x-menu-mode
               :button '(:toggle . (and (boundp 'ourcomments-M-x-menu-mode)
                                        ourcomments-M-x-menu-mode))))
+
+      (define-key tools-map [nxhtml-folding-separator]
+        (list 'menu-item "--" nil))
+      (let ((folding-map (make-sparse-keymap)))
+        (define-key tools-map [nxhtml-folding-map]
+          (list 'menu-item "Folding" folding-map))
+        (define-key folding-map [nxhtml-fold-unhide-all]
+          (list 'menu-item "Unhide Everything"
+                'fold-dwim-unhide-hs-and-outline))
+        (define-key folding-map [nxhtml-fold-dwim]
+          (list 'menu-item "Maybe DWIM Folding"
+                'fold-dwim-toggle))
+        (define-key folding-map [nxhtml-separator2] (list 'menu-item "--" nil))
+        (define-key folding-map [nxhtml-hs]
+          (list 'menu-item "Turn On Hide/Show and Hide"
+                'fold-dwim-turn-on-hs-and-hide))
+        (define-key folding-map [nxhtml-outline]
+          (list 'menu-item "Turn On Outline and Hide All"
+                'fold-dwim-turn-on-outline-and-hide-all))
+        (define-key folding-map [nxhtml-separator1] (list 'menu-item "--" nil))
+        (define-key folding-map [nxhtml-foldit-mode]
+          (list 'menu-item "Folding Markers in Buffer"
+                'foldit-mode
+                :button '(:toggle . (and (boundp 'foldit-mode)
+                                         foldit-mode))))
+        (define-key folding-map [nxhtml-foldit-global-mode]
+          (list 'menu-item "Folding Markers Everywhere"
+                'foldit-global-mode
+                :button '(:toggle . (and (boundp 'foldit-global-mode)
+                                         foldit-global-mode))))
+        )
+
+      ;;(define-key tools-map [nxhtml-frame-win-separator] (list 'menu-item "--" nil))
+      (let ((frame-map (make-sparse-keymap)))
+        (define-key tools-map [nxhtml-frame-map]
+          (list 'menu-item "Windows and Frames" frame-map))
+        (define-key frame-map [nxhtml-winsav-mode]
+          (list 'menu-item "Save/restore Frames and Windows"
+                'winsav-save-mode
+                :button '(:toggle . (and (boundp 'winsav-save-mode)
+                                         winsav-save-mode))))
+        (define-key frame-map [nxhtml-resize-windows]
+          (list 'menu-item "Resize Windows"
+                'resize-windows)))
+
+
       (define-key tools-map [nxhtml-next-last-resort-separator]
         (list 'menu-item "--" nil))
       (let ((fill-map (make-sparse-keymap)))
@@ -372,27 +418,27 @@
         )
 
 
-      (let ((cedet-map (make-sparse-keymap)))
-        (define-key tools-map [nxhtml-cedet-map]
-          (list 'menu-item "CEDET" cedet-map))
-        (define-key cedet-map [nxhtml-custom-cedet]
-          (list 'menu-item "Customize CEDET dev startup from nXhtml"
-                'udev-cedet-customize-startup))
-        (define-key cedet-map [nxhtml-cedet-utest]
-          (list 'menu-item "Run CEDET unit tests"
-                'udev-cedet-utest))
-        (define-key cedet-map [nxhtml-update-cedet]
-          (list 'menu-item "Fetch/update and install CEDET dev sources"
-                'udev-cedet-update))
-        (define-key cedet-map [nxhtml-cedet-home-separator]
-          (list 'menu-item "--" nil))
-        (define-key cedet-map [nxhtml-rinari-homepage]
-          (list 'menu-item "CEDET Home Page"
-                (lambda ()
-                  "Open CEDET home page in your web browser."
-                  (interactive)
-                  (browse-url "http://cedet.sourceforge.net/"))))
-        )
+      ;; (let ((cedet-map (make-sparse-keymap)))
+      ;;   (define-key tools-map [nxhtml-cedet-map]
+      ;;     (list 'menu-item "CEDET" cedet-map))
+      ;;   (define-key cedet-map [nxhtml-custom-cedet]
+      ;;     (list 'menu-item "Customize CEDET dev startup from nXhtml"
+      ;;           'udev-cedet-customize-startup))
+      ;;   (define-key cedet-map [nxhtml-cedet-utest]
+      ;;     (list 'menu-item "Run CEDET unit tests"
+      ;;           'udev-cedet-utest))
+      ;;   (define-key cedet-map [nxhtml-update-cedet]
+      ;;     (list 'menu-item "Fetch/update and install CEDET dev sources"
+      ;;           'udev-cedet-update))
+      ;;   (define-key cedet-map [nxhtml-cedet-home-separator]
+      ;;     (list 'menu-item "--" nil))
+      ;;   (define-key cedet-map [nxhtml-rinari-homepage]
+      ;;     (list 'menu-item "CEDET Home Page"
+      ;;           (lambda ()
+      ;;             "Open CEDET home page in your web browser."
+      ;;             (interactive)
+      ;;             (browse-url "http://cedet.sourceforge.net/"))))
+      ;;   )
 
 
       (let ((rinari-map (make-sparse-keymap)))
@@ -464,20 +510,6 @@
                   (browse-url "http://hyperstruct.net/projects/mozlab"))))
         )
 
-      (define-key tools-map [nxhtml-frame-win-separator]
-        (list 'menu-item "--" nil))
-      (let ((frame-map (make-sparse-keymap)))
-        (define-key tools-map [nxhtml-frame-map]
-          (list 'menu-item "Windows and Frames" frame-map))
-        (define-key frame-map [nxhtml-winsav-mode]
-          (list 'menu-item "Save/restore Frames and Windows"
-                'winsav-save-mode
-                :button '(:toggle . (and (boundp 'winsav-save-mode)
-                                         winsav-save-mode))))
-        (define-key frame-map [nxhtml-resize-windows]
-          (list 'menu-item "Resize Windows"
-                'resize-windows)))
-
       (define-key tools-map [nxhtml-majpri-separator]
         (list 'menu-item "--" nil))
       (define-key tools-map [nxhtml-as-external]
@@ -535,7 +567,7 @@
           (list 'menu-item "--"))
         (define-key flyspell-map [nxhtml-flyspell]
           (list 'menu-item "Flyspell Mode" 'flyspell-mode
-                :button '(:toggle . (and (boundp flyspell-mode)
+                :button '(:toggle . (and (boundp 'flyspell-mode)
                                          flyspell-mode))))
         )
       (define-key tools-map [nxhtml-flyspell-separator]
@@ -1027,6 +1059,11 @@
                 (lambda () (interactive) (customize-set-variable 'popcmp-completion-style 'anything))
                 :enable `(fboundp 'anything)
                 :button `(:radio . (eq popcmp-completion-style 'anything))))
+        (define-key style-map [popcmp-company-completion]
+          (list 'menu-item "Company Mode Style Completion"
+                (lambda () (interactive) (customize-set-variable 'popcmp-completion-style 'company-mode))
+                :enable `(fboundp 'company-mode)
+                :button `(:radio . (eq popcmp-completion-style 'company-mode))))
         (define-key style-map [popcmp-emacs-completion]
           (list 'menu-item "Emacs Default Style Completion"
                 (lambda () (interactive) (customize-set-variable 'popcmp-completion-style 'emacs-default))
@@ -1035,11 +1072,6 @@
           (list 'menu-item "Popup Style Completion"
                 (lambda () (interactive) (customize-set-variable 'popcmp-completion-style 'popcmp-popup))
                 :button `(:radio . (eq popcmp-completion-style 'popcmp-popup))))
-        (define-key style-map [popcmp-company-completion]
-          (list 'menu-item "Company Mode Style Completion"
-                (lambda () (interactive) (customize-set-variable 'popcmp-completion-style 'company-mode))
-                :enable `(fboundp 'company-mode)
-                :button `(:radio . (eq popcmp-completion-style 'company-mode))))
         )
       (define-key cmpl-map [nxhtml-cmpl-separator]
         (list 'menu-item "--" nil

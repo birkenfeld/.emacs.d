@@ -117,7 +117,7 @@ FILENAME could be either the remote or the local file.
 ;;;***
 
 ;;;### (autoloads (nxhtml-features-check nxhtml-customize) "../nxhtml/nxhtml"
-;;;;;;  "nxhtml/nxhtml.el" (19063 47343))
+;;;;;;  "nxhtml/nxhtml.el" (19064 13016))
 ;;; Generated autoloads from nxhtml/nxhtml.el
 
 (autoload 'nxhtml-customize "../nxhtml/nxhtml" "\
@@ -145,7 +145,7 @@ Report a bug in nXhtml.
 
 ;;;### (autoloads (nxhtml-overview nxhtml-global-minor-mode nxhtml-browse-region
 ;;;;;;  nxhtml-browse-file nxhtml-edit-with-gimp) "../nxhtml/nxhtml-menu"
-;;;;;;  "nxhtml/nxhtml-menu.el" (19064 18624))
+;;;;;;  "nxhtml/nxhtml-menu.el" (19147 32448))
 ;;; Generated autoloads from nxhtml/nxhtml-menu.el
 
 (autoload 'nxhtml-edit-with-gimp "../nxhtml/nxhtml-menu" "\
@@ -189,7 +189,7 @@ Show a HTML page with an overview of nXhtml.
 
 ;;;### (autoloads (nxhtml-validation-header-mode nxhtml-short-tag-help
 ;;;;;;  nxhtml-mode) "../nxhtml/nxhtml-mode" "nxhtml/nxhtml-mode.el"
-;;;;;;  (19061 60294))
+;;;;;;  (19148 31427))
 ;;; Generated autoloads from nxhtml/nxhtml-mode.el
 
 (when (fboundp 'nxml-mode)
@@ -323,7 +323,7 @@ This mode may be turned on automatically in two ways:
 ;;;;;;  eruby-nxhtml-mumamo-mode jsp-nxhtml-mumamo-mode smarty-nxhtml-mumamo-mode
 ;;;;;;  mjt-nxhtml-mumamo-mode genshi-nxhtml-mumamo-mode django-nxhtml-mumamo-mode
 ;;;;;;  embperl-nxhtml-mumamo-mode nxhtml-mumamo-mode) "../nxhtml/nxhtml-mumamo"
-;;;;;;  "nxhtml/nxhtml-mumamo.el" (18982 33732))
+;;;;;;  "nxhtml/nxhtml-mumamo.el" (19065 19164))
 ;;; Generated autoloads from nxhtml/nxhtml-mumamo.el
 
 (autoload 'nxhtml-mumamo-mode "../nxhtml/nxhtml-mumamo" "\
@@ -410,7 +410,7 @@ Not documented
 ;;;***
 
 ;;;### (autoloads (tidy-build-menu) "../nxhtml/tidy-xhtml" "nxhtml/tidy-xhtml.el"
-;;;;;;  (19039 48498))
+;;;;;;  (19148 43677))
 ;;; Generated autoloads from nxhtml/tidy-xhtml.el
 
 (autoload 'tidy-build-menu "../nxhtml/tidy-xhtml" "\
@@ -490,7 +490,7 @@ Key bindings:
 ;;;***
 
 ;;;### (autoloads (javascript-mode) "../related/javascript" "related/javascript.el"
-;;;;;;  (18946 55162))
+;;;;;;  (19148 43773))
 ;;; Generated autoloads from related/javascript.el
 
 (autoload 'javascript-mode "../related/javascript" "\
@@ -534,7 +534,7 @@ Major mode for interacting with Firefox via MozRepl.
 
 ;;;### (autoloads (global-mozadd-mirror-mode mozadd-mirror-mode global-mozadd-refresh-edited-on-save-mode
 ;;;;;;  mozadd-refresh-edited-on-save-mode) "../related/mozadd" "related/mozadd.el"
-;;;;;;  (19063 53089))
+;;;;;;  (19064 13016))
 ;;; Generated autoloads from related/mozadd.el
 
 (autoload 'mozadd-refresh-edited-on-save-mode "../related/mozadd" "\
@@ -602,7 +602,7 @@ See `mozadd-mirror-mode' for more information on Mozadd-Mirror mode.
 ;;;***
 
 ;;;### (autoloads (php-mode php-file-patterns) "../related/php-mode"
-;;;;;;  "related/php-mode.el" (19032 52516))
+;;;;;;  "related/php-mode.el" (19114 62258))
 ;;; Generated autoloads from related/php-mode.el
 
 (defvar php-file-patterns '("\\.php[s34]?\\'" "\\.phtml\\'" "\\.inc\\'") "\
@@ -1266,7 +1266,7 @@ See `nxhtmltest-run' for more information about the tests.
 ;;;***
 
 ;;;### (autoloads (nxhtmltest-run nxhtmltest-run-indent) "../tests/nxhtmltest-suites"
-;;;;;;  "tests/nxhtmltest-suites.el" (19062 23630))
+;;;;;;  "tests/nxhtmltest-suites.el" (19146 21134))
 ;;; Generated autoloads from tests/nxhtmltest-suites.el
 
 (autoload 'nxhtmltest-run-indent "../tests/nxhtmltest-suites" "\
@@ -1301,9 +1301,9 @@ DEFINITION as explained there.
 
 ;;;***
 
-;;;### (autoloads (as-external-mode as-external-for-wiki as-external-for-mail
+;;;### (autoloads (as-external-mode as-external-for-wiki as-external-for-mail-mode
 ;;;;;;  as-external-for-xhtml) "as-external" "util/as-external.el"
-;;;;;;  (19063 48015))
+;;;;;;  (19114 62258))
 ;;; Generated autoloads from util/as-external.el
 
 (autoload 'as-external-for-xhtml "as-external" "\
@@ -1316,7 +1316,7 @@ In this case Emacs is used to edit textarea fields on a web page.
 The text will most often be part of a web page later, like on a
 blog.  Therefore turn on these:
 
-- `nxhtml-mumamo-mode' since some XHTML tags may be allowed.
+- `nxhtml-mode' since some XHTML tags may be allowed.
 - `nxhtml-validation-header-mode' since it is not a full page.
 - `wrap-to-fill-column-mode' to see what you are writing.
 - `html-write-mode' to see it even better.
@@ -1326,12 +1326,13 @@ emacsw32-eol.
 
 \(fn)" t nil)
 
-(autoload 'as-external-for-mail "as-external" "\
+(autoload 'as-external-for-mail-mode "as-external" "\
 Setup for Firefox addon It's All Text to edit mail.
+Set normal mail comment markers in column 1 (ie >).
 
-- `text-mode' since some XHTML tags may be allowed.
-- `wrap-to-fill-column-mode' to see what you are writing.
-- `as-external-mail-comment-mode' for commenting/uncommenting.
+Set `fill-column' to 90 and enable `wrap-to-fill-column-mode' so
+that it will look similar to how it will look in the sent plain
+text mail.
 
 See also `as-external-mode'.
 
@@ -1368,7 +1369,7 @@ See `as-external-alist' for more information.
 ;;;***
 
 ;;;### (autoloads (chart-make-chart chart-complete) "chart" "util/chart.el"
-;;;;;;  (19063 39536))
+;;;;;;  (19064 13016))
 ;;; Generated autoloads from util/chart.el
 
 (autoload 'chart-complete "chart" "\
@@ -1465,257 +1466,6 @@ Below are some examples.  To test them mark an example and do
 
 
 \(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (global-company-mode company-mode) "company-mode/company"
-;;;;;;  "util/company-mode/company.el" (19063 31164))
-;;; Generated autoloads from util/company-mode/company.el
-
-(autoload 'company-mode "company-mode/company" "\
-\"complete anything\"; in in-buffer completion framework.
-Completion starts automatically, depending on the values
-`company-idle-delay' and `company-minimum-prefix-length'.
-
-Completion can be controlled with the commands:
-`company-complete-common', `company-complete-selection', `company-complete',
-`company-select-next', `company-select-previous'.  If these commands are
-called before `company-idle-delay', completion will also start.
-
-Completions can be searched with `company-search-candidates' or
-`company-filter-candidates'.  These can be used while completion is
-inactive, as well.
-
-The completion data is retrieved using `company-backends' and displayed using
-`company-frontends'.  If you want to start a specific back-end, call it
-interactively or use `company-begin-backend'.
-
-regular keymap (`company-mode-map'):
-
-\\{company-mode-map}
-keymap during active completions (`company-active-map'):
-
-\\{company-active-map}
-
-\(fn &optional ARG)" t nil)
-
-(defvar global-company-mode nil "\
-Non-nil if Global-Company mode is enabled.
-See the command `global-company-mode' for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `global-company-mode'.")
-
-(nxhtml-custom-autoload 'global-company-mode "company-mode/company" nil)
-
-(autoload 'global-company-mode "company-mode/company" "\
-Toggle Company mode in every possible buffer.
-With prefix ARG, turn Global-Company mode on if and only if ARG is positive.
-Company mode is enabled in all buffers where `(lambda nil (when (catch (quote cm) (dolist (mode company-major-modes) (when (derived-mode-p mode) (throw (quote cm) t)))) (company-mode 1)))' would do it.
-See `company-mode' for more information on Company mode.
-
-\(fn &optional ARG)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-abbrev) "company-mode/company-abbrev"
-;;;;;;  "util/company-mode/company-abbrev.el" (19039 49090))
-;;; Generated autoloads from util/company-mode/company-abbrev.el
-
-(autoload 'company-abbrev "company-mode/company-abbrev" "\
-A `company-mode' completion back-end for abbrev.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-css) "company-mode/company-css" "util/company-mode/company-css.el"
-;;;;;;  (19048 2102))
-;;; Generated autoloads from util/company-mode/company-css.el
-
-(autoload 'company-css "company-mode/company-css" "\
-A `company-mode' completion back-end for `css-mode'.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-dabbrev) "company-mode/company-dabbrev"
-;;;;;;  "util/company-mode/company-dabbrev.el" (19039 49092))
-;;; Generated autoloads from util/company-mode/company-dabbrev.el
-
-(autoload 'company-dabbrev "company-mode/company-dabbrev" "\
-A dabbrev-like `company-mode' completion back-end.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-dabbrev-code) "company-mode/company-dabbrev-code"
-;;;;;;  "util/company-mode/company-dabbrev-code.el" (19039 49092))
-;;; Generated autoloads from util/company-mode/company-dabbrev-code.el
-
-(autoload 'company-dabbrev-code "company-mode/company-dabbrev-code" "\
-A dabbrev-like `company-mode' back-end for code.
-The back-end looks for all symbols in the current buffer that aren't in
-comments or strings.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-elisp) "company-mode/company-elisp" "util/company-mode/company-elisp.el"
-;;;;;;  (19039 49092))
-;;; Generated autoloads from util/company-mode/company-elisp.el
-
-(autoload 'company-elisp "company-mode/company-elisp" "\
-A `company-mode' completion back-end for `emacs-lisp-mode'.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-etags) "company-mode/company-etags" "util/company-mode/company-etags.el"
-;;;;;;  (19039 49092))
-;;; Generated autoloads from util/company-mode/company-etags.el
-
-(autoload 'company-etags "company-mode/company-etags" "\
-A `company-mode' completion back-end for etags.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-files) "company-mode/company-files" "util/company-mode/company-files.el"
-;;;;;;  (19039 49092))
-;;; Generated autoloads from util/company-mode/company-files.el
-
-(autoload 'company-files "company-mode/company-files" "\
-a `company-mode' completion back-end existing file names.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-gtags) "company-mode/company-gtags" "util/company-mode/company-gtags.el"
-;;;;;;  (19039 49092))
-;;; Generated autoloads from util/company-mode/company-gtags.el
-
-(autoload 'company-gtags "company-mode/company-gtags" "\
-A `company-mode' completion back-end for GNU Global.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-ispell) "company-mode/company-ispell"
-;;;;;;  "util/company-mode/company-ispell.el" (19039 49092))
-;;; Generated autoloads from util/company-mode/company-ispell.el
-
-(autoload 'company-ispell "company-mode/company-ispell" "\
-A `company-mode' completion back-end using ispell.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-keywords) "company-mode/company-keywords"
-;;;;;;  "util/company-mode/company-keywords.el" (19039 49092))
-;;; Generated autoloads from util/company-mode/company-keywords.el
-
-(autoload 'company-keywords "company-mode/company-keywords" "\
-A `company-mode' back-end for programming language keywords.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-choose) "company-mode/company-nograb"
-;;;;;;  "util/company-mode/company-nograb.el" (19045 31314))
-;;; Generated autoloads from util/company-mode/company-nograb.el
-
-(autoload 'company-choose "company-mode/company-nograb" "\
-Not documented
-
-\(fn CANDIDATES)" nil nil)
-
-;;;***
-
-;;;### (autoloads (company-nxml) "company-mode/company-nxml" "util/company-mode/company-nxml.el"
-;;;;;;  (19039 49092))
-;;; Generated autoloads from util/company-mode/company-nxml.el
-
-(autoload 'company-nxml "company-mode/company-nxml" "\
-A `company-mode' completion back-end for `nxml-mode'.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-oddmuse) "company-mode/company-oddmuse"
-;;;;;;  "util/company-mode/company-oddmuse.el" (19039 49092))
-;;; Generated autoloads from util/company-mode/company-oddmuse.el
-
-(autoload 'company-oddmuse "company-mode/company-oddmuse" "\
-A `company-mode' completion back-end for `oddmuse-mode'.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-predictive) "company-mode/company-predictive"
-;;;;;;  "util/company-mode/company-predictive.el" (19060 15106))
-;;; Generated autoloads from util/company-mode/company-predictive.el
-
-(autoload 'company-predictive "company-mode/company-predictive" "\
-A predictive-like `company-mode' completion back-end.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-pysmell) "company-mode/company-pysmell"
-;;;;;;  "util/company-mode/company-pysmell.el" (19040 9010))
-;;; Generated autoloads from util/company-mode/company-pysmell.el
-
-(autoload 'company-pysmell "company-mode/company-pysmell" "\
-A `company-mode' completion back-end for pysmell.
-This requires pysmell.el and pymacs.el.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-semantic) "company-mode/company-semantic"
-;;;;;;  "util/company-mode/company-semantic.el" (19061 60296))
-;;; Generated autoloads from util/company-mode/company-semantic.el
-
-(autoload 'company-semantic "company-mode/company-semantic" "\
-A `company-mode' completion back-end using CEDET Semantic.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-tempo) "company-mode/company-tempo" "util/company-mode/company-tempo.el"
-;;;;;;  (19039 49092))
-;;; Generated autoloads from util/company-mode/company-tempo.el
-
-(autoload 'company-tempo "company-mode/company-tempo" "\
-A `company-mode' completion back-end for tempo.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
-
-;;;***
-
-;;;### (autoloads (company-xcode) "company-mode/company-xcode" "util/company-mode/company-xcode.el"
-;;;;;;  (19039 49092))
-;;; Generated autoloads from util/company-mode/company-xcode.el
-
-(autoload 'company-xcode "company-mode/company-xcode" "\
-A `company-mode' completion back-end for Xcode projects.
-
-\(fn COMMAND &optional ARG &rest IGNORED)" t nil)
 
 ;;;***
 
@@ -1869,9 +1619,107 @@ For more information about this see `cusnu-export-cust-group'.
 
 ;;;***
 
+;;;### (autoloads (fold-dwim-turn-on-outline-and-hide-all fold-dwim-turn-on-hs-and-hide
+;;;;;;  fold-dwim-unhide-hs-and-outline fold-dwim-mode fold-dwim-toggle)
+;;;;;;  "fold-dwim" "util/fold-dwim.el" (19073 28098))
+;;; Generated autoloads from util/fold-dwim.el
+
+(autoload 'fold-dwim-toggle "fold-dwim" "\
+Toggle visibility or some other visual things.
+Try toggling different visual things in this order:
+
+- Images shown at point with `inlimg-mode'
+- Text at point prettified by `html-write-mode'.
+
+For the rest it unhides if possible, otherwise hides in this
+order:
+
+- `org-mode' header or something else using that outlines.
+- Maybe `fold-dwim-toggle-selective-display'.
+- `Tex-fold-mode' things.
+- In html if `outline-minor-mode' and after heading hide content.
+- `hs-minor-mode' things.
+- `outline-minor-mode' things. (Turns maybe on this.)
+
+It uses `fold-dwim-show' to show any hidden text at point; if no
+hidden fold is found, try `fold-dwim-hide' to hide the
+construction at the cursor.
+
+Note: Also first turn on `fold-dwim-mode' to get the keybinding
+for this function from it.
+
+\(fn)" t nil)
+
+(defvar fold-dwim-mode nil "\
+Non-nil if Fold-Dwim mode is enabled.
+See the command `fold-dwim-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `fold-dwim-mode'.")
+
+(nxhtml-custom-autoload 'fold-dwim-mode "fold-dwim" nil)
+
+(autoload 'fold-dwim-mode "fold-dwim" "\
+Key binding for `fold-dwim-toggle'.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'fold-dwim-unhide-hs-and-outline "fold-dwim" "\
+Unhide everything hidden by Hide/Show and Outline.
+Ie everything hidden by `hs-minor-mode' and
+`outline-minor-mode'.
+
+\(fn)" t nil)
+
+(autoload 'fold-dwim-turn-on-hs-and-hide "fold-dwim" "\
+Turn on minor mode `hs-minor-mode' and hide.
+If major mode is derived from `nxml-mode' call `hs-hide-block'
+else call `hs-hide-all'.
+
+\(fn)" t nil)
+
+(autoload 'fold-dwim-turn-on-outline-and-hide-all "fold-dwim" "\
+Turn on `outline-minor-mode' and call `hide-body'.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (foldit-global-mode foldit-mode) "foldit" "util/foldit.el"
+;;;;;;  (19073 28098))
+;;; Generated autoloads from util/foldit.el
+
+(autoload 'foldit-mode "foldit" "\
+Minor mode providing visual aids for folding.
+Shows some hints about what you have hidden and how to reveal it.
+
+Supports `hs-minor-mode', `outline-minor-mode' and major modes
+derived from `outline-mode'.
+
+\(fn &optional ARG)" t nil)
+
+(defvar foldit-global-mode nil "\
+Non-nil if Foldit-Global mode is enabled.
+See the command `foldit-global-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `foldit-global-mode'.")
+
+(nxhtml-custom-autoload 'foldit-global-mode "foldit" nil)
+
+(autoload 'foldit-global-mode "foldit" "\
+Toggle Foldit mode in every possible buffer.
+With prefix ARG, turn Foldit-Global mode on if and only if ARG is positive.
+Foldit mode is enabled in all buffers where `(lambda nil (foldit-mode 1))' would do it.
+See `foldit-mode' for more information on Foldit mode.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads (freemind-to-org-mode freemind-from-org-sparse-tree
 ;;;;;;  freemind-from-org-mode freemind-from-org-mode-node freemind-show)
-;;;;;;  "freemind" "util/freemind.el" (19063 39026))
+;;;;;;  "freemind" "util/freemind.el" (19148 43831))
 ;;; Generated autoloads from util/freemind.el
 
 (autoload 'freemind-show "freemind" "\
@@ -1941,7 +1789,7 @@ such palette into a css-file as hexadecimal color palette.
 ;;;***
 
 ;;;### (autoloads (hfyview-frame hfyview-window hfyview-region hfyview-buffer)
-;;;;;;  "hfyview" "util/hfyview.el" (19063 39203))
+;;;;;;  "hfyview" "util/hfyview.el" (19064 13016))
 ;;; Generated autoloads from util/hfyview.el
 
 (autoload 'hfyview-buffer "hfyview" "\
@@ -1977,8 +1825,59 @@ With command prefix also show created HTML source in other window.
 
 ;;;***
 
+;;;### (autoloads (hl-needed-mode) "hl-needed" "util/hl-needed.el"
+;;;;;;  (19114 62258))
+;;; Generated autoloads from util/hl-needed.el
+
+(defvar hl-needed-mode nil "\
+Non-nil if Hl-Needed mode is enabled.
+See the command `hl-needed-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `hl-needed-mode'.")
+
+(nxhtml-custom-autoload 'hl-needed-mode "hl-needed" nil)
+
+(autoload 'hl-needed-mode "hl-needed" "\
+Try to highlight current line and column when needed.
+This is a global minor mode.  It can operate in some different
+ways:
+
+- Highlighting can be on always, see `hl-needed-always'.
+
+Or, it can be turned on depending on some conditions.  In this
+case highlighting is turned off after each command and turned on
+again in the current window when either:
+
+- A new window was selected, see `hl-needed-on-new-window'.
+- A new buffer was selected, see `hl-needed-on-new-buffer'.
+- Window configuration was changed, see `hl-needed-on-config-change'.
+- Buffer was scrolled see `hl-needed-on-scrolling'.
+- A window was clicked with the mouse, see `hl-needed-on-mouse'.
+
+After this highlighting may be turned off again, normally after a
+short delay, see `hl-needed-flash'.
+
+If either highlighting was not turned on or was turned off again
+it will be turned on when
+
+- Emacs has been idle for `hl-needed-idle-time' seconds.
+
+See also `hl-needed-not-in-modes' and `hl-needed-currently-fun'.
+
+Note 1: For columns to be highlighted vline.el must be available.
+
+Note 2: This mode depends on `hl-line-mode' and `vline-mode' and
+tries to cooperate with them. If you turn on either of these that
+overrides the variables for turning on the respective
+highlighting here.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads (html-write-mode) "html-write" "util/html-write.el"
-;;;;;;  (18790 45400))
+;;;;;;  (19074 12812))
 ;;; Generated autoloads from util/html-write.el
 
 (autoload 'html-write-mode "html-write" "\
@@ -2003,6 +1902,10 @@ this minor mode:
 IMPORTANT: Most commands you use works also on the text that is
 hidden.  The movement commands is an exception, but as soon as
 you edit the buffer you may also change the hidden parts.
+
+Hint: Together with `wrap-to-fill-column-mode' this can make it
+easier to see what text you are actually writing in html parts of
+a web file.
 
 \(fn &optional ARG)" t nil)
 
@@ -2124,8 +2027,8 @@ before applying.
 
 ;;;***
 
-;;;### (autoloads (mlinks-mode) "mlinks" "util/mlinks.el" (19061
-;;;;;;  60296))
+;;;### (autoloads (mlinks-mode) "mlinks" "util/mlinks.el" (19071
+;;;;;;  38796))
 ;;; Generated autoloads from util/mlinks.el
 
 (autoload 'mlinks-mode "mlinks" "\
@@ -2160,7 +2063,7 @@ By default the link moved to will be active, see
 ;;;***
 
 ;;;### (autoloads (mumamo-multi-major-modep mumamo-mark-for-refontification)
-;;;;;;  "mumamo" "util/mumamo.el" (19064 6796))
+;;;;;;  "mumamo" "util/mumamo.el" (19146 25714))
 ;;; Generated autoloads from util/mumamo.el
 
 (autoload 'mumamo-mark-for-refontification "mumamo" "\
@@ -2183,7 +2086,7 @@ Return t if VALUE is a multi major mode function.
 ;;;;;;  jsp-html-mumamo-mode smarty-html-mumamo-mode mjt-html-mumamo-mode
 ;;;;;;  genshi-html-mumamo-mode django-html-mumamo-mode embperl-html-mumamo-mode
 ;;;;;;  nxml-mumamo-mode html-mumamo-mode) "mumamo-fun" "util/mumamo-fun.el"
-;;;;;;  (19061 60296))
+;;;;;;  (19114 62258))
 ;;; Generated autoloads from util/mumamo-fun.el
 
 (autoload 'html-mumamo-mode "mumamo-fun" "\
@@ -2307,8 +2210,8 @@ call this function.
 
 ;;;***
 
-;;;### (autoloads (n-back-game) "n-back" "util/n-back.el" (19063
-;;;;;;  38663))
+;;;### (autoloads (n-back-game) "n-back" "util/n-back.el" (19064
+;;;;;;  13018))
 ;;; Generated autoloads from util/n-back.el
 
 (autoload 'n-back-game "n-back" "\
@@ -2359,12 +2262,11 @@ new are maybe ... - and you have it available here in Emacs.
 ;;;;;;  ourcomments-ido-buffer-other-frame ourcomments-ido-buffer-other-window
 ;;;;;;  describe-symbol describe-defstruct describe-custom-group
 ;;;;;;  narrow-to-comment describe-command ourcomments-ediff-files
-;;;;;;  find-emacs-other-file better-fringes-mode wrap-to-fill-column-mode
-;;;;;;  wrap-to-fill-left-marg-modes wrap-to-fill-left-marg describe-key-and-map-briefly
+;;;;;;  find-emacs-other-file better-fringes-mode describe-key-and-map-briefly
 ;;;;;;  ourcomments-move-end-of-line ourcomments-move-beginning-of-line
 ;;;;;;  major-modep major-or-multi-majorp unfill-individual-paragraphs
 ;;;;;;  unfill-region unfill-paragraph define-toggle popup-menu-at-point)
-;;;;;;  "ourcomments-util" "util/ourcomments-util.el" (19063 48876))
+;;;;;;  "ourcomments-util" "util/ourcomments-util.el" (19148 43931))
 ;;; Generated autoloads from util/ourcomments-util.el
 
 (autoload 'popup-menu-at-point "ourcomments-util" "\
@@ -2460,37 +2362,6 @@ INSERT and UNTRANSLATED should normall be nil (and I am not sure
 what they will do ;-).
 
 \(fn &optional KEY INSERT UNTRANSLATED)" t nil)
-
-(defvar wrap-to-fill-left-marg nil "\
-Left margin handling for `wrap-to-fill-column-mode'.
-Used by `wrap-to-fill-column-mode'. If nil then center the
-display columns. Otherwise it should be a number which will be
-the left margin.")
-
-(nxhtml-custom-autoload 'wrap-to-fill-left-marg "ourcomments-util" t)
-
-(defvar wrap-to-fill-left-marg-modes '(text-mode fundamental-mode) "\
-Major modes where `wrap-to-fill-left-margin' may be nil.")
-
-(nxhtml-custom-autoload 'wrap-to-fill-left-marg-modes "ourcomments-util" t)
-
-(autoload 'wrap-to-fill-column-mode "ourcomments-util" "\
-Use `fill-column' display columns in buffer windows.
-By default the display columns are centered, but see the option
-`wrap-to-fill-left-marg'.
-
-Note 1: When turning this on `visual-line-mode' is also turned on. This
-is not reset when turning off this mode.
-
-Note 2: The text property `wrap-prefix' is set by this mode to
-indent continuation lines.  This is not recorded in the undo
-list.
-
-Key bindings added by this minor mode:
-
-\\{wrap-to-fill-column-mode-map}
-
-\(fn &optional ARG)" t nil)
 
 (defvar better-fringes-mode nil "\
 Non-nil if Better-Fringes mode is enabled.
@@ -2676,7 +2547,7 @@ Not documented
 
 ;;;***
 
-;;;### (autoloads (pause-mode) "pause" "util/pause.el" (19064 18015))
+;;;### (autoloads (pause-mode) "pause" "util/pause.el" (19064 22372))
 ;;; Generated autoloads from util/pause.el
 
 (defvar pause-mode nil "\
@@ -2881,8 +2752,8 @@ after last step with LOG-BUFFER as parameter.
 ;;;***
 
 ;;;### (autoloads (udev-cedet-utest udev-cedet-customize-startup
-;;;;;;  udev-cedet-update) "udev-cedet" "util/udev-cedet.el" (19061
-;;;;;;  38124))
+;;;;;;  udev-cedet-update) "udev-cedet" "util/udev-cedet.el" (19114
+;;;;;;  62258))
 ;;; Generated autoloads from util/udev-cedet.el
 
 (autoload 'udev-cedet-update "udev-cedet" "\
@@ -2925,6 +2796,18 @@ Customize ECB dev nXhtml startup group.
 
 ;;;***
 
+;;;### (autoloads (udev-fmcss-update) "udev-flymake-css" "util/udev-flymake-css.el"
+;;;;;;  (19114 28238))
+;;; Generated autoloads from util/udev-flymake-css.el
+
+(autoload 'udev-fmcss-update "udev-flymake-css" "\
+Fetch and install flymake css from sources.
+To determine where to store the sources see `udev-fmcss-dir'.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (udev-rinari-update) "udev-rinari" "util/udev-rinari.el"
 ;;;;;;  (19025 6424))
 ;;; Generated autoloads from util/udev-rinari.el
@@ -2939,7 +2822,7 @@ see `udev-rinari-dir' and `udev-rinari-load-rinari'.
 ;;;***
 
 ;;;### (autoloads (viper-tutorial) "viper-tut" "util/viper-tut.el"
-;;;;;;  (19063 44564))
+;;;;;;  (19064 13018))
 ;;; Generated autoloads from util/viper-tut.el
 
 (autoload 'viper-tutorial "viper-tut" "\
@@ -2957,7 +2840,7 @@ later.
 ;;;***
 
 ;;;### (autoloads (vline-global-mode vline-mode) "vline" "util/vline.el"
-;;;;;;  (18973 28380))
+;;;;;;  (19114 62258))
 ;;; Generated autoloads from util/vline.el
 
 (autoload 'vline-mode "vline" "\
@@ -2982,8 +2865,8 @@ Display vertical line mode as globally.
 ;;;***
 
 ;;;### (autoloads (winsav-switch-config winsav-save-full-config winsav-save-mode
-;;;;;;  winsav-put-window-tree) "winsav" "util/winsav.el" (19063
-;;;;;;  42266))
+;;;;;;  winsav-put-window-tree) "winsav" "util/winsav.el" (19068
+;;;;;;  580))
 ;;; Generated autoloads from util/winsav.el
 
 (autoload 'winsav-put-window-tree "winsav" "\
@@ -3065,7 +2948,7 @@ See also option `winsav-save-mode' and command
 ;;;***
 
 ;;;### (autoloads (winsize-save-window-configuration winsize-balance-siblings
-;;;;;;  resize-windows) "winsize" "util/winsize.el" (19063 37855))
+;;;;;;  resize-windows) "winsize" "util/winsize.el" (19064 13018))
 ;;; Generated autoloads from util/winsize.el
 
 (autoload 'resize-windows "winsize" "\
@@ -3266,31 +3149,65 @@ Not documented
 
 ;;;***
 
+;;;### (autoloads (wrap-to-fill-column-mode wrap-to-fill-left-marg-modes
+;;;;;;  wrap-to-fill-left-marg) "wrap-to-fill" "util/wrap-to-fill.el"
+;;;;;;  (19146 33796))
+;;; Generated autoloads from util/wrap-to-fill.el
+
+(defvar wrap-to-fill-left-marg nil "\
+Left margin handling for `wrap-to-fill-column-mode'.
+Used by `wrap-to-fill-column-mode'. If nil then center the
+display columns. Otherwise it should be a number which will be
+the left margin.")
+
+(nxhtml-custom-autoload 'wrap-to-fill-left-marg "wrap-to-fill" t)
+
+(defvar wrap-to-fill-left-marg-modes '(text-mode fundamental-mode) "\
+Major modes where `wrap-to-fill-left-margin' may be nil.")
+
+(nxhtml-custom-autoload 'wrap-to-fill-left-marg-modes "wrap-to-fill" t)
+
+(autoload 'wrap-to-fill-column-mode "wrap-to-fill" "\
+Use `fill-column' display columns in buffer windows.
+By default the display columns are centered, but see the option
+`wrap-to-fill-left-marg'.
+
+Note 1: When turning this on `visual-line-mode' is also turned on. This
+is not reset when turning off this mode.
+
+Note 2: The text property `wrap-prefix' is set by this mode to
+indent continuation lines.
+
+Key bindings added by this minor mode:
+
+\\{wrap-to-fill-column-mode-map}
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil nil ("autostart.el" "autostart22.el" "etc/schema/schema-path-patch.el"
 ;;;;;;  "nxhtml/doc/cedet-build.el" "nxhtml/html-chklnk.el" "nxhtml/html-imenu.el"
 ;;;;;;  "nxhtml/html-move.el" "nxhtml/html-quote.el" "nxhtml/html-wtoc.el"
 ;;;;;;  "nxhtml/nxhtml-autoload.el" "nxhtml/nxhtml-strval.el" "nxhtml/nxhtmljs.el"
 ;;;;;;  "nxhtml/outline-magic.el" "nxhtml/wtest.el" "related/flymake-helpers.el"
 ;;;;;;  "related/flymake-js.el" "related/flymake-keys.el" "related/flymake-php.el"
-;;;;;;  "related/flymu.el" "related/fold-dwim.el" "related/javascript-old.el"
-;;;;;;  "related/php-imenu.el" "tests/angus77-setup-jde.el" "tests/emacstest-suites.el"
+;;;;;;  "related/flymu.el" "related/javascript-old.el" "related/php-imenu.el"
+;;;;;;  "tests/angus77-setup-jde.el" "tests/emacstest-suites.el"
 ;;;;;;  "tests/ert2.el" "tests/hfy-test.el" "tests/inemacs/bug1013.el"
 ;;;;;;  "tests/mumamo-test.el" "tests/nxhtmltest-helpers.el" "tests/temp-test.el"
-;;;;;;  "util/appmenu-fold.el" "util/buffer-bg.el" "util/company-mode/company-autoloads.el"
-;;;;;;  "util/company-mode/company-eclim.el" "util/company-mode/company-pkg.el"
-;;;;;;  "util/company-mode/company-ropemacs.el" "util/company-mode/company-start.el"
-;;;;;;  "util/custsets.el" "util/ecb-batch-compile.el" "util/ffip.el"
-;;;;;;  "util/fmode.el" "util/fupd.el" "util/hl-needed.el" "util/htmlfontify.21.el"
-;;;;;;  "util/key-cat.el" "util/mumamo-aspnet.el" "util/mumamo-trace.el"
-;;;;;;  "util/new-key-seq-widget.el" "util/nxml-mode-os-additions.el"
+;;;;;;  "util/appmenu-fold.el" "util/buffer-bg.el" "util/custsets.el"
+;;;;;;  "util/ecb-batch-compile.el" "util/ffip.el" "util/fupd.el"
+;;;;;;  "util/htmlfontify.21.el" "util/key-cat.el" "util/mumamo-aspnet.el"
+;;;;;;  "util/mumamo-trace.el" "util/new-key-seq-widget.el" "util/nxml-mode-os-additions.el"
 ;;;;;;  "util/ocr-user.el" "util/org-panel.el" "util/popcmp.el" "util/rebind.el"
 ;;;;;;  "util/rxi.el" "util/udev-nxhtml.el" "util/useful-commands.el"
-;;;;;;  "util/whelp.el" "util/zen-mode.el") (19064 20991 718000))
+;;;;;;  "util/whelp.el" "util/zen-mode.el") (19148 44003 859000))
 
 ;;;***
 
 ;;;### (autoloads (nxhtmlmaint-byte-uncompile-all nxhtmlmaint-start-byte-compilation)
-;;;;;;  "../nxhtmlmaint" "nxhtmlmaint.el" (19062 21392))
+;;;;;;  "../nxhtmlmaint" "nxhtmlmaint.el" (19148 23034))
 ;;; Generated autoloads from nxhtmlmaint.el
 
 (autoload 'nxhtmlmaint-start-byte-compilation "../nxhtmlmaint" "\

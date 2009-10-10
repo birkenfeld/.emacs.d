@@ -582,14 +582,20 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
 
 ;;;; on[a-z]+=\"javascript:"
 
-(defconst mumamo-onjs=start-regex
+(defconst mumamo-onjs=-attr=
+  (rx
+   ;;"on[a-z]+="
+   (or "onclick" "ondblclick" "onmousedown" "onmousemove" "onmouseout" "onmouseover" "onmouseup" "onkeydown" "onkeypress" "onkeyup")
+   "="))
+
+(defconst mumamo-onjs=-attr-regex
   (rx point
       (or "<" "?>")
       (* (not (any ">")))
       space
       (submatch
-       "on"
-       (1+ (any "a-za-z"))
+       ;;"on" (1+ (any "a-za-z"))
+       (or "onclick" "ondblclick" "onmousedown" "onmousemove" "onmouseout" "onmouseover" "onmouseup" "onkeydown" "onkeypress" "onkeyup")
        "=")
       (0+ space)
       ?\"
@@ -601,8 +607,66 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
 
 (defun mumamo-chunk-onjs=(pos min max)
   "Find javascript on...=\"...\".  Return range and 'javascript-mode."
-  (mumamo-chunk-attr= pos min max "on[a-z]+=" t mumamo-onjs=start-regex
+  (mumamo-chunk-attr= pos min max mumamo-onjs=-attr= t mumamo-onjs=-attr-regex
                       'javascript-mode))
+
+;;;; py:somthing=\"python\"
+
+(defconst mumamo-py:=-attr= "py:[a-z]+=")
+
+(defconst mumamo-py:=-attr-regex
+  (rx point
+      (or "<" "?>")
+      (* (not (any ">")))
+      space
+      (submatch
+       "py:" (1+ (any "a-za-z"))
+       "=")
+      (0+ space)
+      ?\"
+      (submatch
+       (0+
+        (not (any "\""))))
+      ))
+
+(defun mumamo-chunk-py:=(pos min max)
+  "Find python py:...=\"...\".  Return range and 'python-mode."
+  (mumamo-chunk-attr= pos min max mumamo-py:=-attr= t mumamo-py:=-attr-regex
+                      'python-mode))
+
+(defun mumamo-chunk-py:match (pos min max)
+  (save-match-data
+    (let ((here (point))
+          (py:match (progn
+                      (goto-char pos)
+                      (re-search-forward (rx "py:match"
+                                             (1+ space)
+                                             (0+ (not (any ">")))
+                                             word-start
+                                             (submatch "path=")
+                                             (0+ space)
+                                             ?\"
+                                             (submatch
+                                              (0+
+                                               (not (any "\"")))))
+                                         max t)))
+          start end borders
+          )
+      (when py:match
+        (setq start (match-beginning 1))
+        (setq end   (match-end 2))
+        (setq borders (list (match-end 1) (1- end)))
+        )
+      (goto-char here)
+      (when start
+        (list start
+              end
+              'python-mode
+              borders
+              nil ;; parseable-by
+              'mumamo-chunk-attr=-new-fw-exc-fun ;; fw-exc-fun
+              'mumamo-chunk-attr=-new-find-borders-fun ;; find-borders-fun
+            )))))
 
 ;;;; style=
 
@@ -1075,6 +1139,8 @@ affect your editing normally."
    (
     mumamo-chunk-genshi%
     mumamo-chunk-genshi$
+    mumamo-chunk-py:=
+    mumamo-chunk-py:match
     mumamo-chunk-xml-pi
     mumamo-chunk-inlined-style
     mumamo-chunk-inlined-script
@@ -1399,11 +1465,13 @@ Supported values are 'perl."
                                       (goto-char pos)
                                       (prog1
                                           (when (re-search-forward ,endmark-regexp max t)
-                                            (- (point) 0))
+                                            (- (point) 1 ,(length heredoc-mark))
+                                            (- (point) 0)
+                                            )
                                         (goto-char here)))))))
             (setq exc-mode (mumamo-mode-for-heredoc heredoc-mark))
             (list start-inner end exc-mode nil nil fw-exc-fun nil)
-            (list start-outer end exc-mode (list start-inner end) nil fw-exc-fun border-fun)
+            (list start-outer end exc-mode (list start-inner end) nil fw-exc-fun border-fun 'heredoc)
             )))
     (error (mumamo-display-error 'mumamo-chunk-heredoc
                                  "%s" (error-message-string err)))))

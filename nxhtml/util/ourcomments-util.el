@@ -51,6 +51,14 @@
 ;;(eval-when-compile (require 'mumamo))
 (eval-when-compile (require 'recentf))
 
+
+(defun ourcomments-goto-line (line)
+  "A version of `goto-line' for use in elisp code."
+  (save-restriction
+    (widen)
+    (goto-char (point-min))
+    (forward-line (1- line))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Popups etc.
 
@@ -859,239 +867,6 @@ what they will do ;-)."
 ;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; Wrapping
-
-;;;###autoload
-(defcustom wrap-to-fill-left-marg nil
-  "Left margin handling for `wrap-to-fill-column-mode'.
-Used by `wrap-to-fill-column-mode'. If nil then center the
-display columns. Otherwise it should be a number which will be
-the left margin."
-  :type '(choice (const :tag "Center" nil)
-                 (integer :tag "Left margin"))
-  :group 'convenience)
-(make-variable-buffer-local 'wrap-to-fill-left-marg)
-
-(defvar wrap-to-fill-left-marg-use 0)
-(make-variable-buffer-local 'wrap-to-fill-left-marg-use)
-(put 'wrap-to-fill-left-marg-use 'permanent-local t)
-
-;;;###autoload
-(defcustom wrap-to-fill-left-marg-modes
-  '(text-mode
-    fundamental-mode)
-  "Major modes where `wrap-to-fill-left-margin' may be nil."
-  :type '(repeat commandp)
-  :group 'convenience)
-
-(defun wrap-to-fill-set-prefix (min max)
-  ;;(wrap-to-fill-set-prefix-1 min max)
-  )
-
-(defun wrap-to-fill-set-prefix-1 (min max)
-  "Set `wrap-prefix' text property from point MIN to MAX."
-  ;; Fix-me: If first word gets wrapped we have a problem.
-  ;;(message "wrap-to-fill-set-prefix here")
-  (let ((here (point))
-        beg-pos
-        end-pos
-        ind-str
-        max-word-len
-        (inhibit-field-text-motion t)
-        )
-    (goto-char min)
-    (forward-line 0)
-    (when (< (point) min) (forward-line))
-    (mumamo-with-buffer-prepared-for-jit-lock
-     (while (and (<= (point) max)
-                 (< (point) (point-max)))
-       (setq beg-pos (point))
-       (setq end-pos (line-end-position))
-       (when (equal (get-text-property beg-pos 'wrap-prefix)
-                    (get-text-property beg-pos 'wrap-to-fill-prefix))
-         (skip-chars-forward "[:blank:]")
-         (setq ind-str (buffer-substring-no-properties beg-pos (point)))
-         (setq max-word-len
-               (apply
-                'max
-                0
-                (mapcar (lambda (word)
-                              (length word))
-                            (split-string
-                             (buffer-substring-no-properties
-                              (point) end-pos)))))
-         ;;(message "max-word-len=%s, %s, %s" max-word-len (length ind-str) (buffer-substring-no-properties (point) end-pos))
-         (unless (< fill-column (+ max-word-len
-                                   ;;(current-indentation)
-                                   (length ind-str)
-                                   5 ;; Fix-me: From where?? This is the diff between the usable area and fill-column ...
-                                   ))
-           (put-text-property beg-pos end-pos 'wrap-prefix ind-str)
-           (put-text-property beg-pos end-pos 'wrap-to-fill-prefix ind-str)))
-       (forward-line)))
-    (goto-char here)))
-
-(defvar wrap-to-fill-after-change-range nil)
-
-(defun wrap-to-fill-after-change (min max old-len)
-  "For `after-change-functions'.
-See the hook for MIN, MAX and OLD-LEN."
-  (let ((here (point))
-        (inhibit-field-text-motion t))
-    (goto-char min)
-    (setq min (line-beginning-position))
-    (goto-char max)
-    (setq max (line-end-position))
-    ;;(wrap-to-fill-set-prefix min max)
-    (wrap-to-fill-save-min-max min max)
-    ))
-
-(defun wrap-to-fill-save-min-max (min max)
-  (let* ((old-min (car wrap-to-fill-after-change-range))
-         (old-max (cdr wrap-to-fill-after-change-range))
-         (new-min (if old-min (min old-min min) min))
-         (new-max (if old-max (max old-max max) max)))
-    (setq wrap-to-fill-after-change-range (cons new-min new-max))))
-
-(defun wrap-to-fill-post-command ()
-  (let* ((min (car wrap-to-fill-after-change-range))
-         (max (cdr wrap-to-fill-after-change-range)))
-    (setq wrap-to-fill-after-change-range nil)
-    (wrap-to-fill-set-prefix min max)))
-
-(defun wrap-to-fill-scroll-fun (window start-pos)
-  "For `window-scroll-functions'.
-See the hook for WINDOW and START-POS."
-  (let ((min (or start-pos (window-start window)))
-        (max (window-end window t)))
-    (wrap-to-fill-save-min-max min max)))
-    ;;(wrap-to-fill-set-prefix min max)))
-
-(defun wrap-to-fill-wider ()
-  "Increase `fill-column' with 10."
-  (interactive)
-  (setq fill-column (+ fill-column 10))
-  (wrap-to-fill-set-values))
-
-(defun wrap-to-fill-narrower ()
-  "Decrease `fill-column' with 10."
-  (interactive)
-  (setq fill-column (- fill-column 10))
-  (wrap-to-fill-set-values))
-
-(defvar wrap-to-fill-column-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map [(control ?c) right] 'wrap-to-fill-wider)
-    (define-key map [(control ?c) left] 'wrap-to-fill-narrower)
-    map))
-
-;;;###autoload
-(define-minor-mode wrap-to-fill-column-mode
-  "Use `fill-column' display columns in buffer windows.
-By default the display columns are centered, but see the option
-`wrap-to-fill-left-marg'.
-
-Note 1: When turning this on `visual-line-mode' is also turned on. This
-is not reset when turning off this mode.
-
-Note 2: The text property `wrap-prefix' is set by this mode to
-indent continuation lines.  This is not recorded in the undo
-list.
-
-Key bindings added by this minor mode:
-
-\\{wrap-to-fill-column-mode-map}"
-  ;; Fix-me: make the `wrap-prefix' behavior an option.
-  :lighter " WrapFill"
-  :group 'convenience
-  ;;(message "wrap-to-fill-column-mode here %s" wrap-to-fill-column-mode)
-  (if wrap-to-fill-column-mode
-      (let* ((win (get-buffer-window (current-buffer)))
-             (win-margs (when win (window-margins win))))
-        (when win-margs
-          (setq wrap-to-fill-left-marg (or (car win-margs)
-                                           wrap-to-fill-left-marg)))
-        (setq wrap-to-fill-left-marg-use wrap-to-fill-left-marg)
-        (unless (or wrap-to-fill-left-marg-use
-                    (memq major-mode wrap-to-fill-left-marg-modes))
-          (setq wrap-to-fill-left-marg-use
-                (default-value 'wrap-to-fill-left-marg-use)))
-        (add-hook 'window-configuration-change-hook 'wrap-to-fill-set-values nil t)
-        (add-hook 'after-change-functions 'wrap-to-fill-after-change nil t)
-        (add-hook 'window-scroll-functions 'wrap-to-fill-scroll-fun nil t)
-        (add-hook 'post-command-hook 'wrap-to-fill-post-command nil t)
-        ;;(add-hook 'post-command-hook window-scroll-functions 'wrap-to-fill-scroll-fun nil t)
-        (if (fboundp 'visual-line-mode)
-            (visual-line-mode 1)
-          (longlines-mode 1))
-        (dolist (window (get-buffer-window-list (current-buffer)))
-          (wrap-to-fill-scroll-fun window nil)))
-    (remove-hook 'window-configuration-change-hook 'wrap-to-fill-set-values t)
-    (remove-hook 'after-change-functions 'wrap-to-fill-after-change t)
-    (remove-hook 'window-scroll-functions 'wrap-to-fill-scroll-fun t)
-    (if (fboundp 'visual-line-mode)
-        (visual-line-mode -1)
-      (longlines-mode -1))
-    (let ((here (point))
-          (inhibit-field-text-motion t)
-          beg-pos
-          end-pos)
-      (mumamo-with-buffer-prepared-for-jit-lock
-       (save-restriction
-         (widen)
-         (goto-char (point-min))
-         (while (< (point) (point-max))
-           (setq beg-pos (point))
-           (setq end-pos (line-end-position))
-           (when (equal (get-text-property beg-pos 'wrap-prefix)
-                        (get-text-property beg-pos 'wrap-to-fill-prefix))
-             (remove-list-of-text-properties
-              beg-pos end-pos
-              '(wrap-prefix)))
-           (forward-line))
-         (remove-list-of-text-properties
-          (point-min) (point-max)
-          '(wrap-to-fill-prefix)))
-       (goto-char here))))
-  (wrap-to-fill-set-values))
-(put 'wrap-to-fill-column-mode 'permanent-local t)
-
-;; Fix-me: There is a confusion between buffer and window margins
-;; here. Also the doc says that left-margin-width and dito right may
-;; be nil. However they seem to be 0 by default, but when displaying a
-;; buffer in a window then window-margins returns (nil).
-(defun wrap-to-fill-set-values ()
-  (condition-case err
-      (wrap-to-fill-set-values-1)
-    (error (message "ERROR wrap-to-fill-set-values-1: %s" (error-message-string err)))))
-
-(defun wrap-to-fill-set-values-1 ()
-  "Use `fill-column' display columns in buffer windows."
-  ;;(message "wrap-to-fill-set-values window-configuration-change-hook=%s, wrap-to-fill-column-mode=%s, cb=%s" window-configuration-change-hook wrap-to-fill-column-mode (current-buffer))
-  (let ((buf-windows (get-buffer-window-list (current-buffer))))
-    ;;(message "buf-windows=%s" buf-windows)
-    (dolist (win buf-windows)
-      (if wrap-to-fill-column-mode
-          (let* ((edges (window-edges win))
-                 (win-width (- (nth 2 edges) (nth 0 edges)))
-                 (extra-width (- win-width fill-column))
-                 (left-marg (if wrap-to-fill-left-marg-use
-                                wrap-to-fill-left-marg-use
-                              (- (/ extra-width 2) 1)))
-                 (right-marg (- win-width fill-column left-marg))
-                 (win-margs (window-margins win))
-                 (old-left (or (car win-margs) 0))
-                 (old-right (or (cdr win-margs) 0)))
-            ;;(message "left-marg=%s, right-marg=%s, old-left=%s, old-right=%s" left-marg right-marg old-left old-right)
-            (unless (> left-marg 0) (setq left-marg 0))
-            (unless (> right-marg 0) (setq right-marg 0))
-            (unless (and (= old-left left-marg)
-                         (= old-right right-marg))
-              (set-window-margins win left-marg right-marg)))
-        (set-window-buffer win (current-buffer))))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Fringes.
 
 (defvar better-bottom-angles-defaults nil)
@@ -1205,7 +980,7 @@ and go to the same line number as in the current buffer."
       (error "Can't find the corresponding file %s" other-file))
     (when display-file
       (find-file-other-window other-file)
-      (goto-line line-num))
+      (ourcomments-goto-line line-num))
     other-file))
 
 ;;;###autoload
@@ -1285,16 +1060,16 @@ PREDICATE.  PREDICATE takes one argument, the symbol."
 (defun describe-command (command)
   "Like `describe-function', but prompts only for interactive commands."
   (interactive
-   (let ((fn (ourcomments-command-at-point))
-	 (enable-recursive-minibuffers t)
-	 val)
-     (setq val (completing-read (if fn
-				    (format "Describe command (default %s): " fn)
-				  "Describe command: ")
+   (let* ((fn (ourcomments-command-at-point))
+          (prompt (if fn
+                      (format "Describe command (default %s): " fn)
+                    "Describe command: "))
+          (enable-recursive-minibuffers t)
+          val)
+     (setq val (completing-read prompt
 				obarray 'commandp t nil nil
 				(and fn (symbol-name fn))))
-     (list (if (equal val "")
-	       fn (intern val)))))
+     (list (if (equal val "") fn (intern val)))))
   (describe-function command))
 
 
@@ -2171,7 +1946,8 @@ Return full path if found."
 (defun ourcomments-M-x-menu-pre ()
   "Add menu command to M-x history."
   (let ((is-menu-command (equal '(menu-bar)
-                                (elt (this-command-keys-vector) 0)))
+                                (when (< 0 (length (this-command-keys-vector)))
+                                  (elt (this-command-keys-vector) 0))))
         (pre-len (length extended-command-history)))
     (when (and is-menu-command
                (not (memq this-command '(ourcomments-M-x-menu-mode))))

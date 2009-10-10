@@ -1,5 +1,5 @@
 (setq message-log-max t)
-;(setq debug-on-error t)
+(setq debug-on-error t)
 ;;; autostart.el --- Load nxhtml
 ;;
 ;; Author: By: Lennart Borgman
@@ -141,7 +141,7 @@
   (let* ((util-dir (file-name-as-directory (expand-file-name "util" nxhtml-install-dir)))
          (related-dir (file-name-as-directory (expand-file-name "related" nxhtml-install-dir)))
          (nxhtml-dir (file-name-as-directory (expand-file-name "nxhtml" nxhtml-install-dir)))
-         (company-dir (file-name-as-directory (expand-file-name "util/company-mode" nxhtml-install-dir)))
+         (company-dir (file-name-as-directory (expand-file-name "util/nxhtml-company-mode" nxhtml-install-dir)))
          (tests-dir (file-name-as-directory (expand-file-name "tests" nxhtml-install-dir))))
     (add-to-list 'load-path nxhtml-dir)
     (add-to-list 'load-path related-dir)
