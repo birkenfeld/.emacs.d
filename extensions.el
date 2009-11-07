@@ -99,17 +99,14 @@
      (add-hook 'python-mode-hook 'highlight-tabs)))
 
 
-;; CVS haskell mode
-(autoload 'haskell-mode "haskell-mode" nil t)
-(autoload 'literate-haskell-mode "haskell-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.\\(?:[gh]s\\|hi\\)\\'" . haskell-mode))
-(add-to-list 'auto-mode-alist '("\\.l[gh]s\\'" . literate-haskell-mode))
+;; haskell mode
+(load "haskell-site-file")
 
 (add-hook 'haskell-mode-hook (lambda ()
   (load-library "inf-haskell")
   (imenu-add-menubar-index)
   (turn-on-haskell-doc-mode)
-  (turn-on-haskell-indent)
+  (turn-on-haskell-indentatation)
   (inferior-haskell-process)
   (setq comment-start "--")
   (add-to-list 'filladapt-token-table '("-- " haskell-comment))

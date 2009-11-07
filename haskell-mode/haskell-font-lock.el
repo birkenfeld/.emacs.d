@@ -142,13 +142,23 @@ and `unicode'."
               (cons "->" (decode-char 'ucs 8594))
 	      (cons "<-" (decode-char 'ucs 8592))
 	      (cons "=>" (decode-char 'ucs 8658))
+              (cons "()" (decode-char 'ucs #X2205))
+              (cons "==" (decode-char 'ucs #X2261))
+              (cons "++" (decode-char 'ucs #X29FA))
+              (cons "/=" (decode-char 'ucs #X2262))
+              (cons ">=" (decode-char 'ucs #X2265))
+              (cons "<=" (decode-char 'ucs #X2264))
+              (cons "!!" (decode-char 'ucs #X203C))
+              (cons "&&" (decode-char 'ucs #X2227))
+              (cons "||" (decode-char 'ucs #X2228))
+              (cons "sqrt" (decode-char 'ucs #X221A))
+              (cons "undefined" (decode-char 'ucs #X22A5))
+              (cons "pi" (decode-char 'ucs #X3C0))
               (cons "~>" (decode-char 'ucs 8669)) ;; Omega language
               ;; (cons "~>" (decode-char 'ucs 8605)) ;; less desirable
               (cons "-<" (decode-char 'ucs 8610)) ;; Paterson's arrow syntax
               ;; (cons "-<" (decode-char 'ucs 10521)) ;; nicer but uncommon
 	      (cons "::" (decode-char 'ucs 8759))
-              (cons "==" (decode-char 'ucs #x2261))
-              (cons "++" (decode-char 'ucs #x29fa))
 	      (list "." (decode-char 'ucs 8728) ; (decode-char 'ucs 9675)
                     ;; Need a predicate here to distinguish the . used by
                     ;; forall <foo> . <bar>.
@@ -485,7 +495,7 @@ that should be commented under LaTeX-style literate scripts."
    ;; b) {-^ ... -}
    ;; c) -- | ...
    ;; d) -- ^ ...
-   ;; d1) -- * ...
+   ;; d) -- * ...
    ;; e) -- ...
    ;; Where `e' is the tricky one: it is only a Haddock comment if it
    ;; follows immediately another Haddock comment.  Even an empty line
