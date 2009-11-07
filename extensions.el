@@ -106,7 +106,7 @@
   (load-library "inf-haskell")
   (imenu-add-menubar-index)
   (turn-on-haskell-doc-mode)
-  (turn-on-haskell-indentatation)
+  (turn-on-haskell-indentation)
   (inferior-haskell-process)
   (setq comment-start "--")
   (add-to-list 'filladapt-token-table '("-- " haskell-comment))
