@@ -18,6 +18,32 @@
 (require 'bar-cursor)
 (bar-cursor-mode t)
 
+;; colored moccur
+(require 'color-moccur)
+
+;; grep-edit (edit in grep results)
+(require 'grep-edit)
+;; need to unset ordinary character bindings...
+(loop for key in '("n" "p" "{" "}" " ") do
+      (define-key grep-mode-map key nil))
+
+;; session (saves histories, variables, ...)
+(require 'session)
+(session-initialize)
+
+;; adaptive fill
+(require 'filladapt)
+(setq-default filladapt-mode t)
+
+;; browse-kill-ring
+(require 'browse-kill-ring)
+(browse-kill-ring-default-keybindings)
+(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
+  "If last action was not a yank, run `browse-kill-ring' instead."
+  (if (not (eq last-command 'yank))
+      (browse-kill-ring)
+    ad-do-it))
+
 ;; tabbar
 (require 'tabbar)
 (global-set-key [C-prior] 'tabbar-backward)

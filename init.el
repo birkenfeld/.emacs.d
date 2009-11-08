@@ -614,7 +614,8 @@
 
 ;; load my extensions if they are present
 (load "extensions.el" t)
-;; and separately, those provided by the distribution
-(load "distext.el" t)
+;; and separately, those provided by the distribution (packed in different
+;; files so that errors don't skip the whole file)
+(mapc (lambda (file) (load file t)) (directory-files "distext" t "\\.el"))
 ;; and finally, local settings that don't go into the repo
 (load "local.el" t)
