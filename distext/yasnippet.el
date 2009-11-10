@@ -4,6 +4,7 @@
 (require 'yasnippet)
 (yas/initialize)
 (yas/load-directory "/usr/share/emacs/etc/yasnippet/snippets")
+(yas/load-directory "/usr/share/emacs/site-lisp/yasnippet/snippets")
 (setq yas/window-system-popup-function
       'yas/x-popup-menu-for-template)
 ;; auto-expand on tab
