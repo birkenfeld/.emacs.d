@@ -1,6 +1,6 @@
 #!/bin/zsh
 emacs --batch -f batch-byte-compile **/*.el
 # don't compile often-edited files
-rm -f init.elc extensions.elc distext.elc
+rm -f init.elc extensions.elc distext/*.elc
 # some things that don't like to be compiled
 rm -f talcum/*.elc jinja.elc
