@@ -97,7 +97,9 @@
               single underlined character.  Many users (me included)
               find this quite a bit disturbing. I have therefore added
               a command to quickly hide/show the underlines. This is
-              on <em>C-c C-w</em>.
+              on <em>C-c C-w</em> (nxhtml-toggle-visible-warnings, key
+              binding changed to <em>C-c _</em> in later versions of
+              nXhtml).
             </p>
             <p>
               This is particular useful for example in the case where
@@ -297,6 +299,12 @@
           <a href="#v1.93">v1.93</a>
           <a href="#v1.94">v1.94</a>
           <a href="#v1.95">v1.95</a>
+          <a href="#v1.96">v1.96</a>
+          <a href="#v1.97">v1.97</a>
+          <a href="#v1.98">v1.98</a>
+          <a href="#v1.99">v1.99</a>
+          <a href="#v2.00">v2.00</a>
+          <a href="#v2.01">v2.01</a>
         </div>
 
         <dl>
@@ -3066,6 +3074,138 @@
             <ul>
               <li>
                 First release after all 1.94 betas.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.96">1.96</dt>
+          <dd id="v1.96-dd">
+            <ul>
+              <li>
+                <span class="bugfix">
+                  Problem creating autoload file in latest dev version of Emacs. Fixed.
+                </span>
+              </li>
+              <li>
+                <span class="bugfix">
+                  Fixed typo in wrap-to-fill.el.
+                </span>
+              </li>
+              <li>
+                <span class="bugfix">
+                  Autoloaded <i>buffer-narrowed-p</i>.
+                </span>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.97">1.97</dt>
+          <dd id="v1.97-dd">
+            <ul>
+              <li>
+                <span class="bugfix">
+                  Problem with customize-option because widgets where not loaded. Rearranged code to bit to fix this.
+                </span>
+              </li>
+              <li>
+                Added support for Groovy from
+                <a href="http://tiagocury.blogspot.com/2009/10/gsp-groovy-server-pages-support-for.html">Tiago Cury</a>.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.98">1.98</dt>
+          <dd id="v1.98-dd">
+            <ul>
+              <li>
+                <span class="bugfix">
+                  Added support for PHP nowdocs.
+                </span>
+              </li>
+              <li>
+                Freemind.el: Added support for <i>org-odd-levels-only</i>.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.99">1.99</dt>
+          <dd id="v1.99-dd">
+            <ul>
+              <li>
+                Converted line endings from CRLF to LF.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v2.00">2.00</dt>
+          <dd id="v2.00-dd">
+            <p>
+              2.00 does not stand for something very exciting, it is just a consecutive number. But - I do believe this is a rather mature version of nXhtml.
+            </p>
+            <ul>
+              <li>
+                MuMaMo
+                <ul>
+                  <li>
+                    <span class="bugfix">
+                      Fixed some indentation bugs.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bugfix">
+                      Added multi major mode local sub chunk dividing inheriting.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bugfix">
+                      Made MuMaMo avoid closing org-mode nodes
+                    </span>
+                    when moving between sub chunks in org files.
+                  </li>
+                  <li>
+                    <span class="bugfix">
+                      Introduced per main major local variables.
+                    </span>
+                    First use is for buffer-invisibility-spec. This can only be set in the main major mode now. (Or rather, it will be reset to what was last set in main major mode when you move between chunks.) This is the most reasonable way I believe, since it may otherwise change when moving between chunks and the new chunk's major mode is called.
+                  </li>
+                  <li>
+                    Added support for Mason.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <span class="bugfix">Renamed gimp.el to gimpedit.el</span> and made it open GIMP on other platforms than w32 too. (Symbols in the files are renamed too.) Skipped compatibility with old GIMP versions.
+              </li>
+              <li>
+                <span class="bugfix">Renamed freemind.el to org-freemind.el</span> so that it can be included among the org files.
+                Also added support for #+BEGIN_HTML when exporting to freemind.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v2.01">2.01</dt>
+          <dd id="v2.01-dd">
+            <ul>
+              <li>
+                MuMaMo:
+                <ul>
+                  <li>
+                    <span class="bugfix">
+                      Major mode was not always switched when moving fast between chunks. Fixed.
+                    </span>
+                  </li>
+                  <li>
+                    Made desktop recognize multi major modes.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <span class="bugfix">
+                  org-freemind.el was broken. Sorry.
+                </span>
+              </li>
+              <li>
+                Fixed a bug in wrap-to-fill-column-mode.
+              </li>
+              <li>
+                Enhanced support for smarty template language.
+              </li>
+              <li>
+                Mlinks mode used one timer per buffer. Converted to one global timer => much faster. (This actually slowed down Emacs screen update before.)
               </li>
             </ul>
           </dd>

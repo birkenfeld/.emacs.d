@@ -819,12 +819,13 @@ Cancel delayed message."
   "Turn off Tab completion state if not feasable any more.
 This is run in `post-command-hook' after each command."
   (condition-case err
-      (save-match-data
+      ;;(save-match-data
         ;; Delayed messages
         (if (not (tabkey2-completion-state-p))
             (tabkey2-completion-state-mode -1)
           ;;(message "tabkey2-current-tab-function=%s" tabkey2-current-tab-function)
-          (tabkey2-move-overlays)))
+          (tabkey2-move-overlays))
+    ;;)
     (error (message "tabkey2 post: %s" (error-message-string err)))))
 
 (defun tabkey2-minibuffer-setup ()
@@ -1199,7 +1200,7 @@ through the completion functions too choose which one to use.)
 NOTE: This uses `emulation-mode-map-alists' and it supposes that
 nothing else is bound to Tab there."
   (interactive "P")
-          (message "first:tabkey2-step-out=%s, %s" (this-command-keys) tabkey2-step-out-of-the-way)
+  ;;(message "first:tabkey2-step-out=%s, %s" (this-command-keys) tabkey2-step-out-of-the-way)
   (if tabkey2-step-out-of-the-way
       (progn
         (message "step-out=%s" tabkey2-step-out-of-the-way)
