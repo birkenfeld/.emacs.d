@@ -3,8 +3,10 @@
 ;; yet another snippet mode
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory "/usr/share/emacs/etc/yasnippet/snippets")
-(yas/load-directory "/usr/share/emacs/site-lisp/yasnippet/snippets")
+(when (file-directory-p "/usr/share/emacs/etc/yasnippet/snippets")
+  (yas/load-directory "/usr/share/emacs/etc/yasnippet/snippets"))
+(when (file-directory-p "/usr/share/emacs/site-lisp/yasnippet/snippets")
+  (yas/load-directory "/usr/share/emacs/site-lisp/yasnippet/snippets"))
 (setq yas/window-system-popup-function
       'yas/x-popup-menu-for-template)
 ;; auto-expand on tab
@@ -85,5 +87,12 @@ if __name__ == '__main__':
     ${2:pass}
 def depart_$1(self, node):
     ${3:pass}" "docutils node visit")
+   )
+ 'text-mode)
+
+(yas/define-snippets
+ 'rst-mode
+ '(
+   ("c" "\\`\\`$1\\`\\` $0" "code insertion")
    )
  'text-mode)
