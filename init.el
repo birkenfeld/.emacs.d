@@ -209,8 +209,10 @@
 (global-set-key (kbd "C-h a") 'apropos)
 
 ;; support back and forward mouse in Info and help
-(define-key help-mode-map (kbd "<mouse-8>") 'help-go-back)
-(define-key help-mode-map (kbd "<mouse-9>") 'help-go-forward)
+(eval-after-load 'help-mode
+  '(progn
+     (define-key help-mode-map (kbd "<mouse-8>") 'help-go-back)
+     (define-key help-mode-map (kbd "<mouse-9>") 'help-go-forward)))
 (eval-after-load 'info
   '(progn
      (define-key Info-mode-map (kbd "<mouse-8>") 'Info-history-back)
