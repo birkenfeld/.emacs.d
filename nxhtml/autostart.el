@@ -150,7 +150,7 @@
     (add-to-list 'load-path company-dir)
     (add-to-list 'load-path tests-dir)
 
-    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Autoloading etc
 
@@ -158,28 +158,28 @@
     ;;(unless noninteractive (require 'as-external))
 
     (load (expand-file-name "nxhtml-loaddefs" nxhtml-install-dir))
-    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Turn on `nxhtml-global-minor-mode' unconditionally
-    (nxhtml-global-minor-mode 1)
-    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    ;(nxhtml-global-minor-mode 1)
+    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Patch the rnc include paths
     (when (fboundp 'nxml-mode)
       (load (expand-file-name "etc/schema/schema-path-patch"
                               nxhtml-install-dir))
       (rncpp-patch-xhtml-loader))
-    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Load nXhtml
     (load (expand-file-name "nxhtml/nxhtml-autoload" nxhtml-install-dir)))
-    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
   ;; Tell what have been loaded of nXhtml:
   (nxhtml-list-loaded-features nil)
 
   ;; How long time did it all take?
-  (message "Nxml/Nxhtml Autostart.el loaded in %.1f seconds" (- (float-time) nxhtml-load-time-start))
+  ;(message "Nxml/Nxhtml Autostart.el loaded in %.1f seconds" (- (float-time) nxhtml-load-time-start))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

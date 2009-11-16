@@ -12,7 +12,8 @@
 (setq inhibit-startup-echo-area-message t)
 
 ;; Enable the Emacs server, allows thin editing sessions via emacsclient
-(server-start)
+(require 'server)
+(unless (server-running-p) (server-start))
 
 ;; Load custom variables and fonts
 (setq custom-file "~/.emacs.d/custom.el")
@@ -634,10 +635,10 @@
 ;; ---------- Extension configuration ------------------------------------------
 
 ;; load my extensions if they are present
-(load "extensions.el" t)
+(load "extensions.el" 'noerror)
 ;; and separately, those provided by the distribution (packed in different
 ;; files so that errors don't skip the whole file)
-(mapc (lambda (file) (load file t))
+(mapc (lambda (file) (load file 'noerror))
       (directory-files "~/.emacs.d/distext" t "\\.el"))
 ;; and finally, local settings that don't go into the repo
-(load "local.el" t)
+(load "local.el" 'noerror)
