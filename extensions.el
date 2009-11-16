@@ -44,6 +44,9 @@
       (browse-kill-ring)
     ad-do-it))
 
+;; display flymake errors in modeline
+(require 'flymake-cursor)
+
 ;; tabbar
 (require 'tabbar)
 (global-set-key [C-prior] 'tabbar-backward)

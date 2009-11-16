@@ -208,6 +208,10 @@
 ;; find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
 
+;; flymake error finding, similar to goto-next-error
+(global-set-key (kbd "M-g e") 'flymake-goto-next-error)
+(global-set-key (kbd "M-g M-e") 'flymake-goto-next-error)
+
 ;; support back and forward mouse in Info and help
 (eval-after-load 'help-mode
   '(progn
@@ -356,9 +360,25 @@
 
 ;; ---------- Python mode specifics --------------------------------------------
 
+;; support flymake in Python mode
+(require 'flymake)
+
+(defun flymake-pyflakes-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list "pyflakes" (list local-file))))
+
+(add-to-list 'flymake-allowed-file-name-masks
+             '("\\.py\\'" flymake-pyflakes-init)))
+
 (add-hook 'python-mode-hook (lambda ()
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)
+  ;; enable flymake processing by pyflakes
+  (flymake-mode 1)
   ;; death to trailing whitespace!
   (set-variable 'show-trailing-whitespace 1)
 
@@ -383,7 +403,6 @@
 ;; ---------- Haskell mode specifics -------------------------------------------
 
 ;; support flymake in Haskell mode
-(require 'flymake)
 
 (defun flymake-Haskell-init ()
   (flymake-simple-make-init-impl
