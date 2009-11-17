@@ -634,11 +634,13 @@
 
 ;; ---------- Extension configuration ------------------------------------------
 
+;; load all these files without stopping on errors
+(defun load-nonstop (file) (ignore-errors (load file t)))
+
 ;; load my extensions if they are present
-(load "extensions.el" 'noerror)
+(load-nonstop "extensions.el")
 ;; and separately, those provided by the distribution (packed in different
 ;; files so that errors don't skip the whole file)
-(mapc (lambda (file) (load file 'noerror))
-      (directory-files "~/.emacs.d/distext" t "\\.el"))
+(mapc 'load-nonstop (directory-files "~/.emacs.d/distext" t "\\.el"))
 ;; and finally, local settings that don't go into the repo
-(load "local.el" 'noerror)
+(load-nonstop "local.el")
