@@ -3,6 +3,19 @@
 ;; load preview-latex
 (require 'preview)
 
+;; scale up the default size a bit
+(defun my-preview-scale-from-face ()
+  "Calculate preview scale from `preview-reference-face'.
+This calculates the scale of EPS images from a document assumed
+to have a default font size given by function `preview-document-pt'
+so that they match the reference face in height."
+  `(lambda nil
+     (/ ,(/ (preview-inherited-face-attribute 'preview-reference-face :height
+					      'default) 10.0)
+	(* (preview-document-pt) 0.85))))
+
+(setq preview-scale-function 'my-preview-scale-from-face)
+
 ;; new version from CVS, fixes problems with position in \include files
 (defun LaTeX-pdfsync-output-page ()
   "Return page number in output file corresponding to buffer position."
