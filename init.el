@@ -356,7 +356,9 @@
       (c-set-style "python-new"))))
 
 (add-hook 'c-mode-hook 'c-select-style)
-(add-hook 'c-mode-hook 'c-subword-mode)
+;; c-subword-mode became subword-mode in Emacs 23.2
+(add-hook 'c-mode-hook (lambda ()
+  (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
 
 
 ;; ---------- Python mode specifics --------------------------------------------
@@ -379,7 +381,8 @@
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)
   ;; enable flymake processing by pyflakes
-  (flymake-mode 1)
+  (if buffer-file-name
+      (flymake-mode 1))
   ;; death to trailing whitespace!
   (set-variable 'show-trailing-whitespace 1)
 
