@@ -102,6 +102,12 @@
 (global-set-key (kbd "C-c p d") 'project-dired)
 (global-set-key (kbd "C-c p t") 'project-tags)
 
+;; fastnav
+(require 'fastnav)
+(global-set-key (kbd "M-s") 'jump-to-char-forward)
+(global-set-key (kbd "M-S") 'jump-to-char-backward)
+(global-set-key (kbd "M-m") 'mark-to-char-forward)
+(global-set-key (kbd "M-M") 'mark-to-char-backward)
 
 ;; ---------- autoloaded -------------------------------------------------------
 
