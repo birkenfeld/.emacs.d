@@ -1,5 +1,3 @@
-(setq message-log-max t)
-;(setq debug-on-error t)
 ;;; autostart.el --- Load nxhtml
 ;;
 ;; Author: By: Lennart Borgman
@@ -42,6 +40,11 @@
 ;;; Code:
 
 (message "Nxml/Nxhtml Autostart.el loading ...")
+
+(defconst nxhtml-menu:version "2.03")
+;;(setq message-log-max t)
+;;(setq debug-on-error t)
+
 (defconst nxhtml-load-time-start (float-time))
 
 (defconst nxhtml-install-dir
@@ -57,6 +60,19 @@
 ;; (defun nxhtml-custom-load-and-get-value (symbol)
 ;;   (custom-load-symbol symbol)
 ;;   (symbol-value symbol))
+
+(defun flymake-init-load-flymakemsg ()
+  (require 'flymakemsg))
+
+(defcustom nxhtml-flymake-setup t
+  "Let nXhtml add some addtions to flymake.
+This adds support for CSSS and JavaScript files.
+
+It also adds showing of errors in minibuffer when point is on
+them."
+  :type 'boolean
+  :group 'nxhtml
+  :group 'flymake)
 
 (defun nxhtml-custom-autoload (symbol load &optional noset)
   "Like `custom-autoload', but also run :set for defcustoms etc."
@@ -150,7 +166,7 @@
     (add-to-list 'load-path company-dir)
     (add-to-list 'load-path tests-dir)
 
-    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Autoloading etc
 
@@ -158,28 +174,34 @@
     ;;(unless noninteractive (require 'as-external))
 
     (load (expand-file-name "nxhtml-loaddefs" nxhtml-install-dir))
-    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Turn on `nxhtml-global-minor-mode' unconditionally
-    ;(nxhtml-global-minor-mode 1)
-    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    (nxhtml-global-minor-mode 1)
+    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Patch the rnc include paths
     (when (fboundp 'nxml-mode)
       (load (expand-file-name "etc/schema/schema-path-patch"
                               nxhtml-install-dir))
       (rncpp-patch-xhtml-loader))
-    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+    (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
 
     ;; Load nXhtml
     (load (expand-file-name "nxhtml/nxhtml-autoload" nxhtml-install-dir)))
-    ;(message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+  (message "... nXhtml loading %.1f seconds elapsed ..." (- (float-time) nxhtml-load-time-start))
+
+  ;; Flymake, this may break some users setup initially, but I see no better way...
+  (when nxhtml-flymake-setup
+    (flymake-js-load)
+    (flymake-css-load)
+    (add-hook 'flymake-mode-hook 'flymake-init-load-flymakemsg))
 
   ;; Tell what have been loaded of nXhtml:
   (nxhtml-list-loaded-features nil)
 
   ;; How long time did it all take?
-  ;(message "Nxml/Nxhtml Autostart.el loaded in %.1f seconds" (- (float-time) nxhtml-load-time-start))
+  (message "Nxml/Nxhtml Autostart.el loaded in %.1f seconds" (- (float-time) nxhtml-load-time-start))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

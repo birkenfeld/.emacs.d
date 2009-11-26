@@ -2,8 +2,8 @@
 ;;
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: Sat Apr 21 2007
-(defconst nxhtml-menu:version "2.01") ;;Version:
-;; Last-Updated: 2009-11-02 Mon
+;; Moved version to autostart.el.
+;; Last-Updated: 2009-11-18 Wed
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -74,7 +74,7 @@
 (eval-when-compile (when (fboundp 'nxml-mode) (require 'nxhtml-mode)))
 (eval-when-compile (require 'css-color))
 (eval-when-compile (require 'flymake))
-(eval-when-compile (require 'flymake-php))
+;;(eval-when-compile (require 'flymake-php))
 (eval-when-compile (require 'flymake-js))
 (eval-when-compile (require 'udev-ecb))
 ;;(eval-when-compile (require 'udev-cedet))
@@ -178,8 +178,8 @@
     ;; Fix-me: Workaround for Emacs bug on w32
     ;; http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=4015
     (if (eq system-type 'windows-nt)
-        (w32-shell-execute "open" file nil 1)
-      (browse-url-of-file file))
+        (w32-shell-execute nil (concat "file:///" file-to-browse) nil 1)
+      (browse-url-of-file file-to-browse))
     ))
 
 ;;;###autoload
@@ -302,6 +302,10 @@
       (define-key tools-map [nxhtml-viper-tut]
         (list 'menu-item "Viper try-out tutorial"
               'viper-tutorial))
+      (define-key tools-map [rebind-keys]
+        (list 'menu-item "Rebind Some Keys" 'rebind-keys-mode
+              :button '(:toggle . (and (boundp 'rebind-keys-mode)
+                                       rebind-keys-mode))))
       (define-key tools-map [nxhtml-menu-to-m-x]
         (list 'menu-item "Add Menu Commands to M-x history"
               'ourcomments-M-x-menu-mode
@@ -547,6 +551,10 @@
                             (tidy-build-menu)
                             (or (derived-mode-p 'html-mode)
                                 (nxhtml-nxhtml-in-buffer)))))
+      (define-key tools-map [zencoding]
+        (list 'menu-item "Zen coding for HTML/CSS" 'zencoding-mode
+              :button '(:toggle . (and (boundp 'zencoding-mode)
+                                       zencoding-mode))))
       (define-key tools-map [nxhtml-flymake]
         (list 'menu-item "Flymake Mode" 'flymake-mode
               :button '(:toggle . (and (boundp 'flymake-mode)

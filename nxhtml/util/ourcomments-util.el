@@ -50,7 +50,23 @@
 (eval-when-compile (require 'ido))
 ;;(eval-when-compile (require 'mumamo))
 (eval-when-compile (require 'recentf))
+(eval-when-compile (require 'bookmark))
+(eval-when-compile (require 'uniquify))
 
+;; (ourcomments-indirect-fun 'html-mumamo)
+;; (ourcomments-indirect-fun 'html-mumamo-mode)
+;;;###autoload
+(defun ourcomments-indirect-fun (fun)
+  "Get the alias symbol for function FUN if any."
+  ;; This code is from `describe-function-1'.
+  (when (and (symbolp fun)
+             (functionp fun))
+    (let ((def (symbol-function fun)))
+      (when (symbolp def)
+        (while (and (fboundp def)
+                    (symbolp (symbol-function def)))
+          (setq def (symbol-function def)))
+        def))))
 
 (defun ourcomments-goto-line (line)
   "A version of `goto-line' for use in elisp code."
@@ -357,6 +373,24 @@ To create a menu item something similar to this can be used:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Widgets
 
+;;;###autoload
+(defun ourcomments-mark-whole-buffer-or-field ()
+  "Mark whole buffer or editable field at point."
+  (interactive)
+  (let* ((field (widget-field-at (point)))
+         (from (when field (widget-field-start field)))
+         (to   (when field (widget-field-end field)))
+         (size (when field (widget-get field :size))))
+    (if (not field)
+        (mark-whole-buffer)
+      (while (and size
+                  (not (zerop size))
+                  (> to from)
+                  (eq (char-after (1- to)) ?\s))
+        (setq to (1- to)))
+      (push-mark (point))
+      (push-mark from nil t)
+      (goto-char to))))
 
 ;; (rassq 'genshi-nxhtml-mumamo-mode mumamo-defined-turn-on-functions)
 ;; (major-modep 'nxhtml-mode)
@@ -387,10 +421,13 @@ To create a menu item something similar to this can be used:
 See `beginning-of-line' for ARG.
 
 If `line-move-visual' is non-nil then the visual line beginning
-is first tried."
+is first tried.
+
+If in a widget field stay in that."
   (interactive "p")
   (let ((pos (point))
-        vis-pos)
+        vis-pos
+        (field (widget-field-at (point))))
     (when line-move-visual
       (line-move-visual -1 t)
       (beginning-of-line)
@@ -408,7 +445,10 @@ is first tried."
       (if (= 0 (current-column))
           (skip-chars-forward " \t")
         (backward-char)
-        (beginning-of-line)))))
+        (beginning-of-line)))
+    (when (and field
+               (< (point) (widget-field-start field)))
+      (goto-char (widget-field-start field)))))
 (put 'ourcomments-move-beginning-of-line 'CUA 'move)
 
 ;;;###autoload
@@ -880,6 +920,9 @@ the installed Emacs tree.  If buffer contains an Emacs elisp file
 in one of these places then find the corresponding elisp file in
 the other place. Return the file name of this file.
 
+Rename current buffer using your `uniquify-buffer-name-style' if
+it is set.
+
 When DISPLAY-FILE is non-nil display this file in other window
 and go to the same line number as in the current buffer."
   (interactive (list t))
@@ -917,6 +960,8 @@ and go to the same line number as in the current buffer."
     (unless (file-exists-p other-file)
       (error "Can't find the corresponding file %s" other-file))
     (when display-file
+      (when uniquify-buffer-name-style
+        (rename-buffer (file-name-nondirectory buffer-file-name) t))
       (find-file-other-window other-file)
       (ourcomments-goto-line line-num))
     other-file))

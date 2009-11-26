@@ -480,24 +480,24 @@ such palette into a css-file as hexadecimal color palette.
 ;;;***
 
 ;;;### (autoloads (hfyview-frame hfyview-window hfyview-region hfyview-buffer)
-;;;;;;  "hfyview" "util/hfyview.el" (19064 13016))
+;;;;;;  "hfyview" "util/hfyview.el" (19206 9231))
 ;;; Generated autoloads from util/hfyview.el
 
 (autoload 'hfyview-buffer "hfyview" "\
 Convert buffer to html preserving faces and show in web browser.
-With command prefix also show created HTML source in other window.
+With command prefix ARG also show html source in other window.
 
 \(fn ARG)" t nil)
 
 (autoload 'hfyview-region "hfyview" "\
 Convert region to html preserving faces and show in web browser.
-With command prefix also show created HTML source in other window.
+With command prefix ARG also show html source in other window.
 
 \(fn ARG)" t nil)
 
 (autoload 'hfyview-window "hfyview" "\
 Convert window to html preserving faces and show in web browser.
-With command prefix also show created HTML source in other window.
+With command prefix ARG also show html source in other window.
 
 \(fn ARG)" t nil)
 
@@ -510,14 +510,18 @@ If WHOLE-BUFFERS is non-nil then the whole content of the buffers
 is shown in the XHTML page, otherwise just the part that is
 visible currently on the frame.
 
-With command prefix also show created HTML source in other window.
+If you turn on the minor mode `hfyview-frame-mode' you can also
+get the minibuffer/echo area in the output. See this mode for
+details.
+
+With command prefix also show html source in other window.
 
 \(fn WHOLE-BUFFERS)" t nil)
 
 ;;;***
 
 ;;;### (autoloads (hl-needed-mode) "hl-needed" "util/hl-needed.el"
-;;;;;;  (19186 57433))
+;;;;;;  (19210 58321))
 ;;; Generated autoloads from util/hl-needed.el
 
 (defvar hl-needed-mode nil "\
@@ -568,7 +572,7 @@ highlighting here.
 ;;;***
 
 ;;;### (autoloads (html-write-mode) "html-write" "util/html-write.el"
-;;;;;;  (19186 19648))
+;;;;;;  (19205 27542))
 ;;; Generated autoloads from util/html-write.el
 
 (autoload 'html-write-mode "html-write" "\
@@ -599,31 +603,6 @@ easier to see what text you are actually writing in html parts of
 a web file.
 
 \(fn &optional ARG)" t nil)
-
-;;;***
-
-;;;### (autoloads (htmlfontify-buffer) "htmlfontify" "util/htmlfontify.el"
-;;;;;;  (18790 45400))
-;;; Generated autoloads from util/htmlfontify.el
-
-(autoload 'htmlfontify-buffer "htmlfontify" "\
-Create a new buffer, named for the current buffer + a .html extension,
-containing an inline css-stylesheet and formatted css-markup html
-that reproduces the look of the current emacs buffer as closely
-as possible.
-
-Dangerous characters in the existing buffer are turned into html
-entities, so you should even be able to do html-within-html
-fontified display.
-
-You should, however, note that random control or eight-bit
-characters such as ^L () or ¤ (\244) won't get mapped yet.
-
-If the SRCDIR and FILE arguments are set, lookup etags derived
-entries in the `hfy-tags-cache' and add html anchors and
-hyperlinks as appropriate.
-
-\(fn &optional SRCDIR FILE)" t nil)
 
 ;;;***
 
@@ -681,8 +660,8 @@ See also the command `inlimg-mode'.
 ;;;***
 
 ;;;### (autoloads (majmodpri majmodpri-apply-priorities majmodpri-apply
-;;;;;;  majmodpri-sort-lists) "majmodpri" "util/majmodpri.el" (19186
-;;;;;;  4938))
+;;;;;;  majmodpri-sort-lists) "majmodpri" "util/majmodpri.el" (19210
+;;;;;;  50719))
 ;;; Generated autoloads from util/majmodpri.el
 
 (autoload 'majmodpri-sort-lists "majmodpri" "\
@@ -719,7 +698,7 @@ before applying.
 ;;;***
 
 ;;;### (autoloads (mlinks-global-mode mlinks-mode) "mlinks" "util/mlinks.el"
-;;;;;;  (19186 12283))
+;;;;;;  (19186 16098))
 ;;; Generated autoloads from util/mlinks.el
 
 (autoload 'mlinks-mode "mlinks" "\
@@ -771,7 +750,7 @@ See `mlinks-mode' for more information on Mlinks mode.
 ;;;***
 
 ;;;### (autoloads (mumamo-multi-major-modep mumamo-mark-for-refontification)
-;;;;;;  "mumamo" "util/mumamo.el" (19186 55769))
+;;;;;;  "mumamo" "util/mumamo.el" (19211 9537))
 ;;; Generated autoloads from util/mumamo.el
 
 (autoload 'mumamo-mark-for-refontification "mumamo" "\
@@ -791,11 +770,11 @@ Return t if VALUE is a multi major mode function.
 ;;;;;;  metapost-mumamo-mode ruby-heredoc-mumamo-mode python-heredoc-mumamo-mode
 ;;;;;;  cperl-heredoc-mumamo-mode perl-heredoc-mumamo-mode php-heredoc-mumamo-mode
 ;;;;;;  sh-heredoc-mumamo-mode eruby-html-mumamo-mode eruby-mumamo-mode
-;;;;;;  jsp-html-mumamo-mode gsp-html-mumamo-mode smarty-html-mumamo-mode
-;;;;;;  mjt-html-mumamo-mode genshi-html-mumamo-mode django-html-mumamo-mode
-;;;;;;  embperl-html-mumamo-mode mason-html-mumamo-mode nxml-mumamo-mode
-;;;;;;  html-mumamo-mode) "mumamo-fun" "util/mumamo-fun.el" (19185
-;;;;;;  60621))
+;;;;;;  jsp-html-mumamo-mode gsp-html-mumamo-mode ssjs-html-mumamo-mode
+;;;;;;  smarty-html-mumamo-mode mjt-html-mumamo-mode genshi-html-mumamo-mode
+;;;;;;  django-html-mumamo-mode embperl-html-mumamo-mode mason-html-mumamo-mode
+;;;;;;  nxml-mumamo-mode html-mumamo-mode) "mumamo-fun" "util/mumamo-fun.el"
+;;;;;;  (19210 45748))
 ;;; Generated autoloads from util/mumamo-fun.el
 
 (autoload 'html-mumamo-mode "mumamo-fun" "\
@@ -842,6 +821,10 @@ This also covers inlined style and javascript." t)
 (autoload 'smarty-html-mumamo-mode "mumamo-fun" "\
 Turn on multiple major modes for Smarty with main mode `html-mode'.
 This also covers inlined style and javascript." t)
+
+(autoload 'ssjs-html-mumamo-mode "mumamo-fun" "\
+Turn on multiple major modes for SSJS with main mode `html-mode'.
+This covers inlined style and javascript." t)
 
 (autoload 'gsp-html-mumamo-mode "mumamo-fun" "\
 Turn on multiple major modes for GSP with main mode `html-mode'.
@@ -1025,39 +1008,6 @@ Run the tests specified by SELECTOR and display the results in a buffer.
 
 ;;;***
 
-;;;### (autoloads (org-freemind-to-org-mode org-freemind-from-org-sparse-tree
-;;;;;;  org-freemind-from-org-mode org-freemind-from-org-mode-node
-;;;;;;  org-freemind-show) "org-freemind" "util/org-freemind.el"
-;;;;;;  (19185 52183))
-;;; Generated autoloads from util/org-freemind.el
-
-(autoload 'org-freemind-show "org-freemind" "\
-Show file MM-FILE in Freemind.
-
-\(fn MM-FILE)" t nil)
-
-(autoload 'org-freemind-from-org-mode-node "org-freemind" "\
-Convert node at line NODE-LINE to the FreeMind file MM-FILE.
-
-\(fn NODE-LINE MM-FILE)" t nil)
-
-(autoload 'org-freemind-from-org-mode "org-freemind" "\
-Convert the `org-mode' file ORG-FILE to the FreeMind file MM-FILE.
-
-\(fn ORG-FILE MM-FILE)" t nil)
-
-(autoload 'org-freemind-from-org-sparse-tree "org-freemind" "\
-Convert visible part of buffer ORG-BUFFER to FreeMind file MM-FILE.
-
-\(fn ORG-BUFFER MM-FILE)" t nil)
-
-(autoload 'org-freemind-to-org-mode "org-freemind" "\
-Convert FreeMind file MM-FILE to `org-mode' file ORG-FILE.
-
-\(fn MM-FILE ORG-FILE)" t nil)
-
-;;;***
-
 ;;;### (autoloads (ourcomments-warning ourcomments-M-x-menu-mode
 ;;;;;;  use-custom-style info-open-file grep-query-replace emacs-Q-nxhtml
 ;;;;;;  emacs-Q emacs--no-desktop emacs--debug-init emacs-buffer-file
@@ -1067,10 +1017,16 @@ Convert FreeMind file MM-FILE to `org-mode' file ORG-FILE.
 ;;;;;;  narrow-to-comment buffer-narrowed-p describe-command ourcomments-ediff-files
 ;;;;;;  find-emacs-other-file better-fringes-mode describe-key-and-map-briefly
 ;;;;;;  ourcomments-move-end-of-line ourcomments-move-beginning-of-line
-;;;;;;  unfill-individual-paragraphs unfill-region unfill-paragraph
-;;;;;;  define-toggle popup-menu-at-point) "ourcomments-util" "util/ourcomments-util.el"
-;;;;;;  (19184 43552))
+;;;;;;  ourcomments-mark-whole-buffer-or-field unfill-individual-paragraphs
+;;;;;;  unfill-region unfill-paragraph define-toggle popup-menu-at-point
+;;;;;;  ourcomments-indirect-fun) "ourcomments-util" "util/ourcomments-util.el"
+;;;;;;  (19211 2191))
 ;;; Generated autoloads from util/ourcomments-util.el
+
+(autoload 'ourcomments-indirect-fun "ourcomments-util" "\
+Get the alias symbol for function FUN if any.
+
+\(fn FUN)" nil nil)
 
 (autoload 'popup-menu-at-point "ourcomments-util" "\
 Popup the given menu at point.
@@ -1121,12 +1077,19 @@ Unfill individual paragraphs in the current region.
 
 \(fn)" t nil)
 
+(autoload 'ourcomments-mark-whole-buffer-or-field "ourcomments-util" "\
+Mark whole buffer or editable field at point.
+
+\(fn)" t nil)
+
 (autoload 'ourcomments-move-beginning-of-line "ourcomments-util" "\
 Move point to beginning of line or indentation.
 See `beginning-of-line' for ARG.
 
 If `line-move-visual' is non-nil then the visual line beginning
 is first tried.
+
+If in a widget field stay in that.
 
 \(fn ARG)" t nil)
 
@@ -1174,6 +1137,9 @@ Emacs lisp files in two places, the checked out source tree and
 the installed Emacs tree.  If buffer contains an Emacs elisp file
 in one of these places then find the corresponding elisp file in
 the other place. Return the file name of this file.
+
+Rename current buffer using your `uniquify-buffer-name-style' if
+it is set.
 
 When DISPLAY-FILE is non-nil display this file in other window
 and go to the same line number as in the current buffer.
@@ -1414,6 +1380,32 @@ See `pointback-mode' for more information on Pointback mode.
 
 ;;;***
 
+;;;### (autoloads (rebind-keys-mode) "rebind" "util/rebind.el" (19210
+;;;;;;  51268))
+;;; Generated autoloads from util/rebind.el
+
+(defvar rebind-keys-mode nil "\
+Non-nil if Rebind-Keys mode is enabled.
+See the command `rebind-keys-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `rebind-keys-mode'.")
+
+(nxhtml-custom-autoload 'rebind-keys-mode "rebind" nil)
+
+(autoload 'rebind-keys-mode "rebind" "\
+Rebind keys as defined in `rebind-keys'.
+The key bindings will override almost all other key bindings
+since it is put on emulation level, like for example ``cua-mode'
+and `viper-mode'.
+
+This is for using for example C-a to mark the whole buffer (or a
+field). There are some predifined keybindings for this.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads (rnc-mode) "rnc-mode" "util/rnc-mode.el" (18775
 ;;;;;;  60004))
 ;;; Generated autoloads from util/rnc-mode.el
@@ -1427,7 +1419,7 @@ Major mode for editing RELAX NG Compact Syntax schemas.
 ;;;***
 
 ;;;### (autoloads (search-form) "search-form" "util/search-form.el"
-;;;;;;  (19173 56140))
+;;;;;;  (19210 2777))
 ;;; Generated autoloads from util/search-form.el
 
 (autoload 'search-form "search-form" "\
@@ -1475,7 +1467,7 @@ handled is governed by `sex-keep-dummy-buffer'.
 ;;;***
 
 ;;;### (autoloads (tabkey2-mode tabkey2-emma-without-tabkey2) "tabkey2"
-;;;;;;  "util/tabkey2.el" (19186 6102))
+;;;;;;  "util/tabkey2.el" (19206 1897))
 ;;; Generated autoloads from util/tabkey2.el
 
 (autoload 'tabkey2-emma-without-tabkey2 "tabkey2" "\
@@ -1784,6 +1776,21 @@ wikipedia-draft-data-file.
 
 ;;;***
 
+;;;### (autoloads (visual-basic-mode) "visual-basic-mode" "related/visual-basic-mode.el"
+;;;;;;  (19210 19336))
+;;; Generated autoloads from related/visual-basic-mode.el
+
+(autoload 'visual-basic-mode "visual-basic-mode" "\
+A mode for editing Microsoft Visual Basic programs.
+Features automatic indentation, font locking, keyword capitalization,
+and some minor convenience functions.
+Commands:
+\\{visual-basic-mode-map}
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (tt-mode) "tt-mode" "related/tt-mode.el" (18603
 ;;;;;;  15792))
 ;;; Generated autoloads from related/tt-mode.el
@@ -1796,7 +1803,7 @@ Major mode for editing Template Toolkit files.
 ;;;***
 
 ;;;### (autoloads (smarty-mode) "smarty-mode" "related/smarty-mode.el"
-;;;;;;  (19185 53121))
+;;;;;;  (19186 16098))
 ;;; Generated autoloads from related/smarty-mode.el
 
 (autoload 'smarty-mode "smarty-mode" "\
@@ -2410,33 +2417,25 @@ Major mode for interacting with Firefox via MozRepl.
 
 ;;;***
 
-;;;### (autoloads (javascript-mode) "javascript" "related/javascript.el"
-;;;;;;  (19173 56140))
-;;; Generated autoloads from related/javascript.el
+;;;### (autoloads (flymake-js-load) "flymake-js" "related/flymake-js.el"
+;;;;;;  (19210 18357))
+;;; Generated autoloads from related/flymake-js.el
 
-(autoload 'javascript-mode "javascript" "\
-Major mode for editing JavaScript source text.
+(autoload 'flymake-js-load "flymake-js" "\
+Not documented
 
-Key bindings:
-
-\\{javascript-mode-map}
-
-\(fn)" t nil)
+\(fn)" nil nil)
 
 ;;;***
 
-;;;### (autoloads (espresso-mode) "espresso" "related/espresso.el"
-;;;;;;  (19039 48498))
-;;; Generated autoloads from related/espresso.el
+;;;### (autoloads (flymake-css-load) "flymake-css" "related/flymake-css.el"
+;;;;;;  (19210 12072))
+;;; Generated autoloads from related/flymake-css.el
 
-(autoload 'espresso-mode "espresso" "\
-Major mode for editing JavaScript source text.
+(autoload 'flymake-css-load "flymake-css" "\
+Not documented
 
-Key bindings:
-
-\\{espresso-mode-map}
-
-\(fn)" t nil)
+\(fn)" nil nil)
 
 ;;;***
 
@@ -2472,8 +2471,8 @@ Key bindings:
 ;;;***
 
 ;;;### (autoloads (winsav-switch-config winsav-save-full-config winsav-save-mode
-;;;;;;  winsav-put-window-tree) "winsav" "util/winsav.el" (19173
-;;;;;;  56142))
+;;;;;;  winsav-put-window-tree) "winsav" "util/winsav.el" (19209
+;;;;;;  42838))
 ;;; Generated autoloads from util/winsav.el
 
 (autoload 'winsav-put-window-tree "winsav" "\
@@ -2758,7 +2757,7 @@ Not documented
 
 ;;;### (autoloads (wrap-to-fill-column-mode wrap-to-fill-left-marg-modes
 ;;;;;;  wrap-to-fill-left-marg) "wrap-to-fill" "util/wrap-to-fill.el"
-;;;;;;  (19186 2604))
+;;;;;;  (19188 6924))
 ;;; Generated autoloads from util/wrap-to-fill.el
 
 (defvar wrap-to-fill-left-marg nil "\
@@ -2779,11 +2778,12 @@ Use `fill-column' display columns in buffer windows.
 By default the display columns are centered, but see the option
 `wrap-to-fill-left-marg'.
 
+Fix-me:
 Note 1: When turning this on `visual-line-mode' is also turned on. This
 is not reset when turning off this mode.
 
-Note 2: The text property `wrap-prefix' is set by this mode to
-indent continuation lines.
+Note 2: The text properties 'wrap-prefix and 'wrap-to-fill-prefix
+is set by this mode to indent continuation lines.
 
 Key bindings added by this minor mode:
 
@@ -2828,7 +2828,7 @@ Used to set up a Tidy menu in your favourite mode.
 ;;;***
 
 ;;;### (autoloads (rngalt-set-validation-header) "rngalt" "nxhtml/rngalt.el"
-;;;;;;  (19173 56140))
+;;;;;;  (19206 61983))
 ;;; Generated autoloads from nxhtml/rngalt.el
 
 (autoload 'rngalt-set-validation-header "rngalt" "\
@@ -2886,7 +2886,7 @@ Check if external modules used by nXhtml are found.
 ;;;;;;  eruby-nxhtml-mumamo-mode jsp-nxhtml-mumamo-mode gsp-nxhtml-mumamo-mode
 ;;;;;;  smarty-nxhtml-mumamo-mode mjt-nxhtml-mumamo-mode genshi-nxhtml-mumamo-mode
 ;;;;;;  django-nxhtml-mumamo-mode embperl-nxhtml-mumamo-mode nxhtml-mumamo-mode)
-;;;;;;  "nxhtml-mumamo" "nxhtml/nxhtml-mumamo.el" (19185 60714))
+;;;;;;  "nxhtml-mumamo" "nxhtml/nxhtml-mumamo.el" (19206 4330))
 ;;; Generated autoloads from nxhtml/nxhtml-mumamo.el
 
 (autoload 'nxhtml-mumamo-mode "nxhtml-mumamo" "\
@@ -3071,7 +3071,7 @@ This mode may be turned on automatically in two ways:
 
 ;;;### (autoloads (nxhtml-overview nxhtml-global-minor-mode nxhtml-browse-region
 ;;;;;;  nxhtml-browse-file nxhtml-edit-with-gimp) "nxhtml-menu" "nxhtml/nxhtml-menu.el"
-;;;;;;  (19185 31903))
+;;;;;;  (19210 51174))
 ;;; Generated autoloads from nxhtml/nxhtml-menu.el
 
 (autoload 'nxhtml-edit-with-gimp "nxhtml-menu" "\
@@ -3235,23 +3235,75 @@ Update the table of contents inserted by `html-pagetoc-insert-toc'.
 
 ;;;***
 
+;;;### (autoloads (zencoding-preview zencoding-expand-yas zencoding-mode
+;;;;;;  zencoding-expand-line) "zencoding-mode" "util/zencoding-mode.el"
+;;;;;;  (19207 737))
+;;; Generated autoloads from util/zencoding-mode.el
+
+(autoload 'zencoding-expand-line "zencoding-mode" "\
+Replace the current line's zencode expression with the corresponding expansion.
+If prefix ARG is given or region is visible call `zencoding-preview' to start an
+interactive preview.
+
+Otherwise expand line directly.
+
+For more information see `zencoding-mode'.
+
+\(fn ARG)" t nil)
+
+(autoload 'zencoding-mode "zencoding-mode" "\
+Minor mode for writing HTML and CSS markup.
+With zen coding for HTML and CSS you can write a line like
+
+  ul#name>li.item*2
+
+and have it expanded to
+
+  <ul id=\"name\">
+    <li class=\"item\"></li>
+    <li class=\"item\"></li>
+  </ul>
+
+This minor mode defines keys for quick access:
+
+\\{zencoding-mode-keymap}
+
+Home page URL `http://www.emacswiki.org/emacs/ZenCoding'.
+
+See also `zencoding-expand-line'.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'zencoding-expand-yas "zencoding-mode" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload 'zencoding-preview "zencoding-mode" "\
+Expand zencode between BEG and END interactively.
+This will show a preview of the expanded zen code and you can
+accept it or skip it.
+
+\(fn BEG END)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil nil ("autostart.el" "autostart22.el" "etc/schema/schema-path-patch.el"
 ;;;;;;  "nxhtml/doc/cedet-build.el" "nxhtml/html-chklnk.el" "nxhtml/html-imenu.el"
 ;;;;;;  "nxhtml/html-move.el" "nxhtml/html-quote.el" "nxhtml/html-wtoc.el"
 ;;;;;;  "nxhtml/nxhtml-autoload.el" "nxhtml/nxhtml-strval.el" "nxhtml/nxhtmljs.el"
 ;;;;;;  "nxhtml/outline-magic.el" "nxhtml/wtest.el" "related/flymake-helpers.el"
-;;;;;;  "related/flymake-js.el" "related/flymake-keys.el" "related/flymake-php.el"
-;;;;;;  "related/flymu.el" "related/javascript-old.el" "related/php-imenu.el"
+;;;;;;  "related/flymakemsg.el" "related/flymu.el" "related/php-imenu.el"
 ;;;;;;  "tests/angus77-setup-jde.el" "tests/emacstest-suites.el"
 ;;;;;;  "tests/ert2.el" "tests/hfy-test.el" "tests/inemacs/bug1013.el"
 ;;;;;;  "tests/mumamo-test.el" "tests/nxhtmltest-helpers.el" "tests/temp-test.el"
-;;;;;;  "util/appmenu-fold.el" "util/buffer-bg.el" "util/custsets.el"
-;;;;;;  "util/ecb-batch-compile.el" "util/ffip.el" "util/fupd.el"
-;;;;;;  "util/htmlfontify.21.el" "util/key-cat.el" "util/mumamo-aspnet.el"
-;;;;;;  "util/mumamo-trace.el" "util/new-key-seq-widget.el" "util/nxml-mode-os-additions.el"
-;;;;;;  "util/ocr-user.el" "util/org-panel.el" "util/popcmp.el" "util/rebind.el"
-;;;;;;  "util/rxi.el" "util/udev-nxhtml.el" "util/useful-commands.el"
-;;;;;;  "util/whelp.el" "util/zen-mode.el") (19186 57606 875000))
+;;;;;;  "util/appmenu-fold.el" "util/buffer-bg.el" "util/css-simple-completion.el"
+;;;;;;  "util/custsets.el" "util/ecb-batch-compile.el" "util/ffip.el"
+;;;;;;  "util/fupd.el" "util/hfy-cmap.el" "util/htmlfontify.el" "util/key-cat.el"
+;;;;;;  "util/mumamo-aspnet.el" "util/mumamo-trace.el" "util/new-key-seq-widget.el"
+;;;;;;  "util/nxml-mode-os-additions.el" "util/ocr-user.el" "util/org-panel.el"
+;;;;;;  "util/popcmp.el" "util/rxi.el" "util/udev-nxhtml.el" "util/useful-commands.el"
+;;;;;;  "util/whelp.el") (19211 10458 609000))
 
 ;;;***
 
