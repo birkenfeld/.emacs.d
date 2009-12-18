@@ -9,7 +9,7 @@
  '(LaTeX-fill-break-at-separators (quote (\\\( \\\) \\\[ \\\])))
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook (quote (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
- '(LaTeX-verbatim-environments (quote ("verbatim" "verbatim*" "alltt" "listing")))
+ '(LaTeX-verbatim-environments (quote ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
  '(LaTeX-verbatim-regexp "verbatim\\*?\\|alltt\\|listing")
  '(TeX-auto-local ".auto/")
  '(TeX-bar-LaTeX-buttons (quote (open-file save-buffer cut copy paste undo [separator nil] latex next-error view file bibtex clean latex-symbols-experimental nil)))
@@ -261,7 +261,7 @@ mouse-3: Remove current window from display")))))
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :family "consolas"))))
+ '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "microsoft" :family "Consolas"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
