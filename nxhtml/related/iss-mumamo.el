@@ -1,8 +1,8 @@
-;;; flymake-helpers.el --- Helper functions for flymake
+;;; iss-mumamo.el --- Defines multi major mode for Inno Setup files
 ;;
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
-;; Created: 2008-07-21T14:30:20+0200 Mon
-;; Version:
+;; Created: 2008-08-09T23:29:02+0200 Sat
+;; Version: 0.2
 ;; Last-Updated:
 ;; URL:
 ;; Keywords:
@@ -44,33 +44,33 @@
 ;;
 ;;; Code:
 
-;; (flymake-create-temp-intemp buffer-file-name nil)
-(defun flymake-create-temp-intemp (file-name prefix)
-  "Return file name in temporary directory for checking FILE-NAME.
-This is a replacement for `flymake-create-temp-inplace'. The
-only difference is that it gives a file name in
-`temporary-file-directory' instead of the same directory as
-FILE-NAME.
+(require 'pascal nil t)
+(require 'iss-mode nil t)
+(require 'mumamo)
 
-For the use of PREFIX see that function.
+(defun mumamo-chunk-iss-code (pos min max)
+  "Find [code]...[, return range and `perl-mode'.
+See `mumamo-find-possible-chunk' for POS, MIN and MAX."
+  (mumamo-quick-static-chunk pos min max "[code]" "{*** End of CODE **}" nil 'pascal-mode nil))
 
-Note that not making the temporary file in another directory
-\(like here) will not work if the file you are checking depends
-on relative paths to other files \(for the type of checks flymake
-makes)."
-  (unless (stringp file-name)
-    (error "Invalid file-name"))
-  (or prefix
-      (setq prefix "flymake"))
-  (let* ((prefix (concat
-                  (file-name-nondirectory (file-name-sans-extension file-name))
-                  "_" prefix))
-         (suffix  (concat "." (file-name-extension file-name)))
-         (temp-name (make-temp-file prefix nil suffix)))
-    (flymake-log 3 "create-temp-intemp: file=%s temp=%s" file-name temp-name)
-    temp-name))
+;;;###autoload
+(define-mumamo-multi-major-mode iss-mumamo
+  "Turn on multiple major modes Inno Setup .iss files.
+The code section will be in `pascal-mode' while the rest will be
+in `iss-mode'.
 
+\[code]
 
-(provide 'flymake-helpers)
+... this will be in `pascal-mode'. Note the end mark below!
+
+{*** End of CODE **}
+"
+    ("Inno ISS Family" iss-mode
+     (mumamo-chunk-iss-code
+      )))
+
+(add-to-list 'auto-mode-alist '("\\.iss\\'" . iss-mumamo))
+
+(provide 'iss-mumamo)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; flymake-helpers.el ends here
+;;; iss-mumamo.el ends here

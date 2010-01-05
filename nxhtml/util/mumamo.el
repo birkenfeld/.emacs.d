@@ -392,7 +392,7 @@ errors.")
   "Set to t to stop fontification on errors.")
 
 (defun mumamo-message-with-face (msg face)
-  "Put MSG with face FACE in *Message* buffer."
+  "Put MSG with face FACE in *Messages* buffer."
   (let ((start (+ (with-current-buffer msgtrc-buffer
                     (point-max))
                   1))
@@ -413,7 +413,7 @@ errors.")
   "Tell the user there is a long error message."
   (save-match-data ;; runs in timer
     (mumamo-message-with-face
-     "MuMaMo error, please look in the *Message* buffer"
+     "MuMaMo error, please look in the *Messages* buffer"
      'highlight)))
 
 ;; This code can't be used now because `debugger' is currently not
@@ -452,7 +452,7 @@ errors.")
 
 ;;(mumamo-display-error 'test-lwarn-type "testing 1=%s, 2=%s" "one" 'two)
 (defun mumamo-display-error (lwarn-type format-string &rest args)
-  "Display a message plus traceback in the *Message* buffer.
+  "Display a message plus traceback in the *Messages* buffer.
 Use this for errors that happen during fontification or when
 running a timer.
 
@@ -460,15 +460,15 @@ LWARN-TYPE is used as the type argument to `lwarn' if warnings
 are displayed.  FORMAT-STRING and ARGS are used as the
 corresponding arguments to `message' and `lwarn'.
 
-All the output from this function in the *Message* buffer is
+All the output from this function in the *Messages* buffer is
 displayed with the highlight face.  After the message printed by
 `message' is traceback from where this function was called.
 Note: There is no error generated, just a traceback that is put
-in *Message* as above.
+in *Messages* as above.
 
 Display an error message using `message' and colorize it using
 the `highlight' face to make it more prominent.  Add a backtrace
-colored with the `highlight' face to the buffer *Message*.  Then
+colored with the `highlight' face to the buffer *Messages*.  Then
 display the error message once again after this so that the user
 can see it.
 
@@ -609,6 +609,7 @@ text buttons."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Custom group
 
+;;;###autoload
 (defgroup mumamo nil
   "Customization group for multiple major modes in a buffer."
   :group 'editing
@@ -982,6 +983,7 @@ indenting a line in a chunk."
   :group 'mumamo-indentation)
 
 
+;;;###autoload
 (defgroup mumamo-hi-lock-faces nil
   "Faces for hi-lock that are visible in mumamo multiple modes.
 This is a workaround for the problem that text properties are
@@ -1323,17 +1325,18 @@ is available.  In this case the return value is undefined.
 Otherwise END must be a position in the buffer.  Return the
 mumamo chunk containing the position.  If `mumamo-last-chunk'
 ends before END then create chunks upto END."
-  (let ((chunk (mumamo-find-chunks-1 end tracer))
-        region-info)
-    (when (and end chunk (featurep 'mumamo-regions))
-      (setq region-info (mumamo-get-region-from end))
-      ;;(msgtrc "find-chunks:region-info=%s" region-info)
-      (if (overlayp region-info)
-          (setq chunk region-info)
-        ;;(overlay-put chunk 'obscured (list end region-info))))
-        (mumamo-put-obscure chunk end region-info)))
-    ;;(msgtrc "find-chunks ret chunk=%s" chunk)
-    chunk))
+  (when mumamo-multi-major-mode
+    (let ((chunk (mumamo-find-chunks-1 end tracer))
+          region-info)
+      (when (and end chunk (featurep 'mumamo-regions))
+        (setq region-info (mumamo-get-region-from end))
+        ;;(msgtrc "find-chunks:region-info=%s" region-info)
+        (if (overlayp region-info)
+            (setq chunk region-info)
+          ;;(overlay-put chunk 'obscured (list end region-info))))
+          (mumamo-put-obscure chunk end region-info)))
+      ;;(msgtrc "find-chunks ret chunk=%s" chunk)
+      chunk)))
 
 (defun mumamo-find-chunks-1 (end tracer) ;; min max)
   ;; Note: This code must probably be reentrant.  The globals changed
@@ -4684,23 +4687,26 @@ Return the fetched local map."
 
 (defun mumamo-post-command-get-chunk (pos)
   "Get chunk at POS fast."
-  (if (and mumamo-post-command-chunk
-           (overlayp mumamo-post-command-chunk)
-           ;;(progn (message "here a=%s" mumamo-post-command-chunk) t)
-           (overlay-buffer mumamo-post-command-chunk)
-           ;;(progn (message "here b=%s" mumamo-post-command-chunk) t)
-           (< pos (overlay-end mumamo-post-command-chunk))
-           ;;(progn (message "here c=%s" mumamo-post-command-chunk) t)
-           (>= pos (overlay-start mumamo-post-command-chunk))
-           ;;(progn (message "here d=%s" mumamo-post-command-chunk) t)
-           (mumamo-chunk-major-mode mumamo-post-command-chunk)
-           ;;(progn (msgtrc "here e=%s" mumamo-post-command-chunk) t)
-           )
-      mumamo-post-command-chunk
-    ;;(msgtrc "--------------- new post-command-chunk")
-    (setq mumamo-post-command-chunk
-          (or (mumamo-get-existing-new-chunk-at (point))
-              (mumamo-find-chunks (point) "post-command-get-chunk")))))
+  (let ((have-regions (and (boundp 'mumamo-regions)
+                           mumamo-regions)))
+    (when have-regions (setq mumamo-post-command-chunk nil))
+    (if (and mumamo-post-command-chunk
+             (overlayp mumamo-post-command-chunk)
+             ;;(progn (message "here a=%s" mumamo-post-command-chunk) t)
+             (overlay-buffer mumamo-post-command-chunk)
+             ;;(progn (message "here b=%s" mumamo-post-command-chunk) t)
+             (< pos (overlay-end mumamo-post-command-chunk))
+             ;;(progn (message "here c=%s" mumamo-post-command-chunk) t)
+             (>= pos (overlay-start mumamo-post-command-chunk))
+             ;;(progn (message "here d=%s" mumamo-post-command-chunk) t)
+             (mumamo-chunk-major-mode mumamo-post-command-chunk)
+             ;;(progn (msgtrc "here e=%s" mumamo-post-command-chunk) t)
+             )
+        mumamo-post-command-chunk
+      ;;(msgtrc "--------------- new post-command-chunk")
+      (setq mumamo-post-command-chunk
+            (or (unless have-regions (mumamo-get-existing-new-chunk-at (point)))
+                (mumamo-find-chunks (point) "post-command-get-chunk"))))))
 
 ;; (setq mumamo-set-major-mode-delay 10)
 (defun mumamo-set-major-post-command ()
@@ -6339,8 +6345,8 @@ use `mumamo-quick-static-chunk'.")
 (defun mumamo-describe-chunks (chunks)
   "Return text describing CHUNKS."
   (let* ((desc
-          (concat "Main major mode: `" (symbol-name (nth 1 chunks)) "'\n"
-                  "\nFunctions for dividing into submodes:\n")))
+          (concat "* Main major mode: `" (symbol-name (nth 1 chunks)) "'\n"
+                  "\n* Functions for dividing into submodes:\n")))
     (dolist (divider (nth 2 chunks))
       (setq desc
             (concat
@@ -6533,12 +6539,10 @@ These are in the file mumamo-test.el."
            spec-doc
            "
 
-This function is called a multi major mode.  The main use for it
-is in `auto-mode-alist' to have Emacs do this setup whenever you
-open a file named in a certain way.  \(You can of course call
-this function directly yourself too.)
 
-It sets up for multiple mode in the following way:
+
+This function is called a multi major mode.  It sets up for
+multiple major modes in the buffer in the following way:
 
 "
            ;; Fix-me: During byte compilation the next line is not
@@ -6546,7 +6550,6 @@ It sets up for multiple mode in the following way:
            ;; not defined. How do I fix this?
            (funcall 'mumamo-describe-chunks chunks2)
            "
-
 At the very end this multi major mode function runs first the hook
 `mumamo-turn-on-hook' and then `" (symbol-name turn-on-hook) "'.
 
@@ -6556,17 +6559,21 @@ major mode's local keymap.
 
 The multi mode keymap is named `" (symbol-name turn-on-map) "'.
 
-Note: When adding new font-lock keywords for major mode chunks
-you should use the function `mumamo-refresh-multi-font-lock'
-afterwards.
 
-This major mode has an alias `mumamo-alias-"
-(symbol-name turn-on-fun) "'.
+
+The main use for a multi major mode is to use it instead of a
+normal major mode in `auto-mode-alist'.  \(You can of course call
+this function directly yourself too.)
 
 The value of `mumamo-multi-major-mode' tells you which multi
 major mode if any has been turned on in a buffer.  For more
 information about multi major modes please see
-`define-mumamo-multi-major-mode'."  )))
+`define-mumamo-multi-major-mode'.
+
+Note: When adding new font-lock keywords for major mode chunks
+you should use the function `mumamo-refresh-multi-font-lock'
+afterwards.
+"  )))
 `(progn
 (add-to-list 'mumamo-defined-multi-major-modes (cons (car ',chunks2) ',turn-on-fun))
 (defvar ,turn-on-hook nil ,turn-on-hook-doc)
@@ -6621,6 +6628,9 @@ A list with major mode at beginning and dito at the end of line
 is returned."
   ;; Fix-me: must take markers into account too when a submode
   ;; includes the markers.
+  ;;(message "mumamo-indent-current-line-chunks multi=%s" mumamo-multi-major-mode)
+  ;;(message "mumamo-indent-current-line-chunks cb=%s" (current-buffer))
+  ;;(message "mumamo-indent-current-line-chunks bt=%s" (mumamo-backtrace "here"))
   (save-restriction
     (widen)
     (let* ((lb-pos (line-beginning-position))

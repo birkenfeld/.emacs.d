@@ -267,6 +267,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Custom
 
+;;;###autoload
 (defgroup tabkey2 nil
   "Customization of second tab key press."
   :group 'nxhtml
@@ -1257,7 +1258,7 @@ nothing else is bound to Tab there."
                      last-input-event to-do-1
                      (if to-do-2 to-do-2 "(same)")))
         (when to-do-1
-          (let (mumamo-multi-major-mode)
+          (let (xmumamo-multi-major-mode)
               (tabkey2-call-interactively to-do-1)))
         (unless (tabkey2-read-only-p)
           (when to-do-2

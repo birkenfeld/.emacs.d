@@ -3,9 +3,71 @@
 ;; This file should be updated by `nxhtmlmaint-get-file-autoloads',
 ;; `nxhtmlmaint-get-dir-autoloads' or `nxhtmlmaint-get-all-autoloads'.
 
-;;;### (autoloads (appmenu-add) "appmenu" "util/appmenu.el" (18977
-;;;;;;  25246))
+;;;### (autoloads (cancel-secondary-selection set-secondary-selection
+;;;;;;  anchored-transpose) "anchored-transpose" "util/anchored-transpose.el"
+;;;;;;  (19213 56956))
+;;; Generated autoloads from util/anchored-transpose.el
+
+(autoload 'anchored-transpose "anchored-transpose" "\
+Transpose portions of the region around an anchor phrase.
+
+`this phrase but not that word'    can be transposed into
+`that word but not this phrase'
+
+I want this phrase but not that word.
+       |----------------------------|. .This is the entire phrase.
+                  |-------|. . . . . . .This is the anchor phrase.
+
+First select the entire phrase and type \\[anchored-transpose].
+This set the secondary selection.
+
+Then select the anchor phrase and type \\[anchored-transpose]
+again.  Alternatively you can do the selections like this:
+
+I want this phrase but not that word.
+       |----------|       |---------|   Separate phrase selection.
+
+By default the anchor phrase will automatically include
+any surrounding whitespace even if you don't explicitly select
+it.  Also, it won't include certain trailing punctuation.  See
+`anchored-transpose-do-fuzzy' for details.  A prefix arg prior to
+either selection means `no fuzzy logic, use selections
+literally'.
+
+You can select the regions to be swapped separately in any
+order.
+
+After swapping both primary and secondary selection are still
+active.  They will be canceled after second next command if you
+do not swap regions again.  (Second because this allow you to
+adjust the regions and try again.)
+
+You can also swap text between different buffers this way.
+
+Typing \\[anchored-transpose] with nothing selected clears any
+prior selection, ie secondary selection.
+
+\(fn BEG1 END1 FLG1 &optional BEG2 END2 FLG2 WIN2)" t nil)
+
+(autoload 'set-secondary-selection "anchored-transpose" "\
+Set the secondary selection to the current region.
+mouse-set-secondary
+This must be bound to a mouse drag event.
+
+\(fn BEG END)" t nil)
+
+(autoload 'cancel-secondary-selection "anchored-transpose" "\
+Not documented
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (appmenu-add appmenu) "appmenu" "util/appmenu.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from util/appmenu.el
+
+(let ((loads (get 'appmenu 'custom-loads))) (if (member '"appmenu" loads) nil (put 'appmenu 'custom-loads (cons '"appmenu" loads))))
 
 (autoload 'appmenu-add "appmenu" "\
 Add entry to `appmenu-alist'.
@@ -17,9 +79,11 @@ DEFINITION as explained there.
 ;;;***
 
 ;;;### (autoloads (as-external-mode as-external-for-wiki as-external-for-mail-mode
-;;;;;;  as-external-for-xhtml) "as-external" "util/as-external.el"
-;;;;;;  (19173 56140))
+;;;;;;  as-external-for-xhtml as-external) "as-external" "util/as-external.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from util/as-external.el
+
+(let ((loads (get 'as-external 'custom-loads))) (if (member '"as-external" loads) nil (put 'as-external 'custom-loads (cons '"as-external" loads))))
 
 (autoload 'as-external-for-xhtml "as-external" "\
 Setup for Firefox addon It's All Text to edit XHTML.
@@ -335,9 +399,11 @@ For more information about this see `cusnu-export-cust-group'.
 ;;;***
 
 ;;;### (autoloads (fold-dwim-turn-on-outline-and-hide-all fold-dwim-turn-on-hs-and-hide
-;;;;;;  fold-dwim-unhide-hs-and-outline fold-dwim-mode fold-dwim-toggle)
-;;;;;;  "fold-dwim" "util/fold-dwim.el" (19073 28098))
+;;;;;;  fold-dwim-unhide-hs-and-outline fold-dwim-mode fold-dwim-toggle
+;;;;;;  fold-dwim) "fold-dwim" "util/fold-dwim.el" (19218 42180))
 ;;; Generated autoloads from util/fold-dwim.el
+
+(let ((loads (get 'fold-dwim 'custom-loads))) (if (member '"fold-dwim" loads) nil (put 'fold-dwim 'custom-loads (cons '"fold-dwim" loads))))
 
 (autoload 'fold-dwim-toggle "fold-dwim" "\
 Toggle visibility or some other visual things.
@@ -400,9 +466,11 @@ Turn on `outline-minor-mode' and call `hide-body'.
 
 ;;;***
 
-;;;### (autoloads (foldit-global-mode foldit-mode) "foldit" "util/foldit.el"
-;;;;;;  (19173 56140))
+;;;### (autoloads (foldit-global-mode foldit-mode foldit) "foldit"
+;;;;;;  "util/foldit.el" (19218 42180))
 ;;; Generated autoloads from util/foldit.el
+
+(let ((loads (get 'foldit 'custom-loads))) (if (member '"foldit" loads) nil (put 'foldit 'custom-loads (cons '"foldit" loads))))
 
 (autoload 'foldit-mode "foldit" "\
 Minor mode providing visual aids for folding.
@@ -432,9 +500,11 @@ See `foldit-mode' for more information on Foldit mode.
 
 ;;;***
 
-;;;### (autoloads (gimpedit-can-edit gimpedit-edit-buffer gimpedit-edit-file)
-;;;;;;  "gimpedit" "util/gimpedit.el" (19184 30350))
+;;;### (autoloads (gimpedit-can-edit gimpedit-edit-buffer gimpedit-edit-file
+;;;;;;  gimpedit) "gimpedit" "util/gimpedit.el" (19218 42180))
 ;;; Generated autoloads from util/gimpedit.el
+
+(let ((loads (get 'gimpedit 'custom-loads))) (if (member '"gimpedit" loads) nil (put 'gimpedit 'custom-loads (cons '"gimpedit" loads))))
 
 (autoload 'gimpedit-edit-file "gimpedit" "\
 Edit IMAGE-FILE with GIMP.
@@ -480,7 +550,7 @@ such palette into a css-file as hexadecimal color palette.
 ;;;***
 
 ;;;### (autoloads (hfyview-frame hfyview-window hfyview-region hfyview-buffer)
-;;;;;;  "hfyview" "util/hfyview.el" (19206 9231))
+;;;;;;  "hfyview" "util/hfyview.el" (19206 60274))
 ;;; Generated autoloads from util/hfyview.el
 
 (autoload 'hfyview-buffer "hfyview" "\
@@ -520,9 +590,11 @@ With command prefix also show html source in other window.
 
 ;;;***
 
-;;;### (autoloads (hl-needed-mode) "hl-needed" "util/hl-needed.el"
-;;;;;;  (19210 58321))
+;;;### (autoloads (hl-needed-mode hl-needed) "hl-needed" "util/hl-needed.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from util/hl-needed.el
+
+(let ((loads (get 'hl-needed 'custom-loads))) (if (member '"hl-needed" loads) nil (put 'hl-needed 'custom-loads (cons '"hl-needed" loads))))
 
 (defvar hl-needed-mode nil "\
 Non-nil if Hl-Needed mode is enabled.
@@ -571,9 +643,11 @@ highlighting here.
 
 ;;;***
 
-;;;### (autoloads (html-write-mode) "html-write" "util/html-write.el"
-;;;;;;  (19205 27542))
+;;;### (autoloads (html-write-mode html-write) "html-write" "util/html-write.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from util/html-write.el
+
+(let ((loads (get 'html-write 'custom-loads))) (if (member '"html-write" loads) nil (put 'html-write 'custom-loads (cons '"html-write" loads))))
 
 (autoload 'html-write-mode "html-write" "\
 Minor mode for convenient display of some HTML tags.
@@ -607,8 +681,10 @@ a web file.
 ;;;***
 
 ;;;### (autoloads (inlimg-toggle-slicing inlimg-toggle-display inlimg-global-mode
-;;;;;;  inlimg-mode) "inlimg" "util/inlimg.el" (19157 2168))
+;;;;;;  inlimg-mode inlimg) "inlimg" "util/inlimg.el" (19218 42180))
 ;;; Generated autoloads from util/inlimg.el
+
+(let ((loads (get 'inlimg 'custom-loads))) (if (member '"inlimg" loads) nil (put 'inlimg 'custom-loads (cons '"inlimg" loads))))
 
 (autoload 'inlimg-mode "inlimg" "\
 Display images inline.
@@ -661,7 +737,7 @@ See also the command `inlimg-mode'.
 
 ;;;### (autoloads (majmodpri majmodpri-apply-priorities majmodpri-apply
 ;;;;;;  majmodpri-sort-lists) "majmodpri" "util/majmodpri.el" (19210
-;;;;;;  50719))
+;;;;;;  51418))
 ;;; Generated autoloads from util/majmodpri.el
 
 (autoload 'majmodpri-sort-lists "majmodpri" "\
@@ -697,9 +773,11 @@ before applying.
 
 ;;;***
 
-;;;### (autoloads (mlinks-global-mode mlinks-mode) "mlinks" "util/mlinks.el"
-;;;;;;  (19186 16098))
+;;;### (autoloads (mlinks-global-mode mlinks-mode mlinks) "mlinks"
+;;;;;;  "util/mlinks.el" (19218 42182))
 ;;; Generated autoloads from util/mlinks.el
+
+(let ((loads (get 'mlinks 'custom-loads))) (if (member '"mlinks" loads) nil (put 'mlinks 'custom-loads (cons '"mlinks" loads))))
 
 (autoload 'mlinks-mode "mlinks" "\
 Recognizes certain parts of a buffer as hyperlinks.
@@ -749,9 +827,14 @@ See `mlinks-mode' for more information on Mlinks mode.
 
 ;;;***
 
-;;;### (autoloads (mumamo-multi-major-modep mumamo-mark-for-refontification)
-;;;;;;  "mumamo" "util/mumamo.el" (19211 9537))
+;;;### (autoloads (mumamo-multi-major-modep mumamo-mark-for-refontification
+;;;;;;  mumamo-hi-lock-faces mumamo) "mumamo" "util/mumamo.el" (19221
+;;;;;;  15791))
 ;;; Generated autoloads from util/mumamo.el
+
+(let ((loads (get 'mumamo 'custom-loads))) (if (member '"mumamo" loads) nil (put 'mumamo 'custom-loads (cons '"mumamo" loads))))
+
+(let ((loads (get 'mumamo-hi-lock-faces 'custom-loads))) (if (member '"mumamo" loads) nil (put 'mumamo-hi-lock-faces 'custom-loads (cons '"mumamo" loads))))
 
 (autoload 'mumamo-mark-for-refontification "mumamo" "\
 Mark region between MIN and MAX for refontification.
@@ -766,15 +849,15 @@ Return t if VALUE is a multi major mode function.
 ;;;***
 
 ;;;### (autoloads (mako-html-mumamo-mode org-mumamo-mode asp-html-mumamo-mode
-;;;;;;  noweb2-mumamo-mode csound-sgml-mumamo-mode laszlo-nxml-mumamo-mode
-;;;;;;  metapost-mumamo-mode ruby-heredoc-mumamo-mode python-heredoc-mumamo-mode
-;;;;;;  cperl-heredoc-mumamo-mode perl-heredoc-mumamo-mode php-heredoc-mumamo-mode
-;;;;;;  sh-heredoc-mumamo-mode eruby-html-mumamo-mode eruby-mumamo-mode
-;;;;;;  jsp-html-mumamo-mode gsp-html-mumamo-mode ssjs-html-mumamo-mode
-;;;;;;  smarty-html-mumamo-mode mjt-html-mumamo-mode genshi-html-mumamo-mode
-;;;;;;  django-html-mumamo-mode embperl-html-mumamo-mode mason-html-mumamo-mode
-;;;;;;  nxml-mumamo-mode html-mumamo-mode) "mumamo-fun" "util/mumamo-fun.el"
-;;;;;;  (19210 45748))
+;;;;;;  noweb2-mumamo-mode mumamo-noweb2 csound-sgml-mumamo-mode
+;;;;;;  laszlo-nxml-mumamo-mode metapost-mumamo-mode ruby-heredoc-mumamo-mode
+;;;;;;  python-heredoc-mumamo-mode cperl-heredoc-mumamo-mode perl-heredoc-mumamo-mode
+;;;;;;  php-heredoc-mumamo-mode sh-heredoc-mumamo-mode eruby-html-mumamo-mode
+;;;;;;  eruby-mumamo-mode jsp-html-mumamo-mode gsp-html-mumamo-mode
+;;;;;;  ssjs-html-mumamo-mode smarty-html-mumamo-mode mjt-html-mumamo-mode
+;;;;;;  genshi-html-mumamo-mode django-html-mumamo-mode embperl-html-mumamo-mode
+;;;;;;  mason-html-mumamo-mode nxml-mumamo-mode html-mumamo-mode)
+;;;;;;  "mumamo-fun" "util/mumamo-fun.el" (19218 42182))
 ;;; Generated autoloads from util/mumamo-fun.el
 
 (autoload 'html-mumamo-mode "mumamo-fun" "\
@@ -878,6 +961,8 @@ Turn on multiple major modes for OpenLaszlo." t)
 (autoload 'csound-sgml-mumamo-mode "mumamo-fun" "\
 Turn on mutiple major modes for CSound orc/sco Modes." t)
 
+(let ((loads (get 'mumamo-noweb2 'custom-loads))) (if (member '"mumamo-fun" loads) nil (put 'mumamo-noweb2 'custom-loads (cons '"mumamo-fun" loads))))
+
 (autoload 'noweb2-mumamo-mode "mumamo-fun" "\
 Multi major mode for noweb files." t)
 
@@ -896,25 +981,41 @@ This also covers inlined style and javascript." t)
 
 ;;;***
 
-;;;### (autoloads (mumamo-add-region) "mumamo-regions" "util/mumamo-regions.el"
-;;;;;;  (19173 56140))
+;;;### (autoloads (mumamo-add-region-from-string mumamo-add-region)
+;;;;;;  "mumamo-regions" "util/mumamo-regions.el" (19211 21544))
 ;;; Generated autoloads from util/mumamo-regions.el
 
 (autoload 'mumamo-add-region "mumamo-regions" "\
-Add a mumamo region.
+Add a mumamo region from selection.
 Mumamo regions are like another layer of chunks above the normal chunks.
 They does not affect the normal chunks, but they overrides them.
 
 To create a mumamo region first select a visible region and then
 call this function.
 
+If the buffer is not in a multi major mode a temporary multi
+major mode will be created applied to the buffer first.
+To get out of this and get back to a single major mode just use
+
+  M-x normal-mode
+
+\(fn)" t nil)
+
+(autoload 'mumamo-add-region-from-string "mumamo-regions" "\
+Add a mumamo region from string at point.
+Works as `mumamo-add-region' but for string or comment at point.
+
+Buffer must be fontified.
+
 \(fn)" t nil)
 
 ;;;***
 
-;;;### (autoloads (n-back-game) "n-back" "util/n-back.el" (19173
-;;;;;;  56140))
+;;;### (autoloads (n-back-game n-back) "n-back" "util/n-back.el"
+;;;;;;  (19218 42182))
 ;;; Generated autoloads from util/n-back.el
+
+(let ((loads (get 'n-back 'custom-loads))) (if (member '"n-back" loads) nil (put 'n-back 'custom-loads (cons '"n-back" loads))))
 
 (autoload 'n-back-game "n-back" "\
 Emacs n-Back game.
@@ -1020,7 +1121,7 @@ Run the tests specified by SELECTOR and display the results in a buffer.
 ;;;;;;  ourcomments-mark-whole-buffer-or-field unfill-individual-paragraphs
 ;;;;;;  unfill-region unfill-paragraph define-toggle popup-menu-at-point
 ;;;;;;  ourcomments-indirect-fun) "ourcomments-util" "util/ourcomments-util.el"
-;;;;;;  (19211 2191))
+;;;;;;  (19218 42182))
 ;;; Generated autoloads from util/ourcomments-util.el
 
 (autoload 'ourcomments-indirect-fun "ourcomments-util" "\
@@ -1309,7 +1410,7 @@ Not documented
 ;;;***
 
 ;;;### (autoloads (major-modep major-or-multi-majorp) "ourcomments-widgets"
-;;;;;;  "util/ourcomments-widgets.el" (19184 30350))
+;;;;;;  "util/ourcomments-widgets.el" (19211 16870))
 ;;; Generated autoloads from util/ourcomments-widgets.el
  (autoload 'command "ourcomments-widgets")
 
@@ -1326,8 +1427,11 @@ Return t if VALUE is a major mode function.
 
 ;;;***
 
-;;;### (autoloads (pause-mode) "pause" "util/pause.el" (19173 56140))
+;;;### (autoloads (pause-mode pause) "pause" "util/pause.el" (19218
+;;;;;;  42182))
 ;;; Generated autoloads from util/pause.el
+
+(let ((loads (get 'pause 'custom-loads))) (if (member '"pause" loads) nil (put 'pause 'custom-loads (cons '"pause" loads))))
 
 (defvar pause-mode nil "\
 Non-nil if Pause mode is enabled.
@@ -1380,9 +1484,18 @@ See `pointback-mode' for more information on Pointback mode.
 
 ;;;***
 
-;;;### (autoloads (rebind-keys-mode) "rebind" "util/rebind.el" (19210
-;;;;;;  51268))
+;;;### (autoloads (popcmp) "popcmp" "util/popcmp.el" (19218 42182))
+;;; Generated autoloads from util/popcmp.el
+
+(let ((loads (get 'popcmp 'custom-loads))) (if (member '"popcmp" loads) nil (put 'popcmp 'custom-loads (cons '"popcmp" loads))))
+
+;;;***
+
+;;;### (autoloads (rebind-keys-mode rebind) "rebind" "util/rebind.el"
+;;;;;;  (19218 42182))
 ;;; Generated autoloads from util/rebind.el
+
+(let ((loads (get 'rebind 'custom-loads))) (if (member '"rebind" loads) nil (put 'rebind 'custom-loads (cons '"rebind" loads))))
 
 (defvar rebind-keys-mode nil "\
 Non-nil if Rebind-Keys mode is enabled.
@@ -1419,7 +1532,7 @@ Major mode for editing RELAX NG Compact Syntax schemas.
 ;;;***
 
 ;;;### (autoloads (search-form) "search-form" "util/search-form.el"
-;;;;;;  (19210 2777))
+;;;;;;  (19210 21948))
 ;;; Generated autoloads from util/search-form.el
 
 (autoload 'search-form "search-form" "\
@@ -1429,9 +1542,11 @@ Display a form for search and replace.
 
 ;;;***
 
-;;;### (autoloads (sex-mode) "sex-mode" "util/sex-mode.el" (19039
-;;;;;;  48498))
+;;;### (autoloads (sex-mode sex) "sex-mode" "util/sex-mode.el" (19218
+;;;;;;  42182))
 ;;; Generated autoloads from util/sex-mode.el
+
+(let ((loads (get 'sex 'custom-loads))) (if (member '"sex-mode" loads) nil (put 'sex 'custom-loads (cons '"sex-mode" loads))))
 
 (defvar sex-mode nil "\
 Non-nil if Sex mode is enabled.
@@ -1466,9 +1581,11 @@ handled is governed by `sex-keep-dummy-buffer'.
 
 ;;;***
 
-;;;### (autoloads (tabkey2-mode tabkey2-emma-without-tabkey2) "tabkey2"
-;;;;;;  "util/tabkey2.el" (19206 1897))
+;;;### (autoloads (tabkey2-mode tabkey2-emma-without-tabkey2 tabkey2)
+;;;;;;  "tabkey2" "util/tabkey2.el" (19218 42182))
 ;;; Generated autoloads from util/tabkey2.el
+
+(let ((loads (get 'tabkey2 'custom-loads))) (if (member '"tabkey2" loads) nil (put 'tabkey2 'custom-loads (cons '"tabkey2" loads))))
 
 (autoload 'tabkey2-emma-without-tabkey2 "tabkey2" "\
 Not documented
@@ -1669,6 +1786,43 @@ Display vertical line mode as globally.
 
 ;;;***
 
+;;;### (autoloads (nxhtml-download web-vcs-get-files-from-root) "web-vcs"
+;;;;;;  "util/web-vcs.el" (19221 38472))
+;;; Generated autoloads from util/web-vcs.el
+
+(autoload 'web-vcs-get-files-from-root "web-vcs" "\
+Download a file tree from VCS system using the web interface.
+Use WEB-VCS entry in variable `web-vcs-links-regexp' to download
+files via http from URL to directory DL-DIR.
+
+Show URL first and offer to visit the page.  That page will give
+you information about version control system (VCS) system used
+etc.
+
+\(fn WEB-VCS URL DL-DIR)" nil nil)
+
+(autoload 'nxhtml-download "web-vcs" "\
+Download or update nXhtml.
+If you already have nXhtml installed you can update it with this
+command.  Otherwise after downloading read the instructions in
+README.txt in the download directory for setting up nXhtml.
+\(This requires adding only one line to your .emacs, but you may
+optionally also byte compile the files from the nXhtml menu.)
+
+To learn more about nXhtml visit its home page at URL
+`http://www.emacswiki.com/NxhtmlMode/'.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (whelp) "whelp" "util/whelp.el" (19218 42182))
+;;; Generated autoloads from util/whelp.el
+
+(let ((loads (get 'whelp 'custom-loads))) (if (member '"whelp" loads) nil (put 'whelp 'custom-loads (cons '"whelp" loads))))
+
+;;;***
+
 ;;;### (autoloads (wikipedia-draft-buffer wikipedia-draft-page wikipedia-draft
 ;;;;;;  wikipedia-mode) "wikipedia-mode" "related/wikipedia-mode.el"
 ;;;;;;  (18790 45400))
@@ -1777,7 +1931,7 @@ wikipedia-draft-data-file.
 ;;;***
 
 ;;;### (autoloads (visual-basic-mode) "visual-basic-mode" "related/visual-basic-mode.el"
-;;;;;;  (19210 19336))
+;;;;;;  (19210 21948))
 ;;; Generated autoloads from related/visual-basic-mode.el
 
 (autoload 'visual-basic-mode "visual-basic-mode" "\
@@ -1802,9 +1956,11 @@ Major mode for editing Template Toolkit files.
 
 ;;;***
 
-;;;### (autoloads (smarty-mode) "smarty-mode" "related/smarty-mode.el"
-;;;;;;  (19186 16098))
+;;;### (autoloads (smarty-mode smarty) "smarty-mode" "related/smarty-mode.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from related/smarty-mode.el
+
+(let ((loads (get 'smarty 'custom-loads))) (if (member '"smarty-mode" loads) nil (put 'smarty 'custom-loads (cons '"smarty-mode" loads))))
 
 (autoload 'smarty-mode "smarty-mode" "\
 Smarty Mode
@@ -2302,9 +2458,11 @@ For Smarty functions, see PDF or HTML documentation.
 
 ;;;***
 
-;;;### (autoloads (php-mode php-file-patterns) "php-mode" "related/php-mode.el"
-;;;;;;  (19114 62258))
+;;;### (autoloads (php-mode php-file-patterns php) "php-mode" "related/php-mode.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from related/php-mode.el
+
+(let ((loads (get 'php 'custom-loads))) (if (member '"php-mode" loads) nil (put 'php 'custom-loads (cons '"php-mode" loads))))
 
 (defvar php-file-patterns '("\\.php[s34]?\\'" "\\.phtml\\'" "\\.inc\\'") "\
 List of file patterns for which to automatically invoke `php-mode'.")
@@ -2417,9 +2575,40 @@ Major mode for interacting with Firefox via MozRepl.
 
 ;;;***
 
-;;;### (autoloads (flymake-js-load) "flymake-js" "related/flymake-js.el"
-;;;;;;  (19210 18357))
+;;;### (autoloads (iss-mumamo) "iss-mumamo" "related/iss-mumamo.el"
+;;;;;;  (19221 36587))
+;;; Generated autoloads from related/iss-mumamo.el
+
+(autoload 'iss-mumamo "iss-mumamo" "\
+Turn on multiple major modes Inno Setup .iss files.
+The code section will be in `pascal-mode' while the rest will be
+in `iss-mode'.
+
+\[code]
+
+... this will be in `pascal-mode'. Note the end mark below!
+
+{*** End of CODE **}
+" t)
+
+;;;***
+
+;;;### (autoloads (iss-mode) "iss-mode" "related/iss-mode.el" (19219
+;;;;;;  1944))
+;;; Generated autoloads from related/iss-mode.el
+
+(autoload 'iss-mode "iss-mode" "\
+Major mode for editing InnoSetup script files. Upon startup iss-mode-hook is run.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (flymake-js-load flymake-js) "flymake-js" "related/flymake-js.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from related/flymake-js.el
+
+(let ((loads (get 'flymake-js 'custom-loads))) (if (member '"flymake-js" loads) nil (put 'flymake-js 'custom-loads (cons '"flymake-js" loads))))
 
 (autoload 'flymake-js-load "flymake-js" "\
 Not documented
@@ -2429,7 +2618,7 @@ Not documented
 ;;;***
 
 ;;;### (autoloads (flymake-css-load) "flymake-css" "related/flymake-css.el"
-;;;;;;  (19210 12072))
+;;;;;;  (19213 56810))
 ;;; Generated autoloads from related/flymake-css.el
 
 (autoload 'flymake-css-load "flymake-css" "\
@@ -2471,8 +2660,8 @@ Key bindings:
 ;;;***
 
 ;;;### (autoloads (winsav-switch-config winsav-save-full-config winsav-save-mode
-;;;;;;  winsav-put-window-tree) "winsav" "util/winsav.el" (19209
-;;;;;;  42838))
+;;;;;;  winsav winsav-put-window-tree) "winsav" "util/winsav.el"
+;;;;;;  (19218 42182))
 ;;; Generated autoloads from util/winsav.el
 
 (autoload 'winsav-put-window-tree "winsav" "\
@@ -2492,6 +2681,8 @@ At the very end of this function the hook `winsav-after-put' is
 run.
 
 \(fn SAVED-TREE WINDOW &optional COPY-WIN-OVL WIN-OVL-ALL-BUFS)" nil nil)
+
+(let ((loads (get 'winsav 'custom-loads))) (if (member '"winsav" loads) nil (put 'winsav 'custom-loads (cons '"winsav" loads))))
 
 (defvar winsav-save-mode nil "\
 Non-nil if Winsav-Save mode is enabled.
@@ -2756,9 +2947,11 @@ Not documented
 ;;;***
 
 ;;;### (autoloads (wrap-to-fill-column-mode wrap-to-fill-left-marg-modes
-;;;;;;  wrap-to-fill-left-marg) "wrap-to-fill" "util/wrap-to-fill.el"
-;;;;;;  (19188 6924))
+;;;;;;  wrap-to-fill-left-marg wrap-to-fill) "wrap-to-fill" "util/wrap-to-fill.el"
+;;;;;;  (19218 42182))
 ;;; Generated autoloads from util/wrap-to-fill.el
+
+(let ((loads (get 'wrap-to-fill 'custom-loads))) (if (member '"wrap-to-fill" loads) nil (put 'wrap-to-fill 'custom-loads (cons '"wrap-to-fill" loads))))
 
 (defvar wrap-to-fill-left-marg nil "\
 Left margin handling for `wrap-to-fill-column-mode'.
@@ -2793,9 +2986,9 @@ Key bindings added by this minor mode:
 
 ;;;***
 
-;;;### (autoloads (xhtml-help-show-tag-ref xhtml-help-tag-at-point
+;;;### (autoloads (xhtml-help xhtml-help-show-tag-ref xhtml-help-tag-at-point
 ;;;;;;  xhtml-help-show-css-ref) "xhtml-help" "nxhtml/xhtml-help.el"
-;;;;;;  (19173 56140))
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from nxhtml/xhtml-help.el
 
 (autoload 'xhtml-help-show-css-ref "xhtml-help" "\
@@ -2813,11 +3006,15 @@ Show xhtml reference for tag name at or before point.
 
 \(fn)" t nil)
 
+(let ((loads (get 'xhtml-help 'custom-loads))) (if (member '"xhtml-help" loads) nil (put 'xhtml-help 'custom-loads (cons '"xhtml-help" loads))))
+
 ;;;***
 
-;;;### (autoloads (tidy-build-menu) "tidy-xhtml" "nxhtml/tidy-xhtml.el"
-;;;;;;  (19148 46020))
+;;;### (autoloads (tidy-build-menu tidy) "tidy-xhtml" "nxhtml/tidy-xhtml.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from nxhtml/tidy-xhtml.el
+
+(let ((loads (get 'tidy 'custom-loads))) (if (member '"tidy-xhtml" loads) nil (put 'tidy 'custom-loads (cons '"tidy-xhtml" loads))))
 
 (autoload 'tidy-build-menu "tidy-xhtml" "\
 Set up the tidy menu in MAP.
@@ -2828,7 +3025,7 @@ Used to set up a Tidy menu in your favourite mode.
 ;;;***
 
 ;;;### (autoloads (rngalt-set-validation-header) "rngalt" "nxhtml/rngalt.el"
-;;;;;;  (19206 61983))
+;;;;;;  (19207 920))
 ;;; Generated autoloads from nxhtml/rngalt.el
 
 (autoload 'rngalt-set-validation-header "rngalt" "\
@@ -2838,9 +3035,11 @@ Not documented
 
 ;;;***
 
-;;;### (autoloads (nxml-where-global-mode nxml-where-mode) "nxml-where"
-;;;;;;  "nxhtml/nxml-where.el" (19173 56140))
+;;;### (autoloads (nxml-where-global-mode nxml-where-mode nxml-where)
+;;;;;;  "nxml-where" "nxhtml/nxml-where.el" (19218 42180))
 ;;; Generated autoloads from nxhtml/nxml-where.el
+
+(let ((loads (get 'nxml-where 'custom-loads))) (if (member '"nxml-where" loads) nil (put 'nxml-where 'custom-loads (cons '"nxml-where" loads))))
 
 (autoload 'nxml-where-mode "nxml-where" "\
 Shows path in mode line.
@@ -2866,9 +3065,11 @@ See `nxml-where-mode' for more information on Nxml-Where mode.
 
 ;;;***
 
-;;;### (autoloads (nxhtml-features-check nxhtml-customize) "nxhtml"
-;;;;;;  "nxhtml/nxhtml.el" (19183 27820))
+;;;### (autoloads (nxhtml-features-check nxhtml-customize nxhtml)
+;;;;;;  "nxhtml" "nxhtml/nxhtml.el" (19218 42180))
 ;;; Generated autoloads from nxhtml/nxhtml.el
+
+(let ((loads (get 'nxhtml 'custom-loads))) (if (member '"nxhtml" loads) nil (put 'nxhtml 'custom-loads (cons '"nxhtml" loads))))
 
 (autoload 'nxhtml-customize "nxhtml" "\
 Customize nXhtml.
@@ -2886,7 +3087,7 @@ Check if external modules used by nXhtml are found.
 ;;;;;;  eruby-nxhtml-mumamo-mode jsp-nxhtml-mumamo-mode gsp-nxhtml-mumamo-mode
 ;;;;;;  smarty-nxhtml-mumamo-mode mjt-nxhtml-mumamo-mode genshi-nxhtml-mumamo-mode
 ;;;;;;  django-nxhtml-mumamo-mode embperl-nxhtml-mumamo-mode nxhtml-mumamo-mode)
-;;;;;;  "nxhtml-mumamo" "nxhtml/nxhtml-mumamo.el" (19206 4330))
+;;;;;;  "nxhtml-mumamo" "nxhtml/nxhtml-mumamo.el" (19206 60274))
 ;;; Generated autoloads from nxhtml/nxhtml-mumamo.el
 
 (autoload 'nxhtml-mumamo-mode "nxhtml-mumamo" "\
@@ -3069,9 +3270,9 @@ This mode may be turned on automatically in two ways:
 
 ;;;***
 
-;;;### (autoloads (nxhtml-overview nxhtml-global-minor-mode nxhtml-browse-region
-;;;;;;  nxhtml-browse-file nxhtml-edit-with-gimp) "nxhtml-menu" "nxhtml/nxhtml-menu.el"
-;;;;;;  (19210 51174))
+;;;### (autoloads (nxhtml-overview nxhtml-global-minor-mode nxhtml-minor-mode
+;;;;;;  nxhtml-browse-region nxhtml-browse-file nxhtml-edit-with-gimp)
+;;;;;;  "nxhtml-menu" "nxhtml/nxhtml-menu.el" (19221 38557))
 ;;; Generated autoloads from nxhtml/nxhtml-menu.el
 
 (autoload 'nxhtml-edit-with-gimp "nxhtml-menu" "\
@@ -3088,6 +3289,12 @@ View file in web browser.
 View region in web browser.
 
 \(fn)" t nil)
+
+(autoload 'nxhtml-minor-mode "nxhtml-menu" "\
+Minor mode to turn on some key and menu bindings.
+See `nxhtml-mode' for more information.
+
+\(fn &optional ARG)" t nil)
 
 (defvar nxhtml-global-minor-mode nil "\
 Non-nil if Nxhtml-Global minor mode is enabled.
@@ -3124,11 +3331,21 @@ Report a bug in nXhtml.
 
 ;;;***
 
+;;;### (autoloads (html-wtoc) "html-wtoc" "nxhtml/html-wtoc.el" (19218
+;;;;;;  42180))
+;;; Generated autoloads from nxhtml/html-wtoc.el
+
+(let ((loads (get 'html-wtoc 'custom-loads))) (if (member '"html-wtoc" loads) nil (put 'html-wtoc 'custom-loads (cons '"html-wtoc" loads))))
+
+;;;***
+
 ;;;### (autoloads (html-upl-ediff-file html-upl-edit-remote-file-with-toc
 ;;;;;;  html-upl-edit-remote-file html-upl-upload-file html-upl-remote-dired
-;;;;;;  html-upl-upload-site html-upl-upload-site-with-toc) "html-upl"
-;;;;;;  "nxhtml/html-upl.el" (19173 56140))
+;;;;;;  html-upl-upload-site html-upl-upload-site-with-toc html-upl)
+;;;;;;  "html-upl" "nxhtml/html-upl.el" (19218 42180))
 ;;; Generated autoloads from nxhtml/html-upl.el
+
+(let ((loads (get 'html-upl 'custom-loads))) (if (member '"html-upl" loads) nil (put 'html-upl 'custom-loads (cons '"html-upl" loads))))
 
 (autoload 'html-upl-upload-site-with-toc "html-upl" "\
 Not documented
@@ -3169,16 +3386,20 @@ FILENAME could be either the remote or the local file.
 
 ;;;***
 
-;;;### (autoloads nil "html-toc" "nxhtml/html-toc.el" (18974 59066))
+;;;### (autoloads (html-toc) "html-toc" "nxhtml/html-toc.el" (19218
+;;;;;;  42180))
 ;;; Generated autoloads from nxhtml/html-toc.el
+
+(let ((loads (get 'html-toc 'custom-loads))) (if (member '"html-toc" loads) nil (put 'html-toc 'custom-loads (cons '"html-toc" loads))))
 
 (defconst html-toc-menu-map (let ((map (make-sparse-keymap))) (define-key map [html-toc-browse-frames-file] (list 'menu-item "Browse Frames File" 'html-toc-browse-frames-file)) (define-key map [html-toc-write-frames-file] (list 'menu-item "Write Frames File" 'html-toc-write-frames-file)) (define-key map [html-toc-write-toc-file] (list 'menu-item "Write TOC File for Frames" 'html-toc-write-toc-file)) (define-key map [html-toc-sep1] (list 'menu-item "--")) (define-key map [html-toc-edit-pages-file] (list 'menu-item "Edit List of Pages for TOC" 'html-site-edit-pages-file)) (define-key map [html-toc-create-pages-file] (list 'menu-item "Write List of Pages for TOC" 'html-toc-create-pages-file)) map))
 
 ;;;***
 
-;;;### (autoloads (html-site-query-replace html-site-rgrep html-site-find-file
-;;;;;;  html-site-dired-current html-site-set-site html-site-buffer-or-dired-file-name)
-;;;;;;  "html-site" "nxhtml/html-site.el" (19173 56140))
+;;;### (autoloads (html-site html-site-query-replace html-site-rgrep
+;;;;;;  html-site-find-file html-site-dired-current html-site-set-site
+;;;;;;  html-site-buffer-or-dired-file-name) "html-site" "nxhtml/html-site.el"
+;;;;;;  (19218 42180))
 ;;; Generated autoloads from nxhtml/html-site.el
 
 (autoload 'html-site-buffer-or-dired-file-name "html-site" "\
@@ -3212,11 +3433,16 @@ Query replace in current site's files.
 
 \(fn FROM TO FILE-REGEXP DELIMITED)" t nil)
 
+(let ((loads (get 'html-site 'custom-loads))) (if (member '"html-site" loads) nil (put 'html-site 'custom-loads (cons '"html-site" loads))))
+
 ;;;***
 
-;;;### (autoloads (html-pagetoc-rebuild-toc html-pagetoc-insert-toc)
-;;;;;;  "html-pagetoc" "nxhtml/html-pagetoc.el" (19173 56140))
+;;;### (autoloads (html-pagetoc-rebuild-toc html-pagetoc-insert-toc
+;;;;;;  html-pagetoc) "html-pagetoc" "nxhtml/html-pagetoc.el" (19218
+;;;;;;  42180))
 ;;; Generated autoloads from nxhtml/html-pagetoc.el
+
+(let ((loads (get 'html-pagetoc 'custom-loads))) (if (member '"html-pagetoc" loads) nil (put 'html-pagetoc 'custom-loads (cons '"html-pagetoc" loads))))
 
 (autoload 'html-pagetoc-insert-toc "html-pagetoc" "\
 Inserts a table of contents for the current html file.
@@ -3235,10 +3461,20 @@ Update the table of contents inserted by `html-pagetoc-insert-toc'.
 
 ;;;***
 
+;;;### (autoloads (html-chklnk) "html-chklnk" "nxhtml/html-chklnk.el"
+;;;;;;  (19218 42180))
+;;; Generated autoloads from nxhtml/html-chklnk.el
+
+(let ((loads (get 'html-chklnk 'custom-loads))) (if (member '"html-chklnk" loads) nil (put 'html-chklnk 'custom-loads (cons '"html-chklnk" loads))))
+
+;;;***
+
 ;;;### (autoloads (zencoding-preview zencoding-expand-yas zencoding-mode
-;;;;;;  zencoding-expand-line) "zencoding-mode" "util/zencoding-mode.el"
-;;;;;;  (19207 737))
+;;;;;;  zencoding-expand-line zencoding) "zencoding-mode" "util/zencoding-mode.el"
+;;;;;;  (19218 42182))
 ;;; Generated autoloads from util/zencoding-mode.el
+
+(let ((loads (get 'zencoding 'custom-loads))) (if (member '"zencoding-mode" loads) nil (put 'zencoding 'custom-loads (cons '"zencoding-mode" loads))))
 
 (autoload 'zencoding-expand-line "zencoding-mode" "\
 Replace the current line's zencode expression with the corresponding expansion.
@@ -3289,12 +3525,11 @@ accept it or skip it.
 ;;;***
 
 ;;;### (autoloads nil nil ("autostart.el" "autostart22.el" "etc/schema/schema-path-patch.el"
-;;;;;;  "nxhtml/doc/cedet-build.el" "nxhtml/html-chklnk.el" "nxhtml/html-imenu.el"
-;;;;;;  "nxhtml/html-move.el" "nxhtml/html-quote.el" "nxhtml/html-wtoc.el"
-;;;;;;  "nxhtml/nxhtml-autoload.el" "nxhtml/nxhtml-strval.el" "nxhtml/nxhtmljs.el"
-;;;;;;  "nxhtml/outline-magic.el" "nxhtml/wtest.el" "related/flymake-helpers.el"
-;;;;;;  "related/flymakemsg.el" "related/flymu.el" "related/php-imenu.el"
-;;;;;;  "tests/angus77-setup-jde.el" "tests/emacstest-suites.el"
+;;;;;;  "nxhtml/doc/cedet-build.el" "nxhtml/html-imenu.el" "nxhtml/html-move.el"
+;;;;;;  "nxhtml/html-quote.el" "nxhtml/nxhtml-autoload.el" "nxhtml/nxhtml-strval.el"
+;;;;;;  "nxhtml/nxhtmljs.el" "nxhtml/outline-magic.el" "nxhtml/wtest.el"
+;;;;;;  "related/flymake-helpers.el" "related/flymakemsg.el" "related/flymu.el"
+;;;;;;  "related/php-imenu.el" "tests/angus77-setup-jde.el" "tests/emacstest-suites.el"
 ;;;;;;  "tests/ert2.el" "tests/hfy-test.el" "tests/inemacs/bug1013.el"
 ;;;;;;  "tests/mumamo-test.el" "tests/nxhtmltest-helpers.el" "tests/temp-test.el"
 ;;;;;;  "util/appmenu-fold.el" "util/buffer-bg.el" "util/css-simple-completion.el"
@@ -3302,8 +3537,8 @@ accept it or skip it.
 ;;;;;;  "util/fupd.el" "util/hfy-cmap.el" "util/htmlfontify.el" "util/key-cat.el"
 ;;;;;;  "util/mumamo-aspnet.el" "util/mumamo-trace.el" "util/new-key-seq-widget.el"
 ;;;;;;  "util/nxml-mode-os-additions.el" "util/ocr-user.el" "util/org-panel.el"
-;;;;;;  "util/popcmp.el" "util/rxi.el" "util/udev-nxhtml.el" "util/useful-commands.el"
-;;;;;;  "util/whelp.el") (19211 10458 609000))
+;;;;;;  "util/rxi.el" "util/udev-nxhtml.el" "util/useful-commands.el")
+;;;;;;  (19221 38735 0))
 
 ;;;***
 
