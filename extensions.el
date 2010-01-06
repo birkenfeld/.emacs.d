@@ -63,8 +63,8 @@
 (add-hook 'tabbar-init-hook
           (lambda () (setq tabbar-home-function 'my-tabbar-home-function))
           t)  ; append
-(tabbar-mode 1)
-(tabbar-mwheel-mode 1)
+;(tabbar-mode 1)
+;(tabbar-mwheel-mode 1)
 
 ;; replace recent character
 (require 'rrc)
