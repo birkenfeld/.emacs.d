@@ -377,7 +377,11 @@
 (add-to-list 'flymake-allowed-file-name-masks
              '("\\.py\\'" flymake-pyflakes-init))
 
+;; textmate bindings
+(require 'textmate)
+
 (add-hook 'python-mode-hook (lambda ()
+  (textmate-mode 1)
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)
   ;; enable flymake processing by pyflakes
