@@ -51,7 +51,6 @@
 	;([return] . newline-and-indent)
 	;; Duplicate TextMate's command-return
 	("\M-\r" . open-next-line)
-        ((kbd "<M-S-return>") . open-prev-line)
 	;; Duplicate TextMate's goto line
 	;("\M-l" . goto-line)
         )
