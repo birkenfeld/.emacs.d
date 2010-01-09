@@ -485,12 +485,15 @@
   (delete-region (point) (progn (forward-word (- arg)) (point))))
 
 (defun split-window-horizontally-into-3 ()
-  "Split current window horizontally into three windows of equal width."
+  "Split current window horizontally into three windows of equal width,
+   and mark the rightmost one as dedicated (which means no automatic
+   display of buffers in it)."
   (interactive)
   (let* ((edges (window-edges))
          (width (- (caddr edges) (car edges)))
-         (newwin (split-window nil (/ width 3) t)))
-    (split-window newwin (/ width 3) t)))
+         (rightwin (split-window nil (/ width 3) t))
+         (rightrightwin (split-window rightwin (/ width 3) t)))
+    (set-window-dedicated-p rightrightwin t)))
 
 (defun fullscreen ()
   "Toggle fullscreen editing."
