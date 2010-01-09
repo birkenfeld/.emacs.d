@@ -235,6 +235,10 @@
 
 ;; test-case-mode: add a nose backend
 (require 'test-case-mode)
+
+;; remove global dot that may have been added last session
+(test-case-remove-dot t)
+
 (global-set-key (kbd "<f9>") 'test-case-run-without-pdb)
 (global-set-key (kbd "S-<f9>") 'test-case-run-with-pdb)
 
