@@ -493,7 +493,9 @@
          (width (- (caddr edges) (car edges)))
          (rightwin (split-window nil (/ width 3) t))
          (rightrightwin (split-window rightwin (/ width 3) t)))
-    (set-window-dedicated-p rightrightwin t)))
+    ;; setting dedicated to t would "strongly" dedicate the window with
+    ;; the effect that not even switch-to-buffer would work anymore...
+    (set-window-dedicated-p rightrightwin 'yes)))
 
 (defun fullscreen ()
   "Toggle fullscreen editing."
