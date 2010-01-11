@@ -716,7 +716,8 @@ and `test-case-mode-line-info-position'."
           (kill-buffer out-buffer))
         (unless more
           ;; all done
-          (test-case-set-global-state (test-case-calculate-global-state))
+          (test-case-set-global-state
+           (test-case-calculate-global-state test-case-current-run))
           (test-case-echo-state
            (test-case-calculate-global-state test-case-current-run)))))))
 
