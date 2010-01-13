@@ -57,7 +57,7 @@
     :license: ${BSD}.
 \"\"\"
 
-$0" "module header")
+$0" "module header" nil nil ((yas/indent-line 'fixed)))
    ("newmod.ex"
     "#!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -71,14 +71,15 @@ $0" "module header")
     :license: ${BSD}.
 \"\"\"
 
-$0" "module header, executable")
+$0" "module header, executable" nil nil ((yas/indent-line 'fixed)))
    ("modmain"
     "def main(args):
     $0
 
 if __name__ == '__main__':
     import sys
-    sys.exit(main(sys.argv))" "module main stanza")
+    sys.exit(main(sys.argv))" "module main stanza"
+    nil nil ((yas/indent-line 'fixed)))
    ("itrace" "import pdb; pdb.set_trace()" "set trace")
    ("iprexc" "import traceback; traceback.print_exc()" "print tb")
    ("ipprint" "import pprint; pprint.pprint($0)" "pprint")
@@ -87,7 +88,27 @@ if __name__ == '__main__':
     ${2:pass}
 def depart_$1(self, node):
     ${3:pass}" "docutils node visit")
-   )
+   ("roprop" "def _get_${1:foo}(self):\n    return self._$1\n$1 = property(_get_$1)\n\n$0\n" "readonly property")
+   ("init" "def __init__(self, $1):
+    \"\"\"$2\"\"\"
+    ${1:$
+    (mapconcat
+     '(lambda (x)
+        (if (not (string= (nth 0 x) \"\"))
+            (concat \"self.\" (nth 0 x) \" = \" (nth 0 x))))
+     (mapcar
+      '(lambda (x)
+         (mapcar
+          '(lambda (x)
+             (replace-regexp-in-string \"[[:blank:]]*$\" \"\"
+              (replace-regexp-in-string \"^[[:blank:]]*\" \"\" x)))
+          x))
+      (mapcar '(lambda (x) (split-string x \"=\"))
+              (split-string text \",\")))
+     (concat \"\\n\" (make-string (current-column) 32)))
+    }
+    $0
+" "init method"))
  'text-mode)
 
 (yas/define-snippets
