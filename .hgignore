@@ -12,6 +12,7 @@ recentf
 tramp
 projects.ede
 local.el
+local/
 *.elc
 *.pyc
 url/
