@@ -140,6 +140,9 @@
 ;; C-k is kill-whole-line
 (global-set-key (kbd "C-k") 'kill-whole-line)
 
+;; shortcuts for switching to "other" file
+(global-set-key (kbd "C-x C-a") 'ff-find-other-file)
+
 ;; shortcuts for killing buffers
 (global-set-key (kbd "C-x k")   'kill-this-buffer)
 (global-set-key (kbd "C-x K")   'kill-other-buffer)
@@ -359,6 +362,11 @@
 ;; c-subword-mode became subword-mode in Emacs 23.2
 (add-hook 'c-mode-hook (lambda ()
   (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
+;; enable nice electric pairs like in textmate
+(add-hook 'c-mode-hook 'textmate-mode)
+
+;; GLSL support
+(require 'glsl-mode)
 
 
 ;; ---------- Python mode specifics --------------------------------------------
@@ -381,6 +389,7 @@
 (require 'textmate)
 
 (add-hook 'python-mode-hook (lambda ()
+  ;; enable nice electric pairs like in textmate
   (textmate-mode 1)
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)

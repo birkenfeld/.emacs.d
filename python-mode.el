@@ -402,6 +402,11 @@ support for features needed by `python-mode'.")
   "Face for builtins like TypeError, object, open, and exec.")
 (make-face 'py-builtins-face)
 
+;; Face for class names
+(defvar py-class-name-face 'py-class-name-face
+  "Face for Python class names.")
+(make-face 'py-class-name-face)
+
 ;; XXX, TODO, and FIXME comments and such
 (defvar py-XXX-tag-face 'py-XXX-tag-face
   "Face for XXX, TODO, and FIXME tags")
@@ -477,7 +482,8 @@ support for features needed by `python-mode'.")
 			"\\|"))
 	)
     (list
-     '("^[ \t]*\\(@.+\\)" 1 'py-decorators-face)
+     ;; decorators
+     '("^[ \t]*\\(@[a-zA-Z0-9_.]+\\)" 1 'py-decorators-face)
      ;; keywords
      (cons (concat "\\<\\(" kw1 "\\)\\>[ \n\t(]") 1)
      ;; builtins when they don't appear as object attributes
@@ -492,7 +498,7 @@ support for features needed by `python-mode'.")
      '("[ \t]*\\(\\<from\\>.*\\)?\\<import\\>.*\\<\\(as\\)\\>" . 2)
 
      ;; classes
-     '("\\<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 font-lock-type-face)
+     '("\\<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
      ;; functions
      '("\\<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
        1 font-lock-function-name-face)
