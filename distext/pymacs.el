@@ -21,4 +21,4 @@
 )
 
 ;; load ropemacs automatically for python-mode
-(eval-after-load 'python-mode '(ac-ropemacs-init))
+(eval-after-load 'python-mode '(ignore-errors (ac-ropemacs-init)))
