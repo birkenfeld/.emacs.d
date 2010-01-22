@@ -351,6 +351,7 @@ is for which (pred elem) is true)"
     (modify-syntax-entry ?\\ "\\" st)
     (modify-syntax-entry ?| "." st)
     (modify-syntax-entry ?_ "." st)
+    (modify-syntax-entry ?: "_" st)
     (when rst-use-unicode
       ;; Use strings because unicode literals are not understood before Emacs
       ;; 22
