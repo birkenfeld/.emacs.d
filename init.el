@@ -371,6 +371,9 @@
 
 ;; ---------- Python mode specifics --------------------------------------------
 
+;; use the bundled Python mode
+(require 'python-mode)
+
 ;; support flymake in Python mode
 (require 'flymake)
 
