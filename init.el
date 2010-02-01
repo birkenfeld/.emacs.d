@@ -419,6 +419,8 @@
          (concat "python " buffer-file-name)))
 ))
 
+(require 'cython-mode)
+
 
 ;; ---------- Haskell mode specifics -------------------------------------------
 
