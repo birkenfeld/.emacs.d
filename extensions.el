@@ -233,6 +233,10 @@
 (global-set-key (kbd "<f2>") 'ack-same)
 (global-set-key (kbd "S-<f2>") 'ack)
 
+;; idomenu: switch to a buffer local tag with ido completion
+(autoload 'idomenu "idomenu" nil t)
+(global-set-key (kbd "C-x m") 'idomenu)
+
 ;; test-case-mode: add a nose backend
 (require 'test-case-mode)
 
