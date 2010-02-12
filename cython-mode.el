@@ -20,11 +20,7 @@
 
 (defun cython-compilation-finish (buffer how)
   "Called when Cython compilation finishes."
-  ;; (with-current-buffer cython-buffer
-  ;;    (if (string-equal how "finished\n")
-  ;;        (find-file-other-window
-  ;;         (concat (file-name-sans-extension buffer-file-name)
-  ;;                 ".html"))))
+  ;; XXX could annotate source here
   )
 
 (defvar cython-mode-map
@@ -32,7 +28,7 @@
     ;; Will inherit from `python-mode-map' thanks to define-derived-mode.
     (define-key map "\C-c\C-c" 'cython-compile)
     map)
-  "Keymap used in `inferior-tcl-mode'.")
+  "Keymap used in `cython-mode'.")
 
 (defvar cython-font-lock-keywords
   `(;; new keywords in Cython language
