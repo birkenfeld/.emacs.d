@@ -212,9 +212,10 @@
 ;; find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
 
-;; flymake error finding, similar to goto-next-error
-(global-set-key (kbd "M-g e") 'flymake-goto-next-error)
+;; flymake error finding
 (global-set-key (kbd "M-g M-e") 'flymake-goto-next-error)
+(global-set-key [remap next-error] 'next-error-or-flymake)
+(global-set-key [remap previous-error] 'previous-error-or-flymake)
 
 ;; support back and forward mouse in Info and help
 (eval-after-load 'help-mode
@@ -657,6 +658,27 @@
       (setq face 'default))
   (while t
     (set-face-attribute face nil :foreground (read-color "Color: "))))
+
+(defun next-error-or-flymake ()
+  "Go to next error, or if that is not defined, to next flymake error."
+  (interactive)
+  (condition-case err
+      (next-error)
+    (error
+     (if (equal (cadr err) "No buffers contain error message locations")
+         (flymake-goto-next-error)
+       (signal (car err) (cdr err))))))
+
+
+(defun previous-error-or-flymake ()
+  "Go to previous error, or if that is not defined, to previous flymake error."
+  (interactive)
+  (condition-case err
+      (previous-error)
+    (error
+     (if (equal (cadr err) "No buffers contain error message locations")
+         (flymake-goto-prev-error)
+       (signal (car err) (cdr err))))))
 
 
 ;; ---------- Extension configuration ------------------------------------------
