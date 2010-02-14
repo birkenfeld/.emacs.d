@@ -241,7 +241,16 @@
 (require 'test-case-mode)
 
 ;; remove global dot that may have been added last session
-(test-case-remove-dot t)
+(setq-default
+ mode-line-format
+ (mapcan (lambda (x)
+           (if (and (consp x)
+                    (stringp (car x))
+                    (eq 'test-case-dot-tooltip
+                        (get-text-property 0 'help-echo (car x))))
+               ()
+             (cons x nil)))
+         (default-value 'mode-line-format)))
 
 (global-set-key (kbd "<f9>") 'test-case-run-without-pdb)
 (global-set-key (kbd "S-<f9>") 'test-case-run-with-pdb)
