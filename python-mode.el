@@ -1665,7 +1665,7 @@ Programmatically, ARG can also be one of the symbols `cpython' or
       (if (string-equal py-which-bufname "Python")
 	  (setq mode-name "Jython")))
      )
-    (message "Using the %s shell" msg)
+    ;(message "Using the %s shell" msg)
     (setq py-output-buffer (format "*%s Output*" py-which-bufname))))
 
 ;;;###autoload
@@ -2448,9 +2448,10 @@ it's tried again going backward."
 	       'py-indent-offset)
       (setq py-indent-offset new-value)
       (or noninteractive
-	  (message "%s value of py-indent-offset set to %d"
-		   (if global "Global" "Local")
-		   py-indent-offset)))
+	  ;(message "%s value of py-indent-offset set to %d"
+	;	   (if global "Global" "Local")
+	;	   py-indent-offset)
+      ))
     ))
 
 (defun py-comment-indent-function ()
