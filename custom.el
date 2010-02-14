@@ -156,6 +156,7 @@
  '(margin-column 80)
  '(minibuffer-electric-default-mode t)
  '(minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
+ '(mk-proj-use-ido-selection t)
  '(mode-line-format (quote ("%e" #("-" 0 1 (help-echo "mouse-1: Select (drag to resize)
 mouse-2: Make current window occupy the whole frame
 mouse-3: Remove current window from display")) mode-line-mule-info mode-line-client mode-line-modified mode-line-remote #("-   " 0 1 (help-echo "mouse-1: Select (drag to resize)

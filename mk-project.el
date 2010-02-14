@@ -392,7 +392,7 @@ value is not used if a custom find command is set in
   (catch 'project-load
     (let ((oldname mk-proj-name)
           (name (if (mk-proj-use-ido)
-                    (ido-completing-read "Project Name (ido): " (mk-proj-names))
+                    (ido-completing-read "Project Name: " (mk-proj-names))
                   (completing-read "Project Name: " (mk-proj-names)))))
       (unless (string= oldname name)
         (project-unload))
@@ -583,7 +583,7 @@ value is not used if a custom find command is set in
   (if src-patterns
       (let ((name-expr " \\("))
         (dolist (pat src-patterns)
-          (setq name-expr (concat name-expr " -name \"" pat "\" -o ")))
+          (setq name-expr (concat name-expr " -wholename \"" pat "\" -o ")))
         (concat (mk-proj-replace-tail name-expr "-o " "") "\\) "))
     ""))
 
@@ -784,18 +784,20 @@ Choose a file to open from among the files listed in buffer
 selection of the file. See also: `project-index',
 `project-find-file'."
   (interactive)
-  (flet ((buffer-lines-to-list (b)
+  (flet ((buffer-lines-to-list (b n)
             (let ((file-lines '()))
               (with-current-buffer b
                 (goto-char (point-min))
                 (dotimes (i (count-lines (point-min) (point-max)))
-                  (add-to-list 'file-lines (buffer-substring (line-beginning-position) (line-end-position)))
+                  (add-to-list 'file-lines (buffer-substring
+                                            (+ n 1 (line-beginning-position))
+                                            (line-end-position)))
                   (forward-line)))
               file-lines)))
-    (let ((file (ido-completing-read "Find file in project matching (ido): "
-                                     (buffer-lines-to-list mk-proj-fib-name))))
+    (let ((file (ido-completing-read "Find file in project: "
+                                     (buffer-lines-to-list mk-proj-fib-name (length mk-proj-basedir)))))
       (when file
-        (find-file file)))))
+        (find-file (concat mk-proj-basedir "/" file))))))
 
 (provide 'mk-project)
 

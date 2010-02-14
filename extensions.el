@@ -14,6 +14,11 @@
 
 ;; ---------- always enabled ---------------------------------------------------
 
+;; enhanced M-x
+;(require 'smex)
+;(smex-initialize)
+;(global-set-key (kbd "M-x") 'smex)
+
 ;; bar cursor
 (require 'bar-cursor)
 (bar-cursor-mode t)
@@ -95,7 +100,7 @@
 (global-set-key (kbd "C-c p a") 'project-ack)
 (global-set-key (kbd "C-c p l") 'project-load)
 (global-set-key (kbd "C-c p u") 'project-unload)
-(global-set-key (kbd "C-c p f") 'project-find-file)
+(global-set-key (kbd "C-c p f") 'project-find-file-ido)
 (global-set-key (kbd "C-c p i") 'project-index)
 (global-set-key (kbd "C-c p s") 'project-status)
 (global-set-key (kbd "C-c p h") 'project-home)
