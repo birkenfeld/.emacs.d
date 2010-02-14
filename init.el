@@ -310,6 +310,8 @@
           '(lambda ()
              (define-key minibuffer-local-map "\t" 'comint-dynamic-complete)))
 
+;; enable eldoc mode
+(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 
 ;; ---------- C mode specifics -------------------------------------------------
 
@@ -411,8 +413,6 @@
 
   ;; add some local hooks
   ;(add-hook 'before-save-hook 'delete-trailing-whitespace nil t)
-  (if (fboundp 'semantic-fetch-tags)
-      (add-hook 'after-save-hook 'semantic-fetch-tags nil t))
 
   ;; compile (<f5>) is execute
   (unless (or (file-exists-p "makefile")
