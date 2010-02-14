@@ -15,7 +15,17 @@
         (setq ropemacs-global-prefix nil))
     (pymacs-load "ropemacs" "rope-")
     (setq ropemacs-enable-autoimport t)
-    (setq ac-ropemacs-loaded t)))
+    (setq ac-ropemacs-loaded t)
+    ;; ido initialization
+    (require 'ido)
+    (ido-init-completion-maps)
+    (add-hook 'minibuffer-setup-hook 'ido-minibuffer-setup)
+    (add-hook 'choose-completion-string-functions 'ido-choose-completion-string)
+    (add-hook 'kill-emacs-hook 'ido-kill-emacs-hook)
+    ;; new key binding
+    (define-key ropemacs-local-keymap (kbd "C-c j") 'rope-jump-to-global)
+    (add-hook 'python-mode-hook 'ropemacs-mode)
+    ))
 
 (defvar ac-ropemacs-completions-cache nil)
 
