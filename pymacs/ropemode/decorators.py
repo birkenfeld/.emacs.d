@@ -6,7 +6,7 @@ from rope.base import exceptions
 class Logger(object):
 
     message = None
-    only_short = False
+    only_short = True
 
     def __call__(self, message, short=None):
         if short is None or not self.only_short:
