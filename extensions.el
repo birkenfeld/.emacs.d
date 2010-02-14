@@ -135,7 +135,7 @@
 
 
 ;; haskell mode
-(load "haskell-site-file")
+(load "haskell-site-file" nil t)
 
 (add-hook 'haskell-mode-hook (lambda ()
   (load-library "inf-haskell")
@@ -154,32 +154,32 @@
  '(("\\<\\(return\\)\\>" 1 font-lock-builtin-face prepend)))
 
 ;; twitter
-(require 'twit)
-(defun my-twit-knotify ()
-  "Display a tweet notification via KNotify."
-  (let* ((from (cadr twit-last-tweet))
-         (body (caddr twit-last-tweet))
-         ;; highlight #hashtags and @usernames
-         (body (replace-regexp-in-string "\\(#[a-zA-Z_]*\\)"
-                                         "<font color='#88f'>\\1</font>" body))
-         (body (replace-regexp-in-string "\\(@[a-zA-Z_]*\\)"
-                                         "<font color='#f88'>\\1</font>" body))
-         (notif-id (dbus-call-method
-                    :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
-                    "event" "test" "twit"
-                    '(:array (:variant nil))
-                    (format "Tweet from <b>%s</b>:<br>%s" from body)
-                    '(:array :byte 0 :byte 0 :byte 0 :byte 0)
-                    '(:array ) :int64 0)))
-    (if (> notif-id 0)
-        (run-with-timer 5 nil 'my-twit-knotify-close notif-id)))
-  nil)
-(defun my-twit-knotify-close (notif-id)
-  "Close a tweet notification via KNotify."
-  (dbus-call-method
-   :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
-   "closeNotification" :int32 notif-id))
-(add-hook 'twit-new-tweet-hook 'my-twit-knotify)
+;(require 'twit)
+;(defun my-twit-knotify ()
+;  "Display a tweet notification via KNotify."
+;  (let* ((from (cadr twit-last-tweet))
+;         (body (caddr twit-last-tweet))
+;         ;; highlight #hashtags and @usernames
+;         (body (replace-regexp-in-string "\\(#[a-zA-Z_]*\\)"
+;                                         "<font color='#88f'>\\1</font>" body))
+;         (body (replace-regexp-in-string "\\(@[a-zA-Z_]*\\)"
+;                                         "<font color='#f88'>\\1</font>" body))
+;         (notif-id (dbus-call-method
+;                    :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
+;                    "event" "test" "twit"
+;                    '(:array (:variant nil))
+;                    (format "Tweet from <b>%s</b>:<br>%s" from body)
+;                    '(:array :byte 0 :byte 0 :byte 0 :byte 0)
+;                    '(:array ) :int64 0)))
+;    (if (> notif-id 0)
+;        (run-with-timer 5 nil 'my-twit-knotify-close notif-id)))
+;  nil)
+;(defun my-twit-knotify-close (notif-id)
+;  "Close a tweet notification via KNotify."
+;  (dbus-call-method
+;   :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
+;   "closeNotification" :int32 notif-id))
+;(add-hook 'twit-new-tweet-hook 'my-twit-knotify)
 
 ;; ReST mode
 (autoload 'rst-mode "rst" nil t)
@@ -244,12 +244,11 @@
 (setq-default
  mode-line-format
  (mapcan (lambda (x)
-           (if (and (consp x)
+           (unless (and (consp x)
                     (stringp (car x))
                     (eq 'test-case-dot-tooltip
                         (get-text-property 0 'help-echo (car x))))
-               ()
-             (cons x nil)))
+             (list x)))
          (default-value 'mode-line-format)))
 
 (global-set-key (kbd "<f9>") 'test-case-run-without-pdb)
