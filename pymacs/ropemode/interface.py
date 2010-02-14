@@ -1,7 +1,7 @@
 import os
 
 import rope.base.change
-from rope.base import libutils, utils
+from rope.base import libutils, utils, exceptions
 from rope.contrib import codeassist, generate, autoimport, findit
 
 from ropemode import refactor, decorators, dialog
@@ -139,16 +139,32 @@ class RopeMode(object):
 
     @decorators.local_command('a g', shortcut='C-c g')
     def goto_definition(self):
-        self._check_project()
-        resource, offset = self._get_location()
-        maxfixes = self.env.get('codeassist_maxfixes')
-        definition = codeassist.get_definition_location(
-            self.project, self._get_text(), offset, resource, maxfixes)
-        if tuple(definition) != (None, None):
+        definition = self._base_definition_location()
+        if definition:
             self.env.push_mark()
             self._goto_location(definition[0], definition[1])
         else:
             self.env.message('Cannot find the definition!')
+
+    @decorators.local_command()
+    def definition_location(self):
+        definition = self._base_definition_location()
+        if definition:
+            return str(definition[0].real_path), definition[1]
+        return None
+
+    def _base_definition_location(self):
+        self._check_project()
+        resource, offset = self._get_location()
+        maxfixes = self.env.get('codeassist_maxfixes')
+        try:
+            definition = codeassist.get_definition_location(
+                self.project, self._get_text(), offset, resource, maxfixes)
+        except exceptions.BadIdentifierError:
+            return None
+        if tuple(definition) != (None, None):
+            return definition
+        return None
 
     @decorators.local_command('a d', 'P', 'C-c d')
     def show_doc(self, prefix):
@@ -167,14 +183,26 @@ class RopeMode(object):
         self._base_show_doc(prefix, _get_doc)
 
     def _base_show_doc(self, prefix, get_doc):
+        docs = self._base_get_doc(get_doc)
+        if docs:
+            self.env.show_doc(docs, prefix)
+        else:
+            self.env.message('No docs available!')
+
+    @decorators.local_command()
+    def get_doc(self):
+        self._check_project()
+        return self._base_get_doc(codeassist.get_doc)
+
+    def _base_get_doc(self, get_doc):
         maxfixes = self.env.get('codeassist_maxfixes')
         text = self._get_text()
         offset = self.env.get_offset()
-        docs = get_doc(self.project, text, offset,
-                       self.resource, maxfixes)
-        self.env.show_doc(docs, prefix)
-        if docs is None:
-            self.env.message('No docs avilable!')
+        try:
+            return get_doc(self.project, text, offset,
+                           self.resource, maxfixes)
+        except exceptions.BadIdentifierError:
+            return None
 
     def _get_text(self):
         resource = self.resource
@@ -517,7 +545,7 @@ class _CodeAssist(object):
             self._starting = common_start
             self._offset = self.starting_offset + len(common_start)
         prompt = 'Completion for %s: ' % self.expression
-        proposals = map(self.env._completion_text, proposals)
+        proposals = map(self.env._completion_data, proposals)
         result = self.env.ask_completion(prompt, proposals, self.starting)
         if result is not None:
             self._apply_assist(result)
