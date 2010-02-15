@@ -44,7 +44,7 @@
   (ac-ropemacs-require)
   ;(setq ac-sources (append (list 'ac-source-ropemacs) ac-sources))
   (setq ac-omni-completion-sources '(("\\." ac-source-ropemacs)))
-  (ropemacs-mode))
+  (ropemacs-mode 1))
 
 (defun ac-ropemacs-init ()
   (add-hook 'python-mode-hook 'ac-ropemacs-setup))
