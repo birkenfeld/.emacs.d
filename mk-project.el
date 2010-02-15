@@ -630,7 +630,7 @@ With C-u prefix, start from the current directory."
 
 (define-compilation-mode ack-mode "Ack" "Ack compilation mode." nil)
 
-(defvar mk-proj-ack-default-args "--nocolor --nogroup")
+(defvar mk-proj-ack-default-args "--color --nogroup")
 
 (defun mk-proj-ack-cmd (regex)
   "Generate the ack command string given a regex to search for."
@@ -649,12 +649,14 @@ With C-u prefix, start ack from the current directory."
          (regex (if wap (read-string (concat "Ack project for (default \"" wap "\"): ") nil nil wap)
                   (read-string "Ack project for: ")))
          (whole-cmd (mk-proj-ack-cmd regex))
-         (confirmed-cmd (read-string "Ack command: " whole-cmd nil whole-cmd))
+         ;(confirmed-cmd (read-string "Ack command: " whole-cmd nil whole-cmd))
          (default-directory (file-name-as-directory
                              (if (mk-proj-has-univ-arg)
                                  default-directory
                                mk-proj-basedir))))
-    (compilation-start confirmed-cmd 'ack-mode)))
+    (if (fboundp 'ack)
+        (ack regex t default-directory)
+      (compilation-start whole-cmd 'ack-mode))))
 
 ;; ---------------------------------------------------------------------
 ;; Compile
