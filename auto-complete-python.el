@@ -24,7 +24,6 @@
     (add-hook 'kill-emacs-hook 'ido-kill-emacs-hook)
     ;; new key binding
     (define-key ropemacs-local-keymap (kbd "C-c j") 'rope-jump-to-global)
-    (add-hook 'python-mode-hook 'ropemacs-mode)
     ))
 
 (defvar ac-ropemacs-completions-cache nil)
@@ -44,7 +43,8 @@
 (defun ac-ropemacs-setup ()
   (ac-ropemacs-require)
   ;(setq ac-sources (append (list 'ac-source-ropemacs) ac-sources))
-  (setq ac-omni-completion-sources '(("\\." ac-source-ropemacs))))
+  (setq ac-omni-completion-sources '(("\\." ac-source-ropemacs)))
+  (ropemacs-mode))
 
 (defun ac-ropemacs-init ()
   (add-hook 'python-mode-hook 'ac-ropemacs-setup))
