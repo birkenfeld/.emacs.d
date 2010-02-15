@@ -312,7 +312,8 @@ value is not used if a custom find command is set in
 
 (defun mk-proj-assert-proj ()
   (unless mk-proj-name
-    (error "No project is set!")))
+    (unless (mk-proj-auto-load)
+      (error "No project is set, and automatic setup failed."))))
 
 (defun mk-proj-maybe-kill-buffer (bufname)
   (let ((b (get-buffer bufname)))
@@ -386,14 +387,44 @@ value is not used if a custom find command is set in
     (maybe-set-var 'file-list-cache #'expand-file-name)
     (maybe-set-var 'open-files-cache #'expand-file-name)))
 
-(defun project-load ()
+(defun mk-proj-auto-load ()
+  "Automatically synthesize a project from the current file."
+  (interactive)
+  (let ((backend (vc-backend buffer-file-name))
+        rootdir config)
+    (unless backend
+      (error "No vc backend active in buffer"))
+    (setq rootdir
+          (replace-regexp-in-string
+           "/$" "" (vc-call-backend backend 'root default-directory)))
+    ;; XXX add project type guessing
+    (project-def rootdir
+                 `((basedir ,rootdir)
+                   (src-patterns ("*.py" "*.rst"))
+                   (ignore-patterns ("*.pyc" "*.pyo"))
+                   (tags-file ,(concat rootdir "/TAGS"))
+                   (file-list-cache ,(concat
+                                      (expand-file-name "~/.emacs.d/")
+                                      "file-cache-"
+                                      (replace-regexp-in-string "/" "!" rootdir)))
+                   (vcs ,(intern (downcase (symbol-name backend))))
+                   (compile-cmd "make")
+                   (startup-hook ((lambda ()
+                                    (if (fboundp 'rope-open-project)
+                                        (rope-open-project ,rootdir)))))
+                   (shutdown-hook nil)))
+    (project-load rootdir)
+    t))
+
+(defun project-load (&optional proj-name)
   "Load a project's settings."
   (interactive)
   (catch 'project-load
     (let ((oldname mk-proj-name)
-          (name (if (mk-proj-use-ido)
-                    (ido-completing-read "Project Name: " (mk-proj-names))
-                  (completing-read "Project Name: " (mk-proj-names)))))
+          (name (or proj-name
+                    (if (mk-proj-use-ido)
+                        (ido-completing-read "Project Name: " (mk-proj-names))
+                      (completing-read "Project Name: " (mk-proj-names))))))
       (unless (string= oldname name)
         (project-unload))
       (let ((proj-config (mk-proj-find-config name)))
@@ -786,6 +817,7 @@ Choose a file to open from among the files listed in buffer
 selection of the file. See also: `project-index',
 `project-find-file'."
   (interactive)
+  (mk-proj-assert-proj)
   (flet ((buffer-lines-to-list (b n)
             (let ((file-lines '()))
               (with-current-buffer b
