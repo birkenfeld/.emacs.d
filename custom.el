@@ -94,6 +94,7 @@
  '(ecb-windows-width 0.25)
  '(ede-project-placeholder-cache-file "~/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(eproject-completing-read-function (quote eproject--ido-completing-read))
  '(ffap-newfile-prompt t)
  '(file-cache-buffer "*File Cache*")
  '(file-cache-filter-regexps (quote ("~$" "\\.o$" "\\.exe$" "\\.a$" "\\.elc$" ",v$" "\\.output$" "\\.$" "#$" "\\.class$" "\\.pyc$" "\\.svn/.*$")))
