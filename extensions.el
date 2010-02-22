@@ -242,6 +242,24 @@
 (autoload 'idomenu "idomenu" nil t)
 (global-set-key (kbd "C-x m") 'idomenu)
 
+;; shell-pop: easy pop-up of a shell buffer
+(require 'shell-pop)
+(shell-pop-set-internal-mode "ansi-term")
+(shell-pop-set-internal-mode-shell "/bin/zsh")
+(global-set-key (kbd "<menu>") 'shell-pop)
+
+;; let the shell buffer change the default directory
+(defadvice shell-pop-up (before change-to-default-directory activate)
+  (let ((dir default-directory)
+        (buf (get-buffer shell-pop-internal-mode-buffer)))
+    (when buf
+      (with-current-buffer buf
+        (cond ((eq major-mode 'term-mode)
+               (term-send-raw-string (concat "cd " dir "\n")))
+              ((eq major-mode 'shell-mode)
+               (insert (concat "cd " dir))
+               (comint-send-input)))))))
+
 ;; test-case-mode: add a nose backend
 (require 'test-case-mode)
 
