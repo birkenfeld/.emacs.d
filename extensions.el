@@ -247,6 +247,13 @@
 (shell-pop-set-internal-mode "ansi-term")
 (shell-pop-set-internal-mode-shell "/bin/zsh")
 (global-set-key (kbd "<menu>") 'shell-pop)
+(setq term-term-name "eterm-color")
+;; this helps with a bug in ansi-term when output lines are longer than
+;; the terminal width
+(defun turn-off-truncate-lines ()
+  (setq truncate-lines nil
+        word-wrap t))
+(add-hook 'term-mode-hook 'turn-off-truncate-lines)
 
 ;; let the shell buffer change the default directory
 (defadvice shell-pop-up (before change-to-default-directory activate)
