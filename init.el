@@ -151,6 +151,9 @@
 ;; align code in a pretty way
 (global-set-key (kbd "C-x \\") 'align-regexp)
 
+;; join line with previous
+(global-set-key (kbd "C-x ^") 'join-line)
+
 ;; F6 stores a position in a file, F7 brings you back to this position
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
 (global-set-key (kbd "<f7>") '(lambda () (interactive) (register-to-point ?1)))
@@ -273,10 +276,6 @@
      (add-to-list 'list '("alltt" . "\\\\end[ \t\n]*{[ \t\n]*alltt[ \t\n]*}"))
      (setcdr ispell-tex-skip-alists (list list))))
 
-;; org-mode (organizer, agenda, ...)
-;(require 'org)
-;(global-set-key (kbd "<f12>") 'org-agenda)
-
 ;; nice xterm mouse handling
 ;(xterm-mouse-mode t)
 
@@ -310,8 +309,19 @@
           '(lambda ()
              (define-key minibuffer-local-map "\t" 'comint-dynamic-complete)))
 
+
+;; ---------- Elisp mode specifics ---------------------------------------------
+
 ;; enable eldoc mode
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+
+;; remove the .elc file when saving an .el file
+(add-hook 'emacs-lisp-mode-hook 'esk-remove-elc-on-save)
+
+;; some nice keybindings
+(define-key emacs-lisp-mode-map  (kbd "M-.") 'find-function-at-point)
+(define-key lisp-mode-shared-map (kbd "C-c v") 'eval-buffer)
+
 
 ;; ---------- C mode specifics -------------------------------------------------
 
@@ -679,6 +689,15 @@
      (if (equal (cadr err) "No buffers contain error message locations")
          (flymake-goto-prev-error)
        (signal (car err) (cdr err))))))
+
+
+(defun remove-elc-on-save ()
+  "If you're saving an elisp file, likely the .elc is no longer valid."
+  (make-local-variable 'after-save-hook)
+  (add-hook 'after-save-hook
+            (lambda ()
+              (if (file-exists-p (concat buffer-file-name "c"))
+                  (delete-file (concat buffer-file-name "c"))))))
 
 
 ;; ---------- Extension configuration ------------------------------------------
