@@ -283,6 +283,9 @@
 ;; move mouse out of the way, not needed in Emacs 23.2+
 ;(mouse-avoidance-mode 'exile)
 
+;; don't wrap lines in grep mode
+(add-hook 'grep-mode-hook (lambda () (setq truncate-lines t)))
+
 
 ;; ---------- Mode-specific keybindings ----------------------------------------
 

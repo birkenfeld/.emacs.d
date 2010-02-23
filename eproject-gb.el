@@ -27,7 +27,7 @@
 
 (define-project-type python (generic)
   (look-for "setup.py")
-  :relevant-files ("\\.py$" "\\.rst$" "\\.c$" "\\.h$")
+  :relevant-files ("\\.py$" "\\.rst$" "\\.js$" "\\.html$" "\\.c$" "\\.h$")
   :irrelevant-files ("\\.py[co]$"))
 
 ;; remember the last automatically opened rope project, to avoid
@@ -59,6 +59,14 @@
          (default-directory root)
          (files (eproject-list-project-files-relative root)))
     (ack regexp t default-directory)))
+
+(defun eproject-test ()
+  "Run test suite."
+  (interactive)
+  (unless test-case-mode (test-case-mode 1))
+  (setq test-cwd (eproject-root))
+  (setq test ".")
+  (test-case-run))
 
 (provide 'eproject-gb)
 ;;; eproject-gb.el ends here
