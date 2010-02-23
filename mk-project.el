@@ -387,32 +387,83 @@ value is not used if a custom find command is set in
     (maybe-set-var 'file-list-cache #'expand-file-name)
     (maybe-set-var 'open-files-cache #'expand-file-name)))
 
+
+(defun mk-proj--find-svn-rootdir (dir &optional child)
+  ;; look for .svn directory
+  (if (not (file-exists-p (concat dir "/.svn")))
+      ;; if no child is given, this is the starting directory, so there
+      ;; must be a .svn directory here
+      (if (not child) (error "No .svn directory in current dir")
+        ;; else, this is the first directory without a .svn, so the
+        ;; previous child is the root
+        child)
+    ;; if .svn directory present, look in parent dir
+    (mk-proj--find-svn-rootdir (expand-file-name (concat dir "/..")) dir)))
+
+(defvar mk-proj-project-types
+  '(("python" . (("*.py" "*.c" "*.h" "*.rst" "*.txt") ;; source patterns
+                 ("*.py[co]" "*.o")             ;; ignore patterns
+                 "make"                   ;; compile command
+                 ;; startup hook 
+                 (lambda (rootdir)
+                    ((lambda () (if (fboundp 'rope-open-project)
+                                    (rope-open-project rootdir)))))
+                 ;; shutdown hook
+                 (lambda (rootdir) (rope-close-project))
+                 ))
+    ("haskell" . (("*.hs" "*.lhs" "*.c")
+                  ("*.o")
+                  "runhaskell Setup.hs build"
+                  (lambda (rootdir) ())
+                  (lambda (rootdir) ())))
+    ))
+
+(defvar mk-proj-project-witnesses
+  '(("setup.py" . "python")
+    ("*.cabal" . "haskell")))
+
+(require 'dired)
+
+(defun mk-proj--guess-project-type (dir)
+  (catch 'found
+    (dolist (witness mk-proj-project-witnesses)
+      (if (file-expand-wildcards (concat dir "/" (car witness)))
+          (throw 'found (cdr witness))))))
+    
+
 (defun mk-proj-auto-load ()
   "Automatically synthesize a project from the current file."
   (interactive)
   (let ((backend (vc-backend buffer-file-name))
-        rootdir config)
+        rootdir config prtype prtypeinfo)
     (unless backend
       (error "No vc backend active in buffer"))
-    (setq rootdir
-          (replace-regexp-in-string
-           "/$" "" (vc-call-backend backend 'root default-directory)))
-    ;; XXX add project type guessing
+    ;; find root directory of project (defined by vc working copy)
+    (if (equal backend 'SVN)
+        ;; root operation isn't implemented for vc-svn, so we do it ourselves
+        (setq rootdir (mk-proj--find-svn-rootdir default-directory))
+      (setq rootdir (vc-call-backend backend 'root default-directory)))
+    ;; get rid of trailing slash if present
+    (setq rootdir (directory-file-name rootdir))
+    ;; guess project type
+    (setq prtype (mk-proj--guess-project-type rootdir))
+    (if (not prtype) (error "Project type not recognized"))
+    (setq prtypeinfo (cdr (assoc prtype mk-proj-project-types)))
+    (if (not prtypeinfo) (error (concat "Project type " prtype " unknown")))
+    ;; create a new project
     (project-def rootdir
                  `((basedir ,rootdir)
-                   (src-patterns ("*.py" "*.rst"))
-                   (ignore-patterns ("*.pyc" "*.pyo"))
+                   (src-patterns ,(nth 0 prtypeinfo))
+                   (ignore-patterns ,(nth 1 prtypeinfo))
                    (tags-file ,(concat rootdir "/TAGS"))
                    (file-list-cache ,(concat
                                       (expand-file-name "~/.emacs.d/")
                                       "file-cache-"
                                       (replace-regexp-in-string "/" "!" rootdir)))
                    (vcs ,(intern (downcase (symbol-name backend))))
-                   (compile-cmd "make")
-                   (startup-hook ((lambda ()
-                                    (if (fboundp 'rope-open-project)
-                                        (rope-open-project ,rootdir)))))
-                   (shutdown-hook nil)))
+                   (compile-cmd ,(nth 2 prtypeinfo))
+                   (startup-hook ,(funcall (nth 3 prtypeinfo) rootdir))
+                   (shutdown-hook ,(funcall (nth 4 prtypeinfo) rootdir))))
     (project-load rootdir)
     t))
 

@@ -94,18 +94,32 @@
 (repeatable-command-advice previous-error)
 
 ;; mk-project: project management
-(require 'mk-project)
-(global-set-key (kbd "C-c p c") 'project-compile)
-(global-set-key (kbd "C-c p g") 'project-grep)
-(global-set-key (kbd "C-c p a") 'project-ack)
-(global-set-key (kbd "C-c p l") 'project-load)
-(global-set-key (kbd "C-c p u") 'project-unload)
-(global-set-key (kbd "C-c p f") 'project-find-file-ido)
-(global-set-key (kbd "C-c p i") 'project-index)
-(global-set-key (kbd "C-c p s") 'project-status)
-(global-set-key (kbd "C-c p h") 'project-home)
-(global-set-key (kbd "C-c p d") 'project-dired)
-(global-set-key (kbd "C-c p t") 'project-tags)
+;(require 'mk-project)
+;(global-set-key (kbd "C-c p c") 'project-compile)
+;(global-set-key (kbd "C-c p g") 'project-grep)
+;(global-set-key (kbd "C-c p a") 'project-ack)
+;(global-set-key (kbd "C-c p l") 'project-load)
+;(global-set-key (kbd "C-c p u") 'project-unload)
+;(global-set-key (kbd "C-c p f") 'project-find-file-ido)
+;(global-set-key (kbd "C-c p i") 'project-index)
+;(global-set-key (kbd "C-c p s") 'project-status)
+;(global-set-key (kbd "C-c p h") 'project-home)
+;(global-set-key (kbd "C-c p d") 'project-dired)
+;(global-set-key (kbd "C-c p t") 'project-tags)
+
+;; eproject: alternate project management
+(require 'eproject)
+(require 'eproject-extras)
+(require 'eproject-gb)
+
+(global-set-key (kbd "C-c p f") 'eproject-find-file)
+(global-set-key (kbd "C-c p a") 'eproject-ack)
+(global-set-key (kbd "C-c p g") 'eproject-grep)
+(global-set-key (kbd "C-c p i") 'eproject-ibuffer)
+(global-set-key (kbd "C-c p t") 'eproject-todo)
+(global-set-key (kbd "C-c p d") 'eproject-revisit-project)
+(global-set-key (kbd "C-c p k") 'eproject-kill-project-buffers)
+(global-set-key (kbd "C-c p e") 'eproject-test)
 
 ;; fastnav
 (require 'fastnav)
@@ -286,13 +300,13 @@
 
 (defun test-case-run-without-pdb ()
   (interactive)
-  (when (not test-case-mode) (test-case-mode 1))
+  (unless test-case-mode (test-case-mode 1))
   (set (make-local-variable 'test-case-nose-arguments) "-d")
   (test-case-run))
 
 (defun test-case-run-with-pdb ()
   (interactive)
-  (when (not test-case-mode) (test-case-mode 1))
+  (unless test-case-mode (test-case-mode 1))
   (set (make-local-variable 'test-case-nose-arguments) "--pdb --pdb-failures")
   (test-case-run))
 

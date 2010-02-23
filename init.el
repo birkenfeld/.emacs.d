@@ -282,6 +282,9 @@
 ;; move mouse out of the way, not needed in Emacs 23.2+
 ;(mouse-avoidance-mode 'exile)
 
+;; don't wrap lines in grep mode
+(add-hook 'grep-mode-hook (lambda () (setq truncate-lines t)))
+
 
 ;; ---------- Mode-specific keybindings ----------------------------------------
 
@@ -316,7 +319,7 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
 ;; remove the .elc file when saving an .el file
-(add-hook 'emacs-lisp-mode-hook 'esk-remove-elc-on-save)
+(add-hook 'emacs-lisp-mode-hook 'remove-elc-on-save)
 
 ;; some nice keybindings
 (define-key emacs-lisp-mode-map  (kbd "M-.") 'find-function-at-point)
