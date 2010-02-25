@@ -281,6 +281,10 @@
                (insert (concat "cd " dir))
                (comint-send-input)))))))
 
+;; iedit: interactively edit all occurrences, useful from isearch
+;(autoload 'iedit-mode "iedit" nil t)
+;(global-set-key (kbd "C-x C-i") 'iedit-mode)
+
 ;; test-case-mode: add a nose backend
 (require 'test-case-mode)
 

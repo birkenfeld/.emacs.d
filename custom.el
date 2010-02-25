@@ -131,6 +131,7 @@
  '(ido-enable-flex-matching t)
  '(ido-mode (quote file) nil (ido))
  '(ido-separator ",")
+ '(iedit-occurrence-face (quote grep-edit-face))
  '(igrep-options (quote -i) t)
  '(indent-tabs-mode nil)
  '(indicate-empty-lines t)
