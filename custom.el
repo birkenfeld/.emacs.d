@@ -102,7 +102,7 @@
  '(file-cache-filter-regexps (quote ("~$" "\\.o$" "\\.exe$" "\\.a$" "\\.elc$" ",v$" "\\.output$" "\\.$" "#$" "\\.class$" "\\.pyc$" "\\.svn/.*$")))
  '(file-cache-find-command-posix-flag t)
  '(fill-column 80)
- '(filladapt-mode-line-string " fa")
+ '(filladapt-mode-line-string " FA")
  '(flymake-no-changes-timeout 1.5)
  '(flyspell-default-dictionary "german")
  '(flyspell-use-meta-tab nil)

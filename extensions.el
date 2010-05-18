@@ -14,6 +14,11 @@
 
 ;; ---------- always enabled ---------------------------------------------------
 
+;; make some mode line displays smaller
+(when (require 'diminish nil 'noerror)
+  (eval-after-load "reveal" '(diminish 'reveal-mode))
+  (eval-after-load "yasnippet" '(diminish 'yas/minor-mode " Y")))
+
 ;; enhanced M-x
 ;(require 'smex)
 ;(smex-initialize)

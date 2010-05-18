@@ -35,7 +35,7 @@
       ;; The initial value.
       nil
       ;; The indicator for the mode line.
-      "™"
+      " TM"
       ;; The minor mode bindings.
       '(
 	;([backspace] . textmate-backspace2)

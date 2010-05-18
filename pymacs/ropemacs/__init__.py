@@ -503,7 +503,7 @@ already opened.")
 
 MINOR_MODE = """\
 (define-minor-mode ropemacs-mode
- "ropemacs, rope in emacs!" nil " Rope" ropemacs-local-keymap
+ "ropemacs, rope in emacs!" nil " R" ropemacs-local-keymap
   :global nil)
 )
 """
