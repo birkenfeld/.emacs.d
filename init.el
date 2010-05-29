@@ -270,11 +270,11 @@
 (font-lock-add-keywords 'latex-mode
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 
-;; ignore alltt environments in spell checking
-(eval-after-load 'ispell
-  '(let ((list (cadr ispell-tex-skip-alists)))
-     (add-to-list 'list '("alltt" . "\\\\end[ \t\n]*{[ \t\n]*alltt[ \t\n]*}"))
-     (setcdr ispell-tex-skip-alists (list list))))
+;; ignore alltt environments in spell checking (XXX currently not working)
+;(eval-after-load 'ispell
+;  '(let ((list (cadr ispell-tex-skip-alists)))
+;     (add-to-list 'list '("alltt" . "\\\\end[ \t\n]*{[ \t\n]*alltt[ \t\n]*}"))
+;     (setcdr ispell-tex-skip-alists (list list))))
 
 ;; nice xterm mouse handling
 ;(xterm-mouse-mode t)
