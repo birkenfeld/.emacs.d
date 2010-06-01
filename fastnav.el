@@ -1,6 +1,8 @@
-;;; fastnav.el -- Fast navigation and editing routines.
+;; fastnav.el -- Fast navigation and editing routines.
 ;;
-;; Copyright (C) 2008, 2009  Zsolt Terek <zsolt@google.com>
+;; Version 1.04
+;;
+;; Copyright (C) 2008, 2009, 2010  Zsolt Terek <zsolt@google.com>
 ;;
 ;; Compatibility: GNU Emacs 22, 23.
 ;;
@@ -14,6 +16,10 @@
 ;; moved to that position.  Subsequent invocations of META-s before picking a
 ;; character increases N, that is, the second, third, etc. occurrences are
 ;; highlighted and targeted.
+;;
+;; The sprint-forward/backward commands apply iterative jumping until return/C-G
+;; is hit, making it possible to reach any point of the text with just a few
+;; keystrokes.
 ;;
 ;; To use it, simply put this file under ~/.emacs.d/, add (require 'fastnav) to
 ;; your emacs initialization file and define some key bindings, for example:
@@ -32,6 +38,15 @@
 ;; (global-set-key "\M-K" 'delete-char-backward)
 ;; (global-set-key "\M-m" 'mark-to-char-forward)
 ;; (global-set-key "\M-M" 'mark-to-char-backward)
+;;
+;; (global-set-key "\M-p" 'sprint-forward)
+;; (global-set-key "\M-P" 'sprint-backward)
+;;
+;; Changes:
+;;   2010-02-05: Fix for org mode, all commands were broken.
+;;               Fix for electric characters in certain modes.
+;;   2010-02-11: Yet another minor fix for switching to next/previous char.
+;;   2010-05-28: Added sprint commands.
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -121,9 +136,14 @@ search of occurences."
 		 (char (event-basic-type event))
 		 (delta 0)
 		 (command (key-binding (vector event))))
-	    (if (member command
-			;; which commands have a keystroke that is valid for search
-			'(self-insert-command newline newline-and-indent))
+	    (if (or
+		 (and (numberp event) (< event 256))
+		 (member command
+			 ;; which commands have a keystroke
+			 ;; that is valid for search
+			 '(self-insert-command
+			   org-self-insert-command
+			   newline newline-and-indent)))
 		(setq result (list arg event))
 	      (progn
 		(if (member command forwarders)
@@ -140,7 +160,9 @@ search of occurences."
 	result)
     (remove-overlays)))
 
+;; For debugging.
 ;;(key-binding (vector (read-event)))
+;;(event-basic-type (read-event))
 
 (defun highlight-read-char-backward (text arg forwarder backwarder)
   "Highlights the backward ARG'th occurences of each character
@@ -303,5 +325,24 @@ queried interactively while highlighting the possible positions."
     (save-excursion
       (apply 'search-char-backward args)
       (delete-char +1))))
+
+(defun sprint-forward (arg)
+  "Performs a sequence of jumping forward to the next character
+matching the keyboard event."
+  (interactive "p")
+  (let ((result t))
+    (while result
+      (if (setq result (highlight-read-char "Sprint:" arg
+					    'sprint-forward
+					    'sprint-backward))
+	  (progn
+	    (apply 'search-char-forward result)
+	    (setq arg (if (> (car result) 0) 1 -1)))))))
+
+(defun sprint-backward (arg)
+  "Performs a sequence of jumping backward to the next character
+matching the keyboard event."
+  (interactive "p")
+  (sprint-forward (- arg)))
 
 (provide 'fastnav)
