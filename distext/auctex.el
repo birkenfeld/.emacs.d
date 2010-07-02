@@ -73,6 +73,7 @@ so that they match the reference face in height."
 (defun TeX-build-master ()
   "Run all necessary steps to build the master file, then view it."
   (interactive)
+  (save-buffer)
   (let ((master-file  (TeX-master-file))
         (next-command nil)
         (keep-running t)

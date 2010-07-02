@@ -729,6 +729,33 @@
                   (delete-file (concat buffer-file-name "c"))))))
 
 
+(defun count-words-wc (&optional filename)
+  "Returns the word count of the current buffer.  If `filename' is not nil,
+returns the word count of that file."
+  (interactive)
+  (save-some-buffers) ;; Make sure the current buffer is saved
+  (let ((tempfile nil))
+    (if (null filename)
+        (progn
+          (let ((buffer-file (buffer-file-name))
+                (lcase-file (downcase (buffer-file-name))))
+            (if (and (>= (length lcase-file) 4)
+                     (string= (substring lcase-file -4 nil) ".tex"))
+                ;; This is a LaTeX document, so DeTeX it!
+                (progn
+                  (setq filename (make-temp-file "wordcount"))
+                  (shell-command-to-string
+                   (concat "detex < " buffer-file " > " filename))
+                  (setq tempfile t))
+              (setq filename buffer-file)))))
+    (let ((result (car (split-string
+                        (shell-command-to-string
+                         (concat "wc -w " filename)) " "))))
+      (if tempfile
+          (delete-file filename))
+      (message (concat "Word Count: " result)))))
+
+
 ;; ---------- Extension configuration ------------------------------------------
 
 ;; load all these files without stopping on errors
