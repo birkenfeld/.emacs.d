@@ -279,11 +279,17 @@
 ;; nice xterm mouse handling
 ;(xterm-mouse-mode t)
 
-;; move mouse out of the way, not needed in Emacs 23.2+
-;(mouse-avoidance-mode 'exile)
-
 ;; don't wrap lines in grep mode
 (add-hook 'grep-mode-hook (lambda () (setq truncate-lines t)))
+
+;; bindings for textmate-like auto pairing of parens/quotes
+(require 'autopair)
+
+;; use it in latex mode for dollar-style inline math
+(add-hook 'latex-mode-hook
+          #'(lambda ()
+              (autopair-mode)
+              (modify-syntax-entry ?$ \"\\\"\")))
 
 
 ;; ---------- Mode-specific keybindings ----------------------------------------
@@ -331,6 +337,15 @@
 ;; some nice keybindings
 (define-key emacs-lisp-mode-map  (kbd "M-.") 'find-function-at-point)
 (define-key lisp-mode-shared-map (kbd "C-c v") 'eval-buffer)
+
+;; auto-pair `' in elisp comments and docstrings
+(add-hook 'emacs-lisp-mode-hook
+          #'(lambda ()
+              (autopair-mode)
+              (push '(?` . ?')
+                    (getf autopair-extra-pairs :comment))
+              (push '(?` . ?')
+                    (getf autopair-extra-pairs :string))))
 
 
 ;; ---------- C mode specifics -------------------------------------------------
@@ -386,7 +401,7 @@
 (add-hook 'c-mode-hook (lambda ()
   (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
 ;; enable nice electric pairs like in textmate
-(add-hook 'c-mode-hook 'textmate-mode)
+(add-hook 'c-mode-hook 'autopair-mode)
 
 ;; GLSL support
 (require 'glsl-mode)
@@ -411,12 +426,15 @@
 (add-to-list 'flymake-allowed-file-name-masks
              '("\\.py\\'" flymake-pyflakes-init))
 
-;; textmate bindings
-(require 'textmate)
-
 (add-hook 'python-mode-hook (lambda ()
   ;; enable nice electric pairs like in textmate
-  (textmate-mode 1)
+  (autopair-mode 1)
+  (add-hook 'python-mode-hook
+            #'(lambda ()
+                (setq autopair-handle-action-fns
+                      (list #'autopair-default-handle-action
+                            #'autopair-python-triple-quote-action))))
+
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)
   ;; enable flymake processing by pyflakes
@@ -465,6 +483,7 @@
 (push
  '("^\\(\.+\.hs\\|\.lhs\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
    1 2 3 4) flymake-err-line-patterns)
+
 
 ;; ---------- Mercurial SMerge mode support ------------------------------------
 
