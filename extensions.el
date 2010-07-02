@@ -290,6 +290,10 @@
 ;(autoload 'iedit-mode "iedit" nil t)
 ;(global-set-key (kbd "C-x C-i") 'iedit-mode)
 
+;; rainbow-mode: color for color names
+(require 'rainbow-mode)
+(add-hook 'css-mode-hook 'rainbow-mode)
+
 ;; test-case-mode: add a nose backend
 (require 'test-case-mode)
 
