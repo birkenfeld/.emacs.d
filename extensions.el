@@ -358,7 +358,7 @@
         (inhibit-read-only t))
     (with-current-buffer proc-buffer
       (insert string)
-      (when (string-match "(Pdb) $" string)
+      (when (string-match "(Pdb.*) $" string)
         (toggle-read-only 0)
         (comint-mode)
         (set-process-filter proc 'comint-output-filter)
@@ -370,7 +370,7 @@
           (setq py-pdbtrack-do-tracking-p t))
         ;; show a backtrace
         (insert "bt")
-        (comint-send-input)
+        (ignore-errors (comint-send-input))
         ;; and switch to Pdb buffer
         (pop-to-buffer proc-buffer)))))
 
