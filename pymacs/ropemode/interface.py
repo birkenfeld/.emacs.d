@@ -84,6 +84,13 @@ class RopeMode(object):
             root = self.env.ask_directory('Rope project root folder: ')
         if self.project is not None:
             self.close_project()
+        address = rope.base.project._realpath(os.path.join(root,
+                                                           '.ropeproject'))
+        if not os.path.exists(address):
+            if not self.env.y_or_n('Project not exists in %s, ' \
+                                   'create one?' % root):
+                self.env.message("Project creation aborted")
+                return
         progress = self.env.create_progress('Opening [%s] project' % root)
         self.project = rope.base.project.Project(root)
         if self.env.get('enable_autoimport'):
@@ -265,6 +272,10 @@ class RopeMode(object):
     def completions(self):
         return _CodeAssist(self, self.env).completions()
 
+    @decorators.local_command()
+    def extended_completions(self):
+        return _CodeAssist(self, self.env).extended_completions()
+
     def _check_autoimport(self):
         self._check_project()
         if self.autoimport is None:
@@ -414,7 +425,7 @@ class RopeMode(object):
     def _goto_location(self, resource, lineno):
         if resource:
             self.env.find_file(str(resource.real_path),
-                               resource.project != self.project)
+                               other=self.env.get('goto_def_newwin'))
         if lineno:
             self.env.goto_line(lineno)
 
@@ -539,7 +550,7 @@ class _CodeAssist(object):
         if prefix is not None:
             arg = self.env.prefix_value(prefix)
             if arg == 0:
-                arg = len(names)
+                arg = len(proposals)
             common_start = self._calculate_prefix(proposals[:arg])
             self.env.insert(common_start[self.offset - self.starting_offset:])
             self._starting = common_start
@@ -583,6 +594,12 @@ class _CodeAssist(object):
         return [self.env._completion_text(proposal)[prefix:]
                 for proposal in proposals]
 
+    def extended_completions(self):
+        proposals = self._calculate_proposals()
+        prefix = self.offset - self.starting_offset
+        return [[proposal.name[prefix:], proposal.get_doc(),
+                 proposal.type] for proposal in proposals]
+
     def _apply_assist(self, assist):
         if ' : ' in assist:
             name, module = assist.rsplit(' : ', 1)
@@ -600,7 +617,8 @@ class _CodeAssist(object):
         proposals = codeassist.code_assist(
             self.interface.project, self.source, self.offset,
             resource, maxfixes=maxfixes)
-        proposals = codeassist.sorted_proposals(proposals)
+        if self.env.get('sorted_completions', True):
+            proposals = codeassist.sorted_proposals(proposals)
         if self.autoimport is not None:
             if self.starting.strip() and '.' not in self.expression:
                 import_assists = self.autoimport.import_assist(self.starting)
