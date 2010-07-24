@@ -1,4 +1,4 @@
-;; eproject.el - assign files to projects, programatically
+;;; eproject.el --- assign files to projects, programatically
 ;;
 ;; Copyright (C) 2008, 2009 Jonathan Rockway <jon@jrock.us>
 ;;
@@ -55,7 +55,7 @@
 ;; set metadata via the eproject-attribute and
 ;; eproject-add-project-metadatum calls.
 ;;
-;; (This is mostly helpful to lisp programmers rather than end-users;
+;; (This is mostly helpful to Lisp programmers rather than end-users;
 ;; if you want tools for visiting and managing projects (and ibuffer
 ;; integration), load `eproject-extras'.  These extras are great
 ;; examples of the eproject API in action, so please take a look even
@@ -211,7 +211,7 @@
   "An alist of project type name to (supertypes selector metadata-plist) pairs.")
 
 (defvar eproject-project-names nil
-  "A list of project names known to emacs.  Populated as projects are opened, but may be prepopulated via .emacs if desired.")
+  "A list of project names known to Emacs.  Populated as projects are opened, but may be prepopulated via .emacs if desired.")
 
 (defvar eproject-extra-attributes nil
   "A list of pairs used to assign attributes to projects.
@@ -319,7 +319,9 @@ what to look for.  Some examples:
 
 (defun eproject--buffer-file-name ()
   (or (buffer-file-name) (and (eq major-mode 'dired-mode)
-                              (expand-file-name dired-directory))))
+                              (expand-file-name (if (consp dired-directory)
+                                                    (car dired-directory)
+                                                  dired-directory)))))
 
 (defun* eproject--run-project-selector (type &optional (file (eproject--buffer-file-name)))
   "Run the selector associated with project type TYPE."
@@ -488,7 +490,7 @@ else through unchanged."
 (define-minor-mode eproject-mode
   "A minor mode for buffers that are a member of an eproject project."
   nil " Project"
-  '(("" . eproject-ifind-file)
+  '(("" . eproject-find-file)
     ("" . eproject-ibuffer))
   (when (null eproject-root)
     (error "Please do not use this directly.  Call eproject-maybe-turn-on instead.")))
@@ -587,9 +589,20 @@ else through unchanged."
             (file-relative-name file root))
           (eproject-list-project-files root)))
 
-;; finish up
+(define-derived-mode dot-eproject-mode emacs-lisp-mode "dot-eproject"
+  "Major mode for editing .eproject files."
+  (define-key dot-eproject-mode-map (kbd "C-c C-c") #'eproject-reinitialize-project))
+
+;; Finish up
 (add-hook 'find-file-hook #'eproject-maybe-turn-on)
 (add-hook 'dired-mode-hook #'eproject-maybe-turn-on)
+(add-hook 'after-change-major-mode-hook
+          (lambda ()
+            (when (and (buffer-file-name)
+                       (not eproject-root))
+              (eproject-maybe-turn-on))))
+
+(add-to-list 'auto-mode-alist '("\\.eproject$" . dot-eproject-mode))
 
 (provide 'eproject)
 ;;; eproject.el ends here
