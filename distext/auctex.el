@@ -94,5 +94,13 @@ so that they match the reference face in height."
                                ;; last command was Show
                                (eq result nil)))))))
 
+(defadvice reftex-offer-label-menu (around dont-delete-other-windows activate)
+  (flet ((delete-other-windows () nil))
+    ad-do-it))
+
+(defadvice reftex-offer-bib-menu (around dont-delete-other-windows activate)
+  (flet ((delete-other-windows () nil))
+    ad-do-it))
+
 (eval-after-load 'tex
   '(define-key TeX-mode-map (kbd "C-c C-x") 'TeX-build-master))
