@@ -261,6 +261,12 @@
 (autoload 'idomenu "idomenu" nil t)
 (global-set-key (kbd "C-x m") 'idomenu)
 
+;; xdict: lookup dictionary
+(autoload 'xdict-query "x-dict" nil t)
+(global-set-key (kbd "C-c d") 'xdict-query)
+(eval-after-load 'x-dict
+  '(add-hook 'xdict-mode-hook (lambda () (setq truncate-lines t))))
+
 ;; shell-pop: easy pop-up of a shell buffer
 (require 'shell-pop)
 (shell-pop-set-internal-mode "ansi-term")
