@@ -291,6 +291,9 @@
               (autopair-mode)
               (modify-syntax-entry ?$ \"\\\"\")))
 
+;; templated files -- find mode after removing _t suffix
+(add-to-list 'auto-mode-alist '("_t$" nil t))
+
 
 ;; ---------- Mode-specific keybindings ----------------------------------------
 
