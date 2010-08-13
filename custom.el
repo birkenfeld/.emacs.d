@@ -58,6 +58,7 @@
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
  '(desktop-file-name-format (quote tilde))
+ '(desktop-load-locked-desktop t)
  '(desktop-modes-not-to-save (quote (tags-table-mode grep-mode ack-mode)))
  '(desktop-path (quote ("~/.emacs.d")))
  '(desktop-restore-eager 5)
