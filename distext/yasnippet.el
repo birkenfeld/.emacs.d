@@ -45,6 +45,10 @@
 
     def __init__(self, ${args}):
         $0" "class definition")
+   ("p"
+    "print($0)"
+    "print stmt (python 3)"
+    )
    ("newmod"
     "# -*- coding: utf-8 -*-
 \"\"\"
@@ -82,6 +86,7 @@ if __name__ == '__main__':
     nil nil ((yas/indent-line 'fixed)))
    ("itrace" "import pdb; pdb.set_trace()" "set trace")
    ("iprexc" "import traceback; traceback.print_exc()" "print tb")
+   ("iprstack" "import traceback; traceback.print_stack()" "print stack")
    ("ipprint" "import pprint; pprint.pprint($0)" "pprint")
    ("visit"
     "def visit_${1:nodeclass}(self, node):
