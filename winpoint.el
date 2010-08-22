@@ -1,16 +1,36 @@
 ;;; winpoint.el --- Remember buffer positions per-window, not per buffer
 
 ;; Copyright (C) 2006  Jorgen Schaefer
+;; Copyright (C) 2009  Andy Stewart
 
-;; Version: 1.2
-;; Keywords: convenience
+;; Filename: winpoint.el
+;; Description: Remember buffer positions per-window, not per buffer
 ;; Author: Jorgen Schaefer <forcer@forcix.cx>
-;; URL: http://www.emacswiki.org/cgi-bin/emacs/download/winpoint.el
+;; Maintainer: Jorgen Schaefer <forcer@forcix.cx>
+;;             Andy Stewart <lazycat.manatee@gmail.com>
+;; Created: 2006
+;; Version: 1.3
+;; Last-Updated: 2009-01-13 12:01:14
+;;           By: Andy Stewart
+;; URL: http://www.emacswiki.org/emacs/download/winpoint.el
+;; Keywords: winpoint
+;; Compatibility: GNU Emacs 23.0.60.1
+;;                GNU Emacs 22
+;;                GNU Emacs 21
+;;
+;; Features that might be required by this library:
+;;
+;;
+;;
 
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License
-;; as published by the Free Software Foundation; either version 2
-;; of the License, or (at your option) any later version.
+;;; This file is NOT part of GNU Emacs
+
+;;; License
+;;
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,32 +38,92 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-;; 02110-1301  USA
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-
+;;
 ;; When two windows view the same buffer at the same time, and one
 ;; window is switched to another buffer and back, point is now the
 ;; same as in the other window, not as it was before we switched away.
 ;; This mode tries to work around this problem by storing and
 ;; restoring per-window positions for each buffer.
+;;
 
-;; To enable this, just run (window-point-remember-mode 1)
+;;; Installation:
+;;
+;; Put winpoint.el to your load-path.
+;; The load-path is usually ~/elisp/.
+;; It's set in your ~/.emacs like this:
+;; (add-to-list 'load-path (expand-file-name "~/elisp"))
+;;
+;; And the following to your ~/.emacs startup file.
+;;
+;; (require 'winpoint)
+;;
+;; And add below to enable `winpoint'.
+;;
+;;      (window-point-remember-mode 1)
+;;
+
+;;; Customize:
+;;
+;; `winpoint-non-restore-buffer-list'
+;;
+;; This option contain a buffer that don't want to restore point.
+;;
+;; For example, setup *Group* buffer like below:
+;;
+;; (setq winpoint-non-restore-buffer-list '("*Group*"))
+;;
+
+;;; Change log:
+;;
+;; 2009/01/13
+;;   * Andy Stewart:
+;;      * Make code compatibility with Emacs 23.
+;;      * Add new option `winpoint-non-restore-buffer-list'
+;;        to avoid some buffer restored window point.
+;;
+;; 2006
+;;   * Jorgen Schaefer:
+;;      * First released.
+;;
+
+;;; Require
+
 
 ;;; Code:
+
+(defgroup winpoint nil
+  "Remember buffer positions per-window, not per buffer."
+  :group 'window)
+
+(defcustom winpoint-non-restore-buffer-list
+  '()
+  "The buffer list that don't restore point."
+  :type 'list
+  :group 'winpoint)
 
 (defvar winpoint-frame-windows nil
   "The current frame's windows and their buffers.
 This is an alist mapping windows to their current buffers.")
-(make-variable-frame-local 'winpoint-frame-windows)
+;; Emacs 23 not need below setup anymore.
+(when (> emacs-major-version 22)
+  (eval-when-compile
+    (with-no-warnings
+      (make-variable-frame-local 'winpoint-frame-windows))))
 
 (defvar winpoint-frame-positions nil
   "The current frame's windows and their associated buffer positions.
 This is an alist mapping windows to an alist mapping buffers to
 their stored point marker.")
-(make-variable-frame-local 'winpoint-frame-positions)
+;; Emacs 23 not need below setup anymore.
+(when (> emacs-major-version 22)
+  (eval-when-compile
+    (with-no-warnings
+      (make-variable-frame-local 'winpoint-frame-positions))))
 
 (defalias 'window-point-remember-mode 'winpoint-mode)
 (define-minor-mode winpoint-mode
@@ -66,9 +146,6 @@ the same as in the other window."
 (defun winpoint-remember ()
   "Remember the currently visible buffer's positions.
 This should be put on `post-command-hook'."
-  ;; (winpoint-put (selected-window)
-  ;;             (current-buffer)
-  ;;             (point)))
   (walk-windows (lambda (win)
                   (let ((buf (window-buffer win)))
                     (winpoint-put win
@@ -106,8 +183,19 @@ If any window isn't shown anymore, forget about it."
   "Restore point in the window WIN."
   (with-selected-window win
     (let ((point (winpoint-get win (current-buffer))))
-      (when point
+      (when (and point
+                 (not (winpoint-match-non-restore-buffer (buffer-name))))
         (goto-char point)))))
+
+(defun winpoint-match-non-restore-buffer (bufname)
+  "Function document"
+  (let (buffer-match-p)
+    (catch 'match
+      (dolist (element winpoint-non-restore-buffer-list)
+        (when (string-equal element bufname)
+          (setq buffer-match-p t)
+          (throw 'match "Match non restored buffer."))))
+    buffer-match-p))
 
 (defun winpoint-get (win buf)
   "Return a cons cell of the stored point of BUF in WIN."
@@ -177,4 +265,8 @@ This modifies LIST whenever possible."
   list)
 
 (provide 'winpoint)
+
 ;;; winpoint.el ends here
+
+;;; LocalWords:  winpoint Jorgen Schaefer buf newbuf defmacro bufname bufs pos
+;;; LocalWords:  pred
