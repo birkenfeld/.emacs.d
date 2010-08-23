@@ -399,7 +399,7 @@ support for features needed by `python-mode'.")
 
 ;; Face for builtins
 (defvar py-builtins-face 'py-builtins-face
-  "Face for builtins like TypeError, object, open, and exec.")
+  "Face for builtins like object, open, and exec.")
 (make-face 'py-builtins-face)
 
 ;; Face for class names
@@ -412,6 +412,11 @@ support for features needed by `python-mode'.")
   "Face for XXX, TODO, and FIXME tags")
 (make-face 'py-XXX-tag-face)
 
+;; Face for builtins
+(defvar py-exception-name-face 'py-exception-name-face
+  "Face for exceptions like TypeError.")
+(make-face 'py-exception-name-face)
+
 (defun py-font-lock-mode-hook ()
   (or (face-differs-from-default-p 'py-pseudo-keyword-face)
       (copy-face 'font-lock-keyword-face 'py-pseudo-keyword-face))
@@ -421,6 +426,8 @@ support for features needed by `python-mode'.")
       (copy-face 'py-pseudo-keyword-face 'py-decorators-face))
   (or (face-differs-from-default-p 'py-XXX-tag-face)
       (copy-face 'font-lock-comment-face 'py-XXX-tag-face))
+  (or (face-differs-from-default-p 'py-exception-name-face)
+      (copy-face 'font-lock-builtin-face 'py-exception-name-face))
   )
 (add-hook 'font-lock-mode-hook 'py-font-lock-mode-hook)
 
@@ -493,12 +500,16 @@ support for features needed by `python-mode'.")
      ;; Yes "except" is in both lists.
      (cons (concat "\\<\\(" kw2 "\\)[ \n\t(]") 1)
      ;; Exceptions
-     (list (concat "\\<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-builtins-face)
+     (list (concat "\\<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
      ;; `as' but only in "import foo as bar"
      '("[ \t]*\\(\\<from\\>.*\\)?\\<import\\>.*\\<\\(as\\)\\>" . 2)
 
      ;; classes
      '("\\<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
+     ;; raise stmts
+     '("\\<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
+     ;; except clauses
+     '("\\<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
      ;; functions
      '("\\<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
        1 font-lock-function-name-face)
