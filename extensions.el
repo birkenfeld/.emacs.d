@@ -241,7 +241,30 @@
 (add-hook 'LaTeX-mode-hook 'talcum-mode)
 
 ;; highlight symbol at point
-;(require 'highlight-symbol)
+(require 'highlight-symbol)
+(add-hook 'python-mode-hook 'highlight-symbol-mode)
+(defun highlight-symbol-next-in-function ()
+  (interactive)
+  (if (eq major-mode 'python-mode)
+      (save-restriction
+        (save-excursion
+          (py-beginning-of-def-or-class)
+          (py-narrow-to-defun))
+        (highlight-symbol-jump 1))
+    (highlight-symbol-next-in-defun)))
+(defun highlight-symbol-prev-in-function ()
+  (interactive)
+  (if (eq major-mode 'python-mode)
+      (save-restriction
+        (save-excursion
+          (py-beginning-of-def-or-class)
+          (py-narrow-to-defun))
+        (highlight-symbol-jump -1))
+    (highlight-symbol-prev-in-defun)))
+(global-set-key (kbd "M-g M-m") 'highlight-symbol-next-in-function)
+(global-set-key (kbd "M-g M-o") 'highlight-symbol-prev-in-function)
+(repeatable-command-advice highlight-symbol-next-in-function)
+(repeatable-command-advice highlight-symbol-prev-in-function)
 
 ;; highlight beyond fill column
 (require 'highlight-beyond-fill-column)
