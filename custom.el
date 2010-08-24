@@ -1,10 +1,10 @@
 ;; ---------- Custom: managed by Emacs -----------------------------------------
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(LaTeX-babel-hyphen "")
  '(LaTeX-fill-break-at-separators (quote (\\\( \\\) \\\[ \\\])))
  '(LaTeX-menu-max-items 40)
@@ -283,10 +283,10 @@ mouse-3: Remove current window from display")))))
  '(xhtml-multi-mode t))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "apple" :family "Monaco"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
@@ -329,13 +329,15 @@ mouse-3: Remove current window from display")))))
  '(font-latex-verbatim-face ((((class color) (background light)) (:inherit monotype-courier\ new :foreground "SaddleBrown"))))
  '(font-lock-builtin-face ((((class color) (min-colors 88) (background light)) (:foreground "#c0c"))))
  '(font-lock-comment-delimiter-face ((default (:inherit font-lock-comment-face :slant normal)) (((class color) (min-colors 16)) nil)))
- '(font-lock-comment-face ((t (:foreground "#0a0" :slant oblique :height 1.0))))
+ '(font-lock-comment-face ((t (:foreground "peru" :slant oblique))))
  '(font-lock-doc-face ((t (:foreground "#c6c" :slant italic))))
- '(font-lock-function-name-face ((t (:foreground "Blue" :weight bold))))
- '(font-lock-keyword-face ((t (:foreground "Purple" :weight bold))))
+ '(font-lock-function-name-face ((t (:foreground "red3" :weight bold))))
+ '(font-lock-keyword-face ((t (:foreground "#0000bb" :weight bold))))
  '(font-lock-negation-char-face ((t (:weight bold))))
- '(font-lock-preprocessor-face ((t (:inherit font-lock-builtin-face :foreground "#999"))))
- '(font-lock-string-face ((t (:foreground "firebrick" :height 1.0))))
+ '(font-lock-preprocessor-face ((t (:inherit font-lock-builtin-face :foreground "gray50"))))
+ '(font-lock-regexp-grouping-backslash ((t (:foreground "firebrick"))))
+ '(font-lock-regexp-grouping-construct ((t (:inherit bold))))
+ '(font-lock-string-face ((t (:foreground "#0b0"))))
  '(font-lock-type-face ((t (:foreground "#084"))))
  '(font-lock-warning-face ((((class color) (min-colors 88) (background light)) (:background "yellow" :foreground "Red1" :slant normal :weight extra-bold))))
  '(fringe ((((class color) (background light)) (:background "gray94" :foreground "#999"))))
@@ -372,7 +374,9 @@ mouse-3: Remove current window from display")))))
  '(py-builtins-face ((t (:inherit font-lock-keyword-face :weight normal))) t)
  '(py-class-name-face ((t (:inherit font-lock-type-face :underline t :weight bold))) t)
  '(py-decorators-face ((t (:inherit font-lock-keyword-face :foreground "#f2a" :weight normal))) t)
+ '(py-exception-name-face ((t (:foreground "#f30"))) t)
  '(py-pseudo-keyword-face ((t (:inherit font-lock-keyword-face :weight normal))) t)
+ '(region ((((class color) (min-colors 88) (background light) (type gtk)) (:background "lightgoldenrod2"))))
  '(semantic-dirty-token-face ((((class color) (background light)) (:background "gray96"))))
  '(semantic-highlight-edits-face ((((class color) (background light)) (:background "gray95"))))
  '(semantic-highlight-func-current-tag-face ((((class color) (background light)) (:background "#dfc"))))
