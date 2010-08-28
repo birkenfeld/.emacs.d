@@ -8,8 +8,8 @@
                   ,@load-path))
 
 ;; ELPA package system
-(when (load "~/.emacs.d/elpa/package.el")
-  (package-initialize))
+;(when (load "~/.emacs.d/elpa/package.el")
+;  (package-initialize))
 
 
 ;; ---------- always enabled ---------------------------------------------------
