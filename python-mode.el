@@ -523,7 +523,7 @@ support for features needed by `python-mode'.")
            (while (re-search-forward
                    (concat
                     "\\(%[^(]\\|%([^)]*).\\)\\|"
-                    "\\(\\\\x..\\|\\\\u....\\|\\\\U........\\|"
+                    "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
                     "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
              (let ((face (get-text-property (1- (point)) 'face)))
                (when (or (and (listp face)
