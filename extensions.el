@@ -138,13 +138,17 @@
 (autoload 'python-mode "python-mode" nil t)
 
 ;; auto-completion setup
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(require 'auto-complete-config)
+(ac-config-default)
+
 (eval-after-load 'python-mode
   '(progn
-     (require 'auto-complete)
-     (require 'auto-complete-python)
-     (setq ac-auto-start nil)
-     (setq ac-auto-start-chars '("."))
-     (add-hook 'python-mode-hook 'auto-complete-mode)))
+     ;(require 'auto-complete-python)
+     ;(setq ac-auto-start nil)
+     ;(setq ac-auto-start-chars '("."))
+     ;(add-hook 'python-mode-hook 'auto-complete-mode)
+     ))
 
 ;; show tabs
 (eval-after-load 'python-mode
