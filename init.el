@@ -11,13 +11,16 @@
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
 
-;; Enable the Emacs server, allows thin editing sessions via emacsclient
+;; enable the Emacs server, allows thin editing sessions via emacsclient
 (require 'server)
 (unless (server-running-p) (server-start))
 
-;; Load custom variables and fonts
+;; load custom variables and fonts
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
+
+;; load path for Python modules, must be set before loading pymacs
+(setq pymacs-load-path '("~/.emacs.d/pymacs"))
 
 
 ;; ---------- Some influential variables ---------------------------------------

@@ -1,14 +1,14 @@
 ;; ---------- Custom: managed by Emacs -----------------------------------------
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(LaTeX-babel-hyphen "")
  '(LaTeX-fill-break-at-separators (quote (\\\( \\\) \\\[ \\\])))
  '(LaTeX-menu-max-items 40)
- '(LaTeX-mode-hook (quote (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
+ '(LaTeX-mode-hook (quote (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
  '(LaTeX-verbatim-environments (quote ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
  '(LaTeX-verbatim-regexp "verbatim\\*?\\|alltt\\|listing")
  '(TeX-PDF-mode t)
@@ -23,6 +23,8 @@
  '(TeX-source-correlate-start-server t)
  '(TeX-style-local ".style/")
  '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "xpdf") (output-html "xdg-open"))))
+ '(ac-auto-start nil)
+ '(ac-trigger-key "TAB")
  '(ack-context 0)
  '(ack-heading t)
  '(ansi-color-for-comint-mode t)
@@ -226,7 +228,7 @@ mouse-3: Remove current window from display")))))
  '(ropemacs-completing-read-function (quote ido-completing-read))
  '(ropemacs-confirm-saving nil)
  '(ropemacs-enable-autoimport t)
- '(ropemacs-global-prefix nil t)
+ '(ropemacs-global-prefix nil)
  '(ropemacs-guess-project t)
  '(ropemacs-separate-doc-buffer nil)
  '(rst-definition-face (quote font-lock-function-name-face))
@@ -292,11 +294,13 @@ mouse-3: Remove current window from display")))))
  '(xhtml-multi-mode t))
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 95 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(ac-candidate-face ((t (:background "lightgray" :foreground "black" :underline "gray"))))
+ '(ac-selection-face ((t (:inherit ac-candidate-face :background "steelblue" :foreground "white"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
