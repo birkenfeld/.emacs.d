@@ -24,6 +24,7 @@
  '(TeX-style-local ".style/")
  '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "xpdf") (output-html "xdg-open"))))
  '(ac-auto-start nil)
+ '(ac-quick-help-delay 0.5)
  '(ac-trigger-key "TAB")
  '(ack-context 0)
  '(ack-heading t)

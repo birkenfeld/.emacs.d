@@ -137,8 +137,11 @@
 (autoload 'python-mode "python-mode" nil t)
 
 ;; auto-completion setup
+(require 'pos-tip)
 (require 'auto-complete)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
+(define-key ac-completing-map "\t" 'ac-complete)
 (require 'auto-complete-config)
 (ac-config-default)
 
@@ -146,7 +149,8 @@
   '(progn
      (require 'auto-complete-python)
      (setup-ropemacs)
-     (add-hook 'python-mode-hook 'ac-nropemacs-setup)
+     (add-hook 'python-mode-hook 'ac-python-mode-setup)
+     (define-key py-mode-map (kbd ".") 'ac-self-insert-and-complete)
      ))
 
 ;; show tabs

@@ -1554,6 +1554,7 @@ This workaround avoid flyspell processes when auto completion is being started."
   "Source definition macro. It defines a complete command also."
   (declare (indent 1))
   `(progn
+     (makunbound (quote ,(intern (format "ac-source-%s" name))))
      (defvar ,(intern (format "ac-source-%s" name))
        ,source)
      (defun ,(intern (format "ac-complete-%s" name)) ()
