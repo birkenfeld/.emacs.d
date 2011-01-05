@@ -408,6 +408,108 @@ subsequent py-up-exception needs the line number where the region
 started, in order to jump to the correct file line.  This variable is
 set in py-execute-region and used in py-jump-to-exception.")
 
+;; 2009-09-10 a.roehler@web.de changed section start
+;; from python.el, version "22.1"
+
+(defconst python-font-lock-syntactic-keywords
+
+'(("[^\\]\\\\\\(?:\\\\\\\\\\)*\\(\\s\"\\)\\1\\(\\1\\)"
+  (2
+   (7)))
+ ("\\([RUru]?\\)[Rr]?\\(\\s\"\\)\\2\\(\\2\\)"
+  (1
+   (python-quote-syntax 1))
+  (2
+   (python-quote-syntax 2))
+  (3
+   (python-quote-syntax 3)))))
+
+(defun python-quote-syntax (n)
+  "Put `syntax-table' property correctly on triple quote.
+Used for syntactic keywords.  N is the match number (1, 2 or 3)."
+  ;; Given a triple quote, we have to check the context to know
+  ;; whether this is an opening or closing triple or whether it's
+  ;; quoted anyhow, and should be ignored.  (For that we need to do
+  ;; the same job as `syntax-ppss' to be correct and it seems to be OK
+  ;; to use it here despite initial worries.) We also have to sort
+  ;; out a possible prefix -- well, we don't _have_ to, but I think it
+  ;; should be treated as part of the string.
+  ;; Test cases:
+  ;;  ur"""ar""" x='"' # """
+  ;; x = ''' """ ' a
+  ;; '''
+  ;; x '"""' x """ \"""" x
+  (save-excursion
+    (goto-char (match-beginning 0))
+    (cond
+     ;; Consider property for the last char if in a fenced string.
+     ((= n 3)
+      (let* ((font-lock-syntactic-keywords nil)
+             (syntax (syntax-ppss)))
+        (when (eq t (nth 3 syntax))	; after unclosed fence
+          (goto-char (nth 8 syntax))	; fence position
+          (skip-chars-forward "uUrR")	; skip any prefix
+          ;; Is it a matching sequence?
+          (if (eq (char-after) (char-after (match-beginning 2)))
+              (if (featurep 'xemacs)
+                '(15)
+            (eval-when-compile (string-to-syntax "|")))
+            ))))
+     ;; Consider property for initial char, accounting for prefixes.
+     ((or (and (= n 2)			; leading quote (not prefix)
+               (= (match-beginning 1) (match-end 1))) ; prefix is null
+          (and (= n 1)			; prefix
+               (/= (match-beginning 1) (match-end 1)))) ; non-empty
+      (let ((font-lock-syntactic-keywords nil))
+        (unless (eq 'string (syntax-ppss-context (syntax-ppss)))
+          ;; (eval-when-compile (string-to-syntax "|"))
+          (if (featurep 'xemacs)
+            '(15)
+            (eval-when-compile (string-to-syntax "|")))
+          )))
+     ;; Otherwise (we're in a non-matching string) the property is
+     ;; nil, which is OK.
+     )))
+
+(setq py-mode-syntax-table
+      (let ((table (make-syntax-table))
+            (tablelookup (if (featurep 'xemacs)
+                                     'get-char-table
+                                   'aref)))
+        ;; Give punctuation syntax to ASCII that normally has symbol
+        ;; syntax or has word syntax and isn't a letter.
+        (if (featurep 'xemacs)
+            (setq table (standard-syntax-table))
+          (let ((symbol (if (featurep 'xemacs) '(3)(string-to-syntax "_")))
+                ;; (symbol (string-to-syntax "_"))
+                (sst (standard-syntax-table)))
+            (dotimes (i 128)
+              (unless (= i ?_)
+                (if (equal symbol (funcall tablelookup sst i))
+                    (modify-syntax-entry i "." table))))))
+        (modify-syntax-entry ?$ "." table)
+        (modify-syntax-entry ?% "." table)
+        ;; exceptions
+        (modify-syntax-entry ?# "<" table)
+        (modify-syntax-entry ?\n ">" table)
+        (modify-syntax-entry ?' "\"" table)
+        (modify-syntax-entry ?` "$" table)
+        (modify-syntax-entry ?\_ "w" table)
+        table))
+
+(defsubst python-in-string/comment ()
+    "Return non-nil if point is in a Python literal (a comment or string)."
+    ;; We don't need to save the match data.
+    (nth 8 (syntax-ppss)))
+
+  (defconst python-space-backslash-table
+    (let ((table (copy-syntax-table py-mode-syntax-table)))
+      (modify-syntax-entry ?\\ " " table)
+      table)
+    "`python-mode-syntax-table' with backslash given whitespace syntax.")
+
+;; 2009-09-10 a.roehler@web.de changed section end
+
 (defconst py-emacs-features
   (let (features)
    features)
@@ -566,67 +668,6 @@ support for features needed by `python-mode'.")
        (2 'font-lock-regexp-grouping-backslash prepend t))
      ))
   "Additional expressions to highlight in Python mode.")
-
-(defconst py-font-lock-syntactic-keywords
-  ;; Make outer chars of matching triple-quote sequences into generic
-  ;; string delimiters.  Fixme: Is there a better way?
-  `((,(rx (or line-start buffer-start
-              (not (syntax escape)))    ; avoid escaped leading quote
-          (group (optional (any "uUrR"))) ; prefix gets syntax property
-          (optional (any "rR"))           ; possible second prefix
-          (group (syntax string-quote))   ; maybe gets property
-          (backref 2)                     ; per first quote
-          (group (backref 2)))            ; maybe gets property
-     (1 (python-quote-syntax 1))
-     (2 (python-quote-syntax 2))
-     (3 (python-quote-syntax 3)))
-    ;; This doesn't really help.
-;;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
-    ))
-
-(defun python-quote-syntax (n)
-  "Put `syntax-table' property correctly on triple quote.
-Used for syntactic keywords.  N is the match number (1, 2 or 3)."
-  ;; Given a triple quote, we have to check the context to know
-  ;; whether this is an opening or closing triple or whether it's
-  ;; quoted anyhow, and should be ignored.  (For that we need to do
-  ;; the same job as `syntax-ppss' to be correct and it seems to be OK
-  ;; to use it here despite initial worries.)  We also have to sort
-  ;; out a possible prefix -- well, we don't _have_ to, but I think it
-  ;; should be treated as part of the string.
-
-  ;; Test cases:
-  ;;  ur"""ar""" x='"' # """
-  ;; x = ''' """ ' a
-  ;; '''
-  ;; x '"""' x """ \"""" x
-  ;; Fixme:  """""" goes wrong (due to syntax-ppss not getting the string
-  ;; fence context).
-  (save-excursion
-    (goto-char (match-beginning 0))
-    (cond
-     ;; Consider property for the last char if in a fenced string.
-     ((= n 3)
-      (let* ((font-lock-syntactic-keywords nil)
-             (syntax (syntax-ppss)))
-        (when (eq t (nth 3 syntax))     ; after unclosed fence
-          (goto-char (nth 8 syntax))    ; fence position
-          (skip-chars-forward "uUrR")   ; skip any prefix
-          ;; Is it a matching sequence?
-          (if (eq (char-after) (char-after (match-beginning 2)))
-              (eval-when-compile (string-to-syntax "|"))))))
-     ;; Consider property for initial char, accounting for prefixes.
-     ((or (and (= n 2)                  ; leading quote (not prefix)
-               (= (match-beginning 1) (match-end 1))) ; prefix is null
-          (and (= n 1)                  ; prefix
-               (/= (match-beginning 1) (match-end 1)))) ; non-empty
-      (let ((font-lock-syntactic-keywords nil))
-        (unless (eq 'string (syntax-ppss-context (syntax-ppss)))
-          (eval-when-compile (string-to-syntax "|")))))
-     ;; Otherwise (we're in a non-matching string) the property is
-     ;; nil, which is OK.
-     )))
-
 
 ;; have to bind py-file-queue before installing the kill-emacs-hook
 (defvar py-file-queue nil
@@ -848,48 +889,47 @@ Currently-active file is at the head of the list.")
   (define-key py-shell-map "\C-c=" 'py-down-exception)
   )
 
-(defvar py-mode-syntax-table nil
-  "Syntax table used in `python-mode' buffers.")
-(when (not py-mode-syntax-table)
-  (setq py-mode-syntax-table (make-syntax-table))
-  (modify-syntax-entry ?\( "()" py-mode-syntax-table)
-  (modify-syntax-entry ?\) ")(" py-mode-syntax-table)
-  (modify-syntax-entry ?\[ "(]" py-mode-syntax-table)
-  (modify-syntax-entry ?\] ")[" py-mode-syntax-table)
-  (modify-syntax-entry ?\{ "(}" py-mode-syntax-table)
-  (modify-syntax-entry ?\} "){" py-mode-syntax-table)
-  ;; Add operator symbols misassigned in the std table
-  (modify-syntax-entry ?\$ "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\% "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\& "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\* "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\+ "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\- "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\/ "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\< "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\= "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\> "."  py-mode-syntax-table)
-  (modify-syntax-entry ?\| "."  py-mode-syntax-table)
-  ;; For historical reasons, underscore is word class instead of
-  ;; symbol class.  GNU conventions say it should be symbol class, but
-  ;; there's a natural conflict between what major mode authors want
-  ;; and what users expect from `forward-word' and `backward-word'.
-  ;; Guido and I have hashed this out and have decided to keep
-  ;; underscore in word class.  If you're tempted to change it, try
-  ;; binding M-f and M-b to py-forward-into-nomenclature and
-  ;; py-backward-into-nomenclature instead.  This doesn't help in all
-  ;; situations where you'd want the different behavior
-  ;; (e.g. backward-kill-word).
-  (modify-syntax-entry ?\_ "w"  py-mode-syntax-table)
-  ;; Both single quote and double quote are string delimiters
-  (modify-syntax-entry ?\' "\"" py-mode-syntax-table)
-  (modify-syntax-entry ?\" "\"" py-mode-syntax-table)
-  ;; backquote is open and close paren
-  (modify-syntax-entry ?\` "$"  py-mode-syntax-table)
-  ;; comment delimiters
-  (modify-syntax-entry ?\# "<"  py-mode-syntax-table)
-  (modify-syntax-entry ?\n ">"  py-mode-syntax-table)
-  )
+;; (when (featurep 'xemacs) (defvar py-mode-syntax-table nil))
+;; (when (featurep 'xemacs)
+;;   (when (not py-mode-syntax-table)
+;;     (setq py-mode-syntax-table (make-syntax-table))
+;;     (modify-syntax-entry ?\( "()" py-mode-syntax-table)
+;;     (modify-syntax-entry ?\) ")(" py-mode-syntax-table)
+;;     (modify-syntax-entry ?\[ "(]" py-mode-syntax-table)
+;;     (modify-syntax-entry ?\] ")[" py-mode-syntax-table)
+;;     (modify-syntax-entry ?\{ "(}" py-mode-syntax-table)
+;;     (modify-syntax-entry ?\} "){" py-mode-syntax-table)
+;;     ;; Add operator symbols misassigned in the std table
+;;     (modify-syntax-entry ?\$ "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\% "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\& "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\* "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\+ "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\- "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\/ "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\< "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\= "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\> "."  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\| "."  py-mode-syntax-table)
+;;     ;; For historical reasons, underscore is word class instead of
+;;     ;; symbol class.  GNU conventions say it should be symbol class, but
+;;     ;; there's a natural conflict between what major mode authors want
+;;     ;; and what users expect from `forward-word' and `backward-word'.
+;;     ;; Guido and I have hashed this out and have decided to keep
+;;     ;; underscore in word class.  If you're tempted to change it, try
+;;     ;; binding M-f and M-b to py-forward-into-nomenclature and
+;;     ;; py-backward-into-nomenclature instead.  This doesn't help in all
+;;     ;; situations where you'd want the different behavior
+;;     ;; (e.g. backward-kill-word).
+;;     (modify-syntax-entry ?\_ "w"  py-mode-syntax-table)
+;;     ;; Both single quote and double quote are string delimiters
+;;     (modify-syntax-entry ?\' "\"" py-mode-syntax-table)
+;;     (modify-syntax-entry ?\" "|" py-mode-syntax-table)
+;;     ;; backquote is open and close paren
+;;     (modify-syntax-entry ?\` "$"  py-mode-syntax-table)
+;;     ;; comment delimiters
+;;     (modify-syntax-entry ?\# "<"  py-mode-syntax-table)
+;;     (modify-syntax-entry ?\n ">"  py-mode-syntax-table)))
 
 ;; An auxiliary syntax table which places underscore and dot in the
 ;; symbol class for simplicity
@@ -1298,7 +1338,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (interactive)
   ;; set up local variables
   (kill-all-local-variables)
-  (make-local-variable 'font-lock-defaults)
   (make-local-variable 'paragraph-separate)
   (make-local-variable 'paragraph-start)
   (make-local-variable 'require-final-newline)
@@ -1311,22 +1350,18 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (make-local-variable 'indent-line-function)
   (make-local-variable 'add-log-current-defun-function)
   (make-local-variable 'fill-paragraph-function)
-  (make-local-variable 'parse-sexp-lookup-properties)
-  (make-local-variable 'outline-regexp)
-  (make-local-variable 'outline-level)
-  (make-local-variable 'open-paren-in-column-0-is-defun-start) ; Emacs 21.4
   ;;
   (set-syntax-table py-mode-syntax-table)
-  (add-hook 'font-lock-mode-hook
-            'py-font-lock-mode-hook nil t)
+  ;; 2009-09-10 a.roehler@web.de changed section start
+  ;; from python.el, version "22.1"
+    (set (make-local-variable 'font-lock-defaults)
+       '(python-font-lock-keywords nil nil nil nil
+				   (font-lock-syntactic-keywords
+				    . python-font-lock-syntactic-keywords)))
+  ;; 2009-09-10 a.roehler@web.de changed section end
   (setq major-mode              'python-mode
         mode-name               "Python"
         local-abbrev-table      python-mode-abbrev-table
-        font-lock-defaults      '(python-font-lock-keywords
-                                  nil nil nil nil
-                                  (font-lock-syntactic-keywords
-                                   . py-font-lock-syntactic-keywords))
-        parse-sexp-lookup-properties t
         paragraph-separate      "^[ \t]*$"
         paragraph-start         "^[ \t]*$"
         require-final-newline   t
