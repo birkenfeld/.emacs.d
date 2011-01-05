@@ -2271,7 +2271,7 @@ number of characters to delete (default is 1)."
   "Fix the indentation of the current line according to Python rules.
 With \\[universal-argument] (programmatically, the optional argument
 ARG non-nil), ignore dedenting rules for block closing statements
-(e.g. return, raise, break, continue, pass)
+ (e.g. return, raise, break, continue, pass)
 
 This function is normally bound to `indent-line-function' so
 \\[indent-for-tab-command] will call it."
