@@ -145,6 +145,12 @@
 ;; better, patched Python mode
 (autoload 'python-mode "python-mode" nil t)
 
+(defun py-backward-kill-nomenclature (arg)
+  "Kill characters forward until encountering the end of a nomenclature section."
+  (interactive "p")
+  (kill-region (point) (progn (py-backward-into-nomenclature arg) (point))))
+
+
 (eval-after-load 'python-mode
   '(progn
      (require 'auto-complete-python)

@@ -3171,12 +3171,6 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (py-forward-into-nomenclature (- arg))
   (py-keep-region-active))
 
-(defun py-backward-kill-nomenclature (arg)
-  "Kill characters forward until encountering the end of a word.
-With argument, do this that many times."
-  (interactive "p")
-  (kill-region (point) (progn (py-backward-into-nomenclature arg) (point))))
-
 
 
 ;; pdbtrack functions
