@@ -127,15 +127,6 @@
 (global-set-key (kbd "M-m") 'mark-to-char-forward)
 (global-set-key (kbd "M-M") 'mark-to-char-backward)
 
-;; ---------- autoloaded -------------------------------------------------------
-
-;; redo
-(autoload 'redo "redo" nil t)
-(global-set-key (kbd "C-x U") 'redo)
-
-;; better, patched Python mode
-(autoload 'python-mode "python-mode" nil t)
-
 ;; auto-completion setup
 (require 'pos-tip)
 (require 'auto-complete)
@@ -144,6 +135,15 @@
 (define-key ac-completing-map "\t" 'ac-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+
+;; ---------- autoloaded -------------------------------------------------------
+
+;; redo
+(autoload 'redo "redo" nil t)
+(global-set-key (kbd "C-x U") 'redo)
+
+;; better, patched Python mode
+(autoload 'python-mode "python-mode" nil t)
 
 (eval-after-load 'python-mode
   '(progn
