@@ -3676,7 +3676,7 @@ If nesting level is zero, return nil."
   "Go to the beginning of the triple quoted string we find ourselves in.
 DELIM is the TQS string delimiter character we're searching backwards
 for."
-  (let ((skip (and delim (not (eq delim t)) (make-string 1 delim)))
+  (let ((skip (and delim (make-string 1 delim)))
         (continue t))
     (when skip
       (save-excursion
@@ -3715,7 +3715,7 @@ See: http://docs.python.org/reference/compound_stmts.html
   ;;
   ;; Also, if we're sitting inside a triple quoted string, this will
   ;; drop us at the line that begins the string.
-  (let (open-bracket-pos)
+  (let (open-bracket-pos pos)
     (while (py-continuation-line-p)
       (beginning-of-line)
       (if (py-backslash-continuation-preceding-line-p)
@@ -3723,8 +3723,18 @@ See: http://docs.python.org/reference/compound_stmts.html
             (forward-line -1))
         ;; else zip out of nested brackets/braces/parens
         (while (setq open-bracket-pos (py-nesting-level))
-          (goto-char open-bracket-pos)))))
-  (beginning-of-line))
+          (goto-char open-bracket-pos))))
+    (if (and (setq pos (python-in-string/comment))
+             (< pos (point)))
+        (progn
+          (goto-char pos)
+          (py-goto-initial-line))
+      (beginning-of-line)
+      (when
+          (and (setq pos (python-in-string/comment))
+               (< pos (point)))
+        (goto-char pos)
+        (py-goto-initial-line)))))
 
 (defun py-goto-beyond-final-line ()
   "Go to the point just beyond the final line of the current statement. "
