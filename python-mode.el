@@ -559,7 +559,7 @@ support for features needed by `python-mode'.")
   (or (face-differs-from-default-p 'py-exception-name-face)
       (copy-face 'font-lock-builtin-face 'py-exception-name-face))
   (or (face-differs-from-default-p 'py-class-name-face)
-      (copy-face 'font-lock-function-name-face 'py-class-name-face))
+      (copy-face 'font-lock-type-face 'py-class-name-face))
   )
 
 (add-hook 'font-lock-mode-hook 'py-font-lock-mode-hook)
@@ -2344,39 +2344,23 @@ dedenting."
        ((py-continuation-line-p)
         (let ((startpos (point))
               (open-bracket-pos (py-nesting-level))
-              endpos searching found state)
+              endpos searching found state cind cline)
           (if open-bracket-pos
               (progn
-                ;; align with first item in list; else a normal
-                ;; indent beyond the line with the open bracket
-                (goto-char (1+ open-bracket-pos)) ; just beyond bracket
-                ;; is the first list item on the same line?
-                (skip-chars-forward " \t")
-                (if (null (memq (following-char) '(?\n ?# ?\\)))
-                                        ; yes, so line up with it
-                    (current-column)
-                  ;; first list item on another line, or doesn't exist yet
-                  (forward-line 1)
-                  (while (and (< (point) startpos)
-                              (looking-at "[ \t]*[#\n\\\\]")) ; skip noise
-                    (forward-line 1))
-                  (if (and (< (point) startpos)
-                           (/= startpos
-                               (save-excursion
-                                 (goto-char (1+ open-bracket-pos))
-                                 (forward-comment (point-max))
-                                 (point))))
-                      ;; again mimic the first list item
-                      (current-indentation)
-                    ;; else they're about to enter the first item
-                    (goto-char open-bracket-pos)
-                    (setq placeholder (point))
-                    (py-goto-initial-line)
-                    (py-goto-beginning-of-tqs
-                     (save-excursion (nth 3 (parse-partial-sexp
-                                             placeholder (point)))))
-                    (+ (current-indentation) py-indent-offset))))
-
+                (setq endpos (py-point 'bol))
+                (py-goto-initial-line)
+                (setq cind (current-indentation))
+                (setq cline cind)
+                (dolist (bp
+                         (nth 9 (save-excursion
+                                  (parse-partial-sexp (point) endpos)))
+                         cind)
+                  (if (search-forward "\n" bp t) (setq cline cind))
+                  (goto-char (1+ bp))
+                  (skip-chars-forward " \t")
+                  (setq cind (if (memq (following-char) '(?\n ?# ?\\))
+                                 (+ cline py-indent-offset)
+                               (current-column)))))
             ;; else on backslash continuation line
             (forward-line -1)
             (if (py-continuation-line-p) ; on at least 3rd line in block
