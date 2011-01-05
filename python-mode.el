@@ -3940,8 +3940,7 @@ These are Python temporary files awaiting execution."
 
 (defun py-fill-string (start &optional justify)
   "Fill the paragraph around (point) in the string starting at start"
-  ;; basic strategy: narrow to the string and call the default
-  ;; implementation
+  ;; basic strategy: narrow to the string and call the default implementation
   (let (;; the start of the string's contents
 	string-start
 	;; the end of the string's contents
@@ -3954,7 +3953,7 @@ These are Python temporary files awaiting execution."
 
     (save-excursion
       (goto-char start)
-      (if (looking-at "\\('''\\|\"\"\"\\|'\\|\"\\)\\\\?\n?")
+      (if (looking-at "\\([urUR]*\\(?:'''\\|\"\"\"\\|'\\|\"\\)\\)\\\\?\n?")
 	  (setq string-start (match-end 0)
 		delim-length (- (match-end 1) (match-beginning 1))
 		delim (buffer-substring-no-properties (match-beginning 1)
