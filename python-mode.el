@@ -634,14 +634,12 @@ support for features needed by `python-mode'.")
      (cons (concat "\\<\\(" kw2 "\\)[ \n\t(]") 1)
      ;; Exceptions
      (list (concat "\\<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
-     ;; `as' but only in "import foo as bar"
-     '("[ \t]*\\(\\<from\\>.*\\)?\\<import\\>.*\\<\\(as\\)\\>" . 2)
-     ;; classes
-     '("\\<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
      ;; raise stmts
      '("\\<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
      ;; except clauses
      '("\\<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
+     ;; classes
+     '("\\<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
      ;; functions
      '("\\<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
        1 font-lock-function-name-face)
@@ -1589,7 +1587,7 @@ If the traceback target file path is invalid, we look for the most
 recently visited python-mode buffer which either has the name of the
 current function \(or class) or which defines the function \(or
 class).  This is to provide for remote scripts, eg, Zope's 'Script
- (Python)' - put a _copy_ of the script in a buffer named for the
+\(Python)' - put a _copy_ of the script in a buffer named for the
 script, and set to python-mode, and pdbtrack will find it.)"
   ;; Instead of trying to piece things together from partial text
   ;; (which can be almost useless depending on Emacs version), we
@@ -2271,7 +2269,7 @@ number of characters to delete (default is 1)."
   "Fix the indentation of the current line according to Python rules.
 With \\[universal-argument] (programmatically, the optional argument
 ARG non-nil), ignore dedenting rules for block closing statements
- (e.g. return, raise, break, continue, pass)
+\(e.g. return, raise, break, continue, pass)
 
 This function is normally bound to `indent-line-function' so
 \\[indent-for-tab-command] will call it."
@@ -4095,17 +4093,20 @@ These are Python temporary files awaiting execution."
       ;; if the string is the first token on a line and doesn't start with
       ;; a newline, fill as if the string starts at the beginning of the
       ;; line. this helps with one line docstrings
-      ;(save-excursion
-      ;  (beginning-of-line)
-      ;  (and (/= (char-before string-start) ?\n)
-      ;       (looking-at (concat "[ \t]*" delim))
-      ;       (setq string-start (point))))
+      (save-excursion
+        (beginning-of-line)
+        (and (/= (char-before string-start) ?\n)
+             (looking-at (concat "[ \t]*" delim))
+             (setq string-start (point))))
 
-      (forward-sexp)
+      (forward-sexp (if (= delim-length 3) 2 1))
 
-      ;; with both triple quoted strings and single/double quoted strings we're
-      ;; now after the end delimiter.
-      (setq string-end (- (point) delim-length)))
+      ;; with both triple quoted strings and single/double quoted strings
+      ;; we're now directly behind the first char of the end delimiter
+      ;; (this doesn't work correctly when the triple quoted string
+      ;; contains the quote mark itself). The end of the string's contents
+      ;; is one less than point
+      (setq string-end (1- (point))))
 
     ;; Narrow to the string's contents and fill the current paragraph
     (save-restriction
