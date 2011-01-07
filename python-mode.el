@@ -502,11 +502,11 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     ;; We don't need to save the match data.
     (nth 8 (syntax-ppss)))
 
-  (defconst python-space-backslash-table
-    (let ((table (copy-syntax-table py-mode-syntax-table)))
-      (modify-syntax-entry ?\\ " " table)
-      table)
-    "`python-mode-syntax-table' with backslash given whitespace syntax.")
+(defconst python-space-backslash-table
+  (let ((table (copy-syntax-table py-mode-syntax-table)))
+    (modify-syntax-entry ?\\ " " table)
+    table)
+  "`python-mode-syntax-table' with backslash given whitespace syntax.")
 
 ;; 2009-09-10 a.roehler@web.de changed section end
 
@@ -529,22 +529,22 @@ support for features needed by `python-mode'.")
 
 ;; Face for builtins
 (defvar py-builtins-face 'py-builtins-face
-  "Face for builtins like object, open, and exec.")
+  "Face for builtins like TypeError, object, open, and exec.")
 (make-face 'py-builtins-face)
-
-;; Face for class names
-(defvar py-class-name-face 'py-class-name-face
-  "Face for Python class names.")
-(make-face 'py-class-name-face)
 
 ;; XXX, TODO, and FIXME comments and such
 (defvar py-XXX-tag-face 'py-XXX-tag-face
   "Face for XXX, TODO, and FIXME tags")
 (make-face 'py-XXX-tag-face)
 
-;; Face for builtins
+;; Face for class names
+(defvar py-class-name-face 'py-class-name-face
+  "Face for Python class names.")
+(make-face 'py-class-name-face)
+
+;; Face for exception names
 (defvar py-exception-name-face 'py-exception-name-face
-  "Face for exceptions like TypeError.")
+  "Face for exception names like TypeError.")
 (make-face 'py-exception-name-face)
 
 (defun py-font-lock-mode-hook ()
@@ -556,10 +556,10 @@ support for features needed by `python-mode'.")
       (copy-face 'py-pseudo-keyword-face 'py-decorators-face))
   (or (face-differs-from-default-p 'py-XXX-tag-face)
       (copy-face 'font-lock-comment-face 'py-XXX-tag-face))
-  (or (face-differs-from-default-p 'py-exception-name-face)
-      (copy-face 'font-lock-builtin-face 'py-exception-name-face))
   (or (face-differs-from-default-p 'py-class-name-face)
       (copy-face 'font-lock-type-face 'py-class-name-face))
+  (or (face-differs-from-default-p 'py-exception-name-face)
+      (copy-face 'font-lock-builtin-face 'py-exception-name-face))
   )
 
 (add-hook 'font-lock-mode-hook 'py-font-lock-mode-hook)
@@ -649,21 +649,26 @@ support for features needed by `python-mode'.")
      ;; XXX, TODO, and FIXME tags
      '("XXX\\|TODO\\|FIXME" 0 py-XXX-tag-face t)
      ;; special marking for string escapes and percent substitutes;
-     ;; loop adapted from lisp-mode in font-lock.el
+     ;; loops adapted from lisp-mode in font-lock.el
      '((lambda (bound)
          (catch 'found
            (while (re-search-forward
                    (concat
-                    "\\(%[^(]\\|%([^)]*).\\)\\|"
                     "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
                     "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
              (let ((face (get-text-property (1- (point)) 'face)))
-               (when (or (and (listp face)
-                              (memq 'font-lock-string-face face))
+               (when (or (and (listp face) (memq 'font-lock-string-face face))
                          (eq 'font-lock-string-face face))
                  (throw 'found t))))))
-       (1 'font-lock-regexp-grouping-construct prepend t)
-       (2 'font-lock-regexp-grouping-backslash prepend t))
+       (1 'font-lock-regexp-grouping-backslash prepend))
+     '((lambda (bound)
+         (catch 'found
+           (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
+             (let ((face (get-text-property (1- (point)) 'face)))
+               (when (or (and (listp face) (memq 'font-lock-string-face face))
+                         (eq 'font-lock-string-face face))
+                 (throw 'found t))))))
+       (1 'font-lock-regexp-grouping-construct prepend))
      ))
   "Additional expressions to highlight in Python mode.")
 
