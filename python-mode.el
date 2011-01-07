@@ -2544,9 +2544,10 @@ it's tried again going backward."
                'py-indent-offset)
       (setq py-indent-offset new-value)
       (or noninteractive
-          (message "%s value of py-indent-offset set to %d"
-                   (if global "Global" "Local")
-                   py-indent-offset)))
+          ;(message "%s value of py-indent-offset set to %d"
+          ;         (if global "Global" "Local")
+          ;         py-indent-offset)
+          ))
     ))
 
 (defun py-comment-indent-function ()
@@ -4158,7 +4159,7 @@ If point is inside a string, narrow to that string and fill.
           (eq (py-in-literal) 'string))
         (save-excursion
           (py-fill-string (py-point 'boi))))
-       ;; otherwise don't do anything
+       ;; otherwise: do not ever fill code
        (t nil)))))
 
 
