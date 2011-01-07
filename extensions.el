@@ -7,9 +7,11 @@
                   "~/.emacs.d/haskell-mode"
                   ,@load-path))
 
-;; ELPA package system
-;(when (load "~/.emacs.d/elpa/package.el")
-;  (package-initialize))
+;; add the alternate package repo
+(when (require 'package nil t)
+  (add-to-list 'package-archives
+               '("marmalade" .
+                 "http://marmalade-repo.org/packages/") t))
 
 ;; ---------- always enabled ---------------------------------------------------
 
@@ -154,7 +156,7 @@
 (eval-after-load 'python-mode
   '(progn
      (require 'auto-complete-python)
-     (setup-ropemacs)
+     (add-hook 'python-mode-hook 'setup-ropemacs)
      (add-hook 'python-mode-hook 'ac-python-mode-setup)
      (define-key py-mode-map (kbd ".") 'ac-self-insert-and-complete)
      ))

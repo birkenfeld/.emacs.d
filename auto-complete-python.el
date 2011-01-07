@@ -1,26 +1,20 @@
 (require 'auto-complete)
 
-;; setup pymacs
-
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-
 ;; ropemacs Integration with auto-completion
 
+(defvar ropemacs-loaded nil)
 (defun setup-ropemacs ()
   "Setup the ropemacs harness"
-  (if (not (boundp 'ropemacs-global-prefix))
-      (setq ropemacs-global-prefix nil))
-  (pymacs-load "ropemacs" "rope-")
-  (define-key ropemacs-local-keymap (kbd "C-c j") 'rope-jump-to-global)
+  (if ropemacs-loaded nil
+    (if (not (boundp 'ropemacs-global-prefix))
+        (setq ropemacs-global-prefix nil))
+    (pymacs-load "ropemacs" "rope-")
+    (define-key ropemacs-local-keymap (kbd "C-c j") 'rope-jump-to-global)
   
-  ;; Stops from erroring if there's a syntax err
-  (setq ropemacs-codeassist-maxfixes 3)
-  (setq ropemacs-guess-project t)
-  (setq ropemacs-enable-autoimport t))
+    ;; Stops from erroring if there's a syntax err
+    (setq ropemacs-codeassist-maxfixes 3)
+    (setq ropemacs-guess-project t)
+    (setq ropemacs-enable-autoimport t)))
 
 
 (defvar ac-ropemacs-last-candidates)
