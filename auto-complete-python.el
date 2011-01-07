@@ -1,6 +1,6 @@
 (require 'auto-complete)
 
-;; ropemacs Integration with auto-completion
+;; ropemacs integration with auto-completion
 
 (defvar ropemacs-loaded nil)
 (defun setup-ropemacs ()
@@ -8,7 +8,9 @@
   (if ropemacs-loaded nil
     (if (not (boundp 'ropemacs-global-prefix))
         (setq ropemacs-global-prefix nil))
-    (pymacs-load "ropemacs" "rope-")
+    (with-temp-buffer
+      (cd "~")
+      (pymacs-load "ropemacs" "rope-"))
     (define-key ropemacs-local-keymap (kbd "C-c j") 'rope-jump-to-global)
   
     ;; Stops from erroring if there's a syntax err
