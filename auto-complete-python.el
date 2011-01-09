@@ -50,9 +50,8 @@
     (requires   . 0)))
 
 (defun ac-python-mode-setup ()
-  (setq ac-sources (append '(ac-source-nropemacs
-                             ac-source-nropemacs-dot
-                             ac-source-yasnippet) ac-sources)))
+  (setq ac-sources
+        '(ac-source-nropemacs ac-source-nropemacs-dot ac-source-yasnippet)))
 
 (defun ac-self-insert-and-complete ()
   (interactive)
