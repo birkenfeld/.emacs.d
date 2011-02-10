@@ -227,6 +227,10 @@
 (global-set-key [remap next-error] 'next-error-or-flymake)
 (global-set-key [remap previous-error] 'previous-error-or-flymake)
 
+;; font size management
+(global-set-key (kbd "C-x C-+") 'increase-font-size)
+(global-set-key (kbd "C-x C--") 'decrease-font-size)
+
 ;; support back and forward mouse in Info and help
 (eval-after-load 'help-mode
   '(progn
@@ -639,6 +643,16 @@
                                           (region-beginning) (region-end)))
     (message "Word count: %s" (how-many "\\w+"
                                         (point-min) (point-max)))))
+
+(defun increase-font-size (&optional amount)
+  (interactive)
+  (let ((current (face-attribute 'default :height)))
+    (set-face-attribute 'default nil :height
+                        (+ current (or amount 10)))))
+
+(defun decrease-font-size ()
+  (interactive)
+  (increase-font-size -10))
 
 (require 'grep)
 (defun grep (regexp &optional files)
