@@ -9,7 +9,7 @@
 ;; Created:    Feb 1992
 ;; Keywords:   python languages oop
 
-(defconst py-version "5.1.0+"
+(defconst py-version "5.2.0+"
   "`python-mode' version number.")
 
 ;; This file is part of python-mode.el.
@@ -114,7 +114,7 @@ regardless of where in the line point is when the TAB command is used."
   :type 'string
   :group 'python)
 
-(make-obsolete-variable 'py-jpython-command 'py-jython-command)
+(make-obsolete-variable 'py-jpython-command 'py-jython-command nil)
 (defcustom py-jython-command "jython"
   "*Shell command used to start the Jython interpreter."
   :type 'string
@@ -145,7 +145,7 @@ mode buffer is visited during an Emacs session.  After that, use
   :type '(repeat string)
   :group 'python)
 
-(make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args)
+(make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
 (defcustom py-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
@@ -323,7 +323,7 @@ file heading imports to see if they look Java-like."
   :group 'python
   )
 
-(make-obsolete-variable 'py-jpython-packages 'py-jython-packages)
+(make-obsolete-variable 'py-jpython-packages 'py-jython-packages nil)
 (defcustom py-jython-packages
   '("java" "javax" "org" "com")
   "Imported packages that imply `jython-mode'."
@@ -408,21 +408,38 @@ subsequent py-up-exception needs the line number where the region
 started, in order to jump to the correct file line.  This variable is
 set in py-execute-region and used in py-jump-to-exception.")
 
+;; Skip's XE workaround
+(unless (functionp 'string-to-syntax)
+    (defun string-to-syntax (s)
+      (cond
+       ((equal s "|") '(15))
+       ((equal s "_") '(3))
+       (t (error "Unhandled string: %s" s))))
+  )
+
+;; GNU's syntax-ppss-context
+(unless (functionp 'syntax-ppss-context)
+ (defsubst syntax-ppss-context (ppss)
+  (cond
+   ((nth 3 ppss) 'string)
+   ((nth 4 ppss) 'comment)
+   (t nil))))
+
+
 ;; 2009-09-10 a.roehler@web.de changed section start
 ;; from python.el, version "22.1"
 
 (defconst python-font-lock-syntactic-keywords
-
-'(("[^\\]\\\\\\(?:\\\\\\\\\\)*\\(\\s\"\\)\\1\\(\\1\\)"
-  (2
-   (7)))
- ("\\([RUru]?\\)[Rr]?\\(\\s\"\\)\\2\\(\\2\\)"
-  (1
-   (python-quote-syntax 1))
-  (2
-   (python-quote-syntax 2))
-  (3
-   (python-quote-syntax 3)))))
+  '(("[^\\]\\\\\\(?:\\\\\\\\\\)*\\(\\s\"\\)\\1\\(\\1\\)"
+     (2
+      (7)))
+    ("\\([RUBrub]?\\)[Rr]?\\(\\s\"\\)\\2\\(\\2\\)"
+     (1
+      (python-quote-syntax 1))
+     (2
+      (python-quote-syntax 2))
+     (3
+      (python-quote-syntax 3)))))
 
 (defun python-quote-syntax (n)
   "Put `syntax-table' property correctly on triple quote.
@@ -445,42 +462,38 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
      ;; Consider property for the last char if in a fenced string.
      ((= n 3)
       (let* ((font-lock-syntactic-keywords nil)
-             (syntax (syntax-ppss)))
-        (when (eq t (nth 3 syntax))	; after unclosed fence
-          (goto-char (nth 8 syntax))	; fence position
-          (skip-chars-forward "uUrR")	; skip any prefix
+             (syntax (parse-partial-sexp (point-min) (point))))
+        (when (eq t (nth 3 syntax))     ; after unclosed fence
+          (goto-char (nth 8 syntax))    ; fence position
+          (skip-chars-forward "uUrRbB") ; skip any prefix
           ;; Is it a matching sequence?
           (if (eq (char-after) (char-after (match-beginning 2)))
-              (if (featurep 'xemacs)
-                '(15)
-            (eval-when-compile (string-to-syntax "|")))
+                (eval-when-compile (string-to-syntax "|"))
             ))))
      ;; Consider property for initial char, accounting for prefixes.
-     ((or (and (= n 2)			; leading quote (not prefix)
+     ((or (and (= n 2)                  ; leading quote (not prefix)
                (= (match-beginning 1) (match-end 1))) ; prefix is null
-          (and (= n 1)			; prefix
+          (and (= n 1)                  ; prefix
                (/= (match-beginning 1) (match-end 1)))) ; non-empty
       (let ((font-lock-syntactic-keywords nil))
-        (unless (eq 'string (syntax-ppss-context (syntax-ppss)))
+        (unless (eq 'string (syntax-ppss-context (parse-partial-sexp (point-min) (point))))
           ;; (eval-when-compile (string-to-syntax "|"))
-          (if (featurep 'xemacs)
-            '(15)
-            (eval-when-compile (string-to-syntax "|")))
+            (eval-when-compile (string-to-syntax "|"))
           )))
      ;; Otherwise (we're in a non-matching string) the property is
      ;; nil, which is OK.
      )))
-
+(defvar py-mode-syntax-table nil)
 (setq py-mode-syntax-table
       (let ((table (make-syntax-table))
             (tablelookup (if (featurep 'xemacs)
-                                     'get-char-table
-                                   'aref)))
+                             'get-char-table
+                           'aref)))
         ;; Give punctuation syntax to ASCII that normally has symbol
         ;; syntax or has word syntax and isn't a letter.
         (if (featurep 'xemacs)
             (setq table (standard-syntax-table))
-          (let ((symbol (if (featurep 'xemacs) '(3)(string-to-syntax "_")))
+          (let ((symbol (string-to-syntax "_"))
                 ;; (symbol (string-to-syntax "_"))
                 (sst (standard-syntax-table)))
             (dotimes (i 128)
@@ -500,7 +513,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (defsubst python-in-string/comment ()
     "Return non-nil if point is in a Python literal (a comment or string)."
     ;; We don't need to save the match data.
-    (nth 8 (syntax-ppss)))
+    (nth 8 (parse-partial-sexp (point-min) (point))))
 
 (defconst python-space-backslash-table
   (let ((table (copy-syntax-table py-mode-syntax-table)))
@@ -576,7 +589,7 @@ support for features needed by `python-mode'.")
                           )
                         "\\|"))
         (kw2 (mapconcat 'identity
-                        '("else:" "except:" "finally:" "try:")
+                        '("else:" "except:" "finally:" "try:" "lambda:")
                         "\\|"))
         (kw3 (mapconcat 'identity
                         ;; Don't include Ellipsis in this list, since it is
@@ -650,25 +663,25 @@ support for features needed by `python-mode'.")
      '("XXX\\|TODO\\|FIXME" 0 py-XXX-tag-face t)
      ;; special marking for string escapes and percent substitutes;
      ;; loops adapted from lisp-mode in font-lock.el
-     '((lambda (bound)
-         (catch 'found
-           (while (re-search-forward
-                   (concat
-                    "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
-                    "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
-             (let ((face (get-text-property (1- (point)) 'face)))
-               (when (or (and (listp face) (memq 'font-lock-string-face face))
-                         (eq 'font-lock-string-face face))
-                 (throw 'found t))))))
-       (1 'font-lock-regexp-grouping-backslash prepend))
-     '((lambda (bound)
-         (catch 'found
-           (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
-             (let ((face (get-text-property (1- (point)) 'face)))
-               (when (or (and (listp face) (memq 'font-lock-string-face face))
-                         (eq 'font-lock-string-face face))
-                 (throw 'found t))))))
-       (1 'font-lock-regexp-grouping-construct prepend))
+     ;; '((lambda (bound)
+     ;;     (catch 'found
+     ;;       (while (re-search-forward
+     ;;               (concat
+     ;;                "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
+     ;;                "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
+     ;;         (let ((face (get-text-property (1- (point)) 'face)))
+     ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
+     ;;                     (eq 'font-lock-string-face face))
+     ;;             (throw 'found t))))))
+     ;;   (1 'font-lock-regexp-grouping-backslash prepend))
+     ;; '((lambda (bound)
+     ;;     (catch 'found
+     ;;       (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
+     ;;         (let ((face (get-text-property (1- (point)) 'face)))
+     ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
+     ;;                     (eq 'font-lock-string-face face))
+     ;;             (throw 'found t))))))
+     ;;   (1 'font-lock-regexp-grouping-construct prepend))
      ))
   "Additional expressions to highlight in Python mode.")
 
@@ -693,15 +706,15 @@ Currently-active file is at the head of the list.")
    ;;
    ;; (maybe raw), long single quoted triple quoted strings (SQTQ),
    ;; with potential embedded single quotes
-   "[rR]?'''[^']*\\(\\('[^']\\|''[^']\\)[^']*\\)*'''"
+   "[rRuUbB]?'''[^']*\\(\\('[^']\\|''[^']\\)[^']*\\)*'''"
    "\\|"
    ;; (maybe raw), long double quoted triple quoted strings (DQTQ),
    ;; with potential embedded double quotes
-   "[rR]?\"\"\"[^\"]*\\(\\(\"[^\"]\\|\"\"[^\"]\\)[^\"]*\\)*\"\"\""
+   "[rRuUbB]?\"\"\"[^\"]*\\(\\(\"[^\"]\\|\"\"[^\"]\\)[^\"]*\\)*\"\"\""
    "\\|"
-   "[rR]?'\\([^'\n\\]\\|\\\\.\\)*'"     ; single-quoted
-   "\\|"                                ; or
-   "[rR]?\"\\([^\"\n\\]\\|\\\\.\\)*\""  ; double-quoted
+   "[rRuUbB]?'\\([^'\n\\]\\|\\\\.\\)*'"     ; single-quoted
+   "\\|"                                    ; or
+   "[rRuUbB]?\"\\([^\"\n\\]\\|\\\\.\\)*\""  ; double-quoted
    )
   "Regular expression matching a Python string literal.")
 
@@ -774,7 +787,7 @@ Currently-active file is at the head of the list.")
 (defvar python-mode-hook nil
   "*Hook called by `python-mode'.")
 
-(make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook)
+(make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 (defvar jython-mode-hook nil
   "*Hook called by `jython-mode'. `jython-mode' also calls
 `python-mode-hook'.")
@@ -785,7 +798,7 @@ Currently-active file is at the head of the list.")
 ;; In previous version of python-mode.el, the hook was incorrectly
 ;; called py-mode-hook, and was not defvar'd.  Deprecate its use.
 (and (fboundp 'make-obsolete-variable)
-     (make-obsolete-variable 'py-mode-hook 'python-mode-hook))
+     (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))
 
 (defvar py-mode-map ()
   "Keymap used in `python-mode' buffers.")
@@ -947,12 +960,6 @@ Currently-active file is at the head of the list.")
 
 
 ;; Utilities
-(defmacro py-safe (&rest body)
-  "Safely execute BODY, return nil if an error occurred."
-  `(condition-case nil
-       (progn ,@ body)
-     (error nil)))
-
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
   ;; Ignore byte-compiler warnings you might see.  Also note that
@@ -1040,7 +1047,7 @@ Optional LIM is ignored."
 This menu will get created automatically if you have the `easymenu'
 package.  Note that the latest X/Emacs releases contain this package.")
 
-(and (py-safe (require 'easymenu) t)
+(and (ignore-errors (require 'easymenu) t)
      (easy-menu-define
       py-menu py-mode-map "Python Mode menu"
       '("Python"
@@ -1316,8 +1323,8 @@ This does the following:
 ;      'cpython ;; don't use to py-default-interpreter, because default
 ;               ;; is only way to choose CPython
       ))
-
 
+(defvar py-which-shell nil)
 ;;;###autoload
 (defun python-mode ()
   "Major mode for editing Python files.
@@ -1359,8 +1366,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   ;; from python.el, version "22.1"
     (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
-				   (font-lock-syntactic-keywords
-				    . python-font-lock-syntactic-keywords)))
+                                   (font-lock-syntactic-keywords
+                                    . python-font-lock-syntactic-keywords)))
   ;; 2009-09-10 a.roehler@web.de changed section end
   (setq major-mode              'python-mode
         mode-name               "Python"
@@ -1388,7 +1395,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (if (boundp 'comment-multi-line)
       (setq comment-multi-line nil))
   ;; Install Imenu if available
-  (when (py-safe (require 'imenu))
+  (when (ignore-errors (require 'imenu))
     (setq imenu-create-index-function #'py-imenu-create-index-function)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (if (fboundp 'imenu-add-to-menubar)
@@ -1424,7 +1431,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (if py-smart-indentation
     (let ((offset py-indent-offset))
       ;; It's okay if this fails to guess a good value
-      (if (and (py-safe (py-guess-indent-offset))
+      (if (and (ignore-errors (py-guess-indent-offset))
                (<= py-indent-offset 8)
                (>= py-indent-offset 2))
           (setq offset py-indent-offset))
@@ -1438,7 +1445,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (when (null py-which-shell)
     (py-toggle-shells (py-choose-shell))))
 
-(make-obsolete 'jpython-mode 'jython-mode)
+(make-obsolete 'jpython-mode 'jython-mode nil)
 (defun jython-mode ()
   "Major mode for editing Jython/Jython files.
 This is a simple wrapper around `python-mode'.
@@ -1459,7 +1466,9 @@ It is added to `interpreter-mode-alist' and `py-choose-shell'.
 ;; already added.
 ;;;###autoload
 (let ((modes '(("jython" . jython-mode)
-               ("python" . python-mode))))
+               ("python" . python-mode)
+               ("python3" . python-mode)
+               )))
   (while modes
     (when (not (assoc (car modes) interpreter-mode-alist))
       (push (car modes) interpreter-mode-alist))
@@ -1559,7 +1568,7 @@ This function is appropriate for `comint-output-filter-functions'."
                    py-file-queue)
     (if py-shell-switch-buffers-on-execute
       (pop-to-buffer (current-buffer)))
-    (py-safe (delete-file (car py-file-queue)))
+    (ignore-errors (delete-file (car py-file-queue)))
     (setq py-file-queue (cdr py-file-queue))
     (if py-file-queue
         (let ((pyproc (get-buffer-process (current-buffer))))
@@ -2092,7 +2101,7 @@ subtleties, including the use of the optional ASYNC argument."
                       ((and (consp py-exception-buffer)
                             (string-equal file (car py-exception-buffer)))
                        (cdr py-exception-buffer))
-                      ((py-safe (find-file-noselect file)))
+                      ((ignore-errors (find-file-noselect file)))
                       ;; could not figure out what file the exception
                       ;; is pointing to, so prompt for it
                       (t (find-file (read-file-name "Exception file: "
@@ -2548,12 +2557,11 @@ it's tried again going backward."
       (funcall (if global 'kill-local-variable 'make-local-variable)
                'py-indent-offset)
       (setq py-indent-offset new-value)
-      (or noninteractive
-          ;(message "%s value of py-indent-offset set to %d"
-          ;         (if global "Global" "Local")
-          ;         py-indent-offset)
-          ))
-    ))
+      ;(or noninteractive
+      ;    (message "%s value of py-indent-offset set to %d"
+      ;             (if global "Global" "Local")
+      ;             py-indent-offset))
+    )))
 
 (defun py-comment-indent-function ()
   "Python version of `comment-indent-function'."
@@ -3250,8 +3258,8 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
       ;; Emacs.
       (compilation-start command)
     ;; XEmacs.
-    (compile-internal command "No more errors")))
-
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
 
 
 ;; pydoc commands. The guts of this function is stolen from XEmacs's
@@ -3677,22 +3685,28 @@ If nesting level is zero, return nil."
         (py-nesting-level))))
 
 (defun py-goto-beginning-of-tqs (delim)
-  "Go to the beginning of the triple quoted string we find ourselves in.
-DELIM is the TQS string delimiter character we're searching backwards
-for."
-  (let ((skip (and delim (make-string 1 delim)))
-        (continue t))
-    (when skip
-      (save-excursion
-        (while continue
-          (py-safe (search-backward skip))
-          (setq continue (and (not (bobp))
-                              (= (char-before) ?\\))))
-        (if (and (= (char-before) delim)
-                 (= (char-before (1- (point))) delim))
-            (setq skip (make-string 3 delim))))
-      ;; we're looking at a triple-quoted string
-      (py-safe (search-backward skip)))))
+  "Go to the beginning of a triple quoted string at point.
+DELIM is the result of \"(nth 3 (parse-partial-sexp...\", i.e. the
+     character that will terminate the string, or `t' if the string
+     is terminated by a generic string delimiter.
+If syntax-table is set correctly, the latter should be the case. "
+  (if (numberp delim)
+      (let ((skip (and delim (make-string 1 delim)))
+            (continue t))
+        (when skip
+          (save-excursion
+            (while continue
+              (ignore-errors (search-backward skip))
+              (setq continue (and (not (bobp))
+                                  (= (char-before) ?\\))))
+            (if (and (= (char-before) delim)
+                     (= (char-before (1- (point))) delim))
+                (setq skip (make-string 3 delim))))
+          ;; we're looking at a triple-quoted string
+          (ignore-errors (search-backward skip))))
+    (when
+        (skip-syntax-backward "^|")
+      (forward-char 1))))
 
 (defun py-goto-initial-line ()
   "Go to the initial line of a simple or compound statement.
@@ -3991,7 +4005,7 @@ to do so may mean a greater delay in fixing your bug.\n\n")
   "Delete files in `py-file-queue'.
 These are Python temporary files awaiting execution."
   (mapc #'(lambda (filename)
-            (py-safe (delete-file filename)))
+            (ignore-errors (delete-file filename)))
         py-file-queue))
 
 ;; arrange to kill temp files when Emacs exists
@@ -4089,7 +4103,7 @@ These are Python temporary files awaiting execution."
 
     (save-excursion
       (goto-char start)
-      (if (looking-at "\\([urUR]*\\(?:'''\\|\"\"\"\\|'\\|\"\\)\\)\\\\?\n?")
+      (if (looking-at "\\([urbURB]*\\(?:'''\\|\"\"\"\\|'\\|\"\\)\\)\\\\?\n?")
           (setq string-start (match-end 0)
                 delim-length (- (match-end 1) (match-beginning 1))
                 delim (buffer-substring-no-properties (match-beginning 1)
