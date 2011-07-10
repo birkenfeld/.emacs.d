@@ -167,6 +167,9 @@
      (require 'show-wspace)
      (add-hook 'python-mode-hook 'highlight-tabs)))
 
+;; ignore Python 3.2+ .pyc directories
+(add-to-list completion-ignored-extensions "__pycache__/")
+
 
 ;; haskell mode
 (load "haskell-site-file" nil t)
