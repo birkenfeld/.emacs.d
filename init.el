@@ -278,6 +278,8 @@
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 (font-lock-add-keywords 'c-mode
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
+(font-lock-add-keywords 'c++-mode
+ '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 (font-lock-add-keywords 'latex-mode
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 
@@ -401,6 +403,7 @@
    (c-block-comment-prefix . "")))
 
 (add-to-list 'c-default-style '(c-mode . "python-new"))
+(add-to-list 'c-default-style '(c++-mode . "python-new"))
 (add-to-list 'c-default-style '(ecmascript-mode . "javascript"))
 
 (defun c-select-style ()
@@ -411,14 +414,24 @@
       (c-set-style "python-new"))))
 
 (add-hook 'c-mode-hook 'c-select-style)
+(add-hook 'c++-mode-hook 'c-select-style)
 ;; c-subword-mode became subword-mode in Emacs 23.2
 (add-hook 'c-mode-hook (lambda ()
   (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
+(add-hook 'c++-mode-hook (lambda ()
+  (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
 ;; enable nice electric pairs like in textmate
 (add-hook 'c-mode-hook 'autopair-mode)
+(add-hook 'c++-mode-hook 'autopair-mode)
 
 ;; GLSL support
 (require 'glsl-mode)
+
+;; SIP files have C++ like syntax
+(add-to-list 'auto-mode-alist '("\\.sip$" . c++-mode))
+
+;; Display C++ Doygen doc comments differently
+(font-lock-add-keywords 'c++-mode '(("///.*$" 0 font-lock-doc-face prepend)))
 
 
 ;; ---------- Python mode specifics --------------------------------------------

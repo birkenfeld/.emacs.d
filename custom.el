@@ -39,6 +39,7 @@
  '(browse-kill-ring-quit-action (quote save-and-restore))
  '(browse-url-browser-function (quote browse-url-firefox))
  '(browse-url-mozilla-program "firefox")
+ '(c-default-style (quote ((java-mode . "java") (awk-mode . "awk") (other . "python"))))
  '(c-electric-pound-behavior (quote (alignleft)))
  '(column-number-mode t)
  '(comint-input-autoexpand (quote history))
