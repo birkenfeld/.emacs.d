@@ -417,7 +417,7 @@
   (when (string-match "\\.h$" buffer-file-name)
     (save-excursion
       (when (re-search-forward "^class" 3000 t)
-          (c++-mode)))))
+        (c++-mode)))))
 
 (add-hook 'c-mode-hook 'c-select-style)
 (add-hook 'c-mode-hook 'c-or-cpp-header)
@@ -434,11 +434,24 @@
 ;; GLSL support
 (require 'glsl-mode)
 
-;; SIP files have C++ like syntax
-(add-to-list 'auto-mode-alist '("\\.sip$" . c++-mode))
-
 ;; Display C++ Doygen doc comments differently
 (font-lock-add-keywords 'c++-mode '(("///.*$" 0 font-lock-doc-face prepend)))
+
+(defun sip-indent-directive ()
+  (save-excursion
+    (beginning-of-line)
+    (when (looking-at-p "[ \t]*%")
+      (just-one-space 0))))
+;; SIP (Python/C++ wrapper generator) mode
+(define-derived-mode sip-mode c++-mode "SIP"
+  (font-lock-add-keywords
+   nil '(("^\\(%[a-zA-Z]*\\)\\(.*\\)$"
+          (1 font-lock-preprocessor-face prepend)
+          (2 font-lock-string-face prepend))))
+  (c-set-stylevar-fallback 'c-special-indent-hook '(sip-indent-directive)))
+
+;; SIP files have C++ like syntax
+(add-to-list 'auto-mode-alist '("\\.sip$" . sip-mode))
 
 
 ;; ---------- Python mode specifics --------------------------------------------
