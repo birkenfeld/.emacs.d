@@ -413,7 +413,14 @@
         (c-set-style "python")
       (c-set-style "python-new"))))
 
+(defun c-or-cpp-header ()
+  (when (string-match "\\.h$" buffer-file-name)
+    (save-excursion
+      (when (re-search-forward "^class" 3000 t)
+          (c++-mode)))))
+
 (add-hook 'c-mode-hook 'c-select-style)
+(add-hook 'c-mode-hook 'c-or-cpp-header)
 (add-hook 'c++-mode-hook 'c-select-style)
 ;; c-subword-mode became subword-mode in Emacs 23.2
 (add-hook 'c-mode-hook (lambda ()
