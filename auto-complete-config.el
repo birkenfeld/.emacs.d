@@ -402,6 +402,7 @@
 (defun ac-ropemacs-require ()
   (with-no-warnings
     (unless ac-ropemacs-loaded
+      (load-library "pymacs")
       (pymacs-load "ropemacs" "rope-")
       (if (boundp 'ropemacs-enable-autoimport)
           (setq ropemacs-enable-autoimport t))
