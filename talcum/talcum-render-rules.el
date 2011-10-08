@@ -109,7 +109,7 @@ the buffer."
  ;; XXX to be changed to use a hashtable.
 (defun talcum-render-features ()
   (interactive)
-  (message "%s" talcum-render-features)
+  ;(message "%s" talcum-render-features)
   talcum-render-features)
 
  (defun talcum-has-render-feature (feat)
