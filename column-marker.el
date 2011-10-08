@@ -6,11 +6,11 @@
 ;; Maintainer: Rick Bielawski <rbielaws@i1.net>
 ;; Created: Tue Nov 22 10:26:03 2005
 ;; Version: 
-;; Last-Updated: Fri Aug 18 17:42:04 2006 (-25200 Pacific Daylight Time)
+;; Last-Updated: Fri Jan 22 11:28:48 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 270
+;;     Update #: 312
 ;; Keywords: tools convenience highlight
-;; Compatibility: GNU Emacs 21, GNU Emacs 22
+;; Compatibility: GNU Emacs 21, GNU Emacs 22, GNU Emacs 23
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -45,19 +45,20 @@
 ;; Examples:
 ;;
 ;; M-x column-marker-1 highlights the column where the cursor is, in
-;; `column-marker-1-face'.
+;; face `column-marker-1'.
 ;;
-;; C-u 70 M-x column-marker-2 highlights column 70 in
-;; `column-marker-2-face'.
+;; C-u 70 M-x column-marker-2 highlights column 70 in face
+;; `column-marker-2'.
 ;;
-;; C-u 70 M-x column-marker-3 highlights column 70 in
-;; `column-marker-3-face'.  The `column-marker-2-face' highlighting no
+;; C-u 70 M-x column-marker-3 highlights column 70 in face
+;; `column-marker-3'.  The face `column-marker-2' highlighting no
 ;; longer shows.
 ;;
 ;; C-u M-x column-marker-3 turns off highlighting for column-marker-3,
-;; so `column-marker-2-face' highlighting shows again for column 70.
+;; so face `column-marker-2' highlighting shows again for column 70.
 ;;
-;; C-u C-u M-x column-marker-1 (or -2 or -3) erases all column highlighting.
+;; C-u C-u M-x column-marker-1 (or -2 or -3) erases all column
+;; highlighting.
 ;;
 ;; These commands use `font-lock-fontify-buffer', so syntax
 ;; highlighting (`font-lock-mode') must be turned on.  There might be
@@ -72,9 +73,9 @@
 ;; Other init file suggestions (examples):
 ;;
 ;; ;; Highlight column 80 in foo mode.
-;; (add-hook foo-mode-hook (lambda () (interactive) (column-marker-1 80)))
+;; (add-hook 'foo-mode-hook (lambda () (interactive) (column-marker-1 80)))
 ;;
-;; ;; Use `C-c m' interactively to highlight with `column-marker-1-face'.
+;; ;; Use `C-c m' interactively to highlight with face `column-marker-1'.
 ;; (global-set-key [?\C-c ?m] 'column-marker-1)
 ;;
 ;;
@@ -83,7 +84,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
-;; 
+;;
+;; 2009/12/10 dadams
+;;     column-marker-internal: Quote the face.  Thx to Johan Bockgård.
+;; 2009/12/09 dadams
+;;     column-marker-find: fset a symbol to the function, and return the symbol.
+;; 2008/01/21 dadams
+;;     Renamed faces by dropping suffix "-face".
 ;; 2006/08/18 dadams
 ;;     column-marker-create: Add newlines to doc-string sentences.
 ;; 2005/12/31 dadams
@@ -91,7 +98,7 @@
 ;;       so it is done in the right buffer, updating column-marker-vars buffer-locally.
 ;;     column-marker-find: Corrected comment.  Changed or to progn for clarity.
 ;; 2005/12/29 dadams
-;;     Updated wrt new version of column-marker.el (mulit-column characters).
+;;     Updated wrt new version of column-marker.el (multi-column characters).
 ;;     Corrected stray occurrences of column-marker-here to column-marker-1.
 ;;     column-marker-vars: Added make-local-variable.
 ;;     column-marker-create: Changed positive to non-negative.
@@ -128,37 +135,38 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 
-(defvar column-marker-1-face 'column-marker-1-face
+(defface column-marker-1 '((t (:background "gray")))
+  "Face used for a column marker.  Usually a background color."
+  :group 'faces)
+
+(defvar column-marker-1-face 'column-marker-1
     "Face used for a column marker.  Usually a background color.
 Changing this directly affects only new markers.")
 
-(defface column-marker-1-face '((t (:background "gray")))
+(defface column-marker-2 '((t (:background "cyan3")))
   "Face used for a column marker.  Usually a background color."
   :group 'faces)
 
-(defvar column-marker-2-face 'column-marker-2-face
+(defvar column-marker-2-face 'column-marker-2
     "Face used for a column marker.  Usually a background color.
 Changing this directly affects only new markers." )
 
-(defface column-marker-2-face '((t (:background "cyan3")))
+(defface column-marker-3 '((t (:background "orchid3")))
   "Face used for a column marker.  Usually a background color."
   :group 'faces)
 
-(defvar column-marker-3-face 'column-marker-3-face
+(defvar column-marker-3-face 'column-marker-3
     "Face used for a column marker.  Usually a background color.
 Changing this directly affects only new markers." )
 
-(defface column-marker-3-face '((t (:background "orchid3")))
-  "Face used for a column marker.  Usually a background color."
-  :group 'faces)
-
-(defvar column-marker-vars nil
+(defvar column-marker-vars ()
   "List of all internal column-marker variables")
 (make-variable-buffer-local 'column-marker-vars) ; Buffer local in all buffers.
 
 (defmacro column-marker-create (var &optional face)
-  "Define a column marker named %%colmark%%-VAR."
-  (setq face (or face 'column-marker-1-face))
+  "Define a column marker named VAR.
+FACE is the face to use.  If nil, then face `column-marker-1' is used."
+  (setq face (or face 'column-marker-1))
   `(progn
      ;; define context variable ,VAR so marker can be removed if desired
      (defvar ,var ()
@@ -188,41 +196,47 @@ Changing this directly affects only new markers." )
                 (column-marker-internal var nil)))))))
 
 (defun column-marker-find (col)
-  "Creates a function to locate a character in column COL."
-  `(lambda (end)
-     (let* ((start (point)))
-       (when (> end (point-max)) (setq end (point-max)))
+  "Defines a function to locate a character in column COL.
+Returns the function symbol, named `column-marker-move-to-COL'."
+  (let ((fn-symb  (intern (format "column-marker-move-to-%d" col))))
+    (fset `,fn-symb
+          `(lambda (end)
+             (let ((start (point)))
+               (when (> end (point-max)) (setq end (point-max)))
 
-       ;; Try to keep `move-to-column' from going backward, though it still can.
-       (unless (< (current-column) ,col) (forward-line 1))
+               ;; Try to keep `move-to-column' from going backward, though it still can.
+               (unless (< (current-column) ,col) (forward-line 1))
 
-       ;; Again, don't go backward.  Try to move to correct column.
-       (when (< (current-column) ,col) (move-to-column ,col))
+               ;; Again, don't go backward.  Try to move to correct column.
+               (when (< (current-column) ,col) (move-to-column ,col))
 
-       ;; If not at target column, try to move to it.
-       (while (and (< (current-column) ,col) (< (point) end)
-                   (= 0 (+ (forward-line 1) (current-column)))) ; Should be bol.
-         (move-to-column ,col))
+               ;; If not at target column, try to move to it.
+               (while (and (< (current-column) ,col) (< (point) end)
+                           (= 0 (+ (forward-line 1) (current-column)))) ; Should be bol.
+                 (move-to-column ,col))
 
-       ;; If at target column, not past end, and not prior to start,
-       ;; then set match data and return t.  Otherwise go to start
-       ;; and return nil.
-       (if (and (= ,col (current-column)) (<= (point) end) (> (point) start))
-           (progn (set-match-data (list (1- (point)) (point))) t) ; Return t.
-         (goto-char start) nil))))      ; Return nil.
+               ;; If at target column, not past end, and not prior to start,
+               ;; then set match data and return t.  Otherwise go to start
+               ;; and return nil.
+               (if (and (= ,col (current-column)) (<= (point) end) (> (point) start))
+                   (progn (set-match-data (list (1- (point)) (point)))
+                          t)            ; Return t.
+                 (goto-char start)
+                 nil))))                ; Return nil.
+    fn-symb))
 
 (defun column-marker-internal (sym col &optional face)
   "SYM is the symbol for holding the column marker context.
 COL is the column in which a marker should be set.
-FACE is the face to use for the marker.
-Supplying nil or 0 for COL turns off the marker."
-  (setq face (or face 'column-marker-1-face))
+Supplying nil or 0 for COL turns off the marker.
+FACE is the face to use.  If nil, then face `column-marker-1' is used."
+  (setq face (or face 'column-marker-1))
   (when (symbol-value sym)   ; Remove any previously set column marker
     (font-lock-remove-keywords nil (symbol-value sym))
     (set sym nil))
   (when (or (listp col) (< col 0)) (setq col nil)) ; Allow nonsense stuff to turn off the marker
   (when col                             ; Generate a new column marker
-    (set sym `((,(column-marker-find col) (0 ,face prepend t))))
+    (set sym `((,(column-marker-find col) (0 ',face prepend t))))
     (font-lock-add-keywords nil (symbol-value sym) t))
   (font-lock-fontify-buffer))
 
