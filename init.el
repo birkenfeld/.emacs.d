@@ -31,6 +31,9 @@
 ;; scroll one line at a time
 (setq scroll-step 1)
 
+;; don't wait for user input in redisplay
+(setq redisplay-dont-pause t)
+
 ;; make "yes or no" "y or n"
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -148,7 +151,8 @@
 (global-set-key (kbd "C-k") 'kill-whole-line)
 
 ;; shortcuts for switching to "other" file
-(global-set-key (kbd "C-x C-a") 'ff-find-other-file)
+;; (binding interferes with gud)
+;(global-set-key (kbd "C-x C-a") 'ff-find-other-file)
 
 ;; shortcuts for killing buffers
 (global-set-key (kbd "C-x k")   'kill-this-buffer)
@@ -458,9 +462,6 @@
 
 ;; ---------- Python mode specifics --------------------------------------------
 
-;; use the bundled Python mode
-(require 'python-mode)
-
 ;; support flymake in Python mode
 (require 'flymake)
 
@@ -478,11 +479,9 @@
 (add-hook 'python-mode-hook (lambda ()
   ;; enable nice electric pairs like in textmate
   (autopair-mode 1)
-  (add-hook 'python-mode-hook
-            #'(lambda ()
-                (setq autopair-handle-action-fns
-                      (list #'autopair-default-handle-action
-                            #'autopair-python-triple-quote-action))))
+  (setq autopair-handle-action-fns
+        (list #'autopair-default-handle-action
+              #'autopair-python-triple-quote-action))
 
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)
@@ -508,7 +507,8 @@
          (concat "python " buffer-file-name)))
 ))
 
-(require 'cython-mode)
+;; ignore Python 3.2+ .pyc directories
+(add-to-list 'completion-ignored-extensions "__pycache__/")
 
 
 ;; ---------- Haskell mode specifics -------------------------------------------

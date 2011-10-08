@@ -146,6 +146,7 @@
 
 ;; better, patched Python mode
 (autoload 'python-mode "python-mode" nil t)
+(autoload 'cython-mode "cython-mode" nil t)
 
 (defun py-backward-kill-nomenclature (arg)
   "Kill characters forward until encountering the end of a nomenclature section."
@@ -153,22 +154,25 @@
   (kill-region (point) (progn (py-backward-into-nomenclature arg) (point))))
 
 
+(setq auto-mode-alist
+      (append '(("\\.pyx$" . cython-mode)
+                ("\\.pxs$" . cython-mode)
+                ("\\.pxi$" . cython-mode))
+              auto-mode-alist))
 (eval-after-load 'python-mode
   '(progn
-     (require 'auto-complete-python)
-     (add-hook 'python-mode-hook 'setup-ropemacs)
-     (add-hook 'python-mode-hook 'ac-python-mode-setup)
-     (define-key py-mode-map (kbd ".") 'ac-self-insert-and-complete)
-     ))
+     ;(require 'auto-complete-python)
+     (require 'highlight-beyond-fill-column)
+     (require 'show-wspace)))
 
-;; show tabs
-(eval-after-load 'python-mode
-  '(progn
-     (require 'show-wspace)
-     (add-hook 'python-mode-hook 'highlight-tabs)))
-
-;; ignore Python 3.2+ .pyc directories
-(add-to-list completion-ignored-extensions "__pycache__/")
+(add-hook 'python-mode-hook (lambda ()
+  (highlight-tabs)
+  (font-lock-add-keywords
+   nil '((find-after-fill-column 0 highlight-beyond-fill-column-face prepend)))
+  ;(setup-ropemacs)
+  ;(ac-python-mode-setup)
+  ;(define-key py-mode-map (kbd ".") 'ac-self-insert-and-complete)
+  ))
 
 
 ;; haskell mode
@@ -189,34 +193,6 @@
 ;; highlight "return" as a builtin
 (font-lock-add-keywords 'haskell-mode
  '(("\\<\\(return\\)\\>" 1 font-lock-builtin-face prepend)))
-
-;; twitter
-;(require 'twit)
-;(defun my-twit-knotify ()
-;  "Display a tweet notification via KNotify."
-;  (let* ((from (cadr twit-last-tweet))
-;         (body (caddr twit-last-tweet))
-;         ;; highlight #hashtags and @usernames
-;         (body (replace-regexp-in-string "\\(#[a-zA-Z_]*\\)"
-;                                         "<font color='#88f'>\\1</font>" body))
-;         (body (replace-regexp-in-string "\\(@[a-zA-Z_]*\\)"
-;                                         "<font color='#f88'>\\1</font>" body))
-;         (notif-id (dbus-call-method
-;                    :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
-;                    "event" "test" "twit"
-;                    '(:array (:variant nil))
-;                    (format "Tweet from <b>%s</b>:<br>%s" from body)
-;                    '(:array :byte 0 :byte 0 :byte 0 :byte 0)
-;                    '(:array ) :int64 0)))
-;    (if (> notif-id 0)
-;        (run-with-timer 5 nil 'my-twit-knotify-close notif-id)))
-;  nil)
-;(defun my-twit-knotify-close (notif-id)
-;  "Close a tweet notification via KNotify."
-;  (dbus-call-method
-;   :session "org.kde.knotify" "/Notify" "org.kde.KNotify"
-;   "closeNotification" :int32 notif-id))
-;(add-hook 'twit-new-tweet-hook 'my-twit-knotify)
 
 ;; ReST mode
 (autoload 'rst-mode "rst" nil t)
