@@ -174,6 +174,12 @@
   ;(define-key py-mode-map (kbd ".") 'ac-self-insert-and-complete)
   ))
 
+(defadvice py-newline-and-indent (before strip-trailing-whitespace activate)
+  "Strip trailing whitespace before newline."
+  (save-excursion
+    (let ((pos (point)))
+      (skip-chars-backward " \t")
+      (delete-region (point) pos))))
 
 ;; haskell mode
 (load "haskell-site-file" nil t)

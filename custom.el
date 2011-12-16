@@ -1,14 +1,14 @@
 ;; ---------- Custom: managed by Emacs -----------------------------------------
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(LaTeX-babel-hyphen "")
  '(LaTeX-fill-break-at-separators (quote (\\\( \\\) \\\[ \\\])))
  '(LaTeX-menu-max-items 40)
- '(LaTeX-mode-hook (quote (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
+ '(LaTeX-mode-hook (quote (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
  '(LaTeX-verbatim-environments (quote ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
  '(LaTeX-verbatim-regexp "verbatim\\*?\\|alltt\\|listing")
  '(TeX-PDF-mode t)
@@ -16,7 +16,7 @@
  '(TeX-close-quote "\"'")
  '(TeX-insert-braces nil)
  '(TeX-open-quote "\"`")
- '(TeX-parse-self t)
+ '(TeX-parse-self t t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "xpdf") (output-html "xdg-open"))))
@@ -86,7 +86,6 @@
  '(ecb-history-menu-user-extension-function (quote ignore))
  '(ecb-kill-buffer-clears-history (quote auto))
  '(ecb-layout-name "left7")
- '(ecb-layout-window-sizes (quote (("left14" (0.14977973568281938 . 0.7258064516129032) (0.14977973568281938 . 0.25806451612903225)) ("left7" (0.24858757062146894 . 0.48333333333333334) (0.24858757062146894 . 0.18333333333333332) (0.24858757062146894 . 0.31666666666666665)) ("left8" (0.23076923076923078 . 0.2830188679245283) (0.23076923076923078 . 0.22641509433962265) (0.23076923076923078 . 0.3018867924528302) (0.23076923076923078 . 0.16981132075471697)))))
  '(ecb-method-non-semantic-face (quote ecb-default-general-face))
  '(ecb-methods-menu-user-extension-function (quote ignore))
  '(ecb-minor-mode-text "")
@@ -214,7 +213,7 @@ mouse-3: Remove current window from display")))))
  '(py-imenu-show-method-args-p t)
  '(py-load-python-mode-pymacs-p nil)
  '(py-shebang-startstring "#!/usr/bin/env")
- '(py-shell-name "ipython")
+ '(py-shell-name "python")
  '(py-shell-switch-buffers-on-execute nil)
  '(python-use-skeletons nil)
  '(recentf-max-saved-items 200)
@@ -282,7 +281,7 @@ mouse-3: Remove current window from display")))))
  '(tramp-debug-buffer nil)
  '(tramp-verbose 5)
  '(transient-mark-mode 1)
- '(trex-unicode-mappings (quote (("forall" . 8704) ("complement" . 8705) ("partial" . 8706) ("exists" . 8707) ("emptyset" . 8709) ("nabla" . 8711) ("in" . 8712) ("notin" . 8713) ("ni" . 8715) ("qedhere" . 8718) ("prod" . 8719) ("coprod" . 8720) ("sum" . 8721) ("mp" . 8723) ("setminus" . 8726) ("circ" . 8728) ("cdot" . 8729) ("sqrt" . 8730) ("infty" . 8734) ("land" . 8743) ("wedge" . 8743) ("lor" . 8744) ("vee" . 8744) ("cap" . 8745) ("cup" . 8746) ("int" . 8747) ("iint" . 8748) ("iiiint" . 8749) ("neq" . 8800) ("ne" . 8800) ("leq" . 8804) ("le" . 8804) ("geq" . 8805) ("ge" . 8805) ("prec" . 8826) ("succ" . 8827) ("subset" . 8834) ("supset" . 8835) ("subseteq" . 8838) ("supseteq" . 8839) ("subsetneq" . 8842) ("supsetneq" . 8843) ("unlhd" . 8884) ("lhd" . 8882) ("unrhd" . 8885) ("rhd" . 8883) ("implies" . 10233) ("iff" . 10234) ("mapsto" . 10236) ("to" . 10230) ("longleftarrow" . 10229) ("longrightarrow" . 10230) ("longleftrightarrow" . 10231) ("Longleftarrow" . 10232) ("Longrightarrow" . 10233) ("leftarrow" . 8592) ("uparrow" . 8593) ("rightarrow" . 8594) ("downarrow" . 8595) ("leftrightarrow" . 8596) ("updownarrow" . 8597) ("dots" . 8230) ("ldots" . 8230) ("textperthousand" . 8240) ("bigodot" . 10752) ("bigoplus" . 10753) ("bigotimes" . 10754) ("lneq" . 10887) ("gneq" . 10888) ("wp" . 8472) ("ell" . 8467) ("Im" . 8465) ("Re" . 8476) ("Finv" . 8498) ("Game" . 8513) ("aleph" . 8501) ("beth" . 8502) ("gimel" . 8503) ("daleth" . 8504) ("alpha" . 945) ("beta" . 946) ("gamma" . 947) ("delta" . 948) ("epsilon" . 1013) ("varepsilon" . 949) ("zeta" . 950) ("eta" . 951) ("theta" . 952) ("vartheta" . 977) ("iota" . 953) ("kappa" . 954) ("varkappa" . 1008) ("lambda" . 955) ("mu" . 956) ("nu" . 957) ("xi" . 958) ("pi" . 960) ("varpi" . 982) ("rho" . 961) ("varrho" . 1009) ("sigma" . 963) ("varsigma" . 962) ("tau" . 964) ("upsilon" . 965) ("varphi" . 966) ("phi" . 981) ("chi" . 967) ("psi" . 968) ("omega" . 969) ("digamma" . 989) ("Gamma" . 915) ("Delta" . 916) ("Theta" . 920) ("Lambda" . 923) ("Xi" . 926) ("Pi" . 928) ("Sigma" . 931) ("Upsilon" . 933) ("Phi" . 934) ("Psi" . 936) ("Omega" . 937) ("N" . 8469) ("R" . 8477) ("Q" . 8474) ("C" . 8450) ("Z" . 8484) ("pm" . 177))))
+ '(trex-unicode-mappings (quote (("forall" . 8704) ("complement" . 8705) ("partial" . 8706) ("exists" . 8707) ("emptyset" . 8709) ("nabla" . 8711) ("in" . 8712) ("notin" . 8713) ("ni" . 8715) ("qedhere" . 8718) ("prod" . 8719) ("coprod" . 8720) ("sum" . 8721) ("mp" . 8723) ("setminus" . 8726) ("circ" . 8728) ("cdot" . 8729) ("sqrt" . 8730) ("infty" . 8734) ("land" . 8743) ("wedge" . 8743) ("lor" . 8744) ("vee" . 8744) ("cap" . 8745) ("cup" . 8746) ("int" . 8747) ("iint" . 8748) ("iiiint" . 8749) ("neq" . 8800) ("ne" . 8800) ("leq" . 8804) ("le" . 8804) ("geq" . 8805) ("ge" . 8805) ("prec" . 8826) ("succ" . 8827) ("subset" . 8834) ("supset" . 8835) ("subseteq" . 8838) ("supseteq" . 8839) ("subsetneq" . 8842) ("supsetneq" . 8843) ("unlhd" . 8884) ("lhd" . 8882) ("unrhd" . 8885) ("rhd" . 8883) ("implies" . 10233) ("iff" . 10234) ("mapsto" . 10236) ("to" . 10230) ("longleftarrow" . 10229) ("longrightarrow" . 10230) ("longleftrightarrow" . 10231) ("Longleftarrow" . 10232) ("Longrightarrow" . 10233) ("leftarrow" . 8592) ("uparrow" . 8593) ("rightarrow" . 8594) ("downarrow" . 8595) ("leftrightarrow" . 8596) ("updownarrow" . 8597) ("dots" . 8230) ("ldots" . 8230) ("textperthousand" . 8240) ("bigodot" . 10752) ("bigoplus" . 10753) ("bigotimes" . 10754) ("lneq" . 10887) ("gneq" . 10888) ("wp" . 8472) ("ell" . 8467) ("Im" . 8465) ("Re" . 8476) ("Finv" . 8498) ("Game" . 8513) ("aleph" . 8501) ("beth" . 8502) ("gimel" . 8503) ("daleth" . 8504) ("alpha" . 945) ("beta" . 946) ("gamma" . 947) ("delta" . 948) ("epsilon" . 1013) ("varepsilon" . 949) ("zeta" . 950) ("eta" . 951) ("theta" . 952) ("vartheta" . 977) ("iota" . 953) ("kappa" . 954) ("varkappa" . 1008) ("lambda" . 955) ("mu" . 956) ("nu" . 957) ("xi" . 958) ("pi" . 960) ("varpi" . 982) ("rho" . 961) ("varrho" . 1009) ("sigma" . 963) ("varsigma" . 962) ("tau" . 964) ("upsilon" . 965) ("varphi" . 966) ("phi" . 981) ("chi" . 967) ("psi" . 968) ("omega" . 969) ("digamma" . 989) ("Gamma" . 915) ("Delta" . 916) ("Theta" . 920) ("Lambda" . 923) ("Xi" . 926) ("Pi" . 928) ("Sigma" . 931) ("Upsilon" . 933) ("Phi" . 934) ("Psi" . 936) ("Omega" . 937) ("N" . 8469) ("R" . 8477) ("Q" . 8474) ("C" . 8450) ("Z" . 8484) ("pm" . 177) ("hbar" . 8463) ("AA" . 197) ("approx" . 8776) ("langle" . 12296) ("rangle" . 12297))))
  '(truncate-partial-width-windows nil)
  '(twit-show-user-images t)
  '(twit-user-image-dir "~/.emacs.d/twitter")
@@ -298,11 +297,11 @@ mouse-3: Remove current window from display")))))
  '(xhtml-multi-mode t))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 96 :width normal :foundry "microsoft" :family "Consolas"))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:stipple nil :background "gray97" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 79 :width normal :foundry "Microsoft" :family "Consolas"))))
  '(ac-candidate-face ((t (:background "lightgray" :foreground "black" :underline "gray"))))
  '(ac-selection-face ((t (:inherit ac-candidate-face :background "steelblue" :foreground "white"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
@@ -427,7 +426,7 @@ mouse-3: Remove current window from display")))))
  '(twit-info-face ((t (:inherit twit-message-face :slant italic))))
  '(twit-logo-face ((((class color)) (:family "mono" :weight bold :height 1.5 :background "Yellow3" :foreground "#00f" :underline "DeepSkyBlue")) (t (:inverse nil))))
  '(twit-message-face ((nil (:inherit custom-documentation))))
- '(variable-pitch ((t (:height 90 :family "droid sans"))))
+ '(variable-pitch ((t (:height 80 :family "droid sans"))))
  '(vline ((t (:inherit highlight))))
  '(widget-documentation ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))
  '(woman-addition ((t (:inherit default :foreground "orange"))))
