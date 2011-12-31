@@ -65,8 +65,8 @@
   ;; Make outer chars of matching triple-quote sequences into generic
   ;; string delimiters.  Fixme: Is there a better way?
   ;; First avoid a sequence preceded by an odd number of backslashes.
-  `((,(concat "\\(?:\\([RUru]\\)[Rr]?\\|^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-              "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
+  `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
+              "\\(?:\\('\\)\\('\\)\\('\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\)")
      (1 (python-quote-syntax 1) nil lax)
      (2 (python-quote-syntax 2))
      (3 (python-quote-syntax 3)))
@@ -99,7 +99,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 	     (syntax (syntax-ppss)))
 	(when (eq t (nth 3 syntax))	; after unclosed fence
 	  (goto-char (nth 8 syntax))	; fence position
-	  (skip-chars-forward "uUrR")	; skip any prefix
+	  ;; (skip-chars-forward "uUrR")	; skip any prefix
 	  ;; Is it a matching sequence?
 	  (if (eq (char-after) (char-after (match-beginning 2)))
 	      (eval-when-compile (string-to-syntax "|"))))))
@@ -629,8 +629,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
 :group 'python
 )
 
-(defcustom py-outline-minor-mode-p  nil
- "If outline minor-mode should be on, default is nil. "
+(defcustom py-outline-minor-mode-p  t
+ "If outline minor-mode should be on, default is `t'. "
 
 :type 'boolean
 :group 'python
@@ -2065,26 +2065,24 @@ See also py-bounds-of-statements "
          (orig (point))
          last beg end)
     (when orig-indent
-      (setq beg (point))
-      (while (and (setq last beg)
-                  (setq beg
-                        (when (py-beginning-of-statement)
-                          (line-beginning-position)))
-                  (not (py-in-string-p))
+      (setq beg (line-beginning-position))
+      ;; look upward first
+      (while (and
+              (progn
+                (unless (py-beginning-of-statement-p)
+                  (py-beginning-of-statement))
+                (line-beginning-position))
+              (py-beginning-of-statement)
                   (not (py-beginning-of-block-p))
-                  (eq (current-indentation) orig-indent)))
-      (setq beg last)
+              (eq (current-indentation) orig-indent))
+        (setq beg (line-beginning-position)))
       (goto-char orig)
-      (setq end (line-end-position))
       (while (and (setq last (line-end-position))
                   (setq end (py-down-statement))
                   (not (py-beginning-of-block-p))
-                  (not (looking-at py-keywords))
-                  (not (looking-at "pdb\."))
-                  (not (py-in-string-p))
                   (eq (py-indentation-of-statement) orig-indent)))
       (setq end last)
-      (goto-char orig)
+      (goto-char beg)
       (if (and beg end)
           (progn
             (when (interactive-p) (message "%s %s" beg end))
@@ -7592,6 +7590,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
           (py-shell)
           (set-buffer oldbuf))))
     (jump-to-register 213465879))
+  (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
 
 (defadvice pdb (before gud-query-cmdline activate)
