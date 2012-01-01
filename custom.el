@@ -61,7 +61,6 @@
  '(cua-overwrite-cursor-color "red")
  '(cua-remap-control-z nil)
  '(custom-enabled-themes (quote (tango-dark tango-dark-enhancements)))
- '(custom-safe-themes (quote ("9cec701ac9d56e7d4b065f44b7bf2ced0730195a" "fb07c9bc3095ac00a1bf69d2b3a118e328f50f59" "7e47a76b0996054e70edc581904094aec0247f74" default)))
  '(delete-selection-mode nil)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
@@ -298,12 +297,13 @@ mouse-3: Remove current window from display")))))
  '(windmove-wrap-around t)
  '(xhtml-multi-mode t))
 
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 85 :width normal :foundry "microsoft" :family "Consolas"))))
+ '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 80 :width normal :foundry "microsoft" :family "consolas"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
@@ -331,8 +331,8 @@ mouse-3: Remove current window from display")))))
  '(font-lock-comment-face ((t (:slant italic))))
  '(hl-line ((t (:background "#345"))))
  '(linum ((t (:inherit (shadow fringe)))) t)
- '(mode-line ((t (:inherit variable-pitch :background "#d3d7cf" :foreground "#2e3436" :box (:line-width 2 :color "#d3d7cf")))))
- '(mode-line-inactive ((t (:inherit mode-line :background "#555753" :foreground "#eeeeec" :box (:line-width 2 :color "#555753")))))
+ '(mode-line ((t (:inherit variable-pitch))))
+ '(mode-line-inactive ((t (:inherit mode-line))))
  '(mumamo-background-chunk-major ((t nil)))
  '(mumamo-background-chunk-submode1 ((((class color) (min-colors 88) (background light)) (:background "#fff"))))
  '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face))))
@@ -357,5 +357,5 @@ mouse-3: Remove current window from display")))))
  '(test-case-result-line ((t (:inherit font-lock-warning-face))))
  '(test-case-result-message ((((background light)) (:inherit font-lock-function-name-face))))
  '(trex-unicode-face ((t nil)) t)
- '(variable-pitch ((t (:height 80 :family "droid sans"))))
+ '(variable-pitch ((t (:height 85 :family "corbel"))))
  '(vline ((t (:inherit highlight))) t))

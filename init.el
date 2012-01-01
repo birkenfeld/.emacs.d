@@ -25,9 +25,6 @@
 
 ;; ---------- Some influential variables ---------------------------------------
 
-;; set background color
-(set-background-color "gray97")
-
 ;; scroll one line at a time
 (setq scroll-step 1)
 
