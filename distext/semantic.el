@@ -3,13 +3,14 @@
 ;; semantic
 (setq semantic-load-turn-useful-things-on t)
 (require 'semantic)
-(require 'semanticdb)
-(semantic-load-enable-code-helpers)
+;(require 'semanticdb)
+(require 'semantic/db)
+;(semantic-load-enable-code-helpers)
 
-(require 'semantic-tag-folding)
-(global-semantic-tag-folding-mode 1)
-(global-set-key (kbd "C-c <left>") 'semantic-tag-folding-fold-block)
-(global-set-key (kbd "C-c <right>") 'semantic-tag-folding-show-block)
+;(require 'semantic-tag-folding)
+;(global-semantic-tag-folding-mode 1)
+;(global-set-key (kbd "C-c <left>") 'semantic-tag-folding-fold-block)
+;(global-set-key (kbd "C-c <right>") 'semantic-tag-folding-show-block)
 
 (defun semantic-format-tag-name-short (tag &optional parent color)
   (let ((name (semantic-format-tag-name tag parent color)))
@@ -17,9 +18,11 @@
 (setq semantic-imenu-summary-function 'semantic-format-tag-name-short)
 
 ;; enable semantic features for Python mode
-(add-hook 'python-mode (lambda ()
-  (add-hook 'after-save-hook 'semantic-fetch-tags nil t)
-))
+;(add-hook 'python-mode (lambda ()
+;  (add-hook 'after-save-hook 'semantic-fetch-tags nil t)
+;))
+
+(add-hook 'python-mode-hook #'semantic-mode)
 
 (add-hook 'semantic-init-hooks (lambda ()
   (when (eq major-mode 'python-mode)

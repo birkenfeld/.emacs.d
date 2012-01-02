@@ -115,6 +115,7 @@
 
 (add-hook 'grep-setup-hook
           (lambda ()
+            (set-keymap-parent grep-mode-map text-mode-map)
             (define-key grep-mode-map "\M-r" 'grep-narrow-down)
             (define-key grep-mode-map " "
               'self-insert-command)
@@ -126,6 +127,8 @@
               'grep-edit-finish-edit)
             (define-key grep-mode-map "\C-c\C-u"
               'grep-edit-remove-all-change)
+            (define-key grep-mode-map "\C-cg"
+              'recompile)
 
             (add-hook 'after-change-functions 'grep-mode-change-face nil t)
             ;;(remove-hook 'after-change-functions 'grep-mode-change-face)

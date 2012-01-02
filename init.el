@@ -160,7 +160,7 @@
 (global-set-key (kbd "C-x \\") 'align-regexp)
 
 ;; join line with previous
-(global-set-key (kbd "C-x ^") 'join-line)
+(global-set-key (kbd "C-c ^") 'join-line)
 
 ;; F6 stores a position in a file, F7 brings you back to this position
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
@@ -202,7 +202,6 @@
 
 ;; like vim's '*' binding
 (global-set-key (kbd "C-+")   'search-for-this-word)
-(global-set-key (kbd "C-x *") 'search-for-this-word)
 (global-set-key (kbd "C-*")   'isearch-lazy-highlight-cleanup)
 
 ;; fixup-whitespace puts the "right" amount of whitespace at the point
@@ -222,6 +221,9 @@
 
 ;; find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
+
+;; copy from above lines
+(global-set-key (kbd "C-c <right>") 'copy-above-while-same)
 
 ;; flymake error finding
 (global-set-key (kbd "M-g M-e") 'flymake-goto-next-error)
@@ -810,6 +812,36 @@ returns the word count of that file."
       (if tempfile
           (delete-file filename))
       (message (concat "Word Count: " result)))))
+
+(autoload 'copy-from-above-command "misc"
+  "Copy characters from previous nonblank line, starting just above point.
+
+  \(fn &optional arg)"
+  'interactive)
+
+(defun copy-above-while-same ()
+  "Copy from the previous two lines until the first difference."
+  (interactive)
+  (let* ((col (current-column))
+         (n (compare-buffer-substrings
+             (current-buffer) ;; This buffer
+             (save-excursion
+               (forward-line -2)
+               (move-to-column col)
+               (point)) ;; Start 1
+             (line-end-position -1) ;; End 1
+             (current-buffer) ;; Still this buffer
+             (save-excursion
+               (forward-line -1)
+               (move-to-column col)
+               (point)) ;; Start 2
+             (line-end-position 0)))) ;; End 2
+    (cond ((not (integerp n))
+           (copy-from-above-command 1))
+          ((> (abs n) 1)
+           (copy-from-above-command (1- (abs n) )))
+          (t ;; (zerop n)
+           (copy-from-above-command)))))
 
 
 ;; ---------- Extension configuration ------------------------------------------

@@ -37,6 +37,10 @@
    `(font-lock-function-name-face ((,class (:weight bold))))
    `(font-lock-keyword-face ((,class (:weight bold))))
    `(font-lock-type-face ((,class (:weight bold))))
+   `(grep-edit-face ((,class (:foreground ,butter-1 :background ,alum-7 :weight bold))))
+   `(grep-edit-done-face ((,class (:foreground ,blue-0 :weight bold))))
+   `(grep-edit-file-face ((,class (:background ,blue-3 :weight bold))))
+   `(header-line ((,class (:inherit nil :background ,alum-5.5))))
    `(hl-line ((,class (:background "#345"))))
    `(linum ((,class (:inherit (shadow fringe)))))
    `(mode-line ((,class (:background ,cham-0 :foreground ,alum-6

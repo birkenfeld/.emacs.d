@@ -10,7 +10,7 @@
 (setq yas/window-system-popup-function
       'yas/x-popup-menu-for-template)
 ;; auto-expand on tab
-(add-hook 'python-mode-hook 'yas/minor-mode)
+;(add-hook 'python-mode-hook 'yas/minor-mode)
 
 (yas/define-snippets
  'haskell-mode
