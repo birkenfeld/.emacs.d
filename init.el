@@ -141,8 +141,8 @@
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
 ;; compile/make
-(global-set-key (kbd "<f5>")   'recompile)
-(global-set-key (kbd "S-<f5>") 'compile)
+;(global-set-key (kbd "<f5>")   'recompile)
+;(global-set-key (kbd "S-<f5>") 'compile)
 
 ;; C-k is kill-whole-line
 (global-set-key (kbd "C-k") 'kill-whole-line)
