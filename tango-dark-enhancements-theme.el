@@ -48,6 +48,11 @@
    `(mode-line-inactive ((,class (:background ,alum-5.5 :foreground ,alum-1
                                   :box (:line-width 3 :color ,alum-5.5)))))
    `(py-class-name-face ((,class (:inherit font-lock-type-face :underline t))))
+   `(rst-level-1-face ((,class (:background "grey50"))))
+   `(rst-level-2-face ((,class (:background "grey35"))))
+   `(rst-level-3-face ((,class (:background "grey20"))))
+   `(rst-level-4-face ((,class (:background "grey10"))))
+   `(rst-level-5-face ((,class (:background "black"))))
    ))
 
 (provide-theme 'tango-dark-enhancements)

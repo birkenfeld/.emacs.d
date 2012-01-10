@@ -61,7 +61,6 @@
  '(cua-overwrite-cursor-color "red")
  '(cua-remap-control-z nil)
  '(custom-enabled-themes (quote (tango-dark-enhancements tango-dark)))
- '(custom-safe-themes (quote ("d336d04037904cb8e794f88bdff0daf163f7c413f1da930503a1bdc923295731" "8def68b903c33106ab8d2d6e13fa006ee6439e44" "01701b27441f3b12b574046f0bc40f0533ec37c8" "160f07ce51bbc69226daeedefbc4dd543e8207a6" "2c901d09dd9e0dd9c6b35b2dcda2e7a38b691af2" default)))
  '(delete-selection-mode nil)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
