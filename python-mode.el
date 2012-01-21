@@ -39,7 +39,7 @@
 (unless (featurep 'xemacs)
   (require 'highlight-indentation))
 
-(defgroup python nil
+(defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
   :group 'languages
   :prefix "py-")
@@ -53,7 +53,7 @@
 `\\[py-guess-indent-offset]' can usually guess a good value when
 you're editing someone else's Python code."
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-indent-offset)
 
 (defcustom pdb-path '/usr/lib/python2.7/pdb.py
@@ -62,7 +62,7 @@ you're editing someone else's Python code."
 If you ignore the location `M-x py-guess-pdb-path' might display it.
 "
   :type 'variable
-  :group 'python)
+  :group 'python-mode)
 
 (defun py-guess-pdb-path ()
   "If py-pdb-path isn't set, find location of pdb.py. "
@@ -80,13 +80,13 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
 (defcustom py-install-directory nil
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-guess-py-install-directory-p t
   "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from `buffer-file-name'. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-load-pymacs-p  nil
  "If Pymacs as delivered with python-mode.el shall be loaded.
@@ -96,7 +96,7 @@ Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
 
 :type 'boolean
-:group 'python)
+:group 'python-mode)
 
 (defcustom py-report-level-p nil
   "If indenting functions should report reached indent level.
@@ -104,19 +104,33 @@ See original source: http://pymacs.progiciels-bpi.ca"
 Default is nil. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
+
+(defcustom py-report-position-p nil
+  "If functions moving point like `py-forward-into-nomenclature' should report reached position.
+
+Default is nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-extensions "py-extensions.el"
+  "File where extensions to python-mode.el should be installed. Used by virtualenv support. "
+
+  :type 'string
+  :group 'python-mode)
 
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-outline-minor-mode-p t
   "If outline minor-mode should be on, default is `t'. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-start-run-py-shell t
   "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
@@ -124,7 +138,7 @@ Default is nil. "
 A running python-shell presently is needed by complete-functions. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-use-number-face-p nil
   "If digits incl. hex-digits should get an own py-number-face.
@@ -134,60 +148,60 @@ delay. Setting of `py-use-number-face-p' has visible effect only
 when `py-number-face' was customized differently than inherited
 default face. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-close-provides-newline)
 
 (defcustom py-dedent-keep-relative-column t
   "If point should follow dedent or kind of electric move to end of line. Default is t - keep relative position. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-indent-honors-multiline-listing nil
   "If `t', indents to 1+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-indent-honors-inline-comment nil
   "If non-nil, indents to column of inlined comment start.
 Default is nil. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-closing-list-dedents-bos nil
   "If non-nil, closing parentesis dedents onto column of statement, otherwise keeps additional `py-indent-offset', default is nil "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-electric-colon-active-p nil
   "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-electric-comment-p t
   "If \"#\" should call `py-electric-comment'. Default is `t'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-electric-comment-add-space-p nil
   "If py-electric-comment should add a space.  Default is `nil'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-mark-decorators nil
   "If py-mark-def-or-class functions should mark decorators too. Default is `nil'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-tab-indent t
   "*Non-nil means TAB in Python mode calls `py-indent-line'."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-complete-function 'py-shell-complete
   "Function used for completion in buffers. "
@@ -195,19 +209,30 @@ Default is nil. "
 		 (const :tag "Pymacs based py-complete" py-complete)
                  (const :tag "py-shell-complete" py-shell-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-complete-function 'py-completion-at-point
   "Function used for completion in buffers. "
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
 		 (const :tag "Pymacs based py-complete" py-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
-  :group 'python)
+  :group 'python-mode)
+
+
+(defcustom ipython-complete-function 'py-completion-at-point
+  "Function used for completion in IPython shell buffers.
+
+Default is `py-completion-at-point', as `ipython-complete' raises the prompt counter when completion done "
+  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
+                 (const :tag "py-shell-complete" py-shell-complete)
+		 (const :tag "Pymacs based py-complete" py-complete)
+                 (const :tag "IPython's ipython-complete" ipython-complete))
+  :group 'python-mode)
 
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defvar py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-"
   "Matches encoding string of a Python file. ")
@@ -217,7 +242,7 @@ Default is nil. "
 (defcustom py-shebang-startstring "#! /bin/env"
   "Detecting the shell in head of file. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([iptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file. ")
@@ -225,7 +250,7 @@ Default is nil. "
 (defcustom py-python-command-args '("-i")
   "*List of string arguments to be used when starting a Python shell."
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-python-command-args)
 
 (set-default 'py-python-command-args  '("-i"))
@@ -247,13 +272,13 @@ Default is nil. "
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-lhs-inbound-indent)
 
 (defcustom py-rhs-inbound-indent 1
   "When inside a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-rhs-inbound-indent)
 
 (defcustom py-continuation-offset 2
@@ -261,7 +286,7 @@ Default is nil. "
 Continuation lines are those that immediately follow a backslash
 terminated line. "
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-smart-indentation t
   "*Should `python-mode' try to automagically set some indentation variables?
@@ -283,7 +308,7 @@ Note that both these settings occur *after* `python-mode-hook' is run,
 so if you want to defeat the automagic configuration, you must also
 set `py-smart-indentation' to nil in your `python-mode-hook'."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-smart-indentation)
 
 (defcustom py-align-multiline-strings-p t
@@ -293,7 +318,7 @@ preceding line's indentation.  When this flag is nil, continuation
 lines are aligned to column zero."
   :type '(choice (const :tag "Align under preceding line" t)
                  (const :tag "Align to column zero" nil))
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-block-comment-prefix "##"
   "*String used by \\[comment-region] to comment out a block of code.
@@ -302,12 +327,12 @@ that the indentation commands won't get confused (i.e., the string
 should be of the form `#x...' where `x' is not a blank or a tab, and
 `...' is arbitrary).  However, this string should not end in whitespace."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-indent-comments t
   "When t, comment lines are indented. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-temp-directory
   (let ((ok '(lambda (x)
@@ -328,7 +353,7 @@ By default, the first directory from this list that exists and that you
 can write into: the value (if any) of the environment variable TMPDIR,
 /usr/tmp, /tmp, /var/tmp, or the current directory."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-beep-if-tab-change t
   "*Ring the bell if `tab-width' is changed.
@@ -342,7 +367,7 @@ equal <number>, `tab-width' is set to <number>, a message saying so is
 displayed in the echo area, and if `py-beep-if-tab-change' is non-nil
 the Emacs bell is also rung as a warning."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-jump-on-exception t
   "*Jump to innermost exception frame in *Python Output* buffer.
@@ -350,23 +375,23 @@ When this variable is non-nil and an exception occurs when running
 Python code synchronously in a subprocess, jump immediately to the
 source code of the innermost traceback frame."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-ask-about-save t
   "If not nil, ask about which buffers to save before executing some code.
 Otherwise, all modified buffers are saved without asking."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-backspace-function 'backward-delete-char-untabify
   "*Function called by `py-electric-backspace' when deleting backwards."
   :type 'function
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-delete-function 'delete-char
   "*Function called by `py-electric-delete' when deleting forwards."
   :type 'function
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-pdbtrack-do-tracking-p t
   "*Controls whether the pdbtrack feature is enabled or not.
@@ -376,13 +401,13 @@ Python program, pdbtrack notices the pdb prompt and displays the
 source file and line that the program is stopped at, much the same way
 as gud-mode does for debugging C programs with gdb."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-pdbtrack-do-tracking-p)
 
 (defcustom py-pdbtrack-minor-mode-string " PDB"
   "*String to use in the minor mode list when pdbtrack is enabled."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-import-check-point-max
   20000
@@ -399,7 +424,7 @@ file heading imports to see if they look Java-like."
   '("java" "javax")
   "Imported packages that imply `jython-mode'."
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 (make-obsolete-variable 'py-jpython-packages 'py-jython-packages nil)
 
 (defcustom py-current-defun-show  t
@@ -408,19 +433,19 @@ file heading imports to see if they look Java-like."
 Default is `t'."
 
 :type 'boolean
-:group 'python)
+:group 'python-mode)
 
 (defcustom py-current-defun-delay  2
  "When called interactively, `py-current-defun' should wait PY-WHICH-FUNC-DELAY seconds at the definition name found, before returning to previous position. "
 
 :type 'number
-:group 'python)
+:group 'python-mode)
 
 (defcustom py-send-receive-delay  5
  "Seconds to wait for output, used by `python-send-receive'. "
 
 :type 'number
-:group 'python)
+:group 'python-mode)
 
 (defvar py-exec-command nil
   "Mode commands will set this. ")
@@ -448,7 +473,7 @@ variable section, e.g.:
 
 "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-master-file)
 
 (defvar py-pychecker-history nil)
@@ -474,23 +499,23 @@ to select the appropriate python interpreter mode for a file.")
 (defcustom py-shell-input-prompt-1-regexp "^>>> "
   "*A regular expression to match the input prompt of the shell."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-input-prompt-2-regexp "^[.][.][.] "
   "*A regular expression to match the input prompt of the shell after the
   first line of input."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-switch-buffers-on-execute t
   "When non-nil switch to the Python output buffer. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-split-windows-on-execute t
   "When non-nil split windows, make Python output buffer other. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-hide-show-keywords
   '(
@@ -501,12 +526,12 @@ to select the appropriate python interpreter mode for a file.")
   "Keywords composing visible heads.
 Also used by (minor-)outline-mode "
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-hide-show-hide-docstrings t
   "*Controls if doc strings can be hidden by hide-show"
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-mode-hook nil
   "Hook run when entering Python mode."
@@ -516,12 +541,12 @@ Also used by (minor-)outline-mode "
 (defcustom imenu-create-index-p t
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-name "python"
-  "A default value `py-shell' may look for, if no shell is specified by command. "
+  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-shell-name)
 
 (defcustom py-source-modes '(python-mode jython-mode)
@@ -530,7 +555,7 @@ Also used by (minor-)outline-mode "
 If a file is loaded into a buffer that is in one of these major modes, it is considered Python source by `py-load-file', which uses the
 value to determine defaults."
   :type '(repeat function)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-prompt-alist
   '(("ipython" . "^In \\[[0-9]+\\]: *")
@@ -542,8 +567,7 @@ REGEXP is a regular expression matching the Python prompt.
 PROGRAM can also be t, which specifies the default when no other
 element matches `py-shell-name'."
   :type 'string
-  :group 'python
-  :version "24.1")
+  :group 'python)
 
 (defcustom py-shell-continuation-prompt-alist
   '(("ipython" . "^   [.][.][.]+: *")
@@ -556,8 +580,22 @@ continued lines.
 PROGRAM can also be t, which specifies the default when no other
 element matches `py-shell-name'."
   :type 'string
-  :group 'python
-  :version "24.1")
+  :group 'python)
+
+;; ipython.el
+(defvar ipython-de-input-prompt-regexp "\\(?:
+In \\[[0-9]+\\]: *.*
+----+> \\(.*
+\\)[\n]?\\)\\|\\(?:
+In \\[[0-9]+\\]: *\\(.*
+\\)\\)\\|^[ ]\\{3\\}[.]\\{3,\\}: *\\(.*
+\\)"
+  "A regular expression to match the IPython input prompt and the python
+command after it. The first match group is for a command that is rewritten,
+the second for a 'normal' command, and the third for a multiline command.")
+
+(defvar ipython-de-output-prompt-regexp "^Out\\[[0-9]+\\]: "
+  "A regular expression to match the output prompt of IPython.")
 
 (defcustom py-cleanup-temporary  t
  "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
@@ -572,7 +610,7 @@ This vice versa, to beginning first.
 Sets `py-match-paren-key' in python-mode-map.
 Customize `py-match-paren-key' which key to use. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-match-paren-key "%"
   "*String used by \\[comment-region] to comment out a block of code.
@@ -581,12 +619,12 @@ that the indentation commands won't get confused (i.e., the string
 should be of the form `#x...' where `x' is not a blank or a tab, and
 `...' is arbitrary).  However, this string should not end in whitespace."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-kill-empty-line t
   "*If t, py-indent-forward-line kills empty lines. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
@@ -595,13 +633,13 @@ an inferior Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion)."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-imenu-show-method-args-p nil
   "*Controls echoing of arguments of functions & methods in the Imenu buffer.
 When non-nil, arguments are printed."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-default-interpreter 'cpython
   "*Which Python interpreter is used by default.
@@ -620,12 +658,12 @@ mode buffer is visited during an Emacs session.  After that, use
 \\[py-toggle-shells] to change the interpreter shell."
   :type '(choice (const :tag "Python (a.k.a. CPython)" cpython)
 		 (const :tag "JPython" jpython))
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-python-command-args '("-i")
   "*List of string arguments to be used when starting a Python shell."
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
@@ -645,13 +683,13 @@ program is stopped in a pop-up buffer.  It's similar to what
 gud-mode does for debugging C programs with gdb, but without
 having to restart the program."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'python-pdbtrack-do-tracking-p)
 
 (defcustom python-pdbtrack-minor-mode-string " PDB"
   "*Minor-mode sign to be displayed when pdbtrack is active."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-shell-prompt-alist
   '(("ipython" . "^In \\[[0-9]+\\]: *")
@@ -663,7 +701,7 @@ REGEXP is a regular expression matching the Python prompt.
 PROGRAM can also be t, which specifies the default when no other
 element matches `python-python-command'."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-shell-continuation-prompt-alist
   '(("ipython" . "^   [.][.][.]+: *")
@@ -676,7 +714,7 @@ continued lines.
 PROGRAM can also be t, which specifies the default when no other
 element matches `python-python-command'."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-python-command "python"
   "Shell command to run Python interpreter.
@@ -694,7 +732,7 @@ Any arguments can't contain whitespace."
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
@@ -712,69 +750,83 @@ without the user's realization (e.g. to perform completion)."
 If a file is loaded into a buffer that is in one of these major modes, it is considered Python source by `py-load-file', which uses the
 value to determine defaults."
   :type '(repeat function)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-jython-packages '("java" "javax" "org" "com")
   "Packages implying `jython-mode'.
 If these are imported near the beginning of the buffer, `python-mode'
 actually punts to `jython-mode'."
   :type '(repeat string)
-  :group 'python)
-
+  :group 'python-mode)
 
 (defface py-number-face
   '((t (:inherit default)))
   ;; '((t (:inherit 'font-lock-variable-name-face)))
   "Highlight numbers. "
-  :group 'python)
+  :group 'python-mode)
 (defvar py-number-face 'py-number-face)
 
 (defface py-XXX-tag-face
   '((t (:inherit font-lock-string-face)))
   "XXX\\|TODO\\|FIXME "
-  :group 'python)
+  :group 'python-mode)
 (defvar py-XXX-tag-face 'py-XXX-tag-face)
 
 ;; ;; Face for None, True, False, self, and Ellipsis
 (defface py-pseudo-keyword-face
   '((t (:inherit font-lock-keyword-face)))
   "Face for pseudo keywords in Python mode, like self, True, False, Ellipsis."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-pseudo-keyword-face 'py-pseudo-keyword-face)
 
 (defface py-variable-name-face
   '((t (:inherit default)))
   ;; '((t (:inherit 'font-lock-variable-name-face)))
   "Face method decorators."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-variable-name-face 'py-variable-name-face)
 
 ;; PEP 318 decorators
 (defface py-decorators-face
   '((t (:inherit font-lock-keyword-face)))
   "Face method decorators."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-decorators-face 'py-decorators-face)
 
 ;; Face for builtins
 (defface py-builtins-face
   '((t (:inherit font-lock-builtin-face)))
   "Face for builtins like TypeError, object, open, and exec."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-builtins-face 'py-builtins-face)
 
 (defface py-class-name-face
   '((t (:inherit font-lock-type-face)))
   "Face for classes."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-class-name-face 'py-class-name-face)
 
 ;; XXX, TODO, and FIXME comments and such
 (defface py-exception-name-face
   '((t (:inherit font-lock-builtin-face)))
   "."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-exception-name-face 'py-exception-name-face)
+
+(defcustom py-use-local-default nil
+  "If `t', py-shell will use `py-shell-local-path' instead
+  of default Python.
+
+Making switch between several virtualenv's easier,
+ Python-mode should deliver an installer, so named-shells pointing to virtualenv's will be available. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-shell-local-path ""
+  "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
+
+  :type 'string
+  :group 'python-mode)
 
 ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
@@ -883,7 +935,6 @@ set in py-execute-region and used in py-jump-to-exception.")
 ;;               "\\|")
 ;;    "\\)")
 ;;   "Regular expression matching lines not to dedent after.")
-
 
 (defvar py-traceback-line-re
   "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
@@ -1000,6 +1051,41 @@ Currently-active file is at the head of the list.")
   "Not in use.")
 (define-abbrev-table 'inferior-python-mode-abbrev-table ())
 
+;; pdbtrack constants
+(defconst py-pdbtrack-stack-entry-regexp
+   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
+  "Regular expression pdbtrack uses to find a stack trace entry.")
+
+;; ipython.el
+;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
+;;instead of '(Pdb)'
+(defvar py-pdbtrack-input-prompt)
+(setq py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ ")
+(defvar py-pydbtrack-input-prompt)
+(setq py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ ")
+
+;; pydb-328837.diff
+;; (defconst py-pydbtrack-stack-entry-regexp
+;;   "^(\\([-a-zA-Z0-9_/.]*\\):\\([0-9]+\\)):[ \t]?\\(.*\n\\)"
+;;   "Regular expression pdbtrack uses to find a stack trace entry for pydb.
+;;
+;; The debugger outputs program-location lines that look like this:
+;;    (/usr/bin/zonetab2pot.py:15): makePOT")
+
+(defconst py-pdbtrack-marker-regexp-file-group 2
+  "Group position in gud-pydb-marker-regexp that matches the file name.")
+
+(defconst py-pdbtrack-marker-regexp-line-group 3
+  "Group position in gud-pydb-marker-regexp that matches the line number.")
+
+(defconst py-pdbtrack-marker-regexp-funcname-group 4
+  "Group position in gud-pydb-marker-regexp that matches the function name.")
+
+(defconst py-pdbtrack-track-range 10000
+  "Max number of characters from end of buffer to search for stack entry.")
+
+(defvar py-pdbtrack-is-tracking-p nil)
+
 ;;; Bindings
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
 (add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
@@ -1107,16 +1193,20 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     (define-key map [(delete)] 'py-electric-delete)
     (define-key map [(backspace)] 'py-electric-backspace)
     (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-    ;; moving point
-    (define-key map [(control c)(control n)] 'py-end-of-statement)
+        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
     (define-key map [(control c)(control a)] 'py-mark-statement)
+        ;; moving point
     (define-key map [(control c)(control p)] 'py-beginning-of-statement)
+        (define-key map [(control c)(control n)] 'py-end-of-statement)
     (define-key map [(control c)(control u)] 'py-beginning-of-block)
     (define-key map [(control c)(control q)] 'py-end-of-block)
-    (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
     (define-key map [(control meta e)] 'py-end-of-def-or-class)
+
+    ;; (define-key map [(meta i)] 'py-indent-forward-line)
     (define-key map [(control j)] 'py-newline-and-indent)
     ;; Most Pythoneers expect RET `py-newline-and-indent'
+        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
     (define-key map (kbd "RET") 'py-newline-and-indent)
     (define-key map [(super backspace)] 'py-dedent)
     ;; (define-key map [(control return)] 'py-newline-and-dedent)
@@ -1143,7 +1233,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     (define-key map [(control c)(\#)] 'py-comment-region)
     (define-key map [(control c)(\?)] 'py-describe-mode)
     (define-key map [(control c)(control e)] 'py-describe-symbol)
-    (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
     (define-key map [(control c)(-)] 'py-up-exception)
     (define-key map [(control c)(=)] 'py-down-exception)
     (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
@@ -1211,6 +1300,8 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         ["pychecker-run" py-pychecker-run :help "Run pychecker"]
         ["Debugger" pdb :help "Run pdb under GUD"]
         "-"
+            ["Customize Python mode" (customize-group 'python-mode)
+             :help "Open the customization buffer for Python mode"]
         ["Help on symbol" py-describe-symbol
          :help "Use pydoc on symbol at point"]
         ["Complete symbol" completion-at-point
@@ -1240,7 +1331,10 @@ POSITION can be one of the following symbols:
   bos -- beginning of statement
 
 This function does not modify point or mark."
-  (let ((here (point)))
+  (let (erg)
+    (save-excursion
+      (setq erg
+            (progn
     (cond
      ((eq position 'bol) (beginning-of-line))
      ((eq position 'eol) (end-of-line))
@@ -1251,10 +1345,8 @@ This function does not modify point or mark."
      ((eq position 'eob) (goto-char (point-max)))
      ((eq position 'boi) (back-to-indentation))
      ((eq position 'bos) (py-beginning-of-statement))
-     (t (error "Unknown buffer position requested: %s" position)))
-    (prog1
-        (point)
-      (goto-char here))))
+               (t (error "Unknown buffer position requested: %s" position))) (point))))
+    erg))
 
 
 ;;; Python specialized rx
@@ -1528,7 +1620,7 @@ Otherwise inherits from `py-mode-syntax-table'.")
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
   (interactive "*")
-  (let* ((erg (py-python-default-environment))
+  (let* ((erg (py-python-current-environment))
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
@@ -4753,24 +4845,52 @@ Returns indentation if def-or-class found, nil otherwise. "
 ;; Py-down commands end
 
 ;; ripped from cc-mode
-(defun py-forward-into-nomenclature (&optional arg)
+(defun py-forward-into-nomenclature (&optional arg iact)
   "Move forward to end of a nomenclature section or word.
 
 With \\[universal-argument] (programmatically, optional argument ARG), do it that many times.
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
-  (let ((case-fold-search nil))
+  (or arg (setq arg 1))
+  (let ((case-fold-search nil)
+        (orig (point))
+        erg)
     (if (> arg 0)
-        (re-search-forward
-         "\\(\\W\\|[_]\\)*\\([A-Z]*[a-z0-9]*\\)"
-         (point-max) t arg)
-      (while (and (< arg 0)
-                  (re-search-backward
-                   "\\(\\W\\|[a-z0-9]\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
-                   (point-min) 0))
-        (forward-char 1)
-        (setq arg (1+ arg))))))
+        (while (and (not (eobp)) (> arg 0))
+          (setq erg (re-search-forward "\\(\\W+\\|[_]+\\)\\|\\([A-Z]*[[:lower:][:digit:]ß]*\\)" nil t 1))
+          ;; (or
+          ;;  (or (not (eq 0 (skip-chars-forward "[[:blank:][:punct:]\n\r]")))
+          ;;      (not (eq 0 (skip-chars-forward "_"))))
+          ;;  (or (and
+          ;;       (not (eq 0 (skip-chars-forward "[:upper:]")))
+          ;;       (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]")))))
+          ;;  (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]"))))
+          ;; (skip-chars-forward " \t\r\n\f")
+          (skip-chars-forward "^[[:alnum:]ß]")
+          (setq arg (1- arg)))
+      (while (and (not (bobp)) (< arg 0))
+        (when (not (eq 0 (skip-chars-backward "[[:blank:][:punct:]\n\r\f_]")))
+
+          (forward-char -1))
+        (or
+         (not (eq 0 (skip-chars-backward "[:upper:]")))
+         (not (eq 0 (skip-chars-backward "[[:lower:][:digit:]ß]")))
+         (skip-chars-backward "[[:lower:][:digit:]ß]"))
+        (setq arg (1+ arg))))
+    (if (< (point) orig)
+        (progn
+          (when (looking-back "[[:upper:]]")
+            ;; (looking-back "[[:blank:]]"
+            (forward-char -1))
+          (if (looking-at "[[:alnum:]ß]")
+              (setq erg (point))
+            (setq erg nil)))
+      (if (and (< orig (point)) (not (eobp)))
+        (setq erg (point))
+        (setq erg nil)))
+    (when (and py-report-position-p (or iact (interactive-p))) (message "%s" erg))
+    erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
   "Move backward to beginning of a nomenclature section or word.
@@ -4780,7 +4900,8 @@ forward.
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
-  (py-forward-into-nomenclature (- arg)))
+  (setq arg (or arg 1))
+  (py-forward-into-nomenclature (- arg) arg))
 
 (defalias 'py-match-paren 'match-paren)
 
@@ -4868,10 +4989,12 @@ This function is appropriate for `comint-output-filter-functions'."
   "Return the name of the running Python process, `get-process' willsee it. "
   (let* ((name (cond (dedicated
                       (make-temp-name (concat (or name py-shell-name) "-")))
+                     (name name)
                      ((string-match "\*" (buffer-name))
                       (replace-regexp-in-string "\*" "" (buffer-name)))
-                     (t (or name py-shell-name))))
-         (erg (if (string= "ipython" name)
+                     (t py-shell-name)))
+         (erg (if (or (string= "ipython" name)
+                      (string= "IPython" name))
                   "IPython"
                 (capitalize name))))
     erg))
@@ -4887,6 +5010,18 @@ This function is appropriate for `comint-output-filter-functions'."
   (setq shell-dirtrackp t)
   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t))
 
+(defun py-set-shell-completion-environment ()
+  "Sets `...-completion-command-string' and `py-complete-function'. "
+  (interactive)
+  (local-unset-key [tab])
+  (cond ((string-match "ipython" py-shell-name)
+         (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+         (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+         (define-key py-shell-map [tab] 'ipython-complete))
+        ((string-match "python3" py-shell-name)
+         (define-key py-shell-map [tab] 'py-completion-at-point))
+        (t (define-key py-shell-map [tab] 'py-shell-complete))))
+
 (defalias 'py-dedicated-shell 'py-shell-dedicated)
 (defun py-shell-dedicated (&optional argprompt)
    "Start an interactive Python interpreter in another window.
@@ -4898,7 +5033,7 @@ interpreter.
   (interactive "P")
   (py-shell argprompt t))
 
-(defun py-shell (&optional argprompt dedicated)
+(defun py-shell (&optional argprompt dedicated pyshellname)
   "Start an interactive Python interpreter in another window.
 
 With optional \\[universal-argument] user is prompted by
@@ -4907,22 +5042,32 @@ interpreter.
 Returns variable `py-process-name' used by function `get-process'.
 "
   (interactive "P")
-  ;; Set or select the shell if not ready
-  (if (eq 4 (prefix-numeric-value argprompt))
-      (py-choose-shell '(4))
-    (when (null py-shell-name)
-      (py-guess-default-python)))
-  (let ((args py-python-command-args)
-        (py-process-name (py-process-name py-shell-name dedicated)))
+  (let* ((py-shell-name
+          (cond ((eq 4 (prefix-numeric-value argprompt))
+                 (py-choose-shell '(4)))
+                (py-use-local-default
+                            (if (not (string= "" py-shell-local-path))
+                                (expand-file-name py-shell-local-path)
+                   (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                (pyshellname pyshellname)
+                ((stringp py-shell-name) py-shell-name)
+                ((or (string= "" py-shell-name)(null py-shell-name))
+                 (py-guess-default-python))))
+         (args py-python-command-args)
+         (py-process-name (py-process-name py-shell-name dedicated))
+         ipython-version version)
+    (py-set-shell-completion-environment)
     ;; comint
     (if (not (equal (buffer-name) py-process-name))
-        (switch-to-buffer-other-window
-         (apply 'make-comint py-process-name py-shell-name nil args))
+        (set-buffer (get-buffer-create
+                     (apply 'make-comint py-process-name py-shell-name nil args)))
       (apply 'make-comint py-process-name py-shell-name nil args))
-    (make-local-variable 'comint-prompt-regexp)
-    (setq comint-prompt-regexp (concat py-shell-input-prompt-1-regexp "\\|"
-                                       py-shell-input-prompt-2-regexp "\\|"
-                                       "^([Pp]db) "))
+    (set (make-local-variable 'comint-prompt-regexp)
+	 (concat "\\("
+		 (mapconcat 'identity
+			    (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+			    "\\|")
+		 "\\)"))
     (add-hook 'comint-output-filter-functions
               'py-comint-output-filter-function)
     (setq comint-input-sender 'py-shell-simple-send)
@@ -4947,164 +5092,125 @@ Returns variable `py-process-name' used by function `get-process'.
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
     (run-hooks 'py-shell-hook)
-    (when (interactive-p) (message "%s" py-process-name))
+    (when (or py-shell-switch-buffers-on-execute (interactive-p))
+      (switch-to-buffer (current-buffer)))
+    (goto-char (point-max))
     py-process-name))
 
 ;;; Python named shells
 (defun python (&optional argprompt)
   "Start an Python interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
   (interactive)
-  (let ((py-shell-name "python"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python"))
 
 (defun python2 (&optional argprompt)
   "Start an Python2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python2"))
 
 (defun python2.7 (&optional argprompt)
   "Start an Python2.7 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2.7 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2.7"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python2.7"))
 
 (defun python3 (&optional argprompt)
   "Start an Python3 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python3"))
 
 (defun python3.2 (&optional argprompt)
   "Start an Python3.2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3.2 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3.2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python3.2"))
 
+(defalias 'iyp 'ipython)
+(defalias 'ipy 'ipython)
 (defun ipython (&optional argprompt)
   "Start an IPython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the IPython interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
   (interactive)
-  (let ((py-shell-name "ipython"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'ipython-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "ipython"))
 
 (defun jython (&optional argprompt)
   "Start an Jython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Jython interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
   (interactive)
-  (let ((py-shell-name "jython"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "jython"))
 
-;;; Python dedicated shells
 (defun python-dedicated (&optional argprompt)
-  "Start an unique Python interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python interpreter. "
+  "Start an Python dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
   (interactive)
-  (let ((py-shell-name "python"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python"))
 
 (defun python2-dedicated (&optional argprompt)
-  "Start an unique Python2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2 interpreter. "
+  "Start an Python2 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2"))
 
 (defun python2.7-dedicated (&optional argprompt)
-  "Start an unique Python2.7 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2.7 interpreter. "
+  "Start an Python2.7 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2.7"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2.7"))
 
 (defun python3-dedicated (&optional argprompt)
-  "Start an unique Python3 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3 interpreter. "
+  "Start an Python3 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3"))
 
 (defun python3.2-dedicated (&optional argprompt)
-  "Start an unique Python3.2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3.2 interpreter. "
+  "Start an Python3.2 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3.2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3.2"))
 
 (defun ipython-dedicated (&optional argprompt)
-  "Start an unique IPython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the IPython interpreter. "
+  "Start an IPython dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
   (interactive)
-  (let ((py-shell-name "ipython"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'ipython-complete)
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "ipython"))
 
 (defun jython-dedicated (&optional argprompt)
-  "Start an unique Jython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Jython interpreter. "
+  "Start an Jython dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
   (interactive)
-  (let ((py-shell-name "jython"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "jython"))
 
 
 ;; Code execution commands
@@ -6039,7 +6145,6 @@ If an exception occurred return t, otherwise return nil.  BUF must exist."
     (forward-line (1- line))
     (message "Jumping to exception in file %s on line %d" file line)))
 
-
 (defun py-down-exception (&optional bottom)
   "Go to the next line down in the traceback.
 
@@ -6100,21 +6205,21 @@ bottom) of the trackback stack is encountered."
                       (setq file (match-string-no-properties 2)
                             pos (point)
                             line (string-to-number (match-string-no-properties 3))))
+                  (save-excursion
                   ;; file and line-number are in different lines
                   (setq line (string-to-number (match-string-no-properties 1))
                         pos (point)
                         file (progn
                                (when (and (re-search-backward "\\(^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^\t >]+\\)>?[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1)
                                           (not (save-match-data (string-match "<\\|^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 1)))))
-                                 (match-string-no-properties 1)))))
+                                   (match-string-no-properties 1))))))
                 (if file
                 (when (string-match ".+\.pyc" file)
                   (setq file (substring file 0 -1)))
                   (error "%s of traceback" errwhere))
-                (when (string= errwhere "Bottom") (goto-char pos))
                 (if (and file line)
-                    (if (or (and (string= "<stdin>" file) (eq 1 line))
-                            (string-match "<ipython-input" file))
+                    (if
+                        (and (string= "<stdin>" file) (eq 1 line))
                         (error "%s of traceback" errwhere)
                       (py-jump-to-exception file line py-line-number-offset))
                   (error "%s of traceback" errwhere)))
@@ -6152,41 +6257,6 @@ bottom) of the trackback stack is encountered."
     (comint-send-string (python-proc) "\n")))
 
 ;;; python-components-pdb.el
-
-;; pdbtrack constants
-(defconst py-pdbtrack-stack-entry-regexp
-   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
-  "Regular expression pdbtrack uses to find a stack trace entry.")
-
-;; ipython.el
-;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
-;;instead of '(Pdb)'
-(defvar py-pdbtrack-input-prompt)
-(setq py-pdbtrack-input-prompt "\n[(<]*[Ii]?[Pp]y?db[>)]+ ")
-(defvar pydb-pydbtrack-input-prompt)
-(setq pydb-pydbtrack-input-prompt "\n[(]*ipydb[>)]+ ")
-
-;; pydb-328837.diff
-;; (defconst py-pydbtrack-stack-entry-regexp
-;;   "^(\\([-a-zA-Z0-9_/.]*\\):\\([0-9]+\\)):[ \t]?\\(.*\n\\)"
-;;   "Regular expression pdbtrack uses to find a stack trace entry for pydb.
-;;
-;; The debugger outputs program-location lines that look like this:
-;;    (/usr/bin/zonetab2pot.py:15): makePOT")
-
-(defconst py-pdbtrack-marker-regexp-file-group 2
-  "Group position in gud-pydb-marker-regexp that matches the file name.")
-
-(defconst py-pdbtrack-marker-regexp-line-group 3
-  "Group position in gud-pydb-marker-regexp that matches the line number.")
-
-(defconst py-pdbtrack-marker-regexp-funcname-group 4
-  "Group position in gud-pydb-marker-regexp that matches the function name.")
-
-(defconst py-pdbtrack-track-range 10000
-  "Max number of characters from end of buffer to search for stack entry.")
-
-(defvar py-pdbtrack-is-tracking-p nil)
 
 ;;; Pdbtrack
 
@@ -7362,8 +7432,11 @@ Uses `python-imports' to load modules against which to complete."
          (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
          (completion (when start
                        (python-symbol-completions (buffer-substring-no-properties start end)))))
-    (when completion (delete-region start end)
-          (insert (car completion)))))
+    (if completion
+        (progn
+          (delete-region start end)
+          (insert (car completion)))
+      (tab-to-tab-stop))))
 
 (defvar py-mode-output-map nil
   "Keymap used in *Python Output* buffers.")
@@ -7423,8 +7496,9 @@ return `jython', otherwise return nil."
                         'jython))))
     mode))
 
+(defalias 'py-version 'py-which-python)
 (defun py-which-python ()
-  "Returns version of Python of current default environment, a number. "
+  "Returns version of Python of current environment, a number. "
   (interactive)
   (let* ((cmd (py-choose-shell))
          (erg (shell-command-to-string (concat cmd " --version")))
@@ -7436,8 +7510,8 @@ return `jython', otherwise return nil."
         (message "%s" "Could not detect Python on your system")))
     (string-to-number version)))
 
-(defun py-python-default-environment ()
-  "Returns path of Python default installation. "
+(defun py-python-current-environment ()
+  "Returns path of current Python installation. "
   (interactive)
   (let* ((cmd (py-choose-shell))
          (denv (shell-command-to-string (concat "type " cmd)))
@@ -7491,6 +7565,10 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
   (interactive "P")
   (let ((erg (cond ((eq 4 (prefix-numeric-value arg))
                     (read-from-minibuffer "Python Shell: " py-shell-name))
+                   (py-use-local-default
+                    (if (not (string= "" py-shell-local-path))
+                        (expand-file-name py-shell-local-path)
+                      (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                    ((py-choose-shell-by-shebang))
                    ((py-choose-shell-by-import))
                    (t py-shell-name))))
@@ -7515,17 +7593,33 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
+  (let* ((pyshell (py-choose-shell))
+         (path (getenv "PYTHONPATH"))
+         (pymacs-installed-p
+          (string-match (expand-file-name (concat py-install-directory "/Pymacs")) path)))
+    ;; Python side
+    (unless pymacs-installed-p
+      (setenv "PYTHONPATH" (concat
+                            (if path (concat path path-separator))
+                            (expand-file-name py-install-directory) "/Pymacs")))
+
   (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
       (error "`py-install-directory' not set, see INSTALL")
-    (add-to-list 'load-path (concat py-install-directory "/pymacs"))
-    (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
-    (setenv "PYMACS_PYTHON" (py-choose-shell))
+      (load (concat py-install-directory "/pymacs.el") nil t)
+      (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
+                                  "python"
+                                pyshell))
     (autoload 'pymacs-apply "pymacs")
     (autoload 'pymacs-call "pymacs")
     (autoload 'pymacs-eval "pymacs")
     (autoload 'pymacs-exec "pymacs")
     (autoload 'pymacs-load "pymacs")
-    (require 'pymacs)))
+      (require 'pymacs))
+    (unwind-protect
+        (progn
+          (find-file (concat py-install-directory "/completion/pycomplete.el"))
+          (eval-buffer)))
+    (kill-buffer "pycomplete.el")))
 
 (defun py-guess-py-install-directory ()
   (interactive)
@@ -7682,8 +7776,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
   (when py-load-pymacs-p (py-load-pymacs)
+        (unwind-protect
+            (progn
         (find-file (concat py-install-directory "/completion/pycomplete.el"))
-        (eval-buffer)
+              (eval-buffer)))
         (kill-buffer "pycomplete.el"))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)
@@ -7823,9 +7919,11 @@ These are Python temporary files awaiting execution."
 (add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
 (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
-(add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)))
-
-(add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)))
+(add-hook 'python-mode-hook
+          (lambda ()
+            (defvar py-mode-map python-mode-map))
+          (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+          (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
 
 ;; Add a designator to the minor mode strings
 (or (assq 'py-pdbtrack-is-tracking-p minor-mode-alist)
@@ -7844,7 +7942,102 @@ These are Python temporary files awaiting execution."
 (defvar py-default-interpreter py-shell-name)
 (defvar python-command py-shell-name)
 
-;;;; Utility stuff
+;;; Virtualenv
+
+(defun py-toggle-local-default-use ()
+  (interactive)
+  "Toggle boolean value of `py-use-local-default'.
+
+Returns `py-use-local-default'
+
+See also `py-install-local-shells'
+Installing named virualenv shells is the preffered way, 
+as it leaves your system default unchanged."
+  (setq py-use-local-default (not py-use-local-default))
+  (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
+  py-use-local-default)
+
+
+(defvar py-shell-template "
+\(defun NAME (&optional argprompt)
+  \"Start an DOCNAME interpreter in another window.
+
+With optional \\\\[universal-argument] user is prompted
+for options to pass to the DOCNAME interpreter. \"
+  (interactive \"P\")
+  (let\* ((py-shell-name \"FULLNAME\"))
+    (py-set-shell-completion-environment)
+    (py-shell argprompt)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+          (goto-char (point-max)))))
+")
+
+(setq py-shell-template "
+\(defun NAME (&optional argprompt)
+  \"Start an DOCNAME interpreter in another window.
+
+With optional \\\\[universal-argument] user is prompted
+for options to pass to the DOCNAME interpreter. \"
+  (interactive \"P\")
+  (let\* ((py-shell-name \"FULLNAME\"))
+    (py-set-shell-completion-environment)
+    (py-shell argprompt)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+          (goto-char (point-max)))))
+")
+
+(defun py-install-search-local ()
+  (interactive)
+  (let ((erg (split-string (shell-command-to-string (concat "find " default-directory " -maxdepth 9 -type f -name \"*python\"")))))))
+
+;; (defun py-install-local-epdfree ()
+;;   (interactive)
+;;   (py-install-local-shells "MY-PATH/epdfree"))
+
+(defun py-install-local-shells (&optional local path-prefix)
+  "Builds Python-shell commands from executable found in LOCAL.
+
+If LOCAL is empty, shell-command `find' searches beneath current directory.
+Eval resulting buffer to install it, see customizable `py-extensions'. "
+  (interactive)
+  (let* ((local-dir (if local
+                             (expand-file-name local)
+                           (read-from-minibuffer "Virtualenv directory: " default-directory)))
+         (path-separator (if (string-match "/" local-dir)
+                             "/"
+                           "\\" t))
+         (shells (split-string (shell-command-to-string (concat "find " local-dir " -maxdepth 9 -type f -executable -name \"*python\""))))
+         erg newshell prefix akt end orig)
+    (set-buffer (get-buffer-create py-extensions))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (dolist (elt shells)
+      (setq prefix "")
+      (setq curexe (substring elt (1+ (string-match "/[^/]+$" elt))))
+      (setq aktpath (substring elt 0 (1+ (string-match "/[^/]+$" elt))))
+      (dolist (prf (split-string aktpath (regexp-quote path-separator)))
+        (unless (string= "" prf)
+          (setq prefix (concat prefix (substring prf 0 1)))))
+      (setq orig (point))
+      (insert py-shell-template)
+      (setq end (point))
+      (goto-char orig)
+      (when (re-search-forward "\\<NAME\\>" end t 1)
+        (replace-match (concat prefix "-" (substring elt (1+ (save-match-data (string-match "/[^/]+$" elt)))))t))
+      (goto-char orig)
+      (while (search-forward "DOCNAME" end t 1)
+        (replace-match (if (string= "ipython" curexe)
+                           "IPython"
+                         (capitalize curexe)) t))
+      (goto-char orig)
+      (when (search-forward "FULLNAME" end t 1)
+        (replace-match elt t))
+      (goto-char (point-max)))
+    (emacs-lisp-mode)
+    (if (file-readable-p (concat py-install-directory "/" py-extensions))
+        (find-file (concat py-install-directory "/" py-extensions)))))
+
+;;; Utility stuff
 
 ;; for toggling between CPython and JPython
 (defvar python-which-shell nil)
@@ -8790,7 +8983,6 @@ and return collected output"
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
 
-;;;###autoload
 (defun py-shell-complete ()
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
@@ -8847,11 +9039,21 @@ complete('%s')
 ;; see also
 ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2008-01/msg00076.html
 
-(defvar ipython-completion-command-string
-  "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
+(defvar ipython-completion-command-string nil
+  "Either ipython0.10-completion-command-string or ipython0.11-completion-command-string.
+
+ipython0.11-completion-command-string also covers version 0.12")
+;; (make-variable-buffer-local 'ipython-completion-command-string)
+
+(defvar ipython0.10-completion-command-string
+  "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
 
-(setq ipython-completion-command-string                                   "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
+;; (setq ipython0.10-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
+
+(defvar ipython0.11-completion-command-string
+  "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
+  "The string send to ipython to query for all possible completions")
 
 (defun ipython-complete ()
   "Complete the python symbol before point.
@@ -8862,33 +9064,26 @@ Only knows about the stuff in the current *Python* session."
          (ugly-return nil)
          (sep ";")
          (python-process (or (get-buffer-process (current-buffer))
-                                        ;XXX hack for .py buffers
                              (get-process py-which-bufname)))
-         ;; XXX currently we go backwards to find the beginning of an
-         ;; expression part; a more powerful approach in the future might be
-         ;; to let ipython have the complete line, so that context can be used
-         ;; to do things like filename completion etc.
          (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                               (point)))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (completions nil)
          (completion-table nil)
-         completion
          (comint-output-filter-functions
           (append comint-output-filter-functions
                   '(ansi-color-filter-apply
                     (lambda (string)
-                                        ;(message (format "DEBUG filtering: %s" string))
                       (setq ugly-return (concat ugly-return string))
                       (delete-region comint-last-output-start
-                                     (process-mark (get-buffer-process (current-buffer)))))))))
-                                        ;(message (format "#DEBUG pattern: '%s'" pattern))
+                                     (process-mark (get-buffer-process (current-buffer))))))))
+         completion)
+    ;; (save-excursion
+    ;; (setq python-process (get-process (ipython-dedicated))))
     (process-send-string python-process
                          (format completion-command-string pattern))
     (accept-process-output python-process)
-
-                                        ;(message (format "DEBUG return: %s" ugly-return))
     (setq completions
           (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
     (setq completion-table (loop for str in completions

@@ -61,6 +61,7 @@
  '(cua-overwrite-cursor-color "red")
  '(cua-remap-control-z nil)
  '(custom-enabled-themes (quote (tango-dark-enhancements tango-dark)))
+ '(custom-safe-themes (quote ("603b495e92b9e8a55e93fd58beb3f4badd6e94b262a7bfdaecba6377d1212c35" "42332f7ff216cb8ddea3d86c6e5dc054a63f8503" default)))
  '(delete-selection-mode nil)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
