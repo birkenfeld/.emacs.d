@@ -26,7 +26,7 @@
    `(diff-added ((,class (:inherit diff-changed :foreground ,cham-0))))
    `(diff-changed ((,class (:background ,alum-5.5))))
    `(diff-context ((,class (:inherit shadow :foreground ,plum-0))))
-   `(diff-file-header ((,class (:weight bold))))
+   `(diff-file-header ((,class (:weight bold :foreground ,blue-0))))
    `(diff-header ((,class (:foreground ,blue-1 :background ,alum-7))))
    `(diff-hunk-header ((,class (:weight bold))))
    `(diff-indicator-added ((,class (:inherit diff-added :weight bold))))
