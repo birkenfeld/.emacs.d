@@ -48,7 +48,7 @@
 
 (message "Nxml/Nxhtml Autostart.el loading ...")
 
-(defconst nxhtml-autostart-trace t)
+(defconst nxhtml-autostart-trace nil)
 (when (and nil nxhtml-autostart-trace)
   (setq trace-buffer "*Messages*")
   (trace-function-background 'require))
@@ -223,7 +223,7 @@
     (define-key global-map [(meta ?s) ?x] 'idxsearch))
 
   ;; How long time did it all take?
-  (message "Nxml/Nxhtml Autostart.el loaded in %.1f seconds" (- (float-time) nxhtml-load-time-start)))
+  ;(message "Nxml/Nxhtml Autostart.el loaded in %.1f seconds" (- (float-time) nxhtml-load-time-start)))
 
 (defcustom nxhtml-flymake-setup t
   "Let nXhtml add some addtions to flymake.

@@ -5566,7 +5566,7 @@ Turn on `debug-on-error' unless NO-DEBUG is nil."
 ;; Emacs Bug 3467
 ;; See also Emacs Bug 6203
 (defvar mumamo-has-bug3467
-  (when (or t
+  (when (or nil
             (>= 23 emacs-major-version)
             (time-less-p emacs-build-time (encode-time 0 0 0 15 5 2010)))
     (let ((has-it (mumamo-check-has-bug3467 nil)))
