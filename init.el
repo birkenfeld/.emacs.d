@@ -843,6 +843,11 @@ returns the word count of that file."
           (t ;; (zerop n)
            (copy-from-above-command)))))
 
+(defun spellcheck-english ()
+  (interactive)
+  (ispell-change-dictionary "english")
+  (flyspell-mode 1)
+  (flyspell-buffer))
 
 ;; ---------- Extension configuration ------------------------------------------
 
