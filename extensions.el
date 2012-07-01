@@ -7,12 +7,6 @@
                   "~/.emacs.d/haskell-mode"
                   ,@load-path))
 
-;; add the alternate package repo
-(when (require 'package nil t)
-  (add-to-list 'package-archives
-               '("marmalade" .
-                 "http://marmalade-repo.org/packages/") t))
-
 ;; ---------- always enabled ---------------------------------------------------
 
 ;; make some mode line displays smaller

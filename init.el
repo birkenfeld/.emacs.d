@@ -25,6 +25,14 @@
 
 ;; ---------- Some influential variables ---------------------------------------
 
+;; load package manager and add the alternate package repo
+(when (require 'package nil t)
+  (add-to-list 'package-archives
+               '("marmalade" .
+                 "http://marmalade-repo.org/packages/") t)
+  (package-initialize)
+  )
+
 ;; scroll one line at a time
 (setq scroll-step 1)
 
