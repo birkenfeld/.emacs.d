@@ -1,6 +1,28 @@
+;;; haskell-mode-autoloads.el --- automatically extracted autoloads
+;;
+;;; Code:
+
 
-;;;### (autoloads (haskell-c-mode) "haskell-c" "haskell-c.el" (18170
-;;;;;;  47169))
+;;;### (autoloads (ghc-core-mode ghc-core-create-core) "ghc-core"
+;;;;;;  "ghc-core.el" (20464 47417 0 0))
+;;; Generated autoloads from ghc-core.el
+
+(autoload 'ghc-core-create-core "ghc-core" "\
+Compiled and load the current buffer as tidy core
+
+\(fn)" t nil)
+
+(add-to-list 'auto-mode-alist '("\\.hcr\\'" . ghc-core-mode))
+
+(autoload 'ghc-core-mode "ghc-core" "\
+Major mode for GHC Core files.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (haskell-c-mode) "haskell-c" "haskell-c.el" (20464
+;;;;;;  47417 0 0))
 ;;; Generated autoloads from haskell-c.el
 
 (add-to-list 'auto-mode-alist '("\\.hsc\\'" . haskell-c-mode))
@@ -13,7 +35,7 @@ Major mode for Haskell FFI files.
 ;;;***
 
 ;;;### (autoloads (haskell-cabal-mode) "haskell-cabal" "haskell-cabal.el"
-;;;;;;  (19222 37798))
+;;;;;;  (20464 47418 0 0))
 ;;; Generated autoloads from haskell-cabal.el
 
 (add-to-list 'auto-mode-alist '("\\.cabal\\'" . haskell-cabal-mode))
@@ -26,7 +48,7 @@ Major mode for Cabal package description files.
 ;;;***
 
 ;;;### (autoloads (haskell-decl-scan-mode) "haskell-decl-scan" "haskell-decl-scan.el"
-;;;;;;  (19222 37798))
+;;;;;;  (20464 47418 0 0))
 ;;; Generated autoloads from haskell-decl-scan.el
 
 (autoload 'haskell-decl-scan-mode "haskell-decl-scan" "\
@@ -76,7 +98,7 @@ Invokes `haskell-decl-scan-mode-hook'.
 ;;;***
 
 ;;;### (autoloads (haskell-doc-show-type haskell-doc-mode) "haskell-doc"
-;;;;;;  "haskell-doc.el" (19222 37798))
+;;;;;;  "haskell-doc.el" (20464 47417 0 0))
 ;;; Generated autoloads from haskell-doc.el
 
 (autoload 'haskell-doc-mode "haskell-doc" "\
@@ -99,7 +121,7 @@ current buffer.
 ;;;***
 
 ;;;### (autoloads (haskell-indent-mode) "haskell-indent" "haskell-indent.el"
-;;;;;;  (19222 37798))
+;;;;;;  (20464 47417 0 0))
 ;;; Generated autoloads from haskell-indent.el
 
 (autoload 'haskell-indent-mode "haskell-indent" "\
@@ -131,7 +153,7 @@ Invokes `haskell-indent-hook' if not nil.
 ;;;***
 
 ;;;### (autoloads (haskell-indentation-mode) "haskell-indentation"
-;;;;;;  "haskell-indentation.el" (19222 37798))
+;;;;;;  "haskell-indentation.el" (20464 47418 0 0))
 ;;; Generated autoloads from haskell-indentation.el
 
 (autoload 'haskell-indentation-mode "haskell-indentation" "\
@@ -145,7 +167,8 @@ autofill-mode.
 ;;;***
 
 ;;;### (autoloads (haskell-hayoo haskell-hoogle literate-haskell-mode
-;;;;;;  haskell-mode) "haskell-mode" "haskell-mode.el" (19222 37798))
+;;;;;;  haskell-mode) "haskell-mode" "haskell-mode.el" (20464 47417
+;;;;;;  0 0))
 ;;; Generated autoloads from haskell-mode.el
 
 (add-to-list 'load-path (or (file-name-directory load-file-name) (car load-path)))
@@ -214,9 +237,9 @@ Do a Hayoo search for QUERY.
 ;;;***
 
 ;;;### (autoloads (inferior-haskell-find-haddock inferior-haskell-find-definition
-;;;;;;  inferior-haskell-info inferior-haskell-type inferior-haskell-load-file
-;;;;;;  switch-to-haskell) "inf-haskell" "inf-haskell.el" (19222
-;;;;;;  37798))
+;;;;;;  inferior-haskell-info inferior-haskell-type inferior-haskell-load-and-run
+;;;;;;  inferior-haskell-load-file switch-to-haskell) "inf-haskell"
+;;;;;;  "inf-haskell.el" (20464 47417 0 0))
 ;;; Generated autoloads from inf-haskell.el
 
 (defalias 'run-haskell 'switch-to-haskell)
@@ -231,6 +254,11 @@ Pass the current buffer's file to the inferior haskell process.
 If prefix arg \\[universal-argument] is given, just reload the previous file.
 
 \(fn &optional RELOAD)" t nil)
+
+(autoload 'inferior-haskell-load-and-run "inf-haskell" "\
+Pass the current buffer's file to haskell and then run a COMMAND.
+
+\(fn COMMAND)" t nil)
 
 (autoload 'inferior-haskell-type "inf-haskell" "\
 Query the haskell process for the type of the given expression.
@@ -270,8 +298,16 @@ we load it.
 ;;;***
 
 ;;;### (autoloads nil nil ("haskell-font-lock.el" "haskell-ghci.el"
-;;;;;;  "haskell-hugs.el" "haskell-simple-indent.el" "test.el") (19222
-;;;;;;  37817 315467))
+;;;;;;  "haskell-hugs.el" "haskell-mode-pkg.el" "haskell-simple-indent.el"
+;;;;;;  "haskell-site-file.el") (20464 47418 162486 778000))
 
 ;;;***
 
+(provide 'haskell-mode-autoloads)
+;; Local Variables:
+;; version-control: never
+;; no-byte-compile: t
+;; no-update-autoloads: t
+;; coding: utf-8
+;; End:
+;;; haskell-mode-autoloads.el ends here

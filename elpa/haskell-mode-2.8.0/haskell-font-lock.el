@@ -150,7 +150,6 @@ and `unicode'."
               (cons "!!" (decode-char 'ucs #X203C))
               (cons "&&" (decode-char 'ucs #X2227))
               (cons "||" (decode-char 'ucs #X2228))
-              (cons "++" (decode-char 'ucs #X29FA))
               (cons "sqrt" (decode-char 'ucs #X221A))
               (cons "undefined" (decode-char 'ucs #X22A5))
               (cons "pi" (decode-char 'ucs #X3C0))
@@ -495,7 +494,6 @@ that should be commented under LaTeX-style literate scripts."
    ;; b) {-^ ... -}
    ;; c) -- | ...
    ;; d) -- ^ ...
-   ;; d') -- * ...
    ;; e) -- ...
    ;; Where `e' is the tricky one: it is only a Haddock comment if it
    ;; follows immediately another Haddock comment.  Even an empty line
@@ -508,7 +506,7 @@ that should be commented under LaTeX-style literate scripts."
    ((and haskell-font-lock-haddock
          (save-excursion
            (goto-char (nth 8 state))
-           (or (looking-at "\\(-- \\|{- ?\\)[|^*]")
+           (or (looking-at "\\(-- \\|{-\\)[|^]")
                (and haskell-font-lock-seen-haddock
                     (looking-at "-- ")
                     (let ((doc nil)
@@ -522,11 +520,6 @@ that should be commented under LaTeX-style literate scripts."
                       doc)))))
     (set (make-local-variable 'haskell-font-lock-seen-haddock) t)
     font-lock-doc-face)
-   ;; Highlight pragmas {-# ... #-} using the preprocessor directive font.
-   ((save-excursion
-      (goto-char (nth 8 state))
-      (looking-at "{-#"))
-    font-lock-preprocessor-face)
    (t font-lock-comment-face)))
 
 (defconst haskell-font-lock-keywords
