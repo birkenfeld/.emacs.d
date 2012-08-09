@@ -21,11 +21,8 @@
 ;; colored moccur
 (require 'color-moccur)
 
-;; grep-edit (edit in grep results)
-(require 'grep-edit)
-;; need to unset ordinary character bindings...
-(loop for key in '("n" "p" "{" "}" " ") do
-      (define-key grep-mode-map key nil))
+;; wgrep (edit in grep results)
+(require 'wgrep)
 
 ;; session (saves histories, variables, ...)
 (require 'session)
