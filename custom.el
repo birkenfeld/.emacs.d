@@ -6,6 +6,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(LaTeX-babel-hyphen "")
+ '(LaTeX-command "latex --enable-write18")
  '(LaTeX-fill-break-at-separators (quote (\\\( \\\) \\\[ \\\])))
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook (quote (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
@@ -303,7 +304,7 @@ mouse-3: Remove current window from display")))))
  '(custom-saved ((t (:inherit custom-documentation-face :underline t))))
  '(custom-set ((((class color)) (:inherit custom-documentation-face :background "white" :foreground "blue"))))
  '(custom-state ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))
- '(diff-file-header ((t (:weight bold))) t)
+ '(diff-file-header ((t (:weight bold))))
  '(flymake-errline ((t (:underline "red"))))
  '(flymake-warnline ((((class color) (background light)) (:underline "#ec0"))))
  '(flyspell-duplicate ((t (:foreground "Gold3" :underline t))))
