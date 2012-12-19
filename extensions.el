@@ -151,13 +151,10 @@
                 ("\\.pxs$" . cython-mode)
                 ("\\.pxi$" . cython-mode))
               auto-mode-alist))
-(eval-after-load 'python-mode
-  '(progn
-     ;(require 'auto-complete-python)
-     (require 'highlight-beyond-fill-column)
-     (require 'show-wspace)))
 
 (add-hook 'python-mode-hook (lambda ()
+  (require 'highlight-beyond-fill-column)
+  (require 'show-wspace)
   (highlight-tabs)
   (font-lock-add-keywords
    nil '((find-after-fill-column 0 highlight-beyond-fill-column-face prepend)))

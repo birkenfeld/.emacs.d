@@ -258,6 +258,10 @@
 ;(global-set-key (kbd "C-M-d") 'backward-kill-word)
 ;(global-set-key (kbd "C-d") 'backward-delete-char-untabify)
 
+;; Save point position between sessions
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file (expand-file-name "_places" user-emacs-directory))
 
 ;; ---------- Modes ------------------------------------------------------------
 
