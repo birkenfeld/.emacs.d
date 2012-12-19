@@ -140,6 +140,11 @@
 
 ;; ---------- autoloaded -------------------------------------------------------
 
+;; mcstas
+(autoload 'mcstas-mode "mcstas-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.instr$" . mcstas-mode))
+(add-to-list 'auto-mode-alist '("\\.comp$" . mcstas-mode))
+
 ;; redo
 (autoload 'redo "redo" nil t)
 (global-set-key (kbd "C-x U") 'redo)
