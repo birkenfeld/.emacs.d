@@ -136,6 +136,7 @@
 (global-set-key (kbd "C-x U") 'redo)
 
 ;; better, patched Python mode
+(require 'python)  ;; needed for semantic
 (autoload 'python-mode "python-mode" nil t)
 (autoload 'cython-mode "cython-mode" nil t)
 
@@ -404,3 +405,22 @@
     ('font-lock-keywords test-case-nose-font-lock-keywords)))
 
 (add-to-list 'test-case-backends 'test-case-nose-backend t)
+
+;; grep in version controlled files
+(defconst hg-tools-grep-command
+  "hg locate --print0 | xargs -0 grep -In %s"
+  "The command used for grepping files using hg. See `hg-tools-grep'.")
+
+(defmacro hg-tools-at-branch-root (dirname &rest code)
+  `(let ((default-directory (locate-dominating-file (expand-file-name ,dirname) ".hg"))) ,@code))
+
+(defun hg-tools-grep (expression dirname)
+  "Search a branch for `expression'. If there's a C-u prefix, prompt for `dirname'."
+  (interactive
+   (let* ((string (read-string "Search for: "))
+          (dir (if (null current-prefix-arg)
+                   default-directory
+                 (read-directory-name (format "Search for %s in: " string)))))
+     (list string dir)))
+  (hg-tools-at-branch-root dirname
+   (grep-find (format hg-tools-grep-command (shell-quote-argument expression)))))

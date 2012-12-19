@@ -486,6 +486,11 @@
              '("\\.py\\'" flymake-pyflakes-init))
 
 (add-hook 'python-mode-hook (lambda ()
+  ;; remove python-mode's ffap things that slow down find-file
+  (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
+  (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist))
+  (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path) ffap-alist))
+
   ;; enable nice electric pairs like in textmate
   (autopair-mode 1)
   (setq autopair-handle-action-fns
