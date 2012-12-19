@@ -18590,6 +18590,6 @@ Runs `jython-mode-hook' after `python-mode-hook'."
   :group 'python-mode
   (py-toggle-shell "jython"))
 
-(unless (featurep 'python) (provide 'python))
+;(unless (featurep 'python) (provide 'python))
 (provide 'python-mode)
 ;; python-mode.el ends here

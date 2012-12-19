@@ -141,7 +141,6 @@
 (global-set-key (kbd "C-x U") 'redo)
 
 ;; better, patched Python mode
-(require 'python)  ;; needed for semantic
 (autoload 'python-mode "python-mode" nil t)
 (autoload 'cython-mode "cython-mode" nil t)
 
