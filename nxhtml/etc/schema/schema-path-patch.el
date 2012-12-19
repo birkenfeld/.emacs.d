@@ -84,8 +84,8 @@
       ;; Test if correct
       (if (string= (buffer-substring-no-properties (point-min) (point-max))
                        loader-string)
-          (message "xhtml-loader.rnc was ok")
-        (message "Patching xhtml-loader.rnc")
+          nil;(message "xhtml-loader.rnc was ok")
+        ;(message "Patching xhtml-loader.rnc")
         (delete-region (point-min) (point-max))
         (insert loader-string))
       (basic-save-buffer)

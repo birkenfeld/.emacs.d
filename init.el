@@ -25,6 +25,16 @@
 
 ;; ---------- Some influential variables ---------------------------------------
 
+;; load package manager and add the alternate package repo
+(when (require 'package nil t)
+  (add-to-list 'package-archives
+               '("marmalade" .
+                 "http://marmalade-repo.org/packages/") t)
+;  (add-to-list 'package-archives
+;               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (package-initialize)
+  )
+
 ;; scroll one line at a time
 (setq scroll-step 1)
 
@@ -476,6 +486,11 @@
              '("\\.py\\'" flymake-pyflakes-init))
 
 (add-hook 'python-mode-hook (lambda ()
+  ;; remove python-mode's ffap things that slow down find-file
+  (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
+  (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist))
+  (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path) ffap-alist))
+
   ;; enable nice electric pairs like in textmate
   (autopair-mode 1)
   (setq autopair-handle-action-fns
@@ -843,6 +858,11 @@ returns the word count of that file."
           (t ;; (zerop n)
            (copy-from-above-command)))))
 
+(defun spellcheck-english ()
+  (interactive)
+  (ispell-change-dictionary "english")
+  (flyspell-mode 1)
+  (flyspell-buffer))
 
 ;; ---------- Extension configuration ------------------------------------------
 
