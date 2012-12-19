@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads (wgrep-setup) "wgrep" "wgrep.el" (20557 34924 0
+;;;### (autoloads (wgrep-setup) "wgrep" "wgrep.el" (20689 26287 0
 ;;;;;;  0))
 ;;; Generated autoloads from wgrep.el
 
@@ -15,7 +15,7 @@ Setup wgrep preparation.
 
 ;;;***
 
-;;;### (autoloads nil nil ("wgrep-pkg.el") (20557 34924 617596 753000))
+;;;### (autoloads nil nil ("wgrep-pkg.el") (20689 26287 433268 92000))
 
 ;;;***
 

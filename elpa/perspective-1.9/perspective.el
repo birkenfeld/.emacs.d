@@ -1,12 +1,12 @@
 ;;; perspective.el --- switch between named "perspectives" of the editor
 
-;; Copyright (C) 2008-2010 Nathan Weizenbaum <nex342@gmail.com>
+;; Copyright (C) 2008-2012 Nathan Weizenbaum <nex342@gmail.com>
 ;;
 ;; Licensed under the same terms as Emacs.
 
 ;; Author: Nathan Weizenbaum
 ;; URL: http://github.com/nex3/perspective-el
-;; Version: 1.7
+;; Version: 1.9
 ;; Created: 2008-03-05
 ;; By: Nathan Weizenbaum
 ;; Keywords: workspace, convenience, frames
@@ -63,20 +63,22 @@ them in Emacs >= 23.2.  In older versions, this is identical to
           (and (= emacs-major-version 23) (< emacs-minor-version 2)))
       `(let ,bindings ,@body)
     (let ((binding-syms (mapcar (lambda (binding) (list (car binding) (gensym))) bindings)))
-      (flet ((setmap (bdgs)
-                     (mapcar (lambda (binding)
-                               (let ((name (car binding)))
-                                 `(when (boundp ',name) (setq ,name ,(cadr binding)))))
-                             bdgs)))
-        `(let ,(mapcar (lambda (binding)
-                         (list (cadr binding)
-                               (let ((name (car binding)))
-                                 `(when (boundp ',name) ,name))))
-                       binding-syms)
-           (unwind-protect
-               (progn ,@(setmap bindings)
-                      ,@body)
-             ,@(setmap binding-syms)))))))
+      ;; Each binding-sym is a pair (ORIGINAL-VALUE . WAS-BOUND).
+      `(let ,(mapcar (lambda (binding)
+                       (list (cadr binding)
+                             (let ((name (car binding)))
+                               `(cons (when (boundp ',name) ,name)
+                                      (boundp ',name)))))
+                     binding-syms)
+         (unwind-protect
+             (progn ,@(mapcar (lambda (binding) `(setq ,(car binding) ,(cadr binding))) bindings)
+                    ,@body)
+           ;; After the body, reset the original value of each binding sym if
+           ;; there was one, unbind it if there wasn't.
+           ,@(mapcar (lambda (binding)
+                       `(if (cdr ,(cadr binding))
+                            (setq ,(car binding) (car ,(cadr binding)))
+                          (makunbound ',(car binding)))) binding-syms))))))
 
 (defstruct (perspective
             (:conc-name persp-)
@@ -119,6 +121,10 @@ Run with the activated perspective active.")
 (define-key persp-mode-map (kbd "C-x x r") 'persp-rename)
 (define-key persp-mode-map (kbd "C-x x a") 'persp-add-buffer)
 (define-key persp-mode-map (kbd "C-x x i") 'persp-import)
+(define-key persp-mode-map (kbd "C-x x n") 'persp-next)
+(define-key persp-mode-map (kbd "C-x x <right>") 'persp-next)
+(define-key persp-mode-map (kbd "C-x x p") 'persp-prev)
+(define-key persp-mode-map (kbd "C-x x <left>") 'persp-prev)
 
 ;; make-variable-frame-local is obsolete according to the docs,
 ;; but I don't want to have to manually munge frame-parameters
@@ -414,6 +420,20 @@ See `persp-switch', `persp-get-quick'."
     (if persp (persp-switch persp)
       (persp-error (concat "No perspective name begins with " (string char))))))
 
+(defun persp-curr-position ()
+  "Retun the index of the current perpsective in `persp-all-names'."
+  (position (persp-name persp-curr) (persp-all-names)))
+
+(defun persp-next ()
+  "Switch to next perspective (to the right)."
+  (interactive)
+  (persp-switch (nth (1+ (persp-curr-position)) (persp-all-names))))
+
+(defun persp-prev ()
+  "Switch to previous perspective (to the left)."
+  (interactive)
+  (persp-switch (nth (1- (persp-curr-position)) (persp-all-names))))
+
 (defun persp-find-some ()
   "Return the name of a valid perspective.
 
@@ -603,17 +623,17 @@ See also `persp-add-buffer'."
   "Preserve the current perspective when entering a recursive edit."
   (persp-protect
     (persp-save)
-    (persp-frame-local-let ((persp-recursive persp-curr)
-                            (old-hash (copy-hash-table perspectives-hash)))
-      ad-do-it
-      ;; We want the buffer lists that were created in the recursive edit,
-      ;; but not the window configurations
-      (maphash (lambda (key new-persp)
-                 (let ((persp (gethash key old-hash)))
-                   (when persp
-                     (setf (persp-buffers persp) (persp-buffers new-persp)))))
-               perspectives-hash)
-      (setq perspectives-hash old-hash))))
+    (persp-frame-local-let ((persp-recursive persp-curr))
+      (let ((old-hash (copy-hash-table perspectives-hash)))
+        ad-do-it
+        ;; We want the buffer lists that were created in the recursive edit,
+        ;; but not the window configurations
+        (maphash (lambda (key new-persp)
+                   (let ((persp (gethash key old-hash)))
+                     (when persp
+                       (setf (persp-buffers persp) (persp-buffers new-persp)))))
+                 perspectives-hash)
+        (setq perspectives-hash old-hash)))))
 
 (defadvice exit-recursive-edit (before persp-restore-after-recursive-edit)
   "Restore the old perspective when exiting a recursive edit."
@@ -636,8 +656,7 @@ named collections of buffers and window configurations."
         (add-hook 'after-make-frame-functions 'persp-init-frame)
         (add-hook 'ido-make-buffer-list-hook 'persp-set-ido-buffers)
         (setq read-buffer-function 'persp-read-buffer)
-
-        (persp-init-frame (selected-frame))
+        (mapcar 'persp-init-frame (frame-list))
         (setf (persp-buffers persp-curr) (buffer-list))
 
         (run-hooks 'persp-mode-hook))
@@ -701,9 +720,18 @@ it. In addition, if one exists already, runs BODY in it immediately."
        (with-perspective ,name ,@body))))
 
 (defun persp-set-ido-buffers ()
-  (setq ido-temp-list
-        (let ((names (remq nil (mapcar 'buffer-name (persp-buffers persp-curr)))))
-          (or (remove-if (lambda (name) (eq (string-to-char name) ? )) names) names))))
+  "Restrict the ido buffer to the current perspective."
+  (let ((persp-names
+         (remq nil (mapcar 'buffer-name (persp-buffers persp-curr))))
+        (indices (make-hash-table :test 'equal)))
+    (loop for elt in ido-temp-list
+          for i upfrom 0
+          do (puthash (copy-sequence elt) i indices))
+    (setq ido-temp-list
+          (let ((length (length ido-temp-list)))
+            (sort persp-names (lambda (a b)
+                                (< (gethash (copy-sequence a) indices length)
+                                   (gethash (copy-sequence b) indices length))))))))
 
 (defun quick-perspective-keys ()
   "Bind quick key commands to switch to perspectives.

@@ -5,7 +5,7 @@
 
 ;;;### (autoloads (smart-operator-self-insert-command smart-operator-mode-on
 ;;;;;;  smart-operator-mode) "smart-operator" "smart-operator.el"
-;;;;;;  (20464 46623 0 0))
+;;;;;;  (20651 65121 0 0))
 ;;; Generated autoloads from smart-operator.el
 
 (autoload 'smart-operator-mode "smart-operator" "\
@@ -25,8 +25,8 @@ Insert the entered operator plus surrounding spaces.
 
 ;;;***
 
-;;;### (autoloads nil nil ("smart-operator-pkg.el") (20464 46623
-;;;;;;  203835 36000))
+;;;### (autoloads nil nil ("smart-operator-pkg.el") (20651 65121
+;;;;;;  383559 992000))
 
 ;;;***
 

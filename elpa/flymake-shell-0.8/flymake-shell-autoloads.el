@@ -4,22 +4,18 @@
 
 
 ;;;### (autoloads (flymake-shell-load) "flymake-shell" "flymake-shell.el"
-;;;;;;  (20464 46190 0 0))
+;;;;;;  (20651 65124 0 0))
 ;;; Generated autoloads from flymake-shell.el
 
 (autoload 'flymake-shell-load "flymake-shell" "\
 Configure flymake mode to check the current buffer's shell-script syntax.
 
-This function is designed to be called in `sh-set-shell-hook'; it
-does not alter flymake's global configuration, so function
-`flymake-mode' alone will not suffice.
-
 \(fn)" t nil)
 
 ;;;***
 
-;;;### (autoloads nil nil ("flymake-shell-pkg.el") (20464 46190 241398
-;;;;;;  776000))
+;;;### (autoloads nil nil ("flymake-shell-pkg.el") (20651 65124 413892
+;;;;;;  727000))
 
 ;;;***
 

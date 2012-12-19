@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (rainbow-mode) "rainbow-mode" "rainbow-mode.el"
-;;;;;;  (20464 46466 0 0))
+;;;;;;  (20689 26288 0 0))
 ;;; Generated autoloads from rainbow-mode.el
 
 (autoload 'rainbow-mode "rainbow-mode" "\
@@ -15,8 +15,8 @@ This will fontify with colors the string like \"#aabbcc\" or \"blue\".
 
 ;;;***
 
-;;;### (autoloads nil nil ("rainbow-mode-pkg.el") (20464 46467 28266
-;;;;;;  88000))
+;;;### (autoloads nil nil ("rainbow-mode-pkg.el") (20689 26288 945395
+;;;;;;  329000))
 
 ;;;***
 
