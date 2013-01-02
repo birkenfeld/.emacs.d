@@ -156,17 +156,6 @@
                 ("\\.pxi$" . cython-mode))
               auto-mode-alist))
 
-(add-hook 'python-mode-hook (lambda ()
-  (require 'highlight-beyond-fill-column)
-  (require 'show-wspace)
-  (highlight-tabs)
-  (font-lock-add-keywords
-   nil '((find-after-fill-column 0 highlight-beyond-fill-column-face prepend)))
-  ;(setup-ropemacs)
-  ;(ac-python-mode-setup)
-  ;(define-key py-mode-map (kbd ".") 'ac-self-insert-and-complete)
-  ))
-
 (defadvice py-newline-and-indent (before strip-trailing-whitespace activate)
   "Strip trailing whitespace before newline."
   (save-excursion
@@ -258,9 +247,6 @@
 (global-set-key (kbd "M-g M-o") 'highlight-symbol-prev-in-function)
 (repeatable-command-advice highlight-symbol-next-in-function)
 (repeatable-command-advice highlight-symbol-prev-in-function)
-
-;; highlight beyond fill column
-(require 'highlight-beyond-fill-column)
 
 ;; full-ack mode
 (autoload 'ack-same "full-ack" nil t)

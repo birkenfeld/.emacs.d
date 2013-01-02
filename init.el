@@ -501,6 +501,10 @@
         (list #'autopair-default-handle-action
               #'autopair-python-triple-quote-action))
 
+  ;; highlight whitespace mistakes
+  (setq whitespace-style '(face trailing tabs lines-tail empty))
+  (require 'whitespace)
+
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)
   ;; enable flymake processing by pyflakes

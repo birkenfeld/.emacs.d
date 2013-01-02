@@ -53,6 +53,7 @@
    `(rst-level-3-face ((,class (:background "grey20"))))
    `(rst-level-4-face ((,class (:background "grey10"))))
    `(rst-level-5-face ((,class (:background "black"))))
+   `(whitespace-tab ((,class (:background "LemonChiffon"))))
    ))
 
 (provide-theme 'tango-dark-enhancements)
