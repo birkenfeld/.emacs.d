@@ -167,6 +167,10 @@
       (skip-chars-backward " \t")
       (delete-region (point) pos))))
 
+;; jedi for python completion
+(autoload 'jedi:setup "jedi" nil t)
+(add-hook 'python-mode-hook 'jedi:setup)
+
 ;; haskell mode
 (load "haskell-site-file" nil t)
 
