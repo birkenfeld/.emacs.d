@@ -24,6 +24,10 @@
 ;; bloated, and not strictly necessary.  So now it lives here, leaving
 ;; the eproject core pristine and minimal.
 
+;;; History:
+
+;; 2012-05-16: `eproject-compile' moved to contrib/eproject-compile.el.
+
 ;;; Code:
 
 (require 'eproject)
@@ -97,6 +101,7 @@ Used by `eproject-find-file'."
   (let ((show (mapcar (lambda (x) (car x)) alist)))
     (cdr (assoc (eproject--do-completing-read prompt show) alist))))
 
+;;;###autoload
 (defun eproject--project-buffers ()
   "Return an alist mapping each project root to its open buffers.
 
@@ -294,16 +299,8 @@ With the prefix arg LOOK-IN-INVISIBLE-BUFFERS looks in buffers that are not curr
              eshell-buffer))))) ;; returns eshell-buf so you can focus
                                 ;; the window if you want
 
-;;;###autoload
-(defun eproject-compile ()
-  "Run `compile-command' in the project root."
-  (interactive)
-  (let ((default-directory (eproject-root)))
-    (call-interactively #'compile)))
-
 (define-key eproject-mode-map (kbd "C-c C-f") #'eproject-find-file)
 (define-key eproject-mode-map (kbd "C-c C-b") #'eproject-ibuffer)
-(define-key eproject-mode-map (kbd "C-c C-k") #'eproject-compile)
 
 (provide 'eproject-extras)
 ;;; eproject-extras.el ends here

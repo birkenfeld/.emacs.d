@@ -23,23 +23,27 @@
 ;; (require 'eproject)
 ;; (require 'eproject-anything)
 ;; (global-set-key (kbd "s-L") 'anything-eproject-files)
-;; (global-set-key (kbd "s-b") 'anything-for-buffers)
+;; (global-set-key (kbd "s-b") 'anything-eproject-buffers)
 
 ;;; Code:
 ;;
+
+(declare-function anything "anything")
+
+;;;###autoload
 (defvar anything-c-source-eproject-files
   '((name . "Files in eProject")
     (init . (lambda () (if (buffer-file-name)
                            (setq anything-eproject-root-dir
                                  (eproject-maybe-turn-on))
-                         (setq anything-eproject-root-dir 'nil)
-                         )))
+                         (setq anything-eproject-root-dir 'nil))))
     (candidates . (lambda () (if anything-eproject-root-dir
                                  (eproject-list-project-files
                                   anything-eproject-root-dir))))
     (type . file))
   "Search for files in the current eProject.")
 
+;;;###autoload
 (defvar anything-c-source-eproject-buffers
   '((name . "Buffers in this eProject")
     (init . (lambda () (if (buffer-file-name)
@@ -55,6 +59,7 @@
     (type . buffer))
   "Search for buffers in this project.")
 
+;;;###autoload
 (defun anything-eproject-files ()
   "Preconfigured `anything' for searching files inside current eproject."
   (interactive)
@@ -63,7 +68,8 @@
         anything-samewindow)
     (anything nil nil nil nil nil "eproject")))
 
-(defun anything-for-buffers ()
+;;;###autoload
+(defun anything-eproject-buffers ()
   "Preconfigured `anything' for opening buffers. Searches for
 buffers in the current project, then other buffers, also gives
 option of recentf. Replaces switch-to-buffer."

@@ -103,6 +103,7 @@
 (require 'eproject)
 (require 'eproject-extras)
 (require 'eproject-gb)
+(require 'eproject-compile)
 
 (global-set-key (kbd "C-c p f") 'eproject-find-file)
 (global-set-key (kbd "C-c p a") 'eproject-ack)
@@ -145,7 +146,9 @@
 (global-set-key (kbd "C-x U") 'redo)
 
 ;; better, patched Python mode
-(autoload 'python-mode "python-mode" nil t)
+(require 'python)  ;; load first, so that python-mode overrides it
+(require 'python-mode)
+
 (autoload 'cython-mode "cython-mode" nil t)
 
 (defun py-backward-kill-nomenclature (arg)
