@@ -504,6 +504,7 @@
   ;; highlight whitespace mistakes
   (setq whitespace-style '(face trailing tabs lines-tail empty))
   (require 'whitespace)
+  (whitespace-mode 1)
 
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)

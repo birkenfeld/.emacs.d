@@ -129,6 +129,10 @@
 (require 'auto-complete-config)
 (ac-config-default)
 
+;; highlight newly-inserted text etc
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
+
 ;; ---------- autoloaded -------------------------------------------------------
 
 ;; mcstas
