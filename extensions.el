@@ -63,9 +63,6 @@
 ;(tabbar-mode 1)
 ;(tabbar-mwheel-mode 1)
 
-;; replace recent character
-(require 'rrc)
-
 ;; winpoint (remember point location by window)
 (require 'winpoint)
 (window-point-remember-mode 1)

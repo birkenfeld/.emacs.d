@@ -52,7 +52,7 @@
 	 (new-compile-history (list ())))
      (if potential-compiles
 	 (mapcar
-	  '(lambda (c)
+	  #'(lambda (c)
 	     (format "cd %s && %s" (eproject-root) c))
 	  potential-compiles)
        (list (format "cd %s && make -k" (eproject-root)))))))
