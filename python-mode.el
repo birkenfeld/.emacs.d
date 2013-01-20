@@ -71,7 +71,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.1.0+")
+(defconst py-version "6.1.1")
 
 ;;; Customization
 (defcustom python-mode-modeline-display "Py"
@@ -156,6 +156,37 @@ See also `py-indent-no-completion-p'"
 
 See also `py-no-completion-calls-dabbrev-expand-p'"
   :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-set-fill-column-p nil
+  "If python-mode should set fill-column
+
+according values in `py-comment-fill-column' and `py-docstring-fill-column'.
+Default is  nil"
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-autofill-timer-delay 1
+  "Delay when idle before functions ajusting  `py-docstring-fill-column' resp. `py-comment-fill-column' are called. "
+  :type 'integer
+
+  :group 'python-mode)
+
+(defcustom py-docstring-fill-column 72
+  "Value of `fill-column' to use when filling a docstring.
+Any non-integer value means do not use a different value of
+`fill-column' when filling docstrings."
+  :type '(choice (integer)
+                 (const :tag "Use the current `fill-column'" t))
+  :group 'python-mode)
+
+(defcustom py-comment-fill-column 79
+  "Value of `fill-column' to use when filling a comment.
+Any non-integer value means do not use a different value of
+`fill-column' when filling docstrings."
+  :type '(choice (integer)
+                 (const :tag "Use the current `fill-column'" t))
   :group 'python-mode)
 
 (defcustom py-fontify-shell-buffer-p nil
@@ -894,15 +925,6 @@ Making switch between several virtualenv's easier,
   :type 'string
   :group 'python-mode)
 
-(defcustom py-underscore-word-syntax-p t
-  "If underscore chars should be of syntax-class `word', not of `symbol'.
-
-Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
-
-See bug report at launchpad, lp:940812 "
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-edit-only-p nil
   "When `t' `python-mode' will not take resort nor check for installed Python executables. Default is nil.
 
@@ -929,6 +951,13 @@ v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeErr
 
 Also commands may delete trailing whitespace by the way.
 When editing other peoples code, this may produce a larger diff than expected "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-newline-delete-trailing-whitespace-p t
+  "Delete trailing whitespace maybe left by `py-newline-and-indent'.
+
+Default is `t'. See lp:1100892 "
   :type 'boolean
   :group 'python-mode)
 
@@ -1197,6 +1226,13 @@ SYMMETRIC:
   :group 'python-mode)
 (defvar py-exception-name-face 'py-exception-name-face)
 
+(defvar py-underscore-word-syntax-p t
+  "This is set later by defcustom, only initial value here.
+
+If underscore chars should be of syntax-class `word', not of `symbol'.
+Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
+See also command `toggle-py-underscore-word-syntax-p' ")
+
 (defvar python-mode-message-string "python-mode.el"
   "Reports the python-mode branch in use.")
 
@@ -1333,9 +1369,12 @@ When this-command is py-beginning-of-FORM-bol, last-command's indent will be con
         (modify-syntax-entry ?\n ">" table)
         (modify-syntax-entry ?' "\"" table)
         (modify-syntax-entry ?` "$" table)
-        (when py-underscore-word-syntax-p
-          (modify-syntax-entry ?_ "w" table))
+        (modify-syntax-entry ?\_ "w" table)
         table))
+
+(if py-underscore-word-syntax-p
+    (modify-syntax-entry ?\_ "w" python-mode-syntax-table)
+  (modify-syntax-entry ?\_ "_" python-mode-syntax-table))
 
 (defvar py-dotty-syntax-table
   (let ((table (make-syntax-table python-mode-syntax-table)))
@@ -1621,7 +1660,9 @@ alternative for finding the index.")
 (defvar py-menu)
 
 (defvar py-already-guessed-indent-offset nil
-  "Internal use by py-indent-line, use the guess already computed. ")
+  "Internal use by py-indent-line.
+
+When `this-command' is `eq' to `last-command', use the guess already computed. ")
 (make-variable-buffer-local 'py-already-guessed-indent-offset)
 
 (defvar skeleton-further-elements)
@@ -1647,6 +1688,10 @@ alternative for finding the index.")
 (defvar virtualenv-name nil)
 
 (defvar py-imports nil)
+
+(defvar highlight-indentation nil
+  "Menu  PyEdit fails when not bound")
+(make-variable-buffer-local 'highlight-indentation)
 
 ;;(eval-when-compile (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
 
@@ -1767,7 +1812,54 @@ Includes def and class. ")
      (and (eq (char-before (point)) ?\\ )
           (py-escaped))))
 
-;;; Minor mode switches
+;;; Toggle
+;; py-underscore-word-syntax-p forms
+(defun toggle-py-underscore-word-syntax-p (&optional arg)
+  "If `py-underscore-word-syntax-p' should be on or off.
+
+  Returns value of `py-underscore-word-syntax-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-underscore-word-syntax-p -1 1))))
+    (if (< 0 arg)
+        (progn
+          (setq py-underscore-word-syntax-p t)
+          (modify-syntax-entry ?\_ "w" python-mode-syntax-table))
+      (setq py-underscore-word-syntax-p nil)
+      (modify-syntax-entry ?\_ "_" python-mode-syntax-table))
+    (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+    py-underscore-word-syntax-p))
+
+(defun py-underscore-word-syntax-p-on (&optional arg)
+  "Make sure, py-underscore-word-syntax-p' is on.
+
+Returns value of `py-underscore-word-syntax-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-underscore-word-syntax-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+  py-underscore-word-syntax-p)
+
+(defun py-underscore-word-syntax-p-off ()
+  "Make sure, `py-underscore-word-syntax-p' is off.
+
+Returns value of `py-underscore-word-syntax-p'. "
+  (interactive)
+  (toggle-py-underscore-word-syntax-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+  py-underscore-word-syntax-p)
+
+(defcustom py-underscore-word-syntax-p t
+  "If underscore chars should be of syntax-class `word', not of `symbol'.
+
+Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
+
+See bug report at launchpad, lp:940812 "
+  :type 'boolean
+  :group 'python-mode
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (toggle-py-underscore-word-syntax-p (if value 1 0))))
+
 ;; py-electric-comment-p forms
 (defun toggle-py-electric-comment-p (&optional arg)
   "If `py-electric-comment-p' should be on or off.
@@ -2484,24 +2576,6 @@ for options to pass to the DOCNAME interpreter. \"
        (setq zmacs-region-stays t)))
 
 ;;; Helper commands
-(defun py-update-imports ()
-  "Returns `python-imports'.
-
-Imports done are displayed in message buffer. "
-  (interactive)
-  (save-excursion
-    (let ((oldbuf (current-buffer))
-          (orig (point))
-          erg)
-      (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t))
-      (setq erg (car (read-from-string python-imports)))
-      (set-buffer oldbuf)
-      (goto-char orig)
-      (when (interactive-p)
-        (switch-to-buffer (current-buffer))
-        (message "%s" erg))
-      erg)))
-
 (defun py-guess-pdb-path ()
   "If py-pdb-path isn't set, find location of pdb.py. "
   (interactive)
@@ -3605,63 +3679,72 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
              (delete-horizontal-space)
              (indent-to need))))))
 
+(defun py-indent-fix-region-intern ()
+  "Used when `py-tab-indents-region-p' is non-nil. "
+  (save-excursion
+    (save-restriction
+      (beginning-of-line)
+      (narrow-to-region (region-beginning) (region-end))
+      (forward-line 1)
+      (narrow-to-region (line-beginning-position) (region-end))
+      (py-indent-region (point-min) (point-max)))))
+
 (defun py-indent-line-intern (need cui)
   (if py-tab-indent
-      (cond ((eq need cui)
-             (if (eq this-command last-command)
-                 (if (and py-tab-shifts-region-p (use-region-p))
-                     (progn
-                       (when (eq (point) (region-end))
-                         (exchange-point-and-mark))
+      (progn
+        (and py-tab-indents-region-p (use-region-p)
+             (py-indent-fix-region-intern))
+        (cond ((eq need cui)
+               (if (eq this-command last-command)
+                   (if (and py-tab-shifts-region-p (use-region-p))
                        (while (< 0 (current-indentation))
-                         (py-shift-region-left 1)))
-                   (beginning-of-line)
-                   (delete-horizontal-space)
-                   (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                       (forward-char (- col cui))
-                     (beginning-of-line)))
-               (when (and py-tab-indents-region-p (use-region-p))
-                 (save-excursion
-                   (save-restriction
-                     (narrow-to-region (region-beginning) (region-end))
-                     (forward-line 1)
-                     (narrow-to-region (line-beginning-position) (region-end))
-                     (py-indent-region (point-min) (point-max)))))))
-            ((< cui need)
-             (if (eq this-command last-command)
-                 (if (and py-tab-shifts-region-p (use-region-p))
-                     (progn
-                       (when (eq (point) (region-end))
-                         (exchange-point-and-mark))
-                       (py-shift-region-right 1))
-                   (progn
+                         (py-shift-region-left 1))
                      (beginning-of-line)
                      (delete-horizontal-space)
-                     (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
-                     (forward-char (- col cui))))
+                     (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                         (forward-char (- col cui))
+                       (beginning-of-line))
+                     )))
+              ((< cui need)
+               (if (eq this-command last-command)
+                   (if (and py-tab-shifts-region-p (use-region-p))
+                       (progn
+                         (py-shift-region-right 1))
+                     (progn
+                       (beginning-of-line)
+                       (delete-horizontal-space)
+                       (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
+                       (forward-char (- col cui))))
+                 (if (and py-tab-shifts-region-p (use-region-p))
+                     (while (< (current-indentation) need)
+                       (py-shift-region-right 1))
+                   (beginning-of-line)
+                   (delete-horizontal-space)
+                   (indent-to need)
+                   (forward-char (- col cui)))))
+              ((< need cui)
                (if (and py-tab-shifts-region-p (use-region-p))
                    (progn
                      (when (eq (point) (region-end))
                        (exchange-point-and-mark))
+                     (while (< 0 (current-indentation))
+                       (py-shift-region-left 1)))
+                 (beginning-of-line)
+                 (delete-horizontal-space)))
+              (t
+               (if (and py-tab-shifts-region-p (use-region-p))
+                   (progn
+                     ;; (when (eq (point) (region-end))
+                     ;; (exchange-point-and-mark))
                      (while (< (current-indentation) need)
                        (py-shift-region-right 1)))
                  (beginning-of-line)
                  (delete-horizontal-space)
                  (indent-to need)
-                 (forward-char (- col cui)))))
-            (t
-             (if (and py-tab-shifts-region-p (use-region-p))
-                 (progn
-                   (when (eq (point) (region-end))
-                     (exchange-point-and-mark))
-                   (while (< (current-indentation) need)
-                     (py-shift-region-right 1)))
-               (beginning-of-line)
-               (delete-horizontal-space)
-               (indent-to need)
-               (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                   (forward-char (- col cui))
-                 (beginning-of-line)))))
+                 (back-to-indentation)
+                 (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                     (forward-char (- col cui))
+                   (beginning-of-line))))))
     (insert-tab)))
 
 (defun py-indent-line (&optional arg recursive)
@@ -3685,37 +3768,36 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 
 Optional arg RECURSIVE is ignored presently. "
   (interactive "P")
-  (save-excursion
-    (when (and (use-region-p) (or py-tab-shifts-region-p
-                                  py-tab-indents-region-p)
-               (eq (point) (region-end))
-               (exchange-point-and-mark)))
-    (let ((cui (current-indentation))
-          (col (current-column))
-          (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
-                                     (py-guess-indent-offset))
-                                    ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
-                                     py-already-guessed-indent-offset)
-                                    (t (default-value 'py-indent-offset))))
-          (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
-                    ;; if previous command was an indent
-                    ;; already, position reached might
-                    ;; produce false guesses
-                    (py-compute-indentation (point) nil nil nil nil nil py-already-guessed-indent-offset)
-                  (py-compute-indentation))))
-      ;; (setq py-indent-offset)
-      (unless (eq this-command last-command)
-        (setq py-already-guessed-indent-offset this-indent-offset))
-      (cond ((eq 4 (prefix-numeric-value arg))
-             (beginning-of-line)
-             (delete-horizontal-space)
-             (indent-to (+ need py-indent-offset)))
-            ((not (eq 1 (prefix-numeric-value arg)))
-             (py-smart-indentation-off)
-             (py-indent-line-intern need cui))
-            (t (py-indent-line-intern need cui))))
-    (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
-    (current-indentation)))
+  (when (and (use-region-p) (or py-tab-shifts-region-p
+                                py-tab-indents-region-p)
+             (eq (point) (region-end))
+             (exchange-point-and-mark)))
+  (let ((cui (current-indentation))
+        (col (current-column))
+        (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
+                                   (py-guess-indent-offset))
+                                  ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
+                                   py-already-guessed-indent-offset)
+                                  (t (default-value 'py-indent-offset))))
+        (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
+                  ;; if previous command was an indent
+                  ;; already, position reached might
+                  ;; produce false guesses
+                  (py-compute-indentation (point) nil nil nil nil nil py-already-guessed-indent-offset)
+                (py-compute-indentation))))
+    ;; (setq py-indent-offset)
+    (unless (eq this-command last-command)
+      (setq py-already-guessed-indent-offset this-indent-offset))
+    (cond ((eq 4 (prefix-numeric-value arg))
+           (beginning-of-line)
+           (delete-horizontal-space)
+           (indent-to (+ need py-indent-offset)))
+          ((not (eq 1 (prefix-numeric-value arg)))
+           (py-smart-indentation-off)
+           (py-indent-line-intern need cui))
+          (t (py-indent-line-intern need cui))))
+  (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
+  (current-indentation))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
@@ -3744,6 +3826,11 @@ When indent is set back manually, this is honoured in following lines. "
                           (parse-partial-sexp (point-min) (point))
                         (syntax-ppss))))
       (delete-region (match-beginning 0) (match-end 0)))
+    (save-excursion
+      (and py-newline-delete-trailing-whitespace-p
+           (goto-char orig)
+           (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+           (delete-region (point) (line-end-position))))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
@@ -6639,12 +6726,20 @@ http://docs.python.org/reference/compound_stmts.html"
     erg))
 
 (defun py-up (&optional indent)
-  "Go to beginning one level above of compound statement or definition at point.
+  "Go up or to beginning of form if inside.
+
+If inside a delimited form --string or list-- go to it's beginning.
+If not at beginning of a statement or block, go to it's beginning.
+If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
-  (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) t))
+  (let ((pps (syntax-ppss)))
+    (cond ((nth 8 pps) (goto-char (nth 8 pps)))
+          ((nth 1 pps) (goto-char (nth 1 pps)))
+          ((py-beginning-of-statement-p) (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) t))
+          (t (py-beginning-of-statement)))))
 
 (defun py-down (&optional indent)
 
@@ -6656,9 +6751,26 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
   (let* ((orig (point))
-         (erg (py-end-base 'py-extended-block-or-clause-re orig)))
-    (when (< orig (point))
-      (setq erg (py-beginning-of-block-or-clause)))
+         erg
+         (indent (if
+                     (py-beginning-of-statement-p)
+                     (current-indentation)
+                   (progn
+                     (py-beginning-of-statement)
+                     (current-indentation)))))
+    (while (and (setq last (point)) (py-end-of-statement) (py-end-of-statement) (py-beginning-of-statement) (eq (current-indentation) indent)))
+    (if (< indent (current-indentation))
+        (setq erg (point))
+      (goto-char last))
+    (when (< (point) orig)
+      (goto-char orig))
+    (when (and (eq (point) orig)
+               (progn (forward-char 1)
+                      (skip-chars-forward "^\"'[({" (line-end-position))
+                      (member (char-after) (list ?\( ?\" ?\' ?\[ ?\{)))
+               (setq erg (point))))
+    (unless erg
+      (goto-char orig))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -9777,9 +9889,9 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defun py-find-imports ()
-  "Find top-level imports, updating `py-imports'.
+  "Find top-level imports.
 
-Returns py-imports"
+Returns imports "
   (interactive)
   (let (imports)
     (save-excursion
@@ -9794,8 +9906,9 @@ Returns py-imports"
                (replace-regexp-in-string
                 "[\\]\r?\n?\s*" ""
                 (buffer-substring-no-properties (match-beginning 0) (point))) ";"))))
+    (and imports
+         (setq imports (replace-regexp-in-string ";$" "" imports)))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
-    (setq py-imports imports)
     imports))
 
 (defun py-eldoc-function ()
@@ -11672,6 +11785,7 @@ Used only, if `py-install-directory' is empty. "
         (define-key map [(backspace)] 'py-electric-backspace)
         (define-key map [(control backspace)] 'py-hungry-delete-backwards)
         (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+        ;; (define-key map [(control y)] 'py-electric-yank)
         ;; moving point
         (define-key map [(control c)(control p)] 'py-beginning-of-statement)
         (define-key map [(control c)(control n)] 'py-end-of-statement)
@@ -11729,6 +11843,11 @@ Used only, if `py-install-directory' is empty. "
         ;;   (define-key map [(esc) (tab)] 'py-shell-complete))
         (substitute-key-definition 'complete-symbol 'completion-at-point
                                    map global-map)
+        (substitute-key-definition 'backward-up-list 'py-up
+                                   map global-map)
+        (substitute-key-definition 'down-list 'py-down
+                                   map global-map)
+
         (easy-menu-define py-menu map "Python Tools"
           `("PyTools"
             :help "Python mode tools"
@@ -11861,113 +11980,104 @@ Run pdb under GUD"]
 
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
+             ("Underscore word syntax"
+              :help "Toggle `py-underscore-word-syntax-p'"
 
-             ("Use current dir when execute"
-              :help "Toggle `py-use-current-dir-when-execute-p'"
+              ["Toggle underscore word syntax" toggle-py-underscore-word-syntax-p
+               :help " `toggle-py-underscore-word-syntax-p'
 
-              ["Toggle use-current-dir-when-execute-p" toggle-py-use-current-dir-when-execute-p
-               :help " `toggle-py-use-current-dir-when-execute-p'
+If `py-underscore-word-syntax-p' should be on or off\.
 
-If `py-use-current-dir-when-execute-p' should be on or off\.
+  Returns value of `py-underscore-word-syntax-p' switched to\. . "]
 
-  Returns value of `py-use-current-dir-when-execute-p' switched to\. . "]
+              ["Underscore word syntax on" py-underscore-word-syntax-p-on
+               :help " `py-underscore-word-syntax-p-on'
 
-              ["use-current-dir-when-execute-p on" py-use-current-dir-when-execute-p-on
-               :help " `py-use-current-dir-when-execute-p-on'
+Make sure, py-underscore-word-syntax-p' is on\.
 
-Make sure, py-use-current-dir-when-execute-p' is on\.
+Returns value of `py-underscore-word-syntax-p'\. . "]
 
-Returns value of `py-use-current-dir-when-execute-p'\. . "]
+              ["Underscore word syntax off" py-underscore-word-syntax-p-off
+               :help " `py-underscore-word-syntax-p-off'
 
-              ["use-current-dir-when-execute-p off" py-use-current-dir-when-execute-p-off
-               :help " `py-use-current-dir-when-execute-p-off'
+Make sure, `py-underscore-word-syntax-p' is off\.
 
-Make sure, `py-use-current-dir-when-execute-p' is off\.
-
-Returns value of `py-use-current-dir-when-execute-p'\. . "]
-
-              )
-
-             ("Jump on exception"
-              :help "Toggle `py-jump-on-exception'"
-
-              ["Toggle jump on exception" toggle-py-jump-on-exception
-               :help " `toggle-py-jump-on-exception'
-
- If `py-jump-on-exception' should be on or off\.
-
- Returns value of `py-jump-on-exception' switched to\. . "]
-
-              ["Jump on exception on" py-jump-on-exception-on
-               :help " `py-jump-on-exception-on'
-
-Make sure, py-jump-on-exception' is on\.
-
-Returns value of `py-jump-on-exception'\. . "]
-
-              ["Jump on exception off" py-jump-on-exception-off
-               :help " `py-jump-on-exception-off'
-
-Make sure, `py-jump-on-exception' is off\.
-
-Returns value of `py-jump-on-exception'\. . "]
-              )
-
-             ("py-switch-buffers-on-execute-p"
-              :help "Toggle  `py-switch-buffers-on-execute-p'"
-
-              ["Toggle py-switch-buffers-on-execute-p" toggle-py-switch-buffers-on-execute-p
-               :help "M-x `py-switch-buffers-on-execute-p' switches this minor mode "]
-
-              ["py-switch-buffers-on-execute-p on" py-switch-buffers-on-execute-p-on
-               :help "M-x `py-switch-buffers-on-execute-p-on' switches this minor mode on "]
-
-              ["py-switch-buffers-on-execute-p off" py-switch-buffers-on-execute-p-off
-               :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "]
+Returns value of `py-underscore-word-syntax-p'\. . "]
 
               )
 
-             ("py-split-windows-on-execute-p"
-              :help "Toggle  `py-split-windows-on-execute-p'"
+             ["Tab shifts region "
+              (setq py-tab-shifts-region-p
+                    (not py-tab-shifts-region-p))
+              :help "If `t', TAB will indent/cycle the region, not just the current line\.
 
-              ["Toggle py-split-windows-on-execute-p" toggle-py-split-windows-on-execute-p
-               :help "M-x `py-split-windows-on-execute-p' splites this minor mode "]
+Default is  nil
+See also `py-tab-indents-region-p'"
+              :style toggle :selected py-tab-shifts-region-p]
 
-              ["py-split-windows-on-execute-p on" py-split-windows-on-execute-p-on
-               :help "M-x `py-split-windows-on-execute-p-on' splites this minor mode on "]
+             ["Tab indents region "
+              (setq py-tab-indents-region-p
+                    (not py-tab-indents-region-p))
+              :help "When `t' and first TAB doesn't shift, indent-region is called\.
 
-              ["py-split-windows-on-execute-p off" py-split-windows-on-execute-p-off
-               :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "]
+Default is  nil
+See also `py-tab-shifts-region-p'"
+              :style toggle :selected py-tab-indents-region-p]
 
-              )
+             ["Auto-fill mode"
+              (setq py-set-fill-column-p
+                    (not py-set-fill-column-p))
+              :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column' "
+              :style toggle :selected py-set-fill-column-p]
 
-             ("Python-mode v5 behavior"
-              :help "Toggle  `python-mode-v5-behavior-p'"
+             ["Use current dir when execute"
+              (setq py-use-current-dir-when-execute-p
+                    (not py-use-current-dir-when-execute-p))
+              :help " `toggle-py-use-current-dir-when-execute-p'"
+              :style toggle :selected py-use-current-dir-when-execute-p]
 
-              ["Toggle python-mode-v5-behavior-p" toggle-python-mode-v5-behavior-p
-               :help "Switch boolean `python-mode-v5-behavior-p'."]
+             ["Jump on exception"
+              (setq  py-jump-on-exception
+                     (not py-jump-on-exception))
+              :help "Jump to innermost exception frame in Python output buffer\.
+When this variable is non-nil and an exception occurs when running
+Python code synchronously in a subprocess, jump immediately to the
+source code of the innermost traceback frame\."
+              :style toggle :selected py-jump-on-exception]
 
-              ["Switch python-mode-v5-behavior-p ON" python-mode-v5-behavior-p-on
-               :help "Switch `python-mode-v5-behavior-p' ON. "]
+             ["Switch buffers on execute"
+              (setq  py-switch-buffers-on-execute-p
+                     (not py-switch-buffers-on-execute-p))
+              :help "When non-nil switch to the Python output buffer\. "
+              :style toggle :selected py-switch-buffers-on-execute-p]
 
-              ["Switch python-mode-v5-behavior-p OFF" python-mode-v5-behavior-p-off
-               :help "Switch `python-mode-v5-behavior-p-p' OFF. "]
+             ["Split windows on execute"
+              (setq  py-split-windows-on-execute-p
+                     (not py-split-windows-on-execute-p))
+              :help "When non-nil split windows\. "
+              :style toggle :selected py-split-windows-on-execute-p]
 
-              )
+             ["Python mode v5 behavior"
+              (setq  python-mode-v5-behavior-p
+                     (not python-mode-v5-behavior-p))
+              :help "Execute region through `shell-command-on-region' as
+v5 did it - lp:990079\. This might fail with certain chars - see UnicodeEncodeError lp:550661"
+              :style toggle :selected python-mode-v5-behavior-p]
 
-             ("Highlight indentation"
-              :help "Toggle  `highlight-indentation'"
+             ["Highlight indentation"
+              (setq highlight-indentation
+                    (not highlight-indentation))
+              :help "Toggle highlight indentation\.
+Optional argument INDENT-WIDTH specifies which indentation
+level (spaces only) should be highlighted, if omitted
+indent-width will be guessed from current major-mode"
+              :style toggle :selected highlight-indentation]
 
-              ["Toggle highlight-indentation" py-toggle-highlight-indentation
-               :help "M-x `highlight-indentation' switches this minor mode "]
-
-              ["Highlight-indentation on" highlight-indentation-on
-               :help "M-x `highlight-indentation-on' switches this minor mode on "]
-
-              ["Highlight-indentation off" highlight-indentation-off
-               :help "M-x `highlight-indentation-off' switches this minor mode off "]
-
-              )
+             ["indent-tabs-mode"
+              (setq indent-tabs-mode
+                    (not indent-tabs-mode))
+              :help "Indentation can insert tabs if this is non-nil\."
+              :style toggle :selected indent-tabs-mode]
 
              ("Autopair"
               :help "Toggle autopair-mode'"
@@ -11991,57 +12101,17 @@ Returns value of `py-jump-on-exception'\. . "]
 
               )
 
-             ("Smart operator"
-              :help "Toggle py-smart-operator'"
+             ["Smart operator mode "
+              (setq py-smart-operator-mode-p
+                    (not py-smart-operator-mode-p))
+              :help "Toggle `py-smart-operator-mode-p'"
+              :style toggle :selected py-smart-operator-mode-p             ]
 
-              ["Toggle py-smart-operator" py-toggle-smart-operator
-               :help "Toggles py-smart-operator minor-mode"]
-
-              ["Py-smart-operator off" py-smart-operator-mode-off
-               :help "Switches py-smart-operator minor-mode off "]
-
-              ["Py-smart-operator on" py-smart-operator-mode-on
-               :help "Switches py-smart-operator minor-mode on "]
-
-              )
-
-             ("indent-tabs-mode"
-              :help "Toggle indent-tabs-mode'"
-
-              ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
-               :help "See also `py-indent-tabs-mode-on', `-off' "]
-
-              ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
-               :help "`py-indent-tabs-mode-on'"]
-
-              ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
-               :help "`py-indent-tabs-mode-off'"])
-
-             ("Electric comment"
-              :help "Toggle `py-electric-comment-p'"
-
-              ["Toggle electric comment" toggle-py-electric-comment-p
-               :help " `toggle-py-electric-comment-p'
-
-If `py-electric-comment-p' should be on or off\.
-
-  Returns value of `py-electric-comment-p' switched to\. . "]
-
-              ["Electric comment on" py-electric-comment-p-on
-               :help " `py-electric-comment-p-on'
-
-Make sure, py-electric-comment-p' is on\.
-
-Returns value of `py-electric-comment-p'\. . "]
-
-              ["Electric comment off" py-electric-comment-p-off
-               :help " `py-electric-comment-p-off'
-
-Make sure, `py-electric-comment-p' is off\.
-
-Returns value of `py-electric-comment-p'\. . "]
-
-              )
+             ["Electric comment "
+              (setq py-electric-comment-p
+                    (not py-electric-comment-p))
+              :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\. "
+              :style toggle :selected py-electric-comment-p]
 
              )
 
@@ -12086,9 +12156,6 @@ Try to find source definition of function at point"]
              :help "`py-switch-imenu-index-function'
 Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."]
 
-            ["Update imports" py-update-imports
-             :help "`py-update-imports'
-Update list of top-level imports for completion"]
             "-"
             ))
         ;; Menu py-execute forms
@@ -12196,6 +12263,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
              ["py-execute-statement-bpython-dedicated" py-execute-statement-bpython-dedicated
               :help "Execute statement through a unique Bpython interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
+
              ("Ignoring defaults ... "
               :help "Commands will ignore default setting of
 `py-switch-buffers-on-execute-p' and `py-split-windows-on-execute-p'"            ;; switch
@@ -13151,6 +13219,113 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
         (easy-menu-define py-menu map "Python Mode Commands"
           `("PyEdit"
             :help "Python-specific features"
+            ["Comment Out Region"   py-comment-region (point) (mark)
+             :help "Like `comment-region' but uses double hash (`#') comment starter." ]
+            ["Uncomment Region"     (py-comment-region (point) (mark) '(4))
+             :help "(py-comment-region (point) (mark) '(4))" ]
+
+            ("Comment ... "
+             :help "Comment forms"
+
+             ["Beginning of comment" py-beginning-of-comment
+              :help " `py-beginning-of-comment'
+Go to beginning of comment at point. "]
+
+             ["End of comment" py-end-of-comment
+              :help " `py-end-of-comment'
+
+Go to end of comment at point. "]
+
+             ["Uncomment" py-uncomment
+              :help " `py-uncomment'
+
+Uncomment lines at point\.
+
+If region is active, restrict uncommenting at region . "]
+
+             ["Comment block" py-comment-block
+              :help " `py-comment-block'
+Comments block at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
+             ["Comment clause" py-comment-clause
+              :help " `py-comment-clause'
+Comments clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
+             ["Comment block or clause" py-comment-block-or-clause
+              :help " `py-comment-block-or-clause'
+Comments block-or-clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
+             ["Comment def" py-comment-def
+              :help " `py-comment-def'
+Comments def at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
+             ["Comment class" py-comment-class
+              :help " `py-comment-class'
+Comments class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
+             ["Comment def or class" py-comment-def-or-class
+              :help " `py-comment-def-or-class'
+Comments def-or-class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
+             ["Comment statement" py-comment-statement
+              :help " `py-comment-statement'
+Comments statement at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
+             )
+
+            ("Mark ... "
+             ["Mark statement" py-mark-statement
+              :help "`py-mark-statement'
+Mark statement at point"]
+
+             ["Mark clause" py-mark-clause
+              :help "`py-mark-clause'
+Mark innermost compound statement at point"]
+
+             ["Mark def" py-mark-def
+              :help "`py-mark-def'
+Mark innermost definition at point"]
+             ["Mark expression" py-mark-expression
+              :help "`py-mark-expression'
+Mark expression at point"]
+             ["Mark partial expression" py-mark-partial-expression
+              :help "`py-mark-partial-expression'
+\".\" operators delimit a partial-expression expression on it's level"]
+             ["Mark class" py-mark-class
+              :help "`py-mark-class'
+Mark innermost definition at point"]
+
+             ["Mark Def-or-Class" py-mark-def-or-class
+              :help "`py-mark-def-or-class'
+Mark innermost definition at point"]
+
+             ["Mark comment" py-mark-comment
+              :help "`py-mark-comment'
+Mark commented section at point"]
+
+             )
+
             ("Copy ... "
              ["Copy statement" py-copy-statement
               :help "`py-copy-statement'
@@ -13354,8 +13529,18 @@ Shift block right. "]
               :help "`py-shift-block-left'
 Shift block left. "]
 
+             ["Comment block" py-comment-block
+              :help " `py-comment-block'
+
+Comments block at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
+
             ("Def-or-class ... "
+
              ["Beginning of Def-or-Class" py-beginning-of-def-or-class
               :help "`py-beginning-of-def-or-class'
 Go to start of innermost definition at point"]
@@ -13397,6 +13582,14 @@ Shift def-or-class right. "]
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
 Shift def-or-class left. "]
+
+             ["Comment def or class" py-comment-def-or-class
+              :help " `py-comment-def-or-class'
+
+Comments def-or-class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
 
              )
 
@@ -13443,9 +13636,18 @@ Shift clause right. "]
               :help "`py-shift-clause-left'
 Shift clause left. "]
 
+             ["Comment clause" py-comment-clause
+              :help " `py-comment-clause'
+
+Comments clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
 
             ("Statement ... "
+
              ["Beginning of Statement" py-beginning-of-statement
               :help "`py-beginning-of-statement'
 Go to start of innermost definition at point"]
@@ -13473,6 +13675,14 @@ Shift statement right. "]
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
 Shift statement left. "]
+
+             ["Comment statement" py-comment-statement
+              :help " `py-comment-statement'
+
+Comments statement at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
 
              )
 
@@ -13548,6 +13758,7 @@ Delete partial-expression at point, don't store deleted string in kill-ring"]
              )
 
             ("Class ... "
+
              ["Beginning of Class" py-beginning-of-class
               :help "`py-beginning-of-class'
 Go to start of innermost definition at point"]
@@ -13590,9 +13801,18 @@ Shift class right. "]
               :help "`py-shift-class-left'
 Shift class left. "]
 
+             ["Comment class" py-comment-class
+              :help " `py-comment-class'
+
+Comments class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
 
             ("Def ... "
+
              ["Beginning of Def" py-beginning-of-def
               :help "`py-beginning-of-def'
 Go to start of innermost definition at point"]
@@ -13635,9 +13855,19 @@ Shift def right. "]
               :help "`py-shift-def-left'
 Shift def left. "]
 
+             ["Comment def" py-comment-def
+              :help " `py-comment-def'
+
+Comments def at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
             "-"
+
             (" Block bol ... "
+
              ["Beginning of block bol" py-beginning-of-block-bol
               :help "`py-beginning-of-block-bol'
 Go to beginning of line at beginning of block.
@@ -13689,6 +13919,7 @@ Shift block left. "]
              )
 
             (" Clause bol ... "
+
              ["Beginning of clause bol" py-beginning-of-clause-bol
               :help "`py-beginning-of-clause-bol'
 Go to beginning of line at beginning of clause.
@@ -13740,6 +13971,7 @@ Shift clause left. "]
              )
 
             (" Block-Or-Clause bol ... "
+
              ["Beginning of block-or-clause bol" py-beginning-of-block-or-clause-bol
               :help "`py-beginning-of-block-or-clause-bol'
 Go to beginning of line at beginning of block-or-clause.
@@ -13791,6 +14023,7 @@ Shift block-or-clause left. "]
              )
 
             (" Def bol ... "
+
              ["Beginning of def bol" py-beginning-of-def-bol
               :help "`py-beginning-of-def-bol'
 Go to beginning of line at beginning of def.
@@ -14144,7 +14377,24 @@ Needs Pymacs"]
 electricly insert ',', and redisplay latest signature.\n
 Needs Pymacs"]
 
-             )))
+             ["Electric yank" py-electric-yank
+              :help " `py-electric-yank'
+Perform command `yank' followed by an `indent-according-to-mode' . "]
+
+             )
+            ("Extended... "
+             :help "extended edit commands'"
+             ["Revert boolean assignent" py-boolswitch
+              :help " `py-boolswitch'
+Edit the assigment of a boolean variable, rever them.
+
+I.e. switch it from \"True\" to \"False\" and vice versa "]
+
+             )
+
+            )
+
+          )
 
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
@@ -14254,7 +14504,6 @@ Start an unique Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
             "-"
-
             ["Toggle split-windows-on-execute" py-toggle-split-windows-on-execute
              :help "Switch boolean `py-split-windows-on-execute-p'."]
 
@@ -14269,7 +14518,9 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
              :help "Switch `py-switch-buffers-on-execute-p' ON. "]
             ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
-             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]))
+             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]
+            )
+          )
         map))
 
 (defvaralias 'py-mode-map 'python-mode-map)
@@ -14583,8 +14834,8 @@ and return collected output"
 
 (defun py-symbol-completions (symbol)
   "Return a list of completions of the string SYMBOL from Python process.
-The list is sorted.
-Uses `python-imports' to load modules against which to complete."
+
+The list is sorted. "
   (when (stringp symbol)
     (let* ((py-imports (py-find-imports))
            (completions
@@ -18904,6 +19155,24 @@ bottom) of the trackback stack is encountered."
 ;; (add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
 ;; (add-to-list 'interpreter-mode-alist (cons (purecopy "jython") 'jython-mode))
 
+(defun py-set-auto-fill-values ()
+  "Internal use by `py-run-auto-fill-timer'"
+  (let ((pps (syntax-ppss)))
+    (cond ((and (nth 4 pps)(numberp py-comment-fill-column))
+           (set (make-local-variable 'fill-column) py-comment-fill-column))
+          ((and (nth 3 pps)(numberp py-docstring-fill-column))
+           (set (make-local-variable 'fill-column) py-docstring-fill-column))
+          (t (set (make-local-variable 'fill-column) py-fill-column-orig)))))
+
+(defun py-run-auto-fill-timer ()
+  "Set fill-column to values of `py-docstring-fill-column' resp. to `py-comment-fill-column' according to environment. "
+  (when py-set-fill-column-p
+    (unless py-autofill-timer
+      (setq py-autofill-timer
+            (run-with-idle-timer
+             py-autofill-timer-delay t
+             'py-set-auto-fill-values)))))
+
 ;;;
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
   "Major mode for interacting with an inferior Python process.
@@ -19039,6 +19308,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
    (t
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
+  (if py-set-fill-column-p
+      (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
+    (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
   (when (and py-imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))
