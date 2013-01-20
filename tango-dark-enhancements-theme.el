@@ -34,6 +34,7 @@
    `(diff-removed ((,class (:inherit diff-changed :foreground "#ff5b5b"))))
    `(flymake-errline ((,class (:underline "#ff5b5b"))))
    `(font-lock-comment-face ((,class (:slant italic))))
+   `(font-lock-doc-face ((,class (:foreground ,plum-0))))
    `(font-lock-function-name-face ((,class (:weight bold))))
    `(font-lock-keyword-face ((,class (:weight bold))))
    `(font-lock-type-face ((,class (:weight bold))))
