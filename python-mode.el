@@ -1101,7 +1101,7 @@ and use the following as the value of this variable:
   :type 'string
   :group 'convenience)
 
-(defcustom py-fill-docstring-style 'pep-257-nn
+(defcustom py-docstring-style 'pep-257-nn
   "Implemented styles are DJANGO, ONETWO, PEP-257, PEP-257-NN,
 SYMMETRIC, and NIL.
 
@@ -1813,6 +1813,207 @@ Includes def and class. ")
           (py-escaped))))
 
 ;;; Toggle
+;; py-docstring-style forms
+(defun toggle-py-nil-docstring-style (&optional arg)
+  "If nil docstring-style should be on or off.
+
+  Returns value of `py-docstring-style' switched to.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg (if (eq py-docstring-style nil) -1 1))))
+    (if (< 0 arg)
+        (setq py-docstring-style 'nil)
+      (setq py-docstring-style nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+    py-docstring-style))
+
+(defun py-nil-docstring-style-on (&optional arg)
+  "Make sure, nil docstring-style' is on.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-nil-docstring-style arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun py-nil-docstring-style-off ()
+  "Make sure, nil docstring-style is off.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (toggle-py-nil-docstring-style -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun toggle-py-onetwo-docstring-style (&optional arg)
+  "If onetwo docstring-style should be on or off.
+
+  Returns value of `py-docstring-style' switched to.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg (if (eq py-docstring-style onetwo) -1 1))))
+    (if (< 0 arg)
+        (setq py-docstring-style 'onetwo)
+      (setq py-docstring-style nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+    py-docstring-style))
+
+(defun py-onetwo-docstring-style-on (&optional arg)
+  "Make sure, onetwo docstring-style' is on.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-onetwo-docstring-style arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun py-onetwo-docstring-style-off ()
+  "Make sure, onetwo docstring-style is off.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (toggle-py-onetwo-docstring-style -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun toggle-py-pep-257-docstring-style (&optional arg)
+  "If pep-257 docstring-style should be on or off.
+
+  Returns value of `py-pep-257-docstring-style' switched to. "
+  (interactive)
+  (let ((arg (or arg (if (eq py-docstring-style pep-257) -1 1))))
+    (if (< 0 arg)
+        (setq py-docstring-style 'pep-257)
+      (setq py-docstring-style nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+    py-docstring-style))
+
+(defun py-pep-257-docstring-style-on (&optional arg)
+  "Make sure, pep-257 docstring-style' is on.
+
+Returns value of `py-pep-257-docstring-style'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-pep-257-docstring-style arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun py-pep-257-docstring-style-off ()
+  "Make sure, pep-257 docstring-style is off.
+
+Returns value of `py-pep-257-docstring-style'. "
+  (interactive)
+  (toggle-py-pep-257-docstring-style -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun toggle-py-pep-257-nn-docstring-style (&optional arg)
+  "If pep-257-nn docstring-style should be on or off.
+
+  Returns value of `py-pep-257-nn-docstring-style' switched to. "
+  (interactive)
+  (let ((arg (or arg (if (eq py-docstring-style pep-257-nn) -1 1))))
+    (if (< 0 arg)
+        (setq py-docstring-style 'pep-257-nn)
+      (setq py-docstring-style nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+    py-docstring-style))
+
+(defun py-pep-257-nn-docstring-style-on (&optional arg)
+  "Make sure, pep-257-nn docstring-style' is on.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-pep-257-nn-docstring-style arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun py-pep-257-nn-docstring-style-off ()
+  "Make sure, pep-257-nn docstring-style is off.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (toggle-py-pep-257-nn-docstring-style -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun toggle-py-symmetric-docstring-style (&optional arg)
+  "If symmetric docstring-style should be on or off.
+
+  Returns value of `py-docstring-style' switched to.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg (if (eq py-docstring-style symmetric) -1 1))))
+    (if (< 0 arg)
+        (setq py-docstring-style 'symmetric)
+      (setq py-docstring-style nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+    py-docstring-style))
+
+(defun py-symmetric-docstring-style-on (&optional arg)
+  "Make sure, symmetric docstring-style' is on.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-symmetric-docstring-style arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun py-symmetric-docstring-style-off ()
+  "Make sure, symmetric docstring-style is off.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (toggle-py-symmetric-docstring-style -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun toggle-py-django-docstring-style (&optional arg)
+  "If django docstring-style should be on or off.
+
+  Returns value of `py-docstring-style' switched to.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg (if (eq py-docstring-style django) -1 1))))
+    (if (< 0 arg)
+        (setq py-docstring-style 'django)
+      (setq py-docstring-style nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+    py-docstring-style))
+
+(defun py-django-docstring-style-on (&optional arg)
+  "Make sure, django docstring-style' is on.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-django-docstring-style arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
+(defun py-django-docstring-style-off ()
+  "Make sure, django docstring-style is off.
+
+  Returns value of `py-docstring-style'.
+To set permanently,  customize this variable "
+  (interactive)
+  (toggle-py-django-docstring-style -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
+  py-docstring-style)
+
 ;; py-underscore-word-syntax-p forms
 (defun toggle-py-underscore-word-syntax-p (&optional arg)
   "If `py-underscore-word-syntax-p' should be on or off.
@@ -3508,6 +3709,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
           (goto-char startpos)
           (if (and (looking-at-p "'''\\|\"\"\"")
                    (looking-back "\\`\\|^\\s *\\(?:class\\|def\\)\\s +\\(?:\\sw\\|\\s_\\)+(.*):\n\\s *"))
+;                   (looking-back "\\(?:\\`\\|^\\s *\\(?:class\\|def\\)\\s +.*\\)\n*\\(?:\\s *#\\s *.*\n\\)*\\s *"))
               font-lock-doc-face
             font-lock-string-face)))
     font-lock-comment-face))
@@ -5139,6 +5341,15 @@ the default"
           (fill-paragraph justify))))
     t))
 
+(defun py-end-of-string-intern (pps)
+  "Go to end of string at point, return position.
+
+Takes the result of (syntax-ppss)"
+  (goto-char (nth 8 pps))
+  (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
+       (goto-char (match-end 0))
+       (search-forward (match-string-no-properties 0))))
+
 (defun py-fill-paragraph (&optional justify style start end)
   "`fill-paragraph-function'
 
@@ -5147,7 +5358,7 @@ choose one of the following implemented styles:
 
 DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
 
-Otherwise `py-fill-docstring-style' is used. Explanation:
+Otherwise `py-docstring-style' is used. Explanation:
 
 DJANGO:
 
@@ -5204,39 +5415,43 @@ SYMMETRIC:
   (interactive "P")
   (or (fill-comment-paragraph justify)
       (let ((orig (copy-marker (point)))
+            (pps (syntax-ppss))
             (beg (or start (if (use-region-p) (region-beginning) (py-beginning-of-paragraph-position))))
             (end (copy-marker (or end (if (use-region-p) (region-end) (py-end-of-paragraph-position)))))
-            pps
-            (style (or style py-fill-docstring-style))
+            (style (or style py-docstring-style))
             (this-end (point-min)))
+        ;; if inside a string and beginning of paragraph < beginning of string
+        ;; use beginning of string
+        (when (and (nth 3 pps) (< beg (nth 8 pps))
+                   (setq beg (nth 8 pps)))
+          (setq end (py-end-of-string-intern pps)))
         (save-excursion
           (save-restriction
-            (goto-char beg) (end-of-line)
-            (setq pps (syntax-ppss))
+            ;; (goto-char beg) (end-of-line)
             (narrow-to-region beg end)
             (cond
              ;; Comments
              ((nth 4 pps)
               (py-fill-comment justify))
              ;; Strings/Docstrings
-             ((save-excursion
-                (or (nth 3 pps)
-                    (equal (string-to-syntax "|")
-                           (syntax-after (point)))
-                    (looking-at py-string-delim-re))
-                (goto-char (point-min))
-                (while (and (progn (forward-paragraph) (< this-end (point)))(setq this-end (copy-marker (point))))
-                  (py-fill-string justify style beg this-end)
-                  (goto-char this-end)
-                  ;; (end-of-line) (while (nth 8 (syntax-ppss))(forward-char 1))
-                  (set (make-local-variable 'py-fill-docstring-style) nil))))
+             ((or (nth 3 pps)
+                  (equal (string-to-syntax "|")
+                         (syntax-after (point)))
+                  (looking-at py-string-delim-re))
+              (goto-char beg)
+              (while (and (progn (forward-paragraph) (< this-end (point)))(setq this-end (copy-marker (point))))
+                (py-fill-string justify style beg this-end)
+                (goto-char this-end)
+                ;; (end-of-line) (while (nth 8 (syntax-ppss))(forward-char 1))
+                ;; (set (make-local-variable 'py-docstring-style) nil)
+                ))
              ;; Decorators
              ((save-excursion
-                (equal (char-after
-                        (py-beginning-of-statement))
-                       ;; (back-to-indentation)
-                       ;; (point))
-                       ?\@))
+                (and (py-beginning-of-statement)
+                     (equal (char-after)
+                            ;; (back-to-indentation)
+                            ;; (point))
+                            ?\@)))
               (py-fill-decorator justify))
              ;; Parens
              ((or (nth 1 pps)
@@ -5245,7 +5460,9 @@ SYMMETRIC:
                     (skip-syntax-forward "^(" (line-end-position))
                     (looking-at (python-rx open-paren))))
               (py-fill-paren justify))
-             (t t)))))))
+             (t t))))))
+  ;; fill-paragraph expexts t
+  t)
 
 ;; (defun py-fill-comment (&optional justify)
 ;;   "Comment fill function for `py-fill-paragraph'.
@@ -5330,78 +5547,97 @@ See lp:1066489 "
   "String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'."
   (interactive "P")
-  (let* ((py-fill-docstring-style (or style py-fill-docstring-style))
-         ;; unset python-mode value this time
-         forward-sexp-function
-         (orig (point-marker))
-         (pps (syntax-ppss))
-         (beg (or beg (if (nth 3 pps)
-                          (copy-marker (nth 8 pps))
-                        (when (and (equal (string-to-syntax "|")
-                                          (syntax-after (point))))
-                          (point-marker)))))
-         (delim-length (progn (goto-char beg)(when (looking-at py-string-delim-re) (- (match-end 0) (match-beginning 0)))))
-         ;; Assume docstrings at BOL resp. indentation
-         (docstring-p
-          (and delim-length
-               (eq (current-column) (current-indentation))
-               (not (looking-at py-labelled-re))))
-         (end (or end (progn
-                        (forward-sexp)
-                        (point-marker))))
-         (multi-line-p
-          ;; Docstring styles may vary for oneliners and multi-liners.
-          (> (count-matches "\n" beg end) 0))
-         (delimiters-style
-          (case py-fill-docstring-style
-            ;; delimiters-style is a cons cell with the form
-            ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
-            ;; is NIL means to not add any newlines for start or end
-            ;; of docstring.  See `py-fill-docstring-style' for a
-            ;; graphic idea of each style.
-            (django (cons 1 1))
-            (onetwo (and multi-line-p (cons 1 2)))
-            (pep-257 (and multi-line-p (cons nil 2)))
-            (pep-257-nn (and multi-line-p (cons nil 1)))
-            (symmetric (and multi-line-p (cons 1 1)))))
-         (fill-paragraph-function))
+  (save-excursion
     (save-restriction
-      (cond (docstring-p
-             (narrow-to-region (+ beg delim-length) (- end delim-length))
-             (fill-region (+ beg delim-length) (- end delim-length)))
-            ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
-             (py-fill-labelled-string beg end))
-            (t (narrow-to-region beg end)
-               (fill-region beg end))))
-    (save-excursion
-      (when (and docstring-p py-fill-docstring-style)
-        ;; Add the number of newlines indicated by the selected style
-        ;; at the start of the docstring.
+      (let* ((style (or style py-docstring-style))
+             (fill-column (if (integerp py-docstring-fill-column)
+                              py-docstring-fill-column
+                            fill-column))
+             ;; unset python-mode value this time
+             forward-sexp-function
+             (orig (point-marker))
+             (pps (syntax-ppss))
+             (beg (or beg (if (nth 3 pps)
+                              (copy-marker (nth 8 pps))
+                            (when (and (equal (string-to-syntax "|")
+                                              (syntax-after (point))))
+                              (point-marker)))))
+             (delim-length (progn (goto-char beg)
+                                  (if (looking-at py-string-delim-re) (- (match-end 0) (match-beginning 0))
+                                    0)))
+             ;; Assume docstrings at BOL resp. indentation
+             (docstring-p
+              (and (< 0 delim-length)
+                   (eq (current-column) (current-indentation))
+                   (not (looking-at py-labelled-re))))
+             (end (or end (progn
+                            (forward-sexp)
+                            (point-marker))))
+             multi-line-p
+             delimiters-style
+             ;; (fill-paragraph-function)
+             )
+        ;; whitespace and newline will be added according to mode again
         (goto-char (+ beg delim-length))
-        (delete-region (point) (progn
-                                 (skip-syntax-forward "> ")
-                                 (point)))
-        (and (car delimiters-style)
-             (or (newline (car delimiters-style)) t)
-             ;; Indent only if a newline is added.
-             ;; (indent-according-to-mode)
-             (indent-region (+ beg delim-length) (- end delim-length)))
-        ;; Add the number of newlines indicated by the selected style
-        ;; at the end of the docstring.
-        (goto-char (if (not (= end (point-max)))
-                       (- end delim-length)
-                     end))
-        (delete-region (point) (progn
-                                 (skip-syntax-backward "> ")
-                                 (point)))
-        (and (cdr delimiters-style)
-             ;; Add newlines only if string ends.
-             (not (= end (point-max)))
-             (or (newline (cdr delimiters-style)) t)
-             ;; Again indent only if a newline is added.
-             (indent-according-to-mode))
-        (when (or (eq style 'pep-257)(eq style 'pep-257-nn))
-          (indent-region beg end))) t)))
+        (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (skip-chars-forward " \t\r\n\f")(point)))
+        (goto-char (- end delim-length))
+        (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
+        (cond (docstring-p
+               (narrow-to-region (+ beg delim-length) (- end delim-length))
+               (fill-region (point-min) (point-max)))
+              ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
+               (py-fill-labelled-string beg end))
+              (t (narrow-to-region beg end)
+                 (sit-for 0.1)
+                 (fill-region beg end)))
+        (setq multi-line-p
+              (> (count-matches "\n" (progn (goto-char (+ beg delim-length))(skip-chars-forward " \t\r\n\f")(point)) (progn (goto-char (- end delim-length))(skip-chars-backward " \t\r\n\f")(point))) 0))
+        (setq delimiters-style
+              (case style
+                ;; delimiters-style is a cons cell with the form
+                ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
+                ;; is NIL means to not add any newlines for start or end
+                ;; of docstring.  See `style' for a
+                ;; graphic idea of each style.
+                (django (cons 1 1))
+                (onetwo (and multi-line-p (cons 1 2)))
+                (pep-257 (and multi-line-p (cons nil 2)))
+                (pep-257-nn (and multi-line-p (cons nil 1)))
+                (symmetric (and multi-line-p (cons 1 1)))))
+        (message "%s" delimiters-style)
+        (save-excursion
+          (when (and docstring-p style)
+            ;; Add the number of newlines indicated by the selected style
+            ;; at the start of the docstring.
+            (goto-char (+ beg delim-length))
+            ;; (delete-region (point) (progn
+            ;; (skip-syntax-forward "> ")
+            ;; (point)))
+            (and (car delimiters-style)
+                 (or (newline (car delimiters-style)) t)
+                 ;; Indent only if a newline is added.
+                 ;; (indent-according-to-mode)
+                 (indent-region (+ beg delim-length) (- end delim-length)))
+            ;; Add the number of newlines indicated by the selected style
+            ;; at the end of the docstring.
+            (goto-char (1+ (- end delim-length)))
+            ;; (delete-region (point) (progn
+            ;; (skip-syntax-backward "> ")
+            ;; (point)))
+            (and (cdr delimiters-style)
+                 ;; Add newlines only if string ends.
+                 ;; (not (= end (point-max)))
+                 (or (newline (cdr delimiters-style)) t))
+            ;; Again indent only if a newline is added.
+
+            ;; (when (or (eq style 'pep-257)(eq style 'pep-257-nn))
+            (widen)
+            (indent-region beg end)
+            (goto-char (1+ (+ beg delim-length)))
+            (end-of-line)
+            (skip-chars-backward " \"\t\r\n\f")
+            (unless (eq (char-after) ?\") (newline)))
+          (widen))))))
 
 (defun py-fill-decorator (&optional justify)
   "Decorator fill function for `py-fill-paragraph'.
@@ -5451,7 +5687,7 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+See available styles at `py-fill-paragraph' or var `py-docstring-style'
 "
   (interactive "*P")
   (py-fill-string justify 'django))
@@ -5468,7 +5704,7 @@ See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+See available styles at `py-fill-paragraph' or var `py-docstring-style'
 "
   (interactive "*P")
   (py-fill-string justify 'onetwo))
@@ -5484,7 +5720,7 @@ See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+See available styles at `py-fill-paragraph' or var `py-docstring-style'
 "
   (interactive "*P")
   (py-fill-string justify 'pep-257))
@@ -5499,7 +5735,7 @@ See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+See available styles at `py-fill-paragraph' or var `py-docstring-style'
 "
   (interactive "*P")
   (py-fill-string justify 'pep-257-nn))
@@ -5515,7 +5751,7 @@ See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+See available styles at `py-fill-paragraph' or var `py-docstring-style'
 "
   (interactive "*P")
   (py-fill-string justify 'symmetric))
@@ -5899,7 +6135,7 @@ and `pass'.  This doesn't catch embedded statements."
                       ((eq 'py-block-re regexp)
                        (while
                            (and (setq last (point)) (prog1 (py-end-of-statement)(py-beginning-of-statement))
-                                (or (and (looking-at py-clause-re) (<= ind (+ (current-indentation) py-indent-offset))(py-end-of-statement) (py-end-of-statement) )
+                                (or (and (looking-at py-clause-re) (<= ind (+ (current-indentation) py-indent-offset))(py-end-of-statement) (py-end-of-statement))
                                     (<= ind (current-indentation))))
                          (py-travel-current-indent ind (point)))
                        (goto-char last))))))
@@ -5908,11 +6144,12 @@ and `pass'.  This doesn't catch embedded statements."
         ;; found the end above
         ;; py-travel-current-indent will stop of clause at equal indent
         (when (py-look-downward-for-beginning (symbol-value regexp))
-          (py-end-base regexp orig))))
-    (setq pps (syntax-ppss))
-    (unless (or (looking-at comment-start) (or (nth 8 pps) (nth 1 pps)))
-      (when (< orig (point))
-        (point)))))
+          (py-end-base regexp orig)))
+      (setq pps (syntax-ppss))
+      (if (and (< orig (point)) (not (or (looking-at comment-start) (nth 8 pps) (nth 1 pps))))
+          (point)
+        (goto-char (point-max))
+        nil))))
 
 (defun py-look-downward-for-beginning (regexp)
   "When above any beginning of FORM, search downward. "
@@ -6589,7 +6826,8 @@ http://docs.python.org/reference/compound_stmts.html
         (while (and (not (bobp)) (or (empty-line-p) (setq this (nth 8 (syntax-ppss)))))
           (if (empty-line-p)
               (skip-chars-backward " \t\r\n\f")
-            (goto-char this)))
+            (goto-char this)
+            (skip-chars-backward " \t\r\n\f")))
         (py-beginning-of-statement orig done))
        ((nth 8 pps)
         (goto-char (nth 8 pps))
@@ -9906,8 +10144,8 @@ Returns imports "
                (replace-regexp-in-string
                 "[\\]\r?\n?\s*" ""
                 (buffer-substring-no-properties (match-beginning 0) (point))) ";"))))
-    (and imports
-         (setq imports (replace-regexp-in-string ";$" "" imports)))
+    ;; (and imports
+    ;; (setq imports (replace-regexp-in-string ";$" "" imports)))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
     imports))
 
@@ -10483,7 +10721,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                 (+ (if py-smart-indentation (py-guess-indent-offset nil orig origline) indent-offset) (current-indentation)))
                ((and (bobp)(not (py-statement-opens-block-p py-extended-block-or-clause-re)))
                 (current-indentation))
-               ;; (py-in-triplequoted-string-p)
+               ;; in string
                ((and (nth 3 pps)(nth 8 pps))
                 (if (and (not line)(eq origline (py-count-lines)))
                     (progn
@@ -10496,6 +10734,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                         (py-line-backward-maybe)
                         (back-to-indentation)
                         (py-compute-indentation orig origline closing line inside repeat indent-offset)))
+                  (goto-char (nth 8 pps))
                   (current-indentation)))
                ((and (looking-at "\"\"\"\\|'''")(not (bobp)))
                 (py-beginning-of-statement)
@@ -11603,6 +11842,8 @@ return `jython', otherwise return nil."
         (message "%s" "Could not detect Python on your system")))
     erg))
 
+;; backward compatibility
+(defalias 'py-switch-shells 'py-switch-shell)
 (defalias 'python-toggle-shells 'py-switch-shell)
 (defalias 'py-toggle-shell 'py-switch-shell)
 (defun py-switch-shell (&optional arg)
@@ -11855,131 +12096,103 @@ Used only, if `py-install-directory' is empty. "
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
 
-            "-"
-
-            ["pychecker-run" py-pychecker-run
-             :help "`py-pychecker-run'
-Run pychecker"]
-
-            ("Pylint ... "
-             :help "Extendet report options
-call `easy_install pylint' if not available"
-
-             ["pylint-run" py-pylint-run
-              :help "`pylint-run'
-Pylint will display a number of messages as it analyzes the code,
-as well as some statistics about the number of warnings and
-errors found in different files - unless called with arg \"--errors-only\". The messages are classified
-under various categories such as errors and warnings
-
-Pylint checks length of lines of code, if variable names are
-well-formed according to your coding standard, if declared
-interfaces are truly implemented, and much more. Additionally, it
-is possible to write plugins.
-
-call `easy_install pylint' if not available
-"]
-
-             ["pylint-help" pylint-help
-              :help "`pylint-help'
-List extendet report options
-"]
-             ["pylint-flymake-mode" pylint-flymake-mode
-              :help "`pylint-flymake-mode'
-Toggle flymake-mode running `pylint'
-"])
-
-            ("pep8 ... "
-             :help "Check formatting
-call `easy_install pep8' if not available"
-
-             ["pep8-run" py-pep8-run
-              :help "`py-pep8-run'
-Check formatting (default on the file currently visited)
-call `easy_install pep8' if not available
-"]
-
-             ["pep8-help" py-pep8-help
-              :help "`py-pep8-help'
-Display help for pep8 format checker)
-"]
-
-             ["pep8-flymake-mode" pep8-flymake-mode
-              :help "`pep8-flymake-mode'
-Toggle flymake-mode running `pep8'
-"])
-
-            ("Pyflakes ... " :help "Non intrusive code
-             checker call `easy_install pyflakes' if
-             not available"
-
-             ["pyflakes-run" py-pyflakes-run :help
-              "`py-pyflakes-run' Run pyflakes call
-              `easy_install pyflakes' if not
-              available"]
-
-             ["pyflakes-help" py-pyflakes-help :help
-              "`py-pyflakes-help' Display help for
-              Pyflakes "]
-
-             ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
-              "`pyflakes-flymake-mode'
-Toggle flymake-mode running `pyflakes' "])
-
-            ("Pyflakes-pep8 ... " :help
-             "Non intrusive code checker running `pyflakes' and `pep8'
-call `easy_install pyflakes' and `easy_install pep8' if basics not available"
-
-             ["pyflakespep8-run" py-pyflakespep8-run :help
-              "`py-pyflakespep8-run' Run `pyflakespep8'
-call `easy_install pyflakes' if not available"]
-
-             ["pyflakespep8-help" py-pyflakespep8-help :help
-              "`py-pyflakespep8-help' Display help for
-              Pyflakespep8 "]
-
-             ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
-              "`pyflakespep8-flymake-mode'
-Toggle flymake-mode running `pyflakespep8' "])
-
-            "-"
-            ("Abbrevs"
-             :help "see also `py-add-abbrev'"
-             :filter (lambda (&rest junk)
-                       (abbrev-table-menu python-mode-abbrev-table)))
-            ["add-abbrev" py-add-abbrev
-             :help "Defines python-mode specific abbrev for last expressions before point.
-Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
-
-            ("Skeletons"
-             :help "See also templates in YASnippet"
-
-             ["if" py-if
-              :help "Inserts if-statement"]
-             ["py-else" py-else
-              :help "Inserts else-statement"]
-             ["py-while" py-while
-              :help "Inserts while-statement"]
-             ["py-for" py-for
-              :help "Inserts for-statement"]
-             ["py-try/finally" py-try/finally
-              :help "Inserts py-try/finally-statement"]
-             ["py-try/except" py-try/except
-              :help "Inserts py-try/except-statement"])
-
-            "-"
-
-            ["Import/reload file" py-execute-import-or-reload
-             :help "`py-execute-import-or-reload'
-Load into inferior Python session"]
-
-            ["Debugger" pdb
-             :help "`pdb'
-Run pdb under GUD"]
-            "-"
-
-            ("Modes"
+            ("Switches"
              :help "Toggle useful modes like `highlight-indentation'"
+             ("Docstring styles"
+              :help "Toggle values of `py-docstring-style'"
+
+              ("Nil"
+               :help "Toggle nil docstring-style"
+
+               ["Toggle nil docstring style" toggle-py-nil-docstring-style
+                :help "If nil docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+
+               ["Nil on" py-nil-docstring-style-on
+                :help "Make sure, nil docstring-style is on"]
+
+               ["Nil off" py-nil-docstring-style-off
+                :help "Restores default value of `py-docstring-style'"]
+
+               )
+
+              ("Onetwo"
+               :help "Toggle onetwo docstring-style"
+
+               ["Toggle onetwo docstring style" toggle-py-onetwo-docstring-style
+                :help "If onetwo docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+
+               ["Onetwo on" py-onetwo-docstring-style-on
+                :help "Make sure, onetwo docstring-style is on"]
+
+               ["Onetwo off" py-onetwo-docstring-style-off
+                :help " Restores default value of `py-docstring-style' "]
+
+               )
+
+              ("Pep 257"
+               :help "Toggle pep-257 docstring-style"
+
+               ["Toggle pep 257 docstring style" toggle-py-pep-257-docstring-style
+                :help "If pep-257 docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+
+               ["Pep 257 on" py-pep-257-docstring-style-on
+                :help "Make sure, pep-257 docstring-style is on"]
+
+               ["Pep 257 off" py-pep-257-docstring-style-off
+                :help " Restores default value of `py-docstring-style' "]
+
+               )
+
+              ("Pep 257 nn"
+               :help "Toggle pep-257-nn docstring-style"
+
+               ["Toggle pep 257 nn docstring style" toggle-py-pep-257-nn-docstring-style
+                :help "If pep-257-nn docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+
+               ["Pep 257 nn on" py-pep-257-nn-docstring-style-on
+                :help "Make sure, pep-257-nn docstring-style is on"]
+
+               ["Pep 257 nn off" py-pep-257-nn-docstring-style-off
+                :help " Restores default value of `py-docstring-style' "]
+
+               )
+
+              ("Symmetric"
+               :help "Toggle symmetric docstring-style"
+
+               ["Toggle symmetric docstring style" toggle-py-symmetric-docstring-style
+                :help "If symmetric docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+
+               ["Symmetric on" py-symmetric-docstring-style-on
+                :help "Make sure, symmetric docstring-style is on"]
+
+               ["Symmetric off" py-symmetric-docstring-style-off
+                :help " Restores default value of `py-docstring-style' "]
+
+               )
+
+              ("Django"
+               :help "Toggle django docstring-style"
+
+               ["Toggle django docstring style" toggle-py-django-docstring-style
+                :help "If django docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+
+               ["Django on" py-django-docstring-style-on
+                :help "Make sure, django docstring-style is on"]
+
+               ["Django off" py-django-docstring-style-off
+                :help "Restores default value of `py-docstring-style'"]
+
+               )
+
+
+              )
              ("Underscore word syntax"
               :help "Toggle `py-underscore-word-syntax-p'"
 
@@ -12114,6 +12327,131 @@ indent-width will be guessed from current major-mode"
               :style toggle :selected py-electric-comment-p]
 
              )
+
+            "-"
+
+            ["pychecker-run" py-pychecker-run
+             :help "`py-pychecker-run'
+Run pychecker"]
+
+            ("Pylint ... "
+             :help "Extendet report options
+call `easy_install pylint' if not available"
+
+             ["pylint-run" py-pylint-run
+              :help "`pylint-run'
+Pylint will display a number of messages as it analyzes the code,
+as well as some statistics about the number of warnings and
+errors found in different files - unless called with arg \"--errors-only\". The messages are classified
+under various categories such as errors and warnings
+
+Pylint checks length of lines of code, if variable names are
+well-formed according to your coding standard, if declared
+interfaces are truly implemented, and much more. Additionally, it
+is possible to write plugins.
+
+call `easy_install pylint' if not available
+"]
+
+             ["pylint-help" pylint-help
+              :help "`pylint-help'
+List extendet report options
+"]
+             ["pylint-flymake-mode" pylint-flymake-mode
+              :help "`pylint-flymake-mode'
+Toggle flymake-mode running `pylint'
+"])
+
+            ("pep8 ... "
+             :help "Check formatting
+call `easy_install pep8' if not available"
+
+             ["pep8-run" py-pep8-run
+              :help "`py-pep8-run'
+Check formatting (default on the file currently visited)
+call `easy_install pep8' if not available
+"]
+
+             ["pep8-help" py-pep8-help
+              :help "`py-pep8-help'
+Display help for pep8 format checker)
+"]
+
+             ["pep8-flymake-mode" pep8-flymake-mode
+              :help "`pep8-flymake-mode'
+Toggle flymake-mode running `pep8'
+"])
+
+            ("Pyflakes ... " :help "Non intrusive code
+             checker call `easy_install pyflakes' if
+             not available"
+
+             ["pyflakes-run" py-pyflakes-run :help
+              "`py-pyflakes-run' Run pyflakes call
+              `easy_install pyflakes' if not
+              available"]
+
+             ["pyflakes-help" py-pyflakes-help :help
+              "`py-pyflakes-help' Display help for
+              Pyflakes "]
+
+             ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
+              "`pyflakes-flymake-mode'
+Toggle flymake-mode running `pyflakes' "])
+
+            ("Pyflakes-pep8 ... " :help
+             "Non intrusive code checker running `pyflakes' and `pep8'
+call `easy_install pyflakes' and `easy_install pep8' if basics not available"
+
+             ["pyflakespep8-run" py-pyflakespep8-run :help
+              "`py-pyflakespep8-run' Run `pyflakespep8'
+call `easy_install pyflakes' if not available"]
+
+             ["pyflakespep8-help" py-pyflakespep8-help :help
+              "`py-pyflakespep8-help' Display help for
+              Pyflakespep8 "]
+
+             ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
+              "`pyflakespep8-flymake-mode'
+Toggle flymake-mode running `pyflakespep8' "])
+
+            "-"
+            ("Abbrevs"
+             :help "see also `py-add-abbrev'"
+             :filter (lambda (&rest junk)
+                       (abbrev-table-menu python-mode-abbrev-table)))
+            ["add-abbrev" py-add-abbrev
+             :help "Defines python-mode specific abbrev for last expressions before point.
+Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
+
+            ("Skeletons"
+             :help "See also templates in YASnippet"
+
+             ["if" py-if
+              :help "Inserts if-statement"]
+             ["py-else" py-else
+              :help "Inserts else-statement"]
+             ["py-while" py-while
+              :help "Inserts while-statement"]
+             ["py-for" py-for
+              :help "Inserts for-statement"]
+             ["py-try/finally" py-try/finally
+              :help "Inserts py-try/finally-statement"]
+             ["py-try/except" py-try/except
+              :help "Inserts py-try/except-statement"])
+
+            "-"
+
+            ["Import/reload file" py-execute-import-or-reload
+             :help "`py-execute-import-or-reload'
+Load into inferior Python session"]
+
+            ["Debugger" pdb
+             :help "`pdb'
+Run pdb under GUD"]
+            "-"
+
+
 
             ("Help"
              :help "Some help commands"
@@ -14236,17 +14574,17 @@ Go to beginning one level below of compound statement or definition at point. "]
 
             "-"
             ("Filling"
-             :help "see also customizable `py-fill-docstring-style'"
+             :help "see also customizable `py-docstring-style'"
 
              ["Fill string" py-fill-string
               :help " `py-fill-string'
 
-Uses value of `py-fill-docstring-style', if set. "]
+Uses value of `py-docstring-style', if set. "]
 
              ["Fill paragraph" py-fill-paragraph
               :help " `py-fill-paragraph'
 
-Uses value of `py-fill-docstring-style', if set. "]
+Uses value of `py-docstring-style', if set. "]
 
              ["Fill comment" py-fill-comment
               :help " `py-fill-comment'
@@ -14266,7 +14604,7 @@ Fill comment at point. "]
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+See available styles at `py-fill-paragraph' or var `py-docstring-style'
  "]
 
              ["py fill string onetwo" py-fill-string-onetwo
@@ -14282,7 +14620,7 @@ One newline and start and Two at end style.
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              ["py fill string pep 257" py-fill-string-pep-257
               :help " `py-fill-string-pep-257'
@@ -14297,7 +14635,7 @@ PEP-257 with 2 newlines at end of string.
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              ["py fill string pep 257 nn" py-fill-string-pep-257-nn
               :help " `py-fill-string-pep-257-nn'
@@ -14311,7 +14649,7 @@ PEP-257 with 1 newline at end of string.
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              ["py fill string symmetric" py-fill-string-symmetric
               :help " `py-fill-string-symmetric'
@@ -14326,7 +14664,7 @@ Symmetric style.
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              )
 
