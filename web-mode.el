@@ -3527,7 +3527,7 @@ point is at the beginning of the line."
                   (setq counter (1+ counter))
                 (if (not (web-mode-is-void-element))
                     (setq counter (1- counter))
-                  (message "tag %s is void" tag)
+;;                  (message "tag %s is void" tag)
                   ))
               (when (eq counter 0)
                 (setq continue nil
