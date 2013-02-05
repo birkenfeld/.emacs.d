@@ -14,9 +14,11 @@
   (eval-after-load "reveal" '(diminish 'reveal-mode))
   (eval-after-load "yasnippet" '(diminish 'yas/minor-mode " Y")))
 
-;; bar cursor
-;(require 'bar-cursor)
-;(bar-cursor-mode t)
+;; M-x enhancement
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 ;; colored moccur
 (require 'color-moccur)
