@@ -123,6 +123,11 @@ tooltip in millisecond."
   "Major mode to use when showing document."
   :group 'jedi)
 
+(defcustom jedi:doc-hook '(view-mode)
+  "The hook that's run after showing a document."
+  :type 'hook
+  :group 'jedi)
+
 (defcustom jedi:doc-display-buffer 'display-buffer
   "A function to be called with a buffer to show document."
   :group 'jedi)
@@ -211,7 +216,9 @@ avoid collision by something like this::
 (define-minor-mode jedi-mode
   "Jedi mode.
 When `jedi-mode' is on, call signature is automatically shown as
-toolitp when inside of function call."
+toolitp when inside of function call.
+
+\\{jedi-mode-map}"
   :keymap jedi-mode-map
   :group 'jedi
   (let ((map jedi-mode-map))
@@ -282,7 +289,7 @@ See also: `jedi:server-args'."
                         " ")))))
   (if (and (local-variable-p 'jedi:epc) jedi:epc)
       (message "Dedicated Jedi server is already running!")
-    (make-local-variable 'jedi:epc)
+    (set (make-local-variable 'jedi:epc) nil)
     (let ((jedi:server-command command)
           (jedi:server-args nil))
       (jedi:start-server))))
@@ -454,6 +461,7 @@ See also: `jedi:server-args'."
        ((not (and module_path (file-exists-p module_path)))
         (message "File '%s' does not exist." module_path))
        (t
+        (push-mark)
         (funcall (if other-window #'find-file-other-window #'find-file)
                  module_path)
         (goto-char (point-min))
@@ -536,12 +544,16 @@ See also: `jedi:server-args'."
       (with-current-buffer (get-buffer-create jedi:doc-buffer-name)
         (erase-buffer)
         (loop with has-doc = nil
+              with first = t
               for def in reply
               do (destructuring-bind
                      (&key doc desc_with_module line_nr module_path
                            &allow-other-keys)
                      def
                    (unless (or (null doc) (equal doc ""))
+                     (if first
+                         (setq first nil)
+                       (insert "\n\n---\n\n"))
                      (insert "Docstring for " desc_with_module "\n\n" doc)
                      (setq has-doc t)))
               finally do
@@ -551,6 +563,7 @@ See also: `jedi:server-args'."
                   (goto-char (point-min))
                   (when (fboundp jedi:doc-mode)
                     (funcall jedi:doc-mode))
+                  (run-hooks 'jedi:doc-hook)
                   (funcall jedi:doc-display-buffer (current-buffer)))))))))
 
 
@@ -646,5 +659,10 @@ running server."
 
 
 (provide 'jedi)
+
+;; Local Variables:
+;; coding: utf-8
+;; indent-tabs-mode: nil
+;; End:
 
 ;;; jedi.el ends here
