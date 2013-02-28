@@ -987,6 +987,43 @@ It should not contain a caret (^) at the beginning."
   :type 'string
   :group 'python-mode)
 
+(defvar py-ffap-p nil)
+(defvar py-ffap nil)
+(defvar python-ffap nil)
+(defvar ffap-alist nil)
+
+(defun py-set-ffap-form ()
+  (cond ((and py-ffap-p py-ffap)
+         (eval-after-load "ffap"
+           '(push '(python-mode . py-module-path) ffap-alist))
+         (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
+         (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path)
+                                  ffap-alist)))
+        ((and py-ffap-p (eq py-ffap-p 'python-ffap))
+         (eval-after-load "ffap"
+           '(push '(python-mode . py-ffap-module-path) ffap-alist))
+         (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist))
+         ffap-alist)
+        (t (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
+           (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path)
+                                    ffap-alist))
+           (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist)))))
+
+(defcustom py-ffap-p nil
+
+  "Select python-modes way to find file at point.
+
+Default is  nil "
+
+  :type '(choice
+          (const :tag "default" nil)
+          (const :tag "use py-ffap, emacs.py" py-ffap)
+          (const :tag "use python-ffap" python-ffap))
+  :group 'python-mode
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (py-set-ffap-form)))
+
 (defcustom python-ffap-setup-code
   "def __FFAP_get_module_path(module):
     try:
@@ -2654,6 +2691,33 @@ the output."
                  python-shell-prompt-regexp))
        "" output-buffer))))
 
+(defun py-send-string-return-output (string &optional process msg)
+  "Send STRING to PROCESS and return output.
+
+When MSG is non-nil messages the first line of STRING.  Return
+the output."
+  (let* (output-buffer
+         (process (or process (get-buffer-process (py-shell))))
+         (comint-preoutput-filter-functions
+          (append comint-preoutput-filter-functions
+                  '(ansi-color-filter-apply
+                    (lambda (string)
+                      (setq output-buffer (concat output-buffer string))
+                      "")))))
+    (py-shell-send-string string process msg)
+    (accept-process-output process 1)
+    (when output-buffer
+      (setq output-buffer
+            (replace-regexp-in-string
+             (if (> (length py-shell-prompt-output-regexp) 0)
+                 (format "\n*%s$\\|^%s\\|\n$"
+                         python-shell-prompt-regexp
+                         (or py-shell-prompt-output-regexp ""))
+               (format "\n*$\\|^%s\\|\n$"
+                       python-shell-prompt-regexp))
+             "" output-buffer)))
+    output-buffer))
+
 (defun py-shell-send-file (file-name &optional process temp-file-name)
   "Send FILE-NAME to inferior Python PROCESS.
 If TEMP-FILE-NAME is passed then that file is used for processing
@@ -2790,25 +2854,6 @@ for options to pass to the DOCNAME interpreter. \"
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       (when (interactive-p) (message "%s" "pdb.py not found, please customize `pdb-path'")))
     (concat "'" erg)))
-
-(defun py-ffap-module-path (module)
-  "Function for `ffap-alist' to return path for MODULE."
-  (let ((process (or
-                  (and (eq major-mode 'inferior-python-mode)
-                       (get-buffer-process (current-buffer)))
-                  (py-shell-get-process))))
-    (if (not process)
-        nil
-      (let ((module-file
-             (py-shell-send-string-no-output
-              (format python-ffap-string-code module) process)))
-        (when module-file
-          (substring-no-properties module-file 1 -1))))))
-
-(eval-after-load "ffap"
-  '(progn
-     (push '(python-mode . py-ffap-module-path) ffap-alist)
-     (push '(inferior-python-mode . py-ffap-module-path) ffap-alist)))
 
 ;; Strip CHARS from STRING
 (defun string-strip (str &optional chars-before chars-after)
@@ -3364,8 +3409,22 @@ of current line."
   "Function for `ffap-alist' to return path to MODULE."
   (py-send-receive (format "emacs.modpath (%S)" module)))
 
-(eval-after-load "ffap"
-  '(push '(python-mode . py-module-path) ffap-alist))
+(defun py-ffap-module-path (module)
+  "Function for `ffap-alist' to return path for MODULE."
+  (let ((process (or
+                  (and (eq major-mode 'inferior-python-mode)
+                       (get-buffer-process (current-buffer)))
+                  (py-shell-get-process))))
+    (if (not process)
+        nil
+      (let ((module-file
+             (py-shell-send-string-no-output
+              (format python-ffap-string-code module) process)))
+        (when module-file
+          (substring-no-properties module-file 1 -1))))))
+
+(add-hook 'python-mode-hook 'py-set-ffap-form)
+
 
 ;;;
 (defconst py-space-backslash-table
@@ -3702,7 +3761,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (and (fboundp 'make-obsolete-variable)
      (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))
 
-(defun py-doc-string-p (pos)
+(defun py-docstring-p (pos)
   "Check to see if there is a docstring at POS."
   (save-excursion
     (goto-char pos)
@@ -3715,7 +3774,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)
-      (if (py-doc-string-p (nth 8 state))
+      (if (py-docstring-p (nth 8 state))
           font-lock-doc-face
         font-lock-string-face)
     font-lock-comment-face))
@@ -5347,6 +5406,15 @@ the default"
           (fill-paragraph justify))))
     t))
 
+(defun py-until-found (search-string liste)
+  "Search liste for search-string until found. "
+  (let ((liste liste) element)
+    (while liste
+      (if (member search-string (car liste))
+          (setq element (car liste) liste nil))
+      (setq liste (cdr liste)))
+    element))
+
 (defun py-end-of-string-intern (pps)
   "Go to end of string at point, return position.
 
@@ -5426,14 +5494,12 @@ SYMMETRIC:
             (end (copy-marker (or end (if (use-region-p) (region-end) (py-end-of-paragraph-position)))))
             (style (or style py-docstring-style))
             (this-end (point-min)))
-        ;; if inside a string and beginning of paragraph < beginning of string
-        ;; use beginning of string
         (when (and (nth 3 pps) (< beg (nth 8 pps))
+                   (py-docstring-p (nth 8 pps))
                    (setq beg (nth 8 pps)))
           (setq end (py-end-of-string-intern pps)))
         (save-excursion
           (save-restriction
-            ;; (goto-char beg) (end-of-line)
             (narrow-to-region beg end)
             (cond
              ;; Comments
@@ -5445,12 +5511,8 @@ SYMMETRIC:
                          (syntax-after (point)))
                   (looking-at py-string-delim-re))
               (goto-char beg)
-              (while (and (progn (forward-paragraph) (< this-end (point)))(setq this-end (copy-marker (point))))
-                (py-fill-string justify style beg this-end)
-                (goto-char this-end)
-                ;; (end-of-line) (while (nth 8 (syntax-ppss))(forward-char 1))
-                ;; (set (make-local-variable 'py-docstring-style) nil)
-                ))
+              (py-fill-string justify style nil nil pps)
+              (goto-char this-end))
              ;; Decorators
              ((save-excursion
                 (and (py-beginning-of-statement)
@@ -5460,72 +5522,16 @@ SYMMETRIC:
                             ?\@)))
               (py-fill-decorator justify))
              ;; Parens
-             ((or (nth 1 pps)
-                  (looking-at (python-rx open-paren))
-                  (save-excursion
-                    (skip-syntax-forward "^(" (line-end-position))
-                    (looking-at (python-rx open-paren))))
-              (py-fill-paren justify))
-             (t t))))))
-  ;; fill-paragraph expexts t
-  t)
-
-;; (defun py-fill-comment (&optional justify)
-;;   "Comment fill function for `py-fill-paragraph'.
-;; JUSTIFY should be used (if applicable) as in `fill-paragraph'."
-;;   (fill-comment-paragraph justify))
-
-;; (defun py-fill-string (start &optional justify)
-;;   "Fill the paragraph around (point) in the string starting at start"
-;;   ;; basic strategy: narrow to the string and call the default
-;;   ;; implementation
-;;   (let (;; the start of the string's contents
-;;         string-start
-;;         ;; the end of the string's contents
-;;         string-end
-;;         ;; length of the string's delimiter
-;;         delim-length
-;;         ;; The string delimiter
-;;         delim)
-;;
-;;     (save-excursion
-;;       (goto-char start)
-;;       (if (looking-at "\\([urbURB]*\\(?:'''\\|\"\"\"\\|'\\|\"\\)\\)\\\\?\n?")
-;;           (setq string-start (match-end 0)
-;;                 delim-length (- (match-end 1) (match-beginning 1))
-;;                 delim (buffer-substring-no-properties (match-beginning 1)
-;;                                                       (match-end 1)))
-;;         (error "The parameter start is not the beginning of a python string"))
-;;
-;;       ;; if the string is the first token on a line and doesn't start with
-;;       ;; a newline, fill as if the string starts at the beginning of the
-;;       ;; line. this helps with one line docstrings
-;;       (save-excursion
-;;         (beginning-of-line)
-;;         (and (/= (char-before string-start) ?\n)
-;;              (looking-at (concat "[ \t]*" delim))
-;;              (setq string-start (point))))
-;;
-;;       ;; move until after end of string, then the end of the string's contents
-;;       ;; is delim-length characters before that
-;;       (forward-sexp)
-;;       (setq string-end (- (point) delim-length)))
-;;
-;;     ;; Narrow to the string's contents and fill the current paragraph
-;;     (save-restriction
-;;       (narrow-to-region string-start string-end)
-;;       (let ((ends-with-newline (= (char-before (point-max)) ?\n)))
-;;         (fill-paragraph justify)
-;;         (if (and (not ends-with-newline)
-;;                  (= (char-before (point-max)) ?\n))
-;;             ;; the default fill-paragraph implementation has inserted a
-;;             ;; newline at the end. Remove it again.
-;;             (save-excursion
-;;               (goto-char (point-max))
-;;               (delete-char -1)))))
-;;
-;;     ;; return t to indicate that we've done our work
-;;     t))
+             ;; is there a need to fill parentized expressions?
+             ;; ((or (nth 1 pps)
+             ;;      (looking-at (python-rx open-paren))
+             ;;      (save-excursion
+             ;;        (skip-syntax-forward "^(" (line-end-position))
+             ;;        (looking-at (python-rx open-paren))))
+             ;;  (py-fill-paren pps justify))
+             (t t)))))
+      ;; fill-paragraph expexts t
+      t))
 
 (defun py-fill-labelled-string (beg end)
   "Fill string or paragraph containing lines starting with label
@@ -5549,7 +5555,7 @@ See lp:1066489 "
                 (setq this-beg (line-beginning-position))
                 (goto-char (match-end 0)))))))))
 
-(defun py-fill-string (&optional justify style beg end)
+(defun py-fill-string (&optional justify style beg end pps)
   "String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'."
   (interactive "P")
@@ -5562,34 +5568,30 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
              ;; unset python-mode value this time
              forward-sexp-function
              (orig (point-marker))
-             (pps (syntax-ppss))
-             (beg (or beg (if (nth 3 pps)
-                              (copy-marker (nth 8 pps))
-                            (when (and (equal (string-to-syntax "|")
-                                              (syntax-after (point))))
-                              (point-marker)))))
-             (delim-length (progn (goto-char beg)
-                                  (if (looking-at py-string-delim-re) (- (match-end 0) (match-beginning 0))
-                                    0)))
+             (pps (or pps (syntax-ppss)))
+             ;; if beginning of string is closer than arg beg, use this
+             (beg (or (ignore-errors (copy-marker beg))
+                      (cond ((and (nth 3 pps) (nth 8 pps))
+                             (goto-char (nth 8 pps))
+                             (skip-chars-forward "\"'")
+                             (copy-marker (point)))
+                            ((equal (string-to-syntax "|")
+                                    (syntax-after (point)))
+                             (point-marker)))))
              ;; Assume docstrings at BOL resp. indentation
-             (docstring-p
-              (and (< 0 delim-length)
-                   (eq (current-column) (current-indentation))
-                   (not (looking-at py-labelled-re))))
-             (end (or end (progn
-                            (forward-sexp)
-                            (point-marker))))
+             (docstring-p (progn (goto-char beg)(skip-chars-backward "\"'") (py-docstring-p (point))))
+             (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"'")(copy-marker (point))))
+                      (progn (goto-char (nth 8 pps)) (forward-sexp) (skip-chars-backward "\"'") (point-marker))))
              multi-line-p
-             delimiters-style
-             ;; (fill-paragraph-function)
-             )
+             delimiters-style)
         ;; whitespace and newline will be added according to mode again
-        (goto-char (+ beg delim-length))
+        (goto-char beg)
+        (setq beg (progn (skip-chars-forward "\"'") (copy-marker (point))))
         (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (skip-chars-forward " \t\r\n\f")(point)))
-        (goto-char (- end delim-length))
+        (goto-char end)
         (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
         (cond (docstring-p
-               (narrow-to-region (+ beg delim-length) (- end delim-length))
+               (narrow-to-region beg end)
                (fill-region (point-min) (point-max)))
               ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
                (py-fill-labelled-string beg end))
@@ -5597,13 +5599,13 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
                  (sit-for 0.1)
                  (fill-region beg end)))
         (setq multi-line-p
-              (> (count-matches "\n" (progn (goto-char (+ beg delim-length))(skip-chars-forward " \t\r\n\f")(point)) (progn (goto-char (- end delim-length))(skip-chars-backward " \t\r\n\f")(point))) 0))
+              (> (count-matches "\n" beg end) 0))
         (setq delimiters-style
               (case style
                 ;; delimiters-style is a cons cell with the form
                 ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
                 ;; is NIL means to not add any newlines for start or end
-                ;; of docstring.  See `style' for a
+                ;; of docstring.  See `py-docstring-style' for a
                 ;; graphic idea of each style.
                 (django (cons 1 1))
                 (onetwo (and multi-line-p (cons 1 2)))
@@ -5611,39 +5613,27 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
                 (pep-257-nn (and multi-line-p (cons nil 1)))
                 (symmetric (and multi-line-p (cons 1 1)))))
         (message "%s" delimiters-style)
+        (widen)
         (save-excursion
           (when (and docstring-p style)
             ;; Add the number of newlines indicated by the selected style
             ;; at the start of the docstring.
-            (goto-char (+ beg delim-length))
-            ;; (delete-region (point) (progn
-            ;; (skip-syntax-forward "> ")
-            ;; (point)))
-            (and (car delimiters-style)
-                 (or (newline (car delimiters-style)) t)
-                 ;; Indent only if a newline is added.
-                 ;; (indent-according-to-mode)
-                 (indent-region (+ beg delim-length) (- end delim-length)))
+            (goto-char beg)
+            (and
+             (car delimiters-style)
+             (unless (or (empty-line-p) (save-excursion (forward-line -1)(empty-line-p)))
+               (or (newline (car delimiters-style)) t))
+             (indent-region beg end))
             ;; Add the number of newlines indicated by the selected style
             ;; at the end of the docstring.
-            (goto-char (1+ (- end delim-length)))
-            ;; (delete-region (point) (progn
-            ;; (skip-syntax-backward "> ")
-            ;; (point)))
-            (and (cdr delimiters-style)
-                 ;; Add newlines only if string ends.
-                 ;; (not (= end (point-max)))
-                 (or (newline (cdr delimiters-style)) t))
-            ;; Again indent only if a newline is added.
-
-            ;; (when (or (eq style 'pep-257)(eq style 'pep-257-nn))
-            (widen)
-            (indent-region beg end)
-            (goto-char (1+ (+ beg delim-length)))
-            (end-of-line)
-            (skip-chars-backward " \"\t\r\n\f")
-            (unless (eq (char-after) ?\") (newline)))
-          (widen))))))
+            (goto-char end)
+            (unless (eq (char-after) ?\n)
+              (and
+               (cdr delimiters-style)
+               (or (newline (cdr delimiters-style)) t)))
+            (setq end (progn (skip-chars-forward " \t\r\n\f")(skip-chars-forward "\"'")(point)))
+            (setq beg (progn (goto-char beg) (skip-chars-backward " \t\r\n\f")(skip-chars-backward "\"'") (point)))
+            (indent-region beg end)))))))
 
 (defun py-fill-decorator (&optional justify)
   "Decorator fill function for `py-fill-paragraph'.
@@ -10612,40 +10602,59 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 	  (kill-local-variable 'py-preoutput-result))))))
 
 (defalias 'py-find-function 'py-find-definition)
-(defun py-find-definition (&optional arg)
-  "Find source of definition of function NAME.
+(defun py-find-definition (&optional symbol)
+  "Find source of definition of SYMBOL.
 
-Interactively, prompt for name.
-
-Search in current buffer first. "
+Interactively, prompt for SYMBOL."
   (interactive)
-  (let* ((py-imports (py-find-imports))
-         (symbol (or arg
-                     (with-syntax-table py-dotted-expression-syntax-table
-                       (current-word))))
-         ;; (enable-recursive-minibuffers t)
-         (erg (progn (goto-char (point-min))
-                     (when
-                         (re-search-forward (concat "^[ \t]*def " symbol "(") nil t 1))
-                     (forward-char -2)
-                     (point))))
-    (unless erg
-      (setq name (list (read-string (if symbol
-                                        (format "Find location of (default %s): " symbol)
-                                      "Find location of: ")
-                                    nil nil symbol)))
-      (unless py-imports
-        (error "Not called from buffer visiting Python file"))
-      (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
-                                           name py-imports)))
-             (loc (car (read-from-string loc)))
-             (file (car loc))
-             (line (cdr loc)))
-        (unless file (error "Don't know where `%s' is defined" name))
-        (pop-to-buffer (find-file-noselect file))
-        (when (integerp line)
-          (goto-char (point-min))
-          (forward-line (1- line)))))))
+  (set-register 98888888 (list (current-window-configuration) (point-marker)))
+  (let* ((oldbuf (current-buffer))
+         (imports (py-find-imports))
+         (symbol (or symbol (with-syntax-table py-dotted-expression-syntax-table
+                              (current-word))))
+         (enable-recursive-minibuffers t)
+         (symbol
+          (if (interactive-p)
+              (read-string (if symbol
+                               (format "Find location of (default %s): " symbol)
+                             "Find location of: ")
+                           nil nil symbol)
+            symbol))
+         (orig (point))
+         (local (or
+                 (py-until-found (concat "class " symbol) imenu--index-alist)
+                 (py-until-found symbol imenu--index-alist)))
+         source sourcefile path)
+    ;; ismethod(), isclass(), isfunction() or isbuiltin()
+    ;; ismethod isclass isfunction isbuiltin)
+    (if local
+        (if (numberp local)
+            (progn
+              (goto-char local)
+              (search-forward symbol (line-end-position) nil 1)
+              (push-mark)
+              (goto-char (match-beginning 0))
+              (exchange-point-and-mark))
+          (error "%s" "local not a number"))
+      (setq source (py-send-string-return-output (concat imports "import inspect;inspect.getmodule(" symbol ")")))
+      (cond ((string-match "SyntaxError" source)
+             (setq source (substring-no-properties source (match-beginning 0)))
+             (jump-to-register 98888888)
+             (message "Can't get source: %s" source))
+            ((and source (string-match "builtin" source))
+             (progn (jump-to-register 98888888)
+                    (message "%s" source)))
+            ((and source (setq path (replace-regexp-in-string "'" "" (py-send-string-return-output "import os;os.getcwd()")))
+                  (setq sourcefile (replace-regexp-in-string "'" "" (py-send-string-return-output (concat "inspect.getsourcefile(" symbol ")"))))
+                  (interactive-p) (message "sourcefile: %s" sourcefile)
+                  (find-file (concat path (char-to-string py-separator-char) sourcefile))
+                  (goto-char (point-min))
+                  (re-search-forward (concat py-def-or-class-re symbol) nil nil 1))
+             (push-mark)
+             (goto-char (match-beginning 0))
+             (exchange-point-and-mark)
+             (display-buffer oldbuf)))
+      sourcefile)))
 
 ;;; Miscellanus
 (defun py-insert-super ()
