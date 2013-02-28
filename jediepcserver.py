@@ -28,6 +28,7 @@ import sys
 import re
 import itertools
 import logging
+import site
 
 jedi = None  # I will load it later
 
@@ -165,8 +166,11 @@ def get_jedi_version():
 
 
 def jedi_epc_server(address='localhost', port=0, port_file=sys.stdout,
-                    sys_path=[], debugger=None, log=None, log_level=None):
+                    sys_path=[], virtual_env=[],
+                    debugger=None, log=None, log_level=None):
     add_virtualenv_path()
+    for p in virtual_env:
+        add_virtualenv_path(p)
     sys_path = map(os.path.expandvars, map(os.path.expanduser, sys_path))
     sys.path = [''] + list(filter(None, itertools.chain(sys_path, sys.path)))
     # Workaround Jedi's module cache.  Use this workaround until Jedi
@@ -215,15 +219,15 @@ def import_jedi():
     return jedi
 
 
-def add_virtualenv_path():
+def add_virtualenv_path(venv=os.getenv('VIRTUAL_ENV')):
     """Add virtualenv's site-packages to `sys.path`."""
-    venv = os.getenv('VIRTUAL_ENV')
     if not venv:
         return
     venv = os.path.abspath(venv)
     path = os.path.join(
         venv, 'lib', 'python%d.%d' % sys.version_info[:2], 'site-packages')
     sys.path.insert(0, path)
+    site.addsitedir(path)
 
 
 def main(args=None):
@@ -241,6 +245,9 @@ def main(args=None):
     parser.add_argument(
         '--sys-path', '-p', default=[], action='append',
         help='paths to be inserted at the top of `sys.path`.')
+    parser.add_argument(
+        '--virtual-env', '-v', default=[], action='append',
+        help='paths to be used as if VIRTUAL_ENV is set to it.')
     parser.add_argument(
         '--log', help='save server log to this file.')
     parser.add_argument(

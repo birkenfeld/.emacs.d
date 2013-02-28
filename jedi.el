@@ -45,6 +45,7 @@
                           default-directory))
 
 (defvar jedi:epc nil)
+(make-variable-buffer-local 'jedi:epc)
 
 (defvar jedi:server-script
   (convert-standard-filename
@@ -90,10 +91,44 @@ server, do something like this::
           '(\"--sys-path\" \"MY/SPECIAL/PATH\"
             \"--sys-path\" \"MY/OTHER/SPECIAL/PATH\"))
 
+If you want to include some virtualenv, do something like this.
+Note that actual `VIRTUAL_ENV' is treated automatically.  Also,
+you need to start Jedi EPC server with the same python version
+that you use for the virtualenv.::
+
+    (setq jedi:server-args
+          '(\"--virtual-env\" \"SOME/VIRTUAL_ENV_1\"
+            \"--virtual-env\" \"SOME/VIRTUAL_ENV_2\"))
+
 To see what other arguments Jedi server can take, execute the
 following command::
 
-    python jediepcserver.py --help"
+    python jediepcserver.py --help
+
+
+**Advanced usage**
+
+Sometimes you want to configure how Jedi server is started per
+buffer.  To do that, you should make this variable buffer local
+in `python-mode-hook' and set it to some buffer specific variable,
+like this::
+
+  (defun my-jedi-server-setup ()
+    (let ((cmds (GET-SOME-PROJECT-SPECIFIC-COMMAND))
+          (args (GET-SOME-PROJECT-SPECIFIC-ARGS)))
+      (when cmds (set (make-local-variable 'jedi:server-command cmds)))
+      (when args (set (make-local-variable 'jedi:server-args args)))))
+
+  (add-hook 'python-mode-hook 'my-jedi-server-setup)
+
+Note that Jedi server run by the same command is pooled.  So,
+there is only one Jedi server for the same set of command.  If
+you want to check how many EPC servers are running, use the EPC
+GUI: M-x `epc:controller'.  You will see a table of EPC connections
+for Jedi.el and other EPC applications.
+
+If you want to start a new ad-hoc server for the current buffer,
+use the command `jedi:start-dedicated-server'."
   :group 'jedi)
 
 (defcustom jedi:complete-on-dot nil
@@ -117,6 +152,14 @@ specified in in millisecond."
 (defcustom  jedi:get-in-function-call-delay 1000
   "How long Jedi should wait before showing call signature
 tooltip in millisecond."
+  :group 'jedi)
+
+(defcustom jedi:goto-follow nil
+  "When `t', `jedi:goto-definition' command follows import path etc.
+so you can get to the actual \"def\" or \"class\" block by one command.
+Default `nil' means that you may first jump to \"from MODULE import FUNCTION\"
+when you are looking for the definition of FUNCTION."
+  :type 'boolean
   :group 'jedi)
 
 (defcustom jedi:doc-mode 'rst-mode
@@ -199,6 +242,10 @@ avoid collision by something like this::
 `anything-jedi-related-names'."
   :group 'jedi)
 
+(defcustom jedi:import-python-el-settings t
+  "Automatically import setting from python.el variables."
+  :group 'jedi)
+
 
 ;;; Internal variables
 
@@ -226,8 +273,12 @@ toolitp when inside of function call.
         (define-key map "." 'jedi:dot-complete)
       (define-key map "." nil)))
   (if jedi-mode
-      (add-hook 'post-command-hook 'jedi:handle-post-command nil t)
-    (remove-hook 'post-command-hook 'jedi:handle-post-command t)))
+      (progn
+        (add-hook 'post-command-hook 'jedi:handle-post-command nil t)
+        (add-hook 'kill-buffer-hook 'jedi:server-pool--gc-when-idle nil t))
+    (remove-hook 'post-command-hook 'jedi:handle-post-command t)
+    (remove-hook 'kill-buffer-hook 'jedi:server-pool--gc-when-idle t)
+    (jedi:server-pool--gc-when-idle)))
 
 (when jedi:setup-keys
   (let ((map jedi-mode-map))
@@ -241,19 +292,83 @@ toolitp when inside of function call.
         (define-key map jedi:key-related-names command)))))
 
 
+;;; EPC utils
+
+(defun jedi:epc--live-p (mngr)
+  "Return non-nil when MNGR is an EPC manager object with a live
+connection."
+  (let ((proc (ignore-errors
+                (epc:connection-process (epc:manager-connection mngr)))))
+    (and (processp proc)
+         ;; Same as `process-live-p' in Emacs >= 24:
+         (memq (process-status proc) '(run open listen connect stop)))))
+
+(defun jedi:epc--start-epc (server-prog server-args)
+  "Same as `epc:start-epc', but set query-on-exit flag for
+associated processes to nil."
+  (let ((mngr (epc:start-epc server-prog server-args)))
+    (set-process-query-on-exit-flag (epc:connection-process
+                                     (epc:manager-connection mngr))
+                                    nil)
+    (set-process-query-on-exit-flag (epc:manager-server-process mngr) nil)
+    mngr))
+
+
+;;; Server pool
+
+(defvar jedi:server-pool--table (make-hash-table :test 'equal)
+  "A hash table that holds a pool of EPC server instances.")
+
+(defun jedi:server-pool--start (command)
+  "Get an EPC server instance from server pool by COMMAND as a
+key, or start new one if there is none."
+  (let ((cached (gethash command jedi:server-pool--table)))
+    (if (and cached (jedi:epc--live-p cached))
+        cached
+      (let* ((default-directory jedi:source-dir)
+             (mngr (jedi:epc--start-epc (car command) (cdr command))))
+        (puthash command mngr jedi:server-pool--table)
+        (jedi:server-pool--gc-when-idle)
+        mngr))))
+
+(defun jedi:-get-servers-in-use ()
+  "Return a list of non-nil `jedi:epc' in all buffers."
+  (loop with mngr-list
+        for buffer in (buffer-list)
+        for mngr = (with-current-buffer buffer jedi:epc)
+        when (and mngr (not (memq mngr mngr-list)))
+        collect mngr into mngr-list
+        finally return mngr-list))
+
+(defvar jedi:server-pool--gc-timer nil)
+
+(defun jedi:server-pool--gc ()
+  "Stop unused servers."
+  (let ((servers-in-use (jedi:-get-servers-in-use)))
+    (maphash
+     (lambda (key mngr)
+       (unless (memq mngr servers-in-use)
+         (remhash key jedi:server-pool--table)
+         (epc:stop-epc mngr)))
+     jedi:server-pool--table))
+  ;; Clear timer so that GC is started next time
+  ;; `jedi:server-pool--gc-when-idle' is called.
+  (setq jedi:server-pool--gc-timer nil))
+
+(defun jedi:server-pool--gc-when-idle ()
+  "Run `jedi:server-pool--gc' when idle."
+  (unless jedi:server-pool--gc-timer
+    (setq jedi:server-pool--gc-timer
+          (run-with-idle-timer 10 nil 'jedi:server-pool--gc))))
+
+
 ;;; Server management
 
 (defun jedi:start-server ()
-  (if jedi:epc
+  (if (jedi:epc--live-p jedi:epc)
       (message "Jedi server is already started!")
-    (let ((default-directory jedi:source-dir))
-      (setq jedi:epc (epc:start-epc (car jedi:server-command)
-                                    (append (cdr jedi:server-command)
-                                            jedi:server-args))))
-    (set-process-query-on-exit-flag
-     (epc:connection-process (epc:manager-connection jedi:epc)) nil)
-    (set-process-query-on-exit-flag
-     (epc:manager-server-process jedi:epc) nil))
+    (setq jedi:epc (jedi:server-pool--start
+                    (append jedi:server-command jedi:server-args))))
   jedi:epc)
 
 (defun jedi:stop-server ()
@@ -266,18 +381,25 @@ later when it is needed."
       (epc:stop-epc jedi:epc)
     (message "Jedi server is already killed."))
   (setq jedi:epc nil)
-  ;; If could be non-nil due to some error.  Rescue it in that case.
+  ;; It could be non-nil due to some error.  Rescue it in that case.
   (setq jedi:get-in-function-call--d nil))
 
 (defun jedi:get-epc ()
-  (or jedi:epc (jedi:start-server)))
+  (if (jedi:epc--live-p jedi:epc)
+      jedi:epc
+    (jedi:start-server)))
 
+;;;###autoload
 (defun jedi:start-dedicated-server (command)
   "Start Jedi server dedicated to this buffer.
 This is useful, for example, when you want to use different
 `sys.path' for some buffer.  When invoked as an interactive
 command, it asks you how to start the Jedi server.  You can edit
 the command in minibuffer to specify the way Jedi server run.
+
+If you want to setup how Jedi server is started programmatically
+per-buffer/per-project basis, make `jedi:server-command' and
+`jedi:server-args' buffer local and set it in `python-mode-hook'.
 See also: `jedi:server-args'."
   (interactive
    (list (split-string-and-unquote
@@ -287,12 +409,15 @@ See also: `jedi:server-args'."
                         (append jedi:server-command
                                 jedi:server-args)
                         " ")))))
-  (if (and (local-variable-p 'jedi:epc) jedi:epc)
-      (message "Dedicated Jedi server is already running!")
-    (set (make-local-variable 'jedi:epc) nil)
-    (let ((jedi:server-command command)
-          (jedi:server-args nil))
-      (jedi:start-server))))
+  ;; Reset `jedi:epc' so that a new server is created when COMMAND is
+  ;; new.  If it is already in the server pool, the server instance
+  ;; already in the pool is picked up by `jedi:start-server'.
+  (setq jedi:epc nil)
+  ;; Set `jedi:server-command', so that this command is used
+  ;; when restarting EPC server of this buffer.
+  (set (make-local-variable 'jedi:server-command) command)
+  (set (make-local-variable 'jedi:server-args) nil)
+  (jedi:start-server))
 
 (defun jedi:call-deferred (method-name)
   "Call ``Script(...).METHOD-NAME`` and return a deferred object."
@@ -336,7 +461,8 @@ See also: `jedi:server-args'."
   "Insert dot and complete code at point."
   (interactive)
   (insert ".")
-  (jedi:complete :expand nil))
+  (unless (ac-cursor-on-diable-face-p)
+    (jedi:complete :expand nil)))
 
 
 ;;; AC source
@@ -445,7 +571,8 @@ See also: `jedi:server-args'."
   "Goto the definition of the object at point."
   (interactive "P")
   (lexical-let ((other-window other-window))
-    (deferred:nextc (jedi:call-deferred 'goto)
+    (deferred:nextc (jedi:call-deferred
+                     (if jedi:goto-follow 'get_definition 'goto))
       (lambda (reply)
         (jedi:goto-definition--callback reply other-window)))))
 
@@ -542,9 +669,10 @@ See also: `jedi:server-args'."
   (deferred:nextc (jedi:call-deferred 'get_definition)
     (lambda (reply)
       (with-current-buffer (get-buffer-create jedi:doc-buffer-name)
-        (erase-buffer)
         (loop with has-doc = nil
               with first = t
+              with inhibit-read-only = t
+              initially (erase-buffer)
               for def in reply
               do (destructuring-bind
                      (&key doc desc_with_module line_nr module_path
@@ -590,6 +718,25 @@ See also: `jedi:server-args'."
 
 ;;; Setup
 
+(defun jedi:import-python-el-settings-setup ()
+  "Make jedi aware of python.el virtualenv and path settings.
+This is automatically added to the `jedi-mode-hook' when
+`jedi:import-python-el-settings' is non-nil."
+  (let ((args))
+    (when (bound-and-true-p python-shell-extra-pythonpaths)
+      (mapc
+       (lambda (path)
+         (setq args (append (list "--sys-path" path) args)))
+       python-shell-extra-pythonpaths))
+    (when (bound-and-true-p python-shell-virtualenv-path)
+      (setq args
+            (append
+             (list "--virtual-env" python-shell-virtualenv-path)
+             args)))
+    (when args
+      (set (make-local-variable 'jedi:server-args)
+           (append args jedi:server-args)))))
+
 ;;;###autoload
 (defun jedi:setup ()
   "Fully setup jedi.el for current buffer.
@@ -605,6 +752,14 @@ You can also call this function as a command, to quickly test
 what jedi can do."
   (interactive)
   (jedi:ac-setup)
+  (when jedi:import-python-el-settings
+    ;; Hack to access buffer/dir-local vars: http://bit.ly/Y5IfMV.
+    ;; Given that `jedi:setup' is added to the `python-mode-hook'
+    ;; this will modify `hack-local-variables-hook' on python
+    ;; buffers only and will allow us to access buffer/directory
+    ;; local variables in `jedi:import-python-el-settings-setup'.
+    (add-hook 'hack-local-variables-hook
+              #'jedi:import-python-el-settings-setup nil t))
   (jedi-mode 1))
 
 
