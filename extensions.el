@@ -101,10 +101,10 @@
 
 ;; fastnav
 (require 'fastnav)
-(global-set-key (kbd "M-s") 'jump-to-char-forward)
-(global-set-key (kbd "M-S") 'jump-to-char-backward)
-(global-set-key (kbd "M-m") 'mark-to-char-forward)
-(global-set-key (kbd "M-M") 'mark-to-char-backward)
+(global-set-key (kbd "M-j") 'fastnav-jump-to-char-forward)
+(global-set-key (kbd "M-J") 'fastnav-jump-to-char-backward)
+(global-set-key (kbd "M-m") 'fastnav-mark-to-char-forward)
+(global-set-key (kbd "M-M") 'fastnav-mark-to-char-backward)
 
 ;; auto-completion setup
 (require 'pos-tip)

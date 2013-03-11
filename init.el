@@ -202,7 +202,7 @@
 (global-set-key (kbd "C-c o") 'occur)
 
 ;; since M-s o isn't needed for occur, use M-s directly for word search
-(global-set-key (kbd "M-s") 'isearch-forward-word)
+(global-set-key (kbd "M-s") 'isearch-forward-symbol)
 
 ;; scroll without moving cursor
 (global-set-key (kbd "C-M-<up>") '(lambda () (interactive) (scroll-down 1)))
