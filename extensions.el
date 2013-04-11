@@ -2,9 +2,7 @@
 
 ;; more load-path
 (setq load-path `("~/.emacs.d/emacs-goodies-el"
-                  "~/.emacs.d/predictive"
                   "~/.emacs.d/talcum"
-                  "~/.emacs.d/haskell-mode"
                   ,@load-path))
 
 ;; ---------- always enabled ---------------------------------------------------
@@ -19,6 +17,10 @@
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
+;; go to last change in buffer
+(require 'goto-chg)
+(global-set-key (kbd "C-,") 'goto-last-change)
 
 ;; colored moccur
 (require 'color-moccur)
