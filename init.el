@@ -123,6 +123,8 @@
 ;; in the minibuffer, do not kill but delete
 (define-key minibuffer-local-map (kbd "M-DEL") 'backward-delete-word)
 
+(global-set-key (kbd "<C-M-backspace>") 'backward-kill-sexp)
+
 ;; useful mouse behavior
 (global-set-key (kbd "<left-fringe> <down-mouse-1>") 'mouse-drag-region)
 (global-set-key (kbd "<s-mouse-1>") 'mouse-delete-other-windows)
@@ -243,6 +245,11 @@
 ;; font size management
 (global-set-key (kbd "C-x C-+") 'increase-font-size)
 (global-set-key (kbd "C-x C--") 'decrease-font-size)
+
+;; outline keybindings
+(global-set-key (kbd "C-c <C-left>")  'hide-body)
+(global-set-key (kbd "C-c <C-right>") 'show-subtree)
+
 
 ;; support back and forward mouse in Info and help
 (eval-after-load 'help-mode

@@ -107,6 +107,8 @@
 (global-set-key (kbd "M-J") 'fastnav-jump-to-char-backward)
 (global-set-key (kbd "M-m") 'fastnav-mark-to-char-forward)
 (global-set-key (kbd "M-M") 'fastnav-mark-to-char-backward)
+(global-set-key (kbd "M-z") 'fastnav-zap-to-char-forward)
+(global-set-key (kbd "M-Z") 'fastnav-zap-to-char-backward)
 
 ;; auto-completion setup
 (require 'pos-tip)
@@ -201,6 +203,16 @@
 ;; C eldoc mode (automatic function signature tips)
 (autoload 'c-turn-on-eldoc-mode "c-eldoc" nil t)
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+
+;; C disaster mode (instant disassembly)
+(autoload 'disaster "disaster" nil t)
+(eval-after-load 'cc-mode
+  '(progn
+     (require 'disaster)
+     (defun my-c-mode-common-hook ()
+       (define-key c-mode-base-map (kbd "C-c C-d") 'disaster)
+       (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
+     (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)))
 
 ;; color dabbrev-expanded phrases
 (require 'dabbrev-highlight)
@@ -299,7 +311,7 @@
 ;; test-case-mode: add a nose backend
 ;(require 'test-case-mode)
 
-;; remove global dot that may have been added last session
+;; ;; remove global dot that may have been added last session
 ;; (setq-default
 ;;  mode-line-format
 ;;  (mapcan (lambda (x)
