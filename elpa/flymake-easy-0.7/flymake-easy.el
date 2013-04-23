@@ -5,7 +5,7 @@
 
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; URL: https://github.com/purcell/flymake-easy
-;; Version: 0.4
+;; Version: 0.7
 ;; Keywords: convenience, internal
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,6 @@
 ;;; Code:
 
 (require 'flymake)
-(require 'cl)
 
 (defvar flymake-easy--active nil
   "Indicates when flymake-easy-load has successfully run in this buffer.")
@@ -66,19 +65,27 @@ Argument PREFIX temp file prefix, supplied by flymake."
             (t
              (error "unknown location for flymake-easy: %s" flymake-easy--location)))))
          (command (funcall flymake-easy--command-fn tempfile)))
-    (list (first command) (rest command))))
+    (list (car command) (cdr command))))
 
-(defun flymake-easy-load (command-fn &optional err-line-patterns location extension warning-re)
+(defun flymake-easy-exclude-buffer-p ()
+  "Whether to skip flymake in the current buffer."
+  (and (fboundp 'tramp-tramp-file-p)
+       (buffer-file-name)
+       (tramp-tramp-file-p (buffer-file-name))))
+
+(defun flymake-easy-load (command-fn &optional err-line-patterns location extension warning-re info-re)
   "Enable flymake in the containing buffer using a specific narrow configuration.
 Argument COMMAND-FN function called to build the
    command line to run (receives filename, returns list).
 Argument ERR-LINE-PATTERNS patterns for identifying errors (see `flymake-err-line-patterns').
 Argument EXTENSION a canonical extension for this type of source file, e.g. \"rb\".
 Argument LOCATION where to create the temporary copy: one of 'tempdir (default) or 'inplace.
-Argument WARNING-RE a pattern which identifies error messages as warnings."
+Argument WARNING-RE a pattern which identifies error messages as warnings.
+Argument INFO-RE a pattern which identifies messages as infos (supported only
+by the flymake fork at https://github.com/illusori/emacs-flymake)."
   (let ((executable (first (funcall command-fn "dummy"))))
     (if (executable-find executable) ;; TODO: defer this checking
-        (progn
+        (unless (flymake-easy-exclude-buffer-p)
           (setq flymake-easy--command-fn command-fn
                 flymake-easy--location (or location 'tempdir)
                 flymake-easy--extension extension
@@ -87,9 +94,11 @@ Argument WARNING-RE a pattern which identifies error messages as warnings."
                '(("." flymake-easy--flymake-init)))
           (when err-line-patterns
             (set (make-local-variable 'flymake-err-line-patterns) err-line-patterns))
-          (dolist (var '(flymake-warning-re
-                         flymake-warn-line-regexp))
+          (dolist (var '(flymake-warning-re flymake-warn-line-regexp))
             (set (make-local-variable var) (or warning-re "^[wW]arn")))
+          (when (boundp 'flymake-info-line-regexp)
+            (set (make-local-variable 'flymake-info-line-regexp)
+                 (or info-re "^[iI]nfo")))
           (flymake-mode t))
       (message "Not enabling flymake: '%s' command not found" executable))))
 

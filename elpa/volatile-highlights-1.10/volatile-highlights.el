@@ -1,15 +1,15 @@
 ;;; volatile-highlights.el --- Minor mode for visual feedback on some operations.
 
-;; Copyright (C) 2001, 2010-2012 K-talo Miyazaki, all rights reserved.
+;; Copyright (C) 2001, 2010-2013 K-talo Miyazaki, all rights reserved.
 
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 03 October 2001. (as utility functions in my `.emacs' file.)
 ;;          14 March   2010. (re-written as library `volatile-highlights.el')
 ;; Keywords: emulations convenience wp
-;; Revision: $Id: 52f809b599e09b2c72efb4f731ba44bb31e5e07f $
+;; Revision: $Id: 05a87ee2b07b56d0d15be57cea3d77f30da5411e $
 ;; URL: http://www.emacswiki.org/emacs/download/volatile-highlights.el
 ;; GitHub: http://github.com/k-talo/volatile-highlights.el
-;; Version: 1.8
+;; Version: 1.10
 ;; Contributed by: Ryan Thompson.
 
 ;; This file is not part of GNU Emacs.
@@ -98,6 +98,14 @@
 
 ;;; Change Log:
 
+;; v1.10
+;;   - Use inherit in face definition when detected.
+;;   - Suppress compiler warnings regarding to emacs/xemacs private
+;;     functions by file local variable.
+;;
+;; v1.9  Tue Mar  5 00:52:35 2013 JST
+;;   - Fixed errors in shell caused by dummy functions.
+;;
 ;; v1.8  Wed Feb 15 00:08:14 2012 JST
 ;;   - Added "Contributed by: " line in header.
 ;;   - Added extension for hideshow.
@@ -166,35 +174,6 @@
 
 ;;;============================================================================
 ;;;
-;;;  Suppress compiler warnings regarding to emacs/xemacs private functions.
-;;;
-;;;============================================================================
-(eval-when-compile
-  (dolist (func (cond (vhl/.xemacsp
-                       '(delete-overlay
-                         make-overlay
-                         overlay-end
-                         overlay-get
-                         overlay-put
-                         overlay-start
-                         overlays-at
-                         overlayp
-                         overlays-in))
-                      (t
-                       '(delete-extent
-                         extent-property
-                         extentp
-                         highlight-extent
-                         make-extent
-                         map-extents
-                         set-extent-face
-                         set-extent-property))))
-      (when (not (fboundp func))
-        (setf (symbol-function func) (lambda (&rest args))))))
-
-
-;;;============================================================================
-;;;
 ;;;  Faces.
 ;;;
 ;;;============================================================================
@@ -212,7 +191,7 @@
 (defface vhl/default-face
   (cond
    ((or vhl/.xemacsp
-        (vhl/.face-inheritance-possible-p))
+        (not (vhl/.face-inheritance-possible-p)))
     '((((class color) (background light))
        (:background "yellow1"))
       (((class color) (background dark))
@@ -808,5 +787,16 @@ extensions."
                                  'vhl/ext/hideshow/vhl/around-hook))
 
 (vhl/install-extension 'hideshow)
+
+
+;;;============================================================================
+;;;
+;;;  Suppress compiler warnings regarding to emacs/xemacs private functions.
+;;;
+;;;============================================================================
+
+;; Local variables:
+;; byte-compile-warnings: (not unresolved)
+;; End:
 
 ;;; volatile-highlights.el ends here

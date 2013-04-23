@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil nil ("volatile-highlights-pkg.el" "volatile-highlights.el")
-;;;;;;  (20707 60029 849383 754000))
+;;;;;;  (20840 6508 117481 453000))
 
 ;;;***
 
