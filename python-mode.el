@@ -71,7 +71,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.1.1")
+(defconst py-version "6.1.2")
 
 ;;; Customization
 (defcustom python-mode-modeline-display "Py"
@@ -115,13 +115,41 @@ See original source: http://pymacs.progiciels-bpi.ca"
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-smart-operator-mode-p nil
+(defun py-smart-operator-check ()
+  "Check, if smart-operator-mode is loaded resp. available.
+
+Give some hints, if not."
+  (interactive)
+  (if (featurep 'smart-operator)
+      't
+    (progn
+      (message "%s" "Don't see smart-operator.el. Make sure, it's installed. See in menu Options, Manage Emacs Packages. Or get it from source: URL: http://xwl.appspot.com/ref/smart-operator.el")
+      nil)))
+
+
+(defun py-autopair-check ()
+  "Check, if autopair-mode is available.
+
+Give some hints, if not."
+  (interactive)
+  (if (featurep 'autopair)
+      't
+    (progn
+      (message "%s" "Don't see autopair.el. Make sure, it's installed. If not, maybe see source: URL: http://autopair.googlecode.com")
+      nil)))
+
+
+(defcustom py-smart-operator-mode-p t
   "If python-mode calls (smart-operator-mode-on)
 
 Default is non-nil. "
 
   :type 'boolean
-  :group 'python-mode)
+  :group 'python-mode
+  :set (lambda (symbol value)
+         (and (py-smart-operator-check)
+              (set-default symbol value)
+              (smart-operator-mode (if value 1 0)))))
 (make-variable-buffer-local 'py-smart-operator-mode-p)
 
 (defcustom py-sexp-function nil
@@ -136,13 +164,20 @@ Default is nil. "
   :group 'python-mode)
 (make-variable-buffer-local 'py-sexp-function)
 
-(defcustom py-prepare-autopair-mode-p nil
-  "If autopair-mode stuff should be loaded. Default is `nil'
 
-When non-nil, M-x `autopair-mode' will toggle it.
-See also `autopair-mode-on'. "
+(defvar py-autopair-mode nil)
+(defcustom py-autopair-mode nil
+  "If python-mode calls (autopair-mode-on)
+
+Default is nil
+Load `autopair-mode' written by Joao Tavora <joaotavora [at] gmail.com>
+URL: http://autopair.googlecode.com "
   :type 'boolean
-  :group 'python-mode)
+  :group 'python-mode
+  :set (lambda (symbol value)
+         (and (py-autopair-check)
+              (set-default symbol value)
+              (autopair-mode (if value 1 0)))))
 
 (defcustom py-no-completion-calls-dabbrev-expand-p t
   "If completion function should call dabbrev-expand when no completion found. Default is `t'
@@ -344,6 +379,26 @@ Default is nil. "
 
 (defcustom py-closing-list-dedents-bos nil
   "If non-nil, closing parentesis dedents onto column of statement, otherwise keeps additional `py-indent-offset', default is nil "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-electric-kill-backward-p nil
+  "Affects `py-electric-backspace'. Default is nil.
+
+If behind a delimited form of braces, brackets or parentheses,
+backspace will kill it's contents
+
+With when cursor after
+my_string[0:1]
+--------------^
+
+==>
+
+my_string[]
+----------^
+
+In result cursor is insided emptied delimited form."
+
   :type 'boolean
   :group 'python-mode)
 
@@ -813,6 +868,20 @@ Also used by (minor-)outline-mode "
   "*Controls if doc strings can be hidden by hide-show"
   :type 'boolean
   :group 'python-mode)
+
+
+(defcustom py-paragraph-fill-docstring-p nil
+  "If `py-fill-paragraph', when inside a docstring, should fill the complete string.
+
+Default is nil.
+
+Convenient use of `M-q' inside docstrings
+See also `py-docstring-style'
+"
+
+  :type 'boolean
+  :group 'python-mode)
+(make-variable-buffer-local 'py-paragraph-fill-docstring-p)
 
 (defcustom python-mode-hook nil
   "Hook run when entering Python mode."
@@ -1692,7 +1761,8 @@ alternative for finding the index.")
         (define-key map [tab] 'py-complete-function)
       (define-key map [tab] 'py-completion-at-point))
     (define-key map "\C-c-" 'py-up-exception)
-    (define-key map "\C-c=" 'py-down-exception)))
+    (define-key map "\C-c=" 'py-down-exception))
+  map)
 
 (defvar py-menu)
 
@@ -2440,38 +2510,28 @@ Returns value of `py-smart-indentation'. "
   py-smart-indentation)
 
 ;; Smart operator
-(defalias 'toggle-py-smart-operator 'py-toggle-smart-operator)
-(defun py-toggle-smart-operator (&optional arg)
+(defun toggle-py-smart-operator-mode-p (&optional arg)
   "If `py-smart-operator-mode-p' should be on or off.
 
-Returns value of `py-smart-operator-mode-p' switched to. "
+  Returns value of `py-smart-operator-mode-p' switched to. "
   (interactive)
-  (let ((arg (or arg (if py-smart-operator-mode-p -1 1))))
-    (if (< 0 arg)
-        (setq py-smart-operator-mode-p t)
-      (setq py-smart-operator-mode-p nil))
-    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-    py-smart-operator-mode-p))
+  (and (py-smart-operator-check)
+       (setq py-smart-operator-mode-p (smart-operator-mode (if smart-operator-mode 0 1)))))
 
-(defun py-smart-operator-mode-on (&optional arg)
-  "Make sure, `py-smart-operator-mode-p' is on.
+(defun py-smart-operator-mode-p-on ()
+  "Make sure, py-smart-operator-mode-p' is on.
 
 Returns value of `py-smart-operator-mode-p'. "
-  (interactive "p")
-  (let ((arg (or arg 1)))
-    (py-toggle-smart-operator arg))
-  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-  py-smart-operator-mode-p)
+  (interactive)
+  (and (py-smart-operator-check)
+       (setq py-smart-operator-mode-p (smart-operator-mode 1))))
 
-(defun py-smart-operator-mode-off (&optional arg)
-  "Make sure, `py-smart-operator-mode-p' is off.
+(defun py-smart-operator-mode-p-off ()
+  "Make sure, py-smart-operator-mode-p' is off.
 
 Returns value of `py-smart-operator-mode-p'. "
-  (interactive "p")
-  (let ((arg (if arg (- arg) -1)))
-    (py-toggle-smart-operator arg)
-    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-    py-smart-operator-mode-p))
+  (interactive)
+  (setq py-smart-operator-mode-p (smart-operator-mode 0)))
 
 ;; py-use-current-dir-when-execute-p forms
 (defun toggle-py-use-current-dir-when-execute-p (&optional arg)
@@ -2505,24 +2565,30 @@ Returns value of `py-use-current-dir-when-execute-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
   py-use-current-dir-when-execute-p)
 
-;; autopair
-(defun py-toggle-autopair-mode ()
-  "If `autopair-p' should be on or off. "
+;; py-autopair-mode forms
+(defalias 'toggle-py-autopair-mode 'py-toggle-autopair-mode)
+(defun py-toggle-autopair-mode (&optional arg)
+  "If `py-autopair-mode' should be on or off.
+
+  Returns value of `py-autopair-mode' switched to. "
   (interactive)
-  (unless (featurep 'autopair)
-    (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el")))
-  (autopair-mode)
-  (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
-  autopair-mode)
+  (and (py-autopair-check)
+       (setq py-autopair-mode (autopair-mode (if autopair-mode 0 1)))))
 
 (defun py-autopair-mode-on ()
-  "Make sure, autopair' is on. "
+  "Make sure, py-autopair-mode' is on.
+
+Returns value of `py-autopair-mode'. "
   (interactive)
-  (unless (featurep 'autopair)
-    (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el")))
-  (autopair-on)
-  (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
-  autopair-mode)
+  (and (py-autopair-check)
+       (setq py-autopair-mode (autopair-mode 1))))
+
+(defun py-autopair-mode-off ()
+  "Make sure, py-autopair-mode' is off.
+
+Returns value of `py-autopair-mode'. "
+  (interactive)
+  (setq py-autopair-mode (autopair-mode 0)))
 
 ;; py-switch-buffers-on-execute-p forms
 (defun toggle-py-switch-buffers-on-execute-p (&optional arg)
@@ -2667,7 +2733,7 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
                 (string-match "\n[ \t].*\n?$" string))
         (comint-send-string process "\n")))))
 
-(defun py-shell-send-string-no-output (string &optional process msg)
+(defun py-send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output.
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
@@ -2752,15 +2818,15 @@ Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (with-current-buffer (process-buffer process)
     (let ((completions
-           (py-shell-send-string-no-output
+           (py-send-string-no-output
             (format completion-code input) process)))
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
-(defun python-shell-completion--do-completion-at-point (process imports input)
+(defun py-shell--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
   (with-syntax-table py-dotty-syntax-table
-    (when imports (py-shell-send-string-no-output imports process))
+    (when imports (py-send-string-no-output imports process))
     (let* ((code python-shell-module-completion-string-code)
            (completions
             (python-shell-completion--get-completions
@@ -2805,7 +2871,7 @@ completions on the current context."
   (interactive)
   (and comint-last-prompt-overlay
        (> (point-marker) (overlay-end comint-last-prompt-overlay))
-       (python-shell-completion--do-completion-at-point
+       (py-shell--do-completion-at-point
 	(get-buffer-process (current-buffer))(buffer-substring-no-properties beg end) word)))
 
 (defun python-shell-completion-complete-or-indent ()
@@ -3418,7 +3484,7 @@ of current line."
     (if (not process)
         nil
       (let ((module-file
-             (py-shell-send-string-no-output
+             (py-send-string-no-output
               (format python-ffap-string-code module) process)))
         (when module-file
           (substring-no-properties module-file 1 -1))))))
@@ -3761,16 +3827,17 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (and (fboundp 'make-obsolete-variable)
      (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))
 
-(defun py-docstring-p (pos)
+(defun py-docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
-  (save-excursion
-    (goto-char pos)
-    (if (looking-at-p "'''\\|\"\"\"")
-        (progn
-          (py-beginning-of-statement)
-          (or (bobp)
-              (py-beginning-of-def-or-class-p)))
-      nil)))
+  (let ((pos (or beginning-of-string-position (and (nth 3 (syntax-ppss)) (nth 8 (syntax-ppss))))))
+    (save-excursion
+      (goto-char pos)
+      (if (looking-at-p "'''\\|\"\"\"")
+          (progn
+            (py-beginning-of-statement)
+            (or (bobp)
+                (py-beginning-of-def-or-class-p)))
+        nil))))
 
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)
@@ -3872,12 +3939,24 @@ Returns column reached. "
   (let ((arg (or arg 1))
         erg)
     (dotimes (i arg)
-      (if (looking-back "^[ \t]+")
-          (let* ((remains (% (current-column) py-indent-offset)))
-            (if (< 0 remains)
-                (delete-char (- remains))
-              (indent-line-to (- (current-indentation) py-indent-offset))))
-        (delete-char (- 1))))
+      (cond ((looking-back "^[ \t]+")
+             (let* ((remains (% (current-column) py-indent-offset)))
+               (if (< 0 remains)
+                   (delete-char (- remains))
+                 (indent-line-to (- (current-indentation) py-indent-offset)))))
+            ((and py-electric-kill-backward-p (member (char-before) (list ?\) ?\] ?\})))
+             (let ((orig (point))
+                   (thischar (char-before))
+                   pps)
+               (forward-char -1)
+               (setq pps (syntax-ppss))
+               (when (nth 1 pps)
+                 (goto-char (nth 1 pps))
+                 (forward-char 1)
+                 (delete-region (point) orig)
+                 (insert-char thischar 1)
+                 (forward-char -1))))
+            (t (delete-char (- 1)))))
     (setq erg (current-column))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
@@ -3946,51 +4025,64 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
              (delete-horizontal-space)
              (indent-to need))))))
 
-(defun py-indent-fix-region-intern ()
+(defun py-indent-fix-region-intern (beg end)
   "Used when `py-tab-indents-region-p' is non-nil. "
-  (save-excursion
-    (save-restriction
-      (beginning-of-line)
-      (narrow-to-region (region-beginning) (region-end))
-      (forward-line 1)
-      (narrow-to-region (line-beginning-position) (region-end))
-      (py-indent-region (point-min) (point-max)))))
+  (let (indent)
+    (save-excursion
+      (save-restriction
+        (beginning-of-line)
+        (narrow-to-region beg end)
+        (forward-line 1)
+        (narrow-to-region (line-beginning-position) end)
+        (beginning-of-line)
+        (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
+        (indent-to (py-compute-indentation))
+        (while
+            (< (line-end-position) end)
+          (forward-line 1)
+          (beginning-of-line)
+          (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
+          (indent-to (py-compute-indentation))))))
+  ;; (exchange-point-and-mark)
+  )
 
-(defun py-indent-line-intern (need cui)
+(defun py-indent-line-intern (need cui py-indent-offset &optional beg end region)
   (if py-tab-indent
       (progn
-        (and py-tab-indents-region-p (use-region-p)
-             (py-indent-fix-region-intern))
+        (and py-tab-indents-region-p region
+             (py-indent-fix-region-intern beg end))
         (cond ((eq need cui)
-               (if (eq this-command last-command)
-                   (if (and py-tab-shifts-region-p (use-region-p))
-                       (while (< 0 (current-indentation))
-                         (py-shift-region-left 1))
+               (if (or (eq this-command last-command)
+                       ;; (eq this-command 'exchange-point-and-mark)
+                       (eq this-command 'py-indent-line)
+                       )
+                   (if (and py-tab-shifts-region-p region)
+                       (while (save-excursion (goto-char beg) (< 0 (current-indentation)))
+                         (py-shift-region-left 1 beg end))
                      (beginning-of-line)
                      (delete-horizontal-space)
                      (if (<= (line-beginning-position) (+ (point) (- col cui)))
                          (forward-char (- col cui))
-                       (beginning-of-line))
-                     )))
+                       (beginning-of-line)))))
               ((< cui need)
-               (if (eq this-command last-command)
-                   (if (and py-tab-shifts-region-p (use-region-p))
-                       (progn
-                         (py-shift-region-right 1))
-                     (progn
-                       (beginning-of-line)
-                       (delete-horizontal-space)
-                       (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
-                       (forward-char (- col cui))))
-                 (if (and py-tab-shifts-region-p (use-region-p))
-                     (while (< (current-indentation) need)
-                       (py-shift-region-right 1))
+               ;; (if (eq this-command last-command)
+               (if (and py-tab-shifts-region-p region)
+                   (progn
+                     (py-shift-region-right 1))
+                 (progn
                    (beginning-of-line)
                    (delete-horizontal-space)
-                   (indent-to need)
+                   (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
                    (forward-char (- col cui)))))
+              ;; (if (and py-tab-shifts-region-p region)
+              ;;     (while (< (current-indentation) need)
+              ;;       (py-shift-region-right 1))
+              ;;   (beginning-of-line)
+              ;;   (delete-horizontal-space)
+              ;;   (indent-to need)
+              ;;   (forward-char (- col cui)))))
               ((< need cui)
-               (if (and py-tab-shifts-region-p (use-region-p))
+               (if (and py-tab-shifts-region-p region)
                    (progn
                      (when (eq (point) (region-end))
                        (exchange-point-and-mark))
@@ -3999,7 +4091,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                  (beginning-of-line)
                  (delete-horizontal-space)))
               (t
-               (if (and py-tab-shifts-region-p (use-region-p))
+               (if (and py-tab-shifts-region-p region)
                    (progn
                      ;; (when (eq (point) (region-end))
                      ;; (exchange-point-and-mark))
@@ -4014,7 +4106,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                    (beginning-of-line))))))
     (insert-tab)))
 
-(defun py-indent-line (&optional arg recursive)
+(defun py-indent-line (&optional arg)
   "Indent the current line according to Python rules.
 
 When called interactivly with \\[universal-argument], ignore dedenting rules for block closing statements
@@ -4031,40 +4123,42 @@ When `py-tab-shifts-region-p' is `t', not just the current line,
 but the region is shiftet that way.
 
 If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
---as indent is at outmost reasonable--, indent-region is called.
-
-Optional arg RECURSIVE is ignored presently. "
+--as indent is at outmost reasonable--, indent-region is called. "
   (interactive "P")
-  (when (and (use-region-p) (or py-tab-shifts-region-p
-                                py-tab-indents-region-p)
-             (eq (point) (region-end))
-             (exchange-point-and-mark)))
-  (let ((cui (current-indentation))
-        (col (current-column))
-        (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
-                                   (py-guess-indent-offset))
-                                  ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
-                                   py-already-guessed-indent-offset)
-                                  (t (default-value 'py-indent-offset))))
-        (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
-                  ;; if previous command was an indent
-                  ;; already, position reached might
-                  ;; produce false guesses
-                  (py-compute-indentation (point) nil nil nil nil nil py-already-guessed-indent-offset)
-                (py-compute-indentation))))
-    ;; (setq py-indent-offset)
-    (unless (eq this-command last-command)
-      (setq py-already-guessed-indent-offset this-indent-offset))
-    (cond ((eq 4 (prefix-numeric-value arg))
-           (beginning-of-line)
-           (delete-horizontal-space)
-           (indent-to (+ need py-indent-offset)))
-          ((not (eq 1 (prefix-numeric-value arg)))
-           (py-smart-indentation-off)
-           (py-indent-line-intern need cui))
-          (t (py-indent-line-intern need cui))))
-  (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
-  (current-indentation))
+  (save-excursion
+    (let ((region (use-region-p))
+          beg end)
+      (and region (setq beg (region-beginning))
+           (setq end (region-end)))
+      (and (or py-tab-shifts-region-p
+               py-tab-indents-region-p)
+           (eq (point) end)
+           (exchange-point-and-mark))
+      (let ((cui (current-indentation))
+            (col (current-column))
+            (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
+                                       (py-guess-indent-offset))
+                                      ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
+                                       py-already-guessed-indent-offset)
+                                      (t (default-value 'py-indent-offset))))
+            (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
+                      ;; if previous command was an indent
+                      ;; already, position reached might
+                      ;; produce false guesses
+                      (py-compute-indentation (point) nil nil nil nil nil py-already-guessed-indent-offset)
+                    (py-compute-indentation))))
+        (unless (eq this-command last-command)
+          (setq py-already-guessed-indent-offset this-indent-offset))
+        (cond ((eq 4 (prefix-numeric-value arg))
+               (beginning-of-line)
+               (delete-horizontal-space)
+               (indent-to (+ need py-indent-offset)))
+              ((not (eq 1 (prefix-numeric-value arg)))
+               (py-smart-indentation-off)
+               (py-indent-line-intern need cui this-indent-offset beg end region))
+              (t (py-indent-line-intern need cui this-indent-offset beg end region)))
+        (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
+        (current-indentation)))))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
@@ -5415,89 +5509,35 @@ the default"
       (setq liste (cdr liste)))
     element))
 
-(defun py-end-of-string-intern (pps)
+(defun py-end-of-string (&optional beginning-of-string-position)
   "Go to end of string at point, return position.
 
 Takes the result of (syntax-ppss)"
-  (goto-char (nth 8 pps))
-  (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
-       (goto-char (match-end 0))
-       (search-forward (match-string-no-properties 0))))
+  (interactive)
+  (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (syntax-ppss))(nth 8 (syntax-ppss))))))
+    (goto-char beginning-of-string-position)
+    ;; (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
+    (forward-sexp))
+  (point))
 
-(defun py-fill-paragraph (&optional justify style start end)
+(defun py-fill-paragraph (&optional justify style start end docstring)
   "`fill-paragraph-function'
 
-commands py-fill-paragraph-SUFFIX
-choose one of the following implemented styles:
-
-DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
-
-Otherwise `py-docstring-style' is used. Explanation:
-
-DJANGO:
-
-    \"\"\"
-    Process foo, return bar.
-    \"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-
-ONETWO:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    \"\"\"
-
-PEP-257:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    \"\"\"
-
-PEP-257-NN:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-
-SYMMETRIC:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-"
+If `py-paragraph-fill-docstring-p' and inside a docstring, the whole docstring is formatted.
+See also `py-fill-string' "
   (interactive "P")
   (or (fill-comment-paragraph justify)
-      (let ((orig (copy-marker (point)))
-            (pps (syntax-ppss))
-            (beg (or start (if (use-region-p) (region-beginning) (py-beginning-of-paragraph-position))))
-            (end (copy-marker (or end (if (use-region-p) (region-end) (py-end-of-paragraph-position)))))
-            (style (or style py-docstring-style))
-            (this-end (point-min)))
+      (let* ((orig (copy-marker (point)))
+             (pps (syntax-ppss))
+             (docstring (and py-paragraph-fill-docstring-p (or docstring (py-docstring-p (nth 8 pps)))))
+             (beg (or start (and (use-region-p) (region-beginning)) (and py-paragraph-fill-docstring-p docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
+             (end (copy-marker (or end (and (use-region-p) (region-end)) (and py-paragraph-fill-docstring-p docstring (py-end-of-string (nth 8 pps))) (py-end-of-paragraph-position))))
+             (style (or style py-docstring-style))
+             (this-end (point-min)))
         (when (and (nth 3 pps) (< beg (nth 8 pps))
                    (py-docstring-p (nth 8 pps))
                    (setq beg (nth 8 pps)))
-          (setq end (py-end-of-string-intern pps)))
+          (setq end (py-end-of-string (nth 8 pps))))
         (save-excursion
           (save-restriction
             (narrow-to-region beg end)
@@ -5511,7 +5551,21 @@ SYMMETRIC:
                          (syntax-after (point)))
                   (looking-at py-string-delim-re))
               (goto-char beg)
-              (py-fill-string justify style nil nil pps)
+              (if (and py-paragraph-fill-docstring-p docstring (re-search-forward (concat "^" py-labelled-re) nil t))
+                  (progn
+                    (goto-char beg)
+                    ;; must process one by one
+                    (while (and (not (eobp)) (setq last (point)) (forward-paragraph) (< last (point))(< (point) end)(setq this-end (point)))
+                      (save-restriction
+                        (narrow-to-region last this-end)
+                        (goto-char last)
+                        (if (re-search-forward (concat "^" py-labelled-re) nil t this-end)
+                            (py-fill-labelled-string last this-end)
+
+                          (py-fill-string justify style last this-end pps 'no))
+                        (goto-char this-end)
+                        (widen))))
+                (py-fill-string justify style beg end pps))
               (goto-char this-end))
              ;; Decorators
              ((save-excursion
@@ -5529,7 +5583,10 @@ SYMMETRIC:
              ;;        (skip-syntax-forward "^(" (line-end-position))
              ;;        (looking-at (python-rx open-paren))))
              ;;  (py-fill-paren pps justify))
-             (t t)))))
+             (t t))))
+        (goto-char orig)
+        (back-to-indentation))
+      (recenter-top-bottom)
       ;; fill-paragraph expexts t
       t))
 
@@ -5555,9 +5612,13 @@ See lp:1066489 "
                 (setq this-beg (line-beginning-position))
                 (goto-char (match-end 0)))))))))
 
-(defun py-fill-string (&optional justify style beg end pps)
+(defun py-fill-string (&optional justify style beg end pps docstring)
   "String fill function for `py-fill-paragraph'.
-JUSTIFY should be used (if applicable) as in `fill-paragraph'."
+JUSTIFY should be used (if applicable) as in `fill-paragraph'.
+
+DOCSTRING is either a boolean or 'no
+If `py-paragraph-fill-docstring-p' is `t', `M-q` fills the
+complete docstring according to setting of `py-docstring-style' "
   (interactive "P")
   (save-excursion
     (save-restriction
@@ -5570,7 +5631,8 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
              (orig (point-marker))
              (pps (or pps (syntax-ppss)))
              ;; if beginning of string is closer than arg beg, use this
-             (beg (or (ignore-errors (copy-marker beg))
+             (beg (or (and (numberp beg)
+                           (ignore-errors (copy-marker beg)))
                       (cond ((and (nth 3 pps) (nth 8 pps))
                              (goto-char (nth 8 pps))
                              (skip-chars-forward "\"'")
@@ -5579,7 +5641,9 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
                                     (syntax-after (point)))
                              (point-marker)))))
              ;; Assume docstrings at BOL resp. indentation
-             (docstring-p (progn (goto-char beg)(skip-chars-backward "\"'") (py-docstring-p (point))))
+             (docstring (and (not (eq 'no docstring))(py-docstring-p (nth 8 pps))))
+             ;; (progn (goto-char beg)(skip-chars-backward "\"'") (py-docstring-p (point)))
+
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"'")(copy-marker (point))))
                       (progn (goto-char (nth 8 pps)) (forward-sexp) (skip-chars-backward "\"'") (point-marker))))
              multi-line-p
@@ -5587,35 +5651,37 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
         ;; whitespace and newline will be added according to mode again
         (goto-char beg)
         (setq beg (progn (skip-chars-forward "\"'") (copy-marker (point))))
-        (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (skip-chars-forward " \t\r\n\f")(point)))
+        (and docstring py-paragraph-fill-docstring-p (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (skip-chars-forward " \t\r\n\f")(point))))
         (goto-char end)
-        (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
-        (cond (docstring-p
-               (narrow-to-region beg end)
-               (fill-region (point-min) (point-max)))
-              ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
-               (py-fill-labelled-string beg end))
-              (t (narrow-to-region beg end)
-                 (sit-for 0.1)
-                 (fill-region beg end)))
-        (setq multi-line-p
-              (> (count-matches "\n" beg end) 0))
-        (setq delimiters-style
-              (case style
-                ;; delimiters-style is a cons cell with the form
-                ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
-                ;; is NIL means to not add any newlines for start or end
-                ;; of docstring.  See `py-docstring-style' for a
-                ;; graphic idea of each style.
-                (django (cons 1 1))
-                (onetwo (and multi-line-p (cons 1 2)))
-                (pep-257 (and multi-line-p (cons nil 2)))
-                (pep-257-nn (and multi-line-p (cons nil 1)))
-                (symmetric (and multi-line-p (cons 1 1)))))
-        (message "%s" delimiters-style)
+        (and docstring py-paragraph-fill-docstring-p (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point))))
+        (cond
+         ((and docstring py-paragraph-fill-docstring-p (string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end)))
+          (py-fill-labelled-string beg end))
+         ((and docstring py-paragraph-fill-docstring-p)
+          (narrow-to-region beg end)
+          (fill-region (point-min) (point-max)))
+         (t (narrow-to-region beg end)
+            (sit-for 0.1)
+            (fill-region beg end)))
+        (and docstring (setq multi-line-p
+                             (> (count-matches "\n" beg end) 0)))
+        (and docstring
+             (setq delimiters-style
+                   (case style
+                     ;; delimiters-style is a cons cell with the form
+                     ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
+                     ;; is NIL means to not add any newlines for start or end
+                     ;; of docstring.  See `py-docstring-style' for a
+                     ;; graphic idea of each style.
+                     (django (cons 1 1))
+                     (onetwo (and multi-line-p (cons 1 2)))
+                     (pep-257 (and multi-line-p (cons nil 2)))
+                     (pep-257-nn (and multi-line-p (cons nil 1)))
+                     (symmetric (and multi-line-p (cons 1 1))))))
+        (and docstring py-verbose-p (message "%s" delimiters-style))
         (widen)
         (save-excursion
-          (when (and docstring-p style)
+          (when (and docstring style)
             ;; Add the number of newlines indicated by the selected style
             ;; at the start of the docstring.
             (goto-char beg)
@@ -6269,6 +6335,41 @@ i.e. the limit on how far back to scan."
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
 
+(defun py-which-def-or-class ()
+  "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
+
+Returns \"???\" otherwise
+Used by variable `which-func-functions' "
+  (interactive)
+  (let* ((orig (point))
+         (first t)
+         def-or-class
+         done last erg)
+    (and first (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")(not (nth 8 (syntax-ppss)))
+         (add-to-list 'def-or-class (match-string-no-properties 2)))
+    (while
+        (and (not (bobp)) (not done) (or (< 0 (current-indentation)) first))
+      (py-beginning-of-def-or-class)
+      (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
+      (setq last (point))
+      (setq name (match-string-no-properties 2))
+      (if first
+          (progn
+            (setq first nil)
+            (py-end-of-def-or-class)
+            (if
+                (<= orig (point))
+                (goto-char last)
+              (setq done t)
+              (goto-char orig)))
+        t)
+      (unless done (add-to-list 'def-or-class name)))
+    (unless done (setq def-or-class (mapconcat 'identity def-or-class ".")))
+    (goto-char orig)
+    (or def-or-class (setq def-or-class "???"))
+    (when (interactive-p) (message "%s" def-or-class))
+    def-or-class))
+
 (defun py-which-function ()
   "Return the name of the function or class, if curser is in, return nil otherwise. "
   (interactive)
@@ -6716,6 +6817,9 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
        ((nth 4 pps)
         (while (or (nth 4 (syntax-ppss)) (looking-at comment-start))
           (forward-line 1)))
+       ((member (char-after) (list ?\" ?\'))
+        (let (forward-sexp-function)
+          (forward-sexp 1)))
        ((looking-at py-operator-regexp)
         (goto-char (match-end 0))
         (when (< 0 (skip-chars-forward " \t\r\n\f"))
@@ -6915,13 +7019,12 @@ http://docs.python.org/reference/compound_stmts.html"
   (let* ((orig (point))
          (indent (or indent (progn
                               (back-to-indentation)
-                              (if (py-beginning-of-statement-p)
-                                  (current-indentation)
-                                (py-beginning-of-statement)
-                                (current-indentation)))))
+                              (or (py-beginning-of-statement-p)
+                                  (py-beginning-of-statement))
+                              (current-indentation))))
          (erg (cond ((and (< (point) orig) (looking-at regexp))
                      (point))
-                    ((and (eq 0 (current-column)) (numberp indent))
+                    ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
                      (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
                        (py-beginning-of-statement)
                        (unless (looking-at regexp)
@@ -7041,7 +7144,9 @@ Returns beginning of clause if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
-  (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent))
+  (let ((indent (and (looking-at py-clause-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent)))
 
 (defun py-end-of-clause (&optional indent)
   "Go to end of clause.
@@ -9357,7 +9462,6 @@ When called from a programm, it accepts a string specifying a shell which will b
 
 (defun py-execute-buffer-file (start end pyshellname dedicated switch nostars sepchar split file)
   (let* ((oldbuf (current-buffer))
-         (py-exception-buffer oldbuf)
          (pyshellname (or pyshellname (py-choose-shell)))
          (execute-directory
           (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
@@ -9384,17 +9488,15 @@ When called from a programm, it accepts a string specifying a shell which will b
          ;; (filebuf (get-buffer file))
          (pec (if (string-match "[pP]ython ?3" py-buffer-name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
-                (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
-         ;; (comint-scroll-to-bottom-on-output t)
-         )
+                (format "execfile(r'%s') # PYTHON-MODE\n" localname))))
     (if (file-readable-p file)
         (progn
           (when (string-match "ipython" (process-name proc))
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.2)
-          (unless (py-postprocess-output-buffer procbuf file)
-            (pop-to-buffer py-exception-buffer)
+          (unless (py-postprocess-output-buffer procbuf oldbuf start end file)
+            (pop-to-buffer oldbuf)
             (py-shell-manage-windows switch split oldbuf py-buffer-name))
           (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
             (when py-verbose-p (message "Output buffer: %s" procbuf))))
@@ -9436,7 +9538,7 @@ When called from a programm, it accepts a string specifying a shell which will b
                 (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
          (comint-scroll-to-bottom-on-output t)
-         erg)
+         erg err-p)
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
@@ -9453,41 +9555,40 @@ When called from a programm, it accepts a string specifying a shell which will b
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.1)
-          (if (py-postprocess-output-buffer procbuf file)
-              ;; exception occured
-              (progn (set-buffer filebuf)
-                     (switch-to-buffer (current-buffer)))
-            (kill-buffer filebuf)
-            (py-shell-manage-windows switch split oldbuf py-buffer-name)
-            (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
-              (when py-verbose-p (message "Output buffer: %s" procbuf)))
-            (when py-cleanup-temporary
+          (setq err-p (py-postprocess-output-buffer procbuf oldbuf start end file))
+          (py-shell-manage-windows switch split oldbuf py-buffer-name)
+          (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+            (when py-verbose-p (message "Output buffer: %s" procbuf))
+            (when (and (not err-p) py-cleanup-temporary)
               (py-delete-temporary file localname filebuf))
             (sit-for 0.1)))
       (message "%s not readable. %s" file "Do you have write permissions?"))
     erg))
 
+(defun py-execute-python-mode-v5 (start end &optional pyshellname dedicated switch nostars sepchar split file)
+  (let ((py-exception-buffer (current-buffer))
+        (cmd (concat (or pyshellname py-shell-name) (if (string-equal py-which-bufname
+                                                                      "Jython")
+                                                        " -"
+                                                      ;; " -c "
+                                                      ""))))
+    (save-excursion
+      (shell-command-on-region start end
+                               cmd py-output-buffer))
+    (if (not (get-buffer py-output-buffer))
+        (message "No output.")
+
+      (let ((err-p (py-postprocess-output-buffer py-output-buffer py-exception-buffer start end)))
+        (if err-p
+            (pop-to-buffer py-exception-buffer)
+          (pop-to-buffer py-output-buffer)
+          (goto-char (point-max))
+          (setq erg (copy-marker (point))))))))
+
 (defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split file)
   "Select the handler. "
-  (cond (python-mode-v5-behavior-p
-         (let ((py-exception-buffer (current-buffer))
-               (cmd (concat (or pyshellname py-shell-name) (if (string-equal py-which-bufname
-                                                                             "Jython")
-                                                               " -"
-                                                             ;; " -c "
-                                                             ""))))
-           (save-excursion
-             (shell-command-on-region start end
-                                      cmd py-output-buffer))
-           (if (not (get-buffer py-output-buffer))
-               (message "No output.")
-
-             (let ((err-p (py-postprocess-output-buffer py-output-buffer)))
-               (if err-p
-                   (pop-to-buffer py-exception-buffer)
-                 (pop-to-buffer py-output-buffer)
-                 (goto-char (point-max))
-                 (setq erg (copy-marker (point))))))))
+  (cond (;; enforce proceeding as python-mode.el v5
+         python-mode-v5-behavior-p (py-execute-python-mode-v5 start end pyshellname dedicated switch nostars sepchar split file))
         ;; No need for a temporary file than
         ((and (not (buffer-modified-p)) file)
          (py-execute-buffer-file start end pyshellname dedicated switch nostars sepchar split file))
@@ -10592,7 +10693,7 @@ Used with `eval-after-load'."
 
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `py-check-comint-prompt' returns nil."
-  (py-shell-send-string-no-output string)
+  (py-send-string-no-output string)
   (let ((proc (py-proc)))
     (with-current-buffer (process-buffer proc)
       (when (py-check-comint-prompt proc)
@@ -10702,6 +10803,15 @@ Returns the string inserted. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defun py-beginning-of-commented-section ()
+  "Leave upwards comments and/or empty lines. "
+  (interactive)
+  (let ((pps (syntax-ppss)))
+    (and (nth 4 pps)(goto-char (nth 8 pps)))
+    (while (and (looking-back "^[ \t]*")(not (bobp)))
+      (skip-chars-backward " \t\r\n\f")
+      (py-beginning-of-commented-section))))
+
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line inside repeat indent-offset)
   "Compute Python indentation.
@@ -10770,19 +10880,31 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                       line
                       (if py-indent-honors-inline-comment
                           (current-column)
-                        (progn (back-to-indentation)
-                               (if (looking-at py-block-or-clause-re)
-                                   (+ (current-indentation) py-indent-offset)
-                                 (current-indentation))))
+                        (if py-indent-comments
+                            (progn
+                              (py-beginning-of-commented-section)
+                              (py-compute-indentation orig origline closing line inside repeat indent-offset))
+                          0))
                     (forward-char -1)
                     (py-compute-indentation orig origline closing line inside repeat indent-offset))))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not py-indent-comments)(not line)(eq origline (py-count-lines)))
-                0)
+               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not line)(eq origline (py-count-lines)))
+                (if py-indent-comments
+                    (progn
+                      (setq line t)
+                      (skip-chars-backward " \t\r\n\f")
+                      ;; as previous comment-line might
+                      ;; be wrongly unindented, travel
+                      ;; whole commented section
+                      (py-beginning-of-commented-section)
+
+                      (py-compute-indentation orig origline closing line inside repeat indent-offset))
+                  0))
                ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq (line-beginning-position) (point-min))))
-                (forward-line -1)
-                (end-of-line)
+                (skip-chars-backward " \t\r\n\f")
                 (setq line t)
                 (py-compute-indentation orig origline closing line inside repeat indent-offset))
+               ((and (eq ?\# (char-after)) line py-indent-honors-inline-comment)
+                (current-column))
                ;; lists
                ((nth 1 pps)
                 (cond ((and inside (not line))
@@ -10894,12 +11016,12 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                ((looking-at py-assignment-re)
                 (py-beginning-of-statement)
                 (py-compute-indentation orig origline closing line inside repeat indent-offset))
-               ((and (< (current-indentation) (current-column)))
+               ((and (< (current-indentation) (current-column))(not line))
                 (back-to-indentation)
                 (unless line
                   (setq inside (nth 1 (syntax-ppss))))
                 (py-compute-indentation orig origline closing line inside repeat indent-offset))
-               ((not (py-beginning-of-statement-p))
+               ((and (not (py-beginning-of-statement-p)) (not (and line (eq ?\# (char-after)))))
                 (if (bobp)
                     (current-column)
                   (if (eq (point) orig)
@@ -10916,9 +11038,14 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (back-to-indentation)
                   (py-compute-indentation orig origline closing line inside t indent-offset)))
                ((and (not line)(eq origline (py-count-lines))
-                     (save-excursion (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
-                                          (ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
-                (+ (car erg) (if py-smart-indentation (py-guess-indent-offset nil orig origline) indent-offset)))
+                     (save-excursion
+                       (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
+                            (if py-smart-indentation (setq indent (py-guess-indent-offset)) t)
+                            (ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
+                (+ (car erg) (if py-smart-indentation
+                                 ;; (py-guess-indent-offset nil orig origline)
+                                 (or indent (py-guess-indent-offset))
+                               indent-offset)))
                ((and (not line)(eq origline (py-count-lines))
                      (py-beginning-of-statement-p))
                 (py-beginning-of-statement)
@@ -11173,7 +11300,7 @@ This function takes the list of setup code to send from the
 `py-setup-codes' list."
   (accept-process-output process 1)
   (dolist (code py-setup-codes)
-    (py-shell-send-string-no-output
+    (py-send-string-no-output
      (symbol-value code) process)
     (sit-for 0.1)))
 
@@ -11201,12 +11328,6 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
          (args py-python-command-args)
          (oldbuf (current-buffer))
          (path (getenv "PYTHONPATH"))
-         ;; make classic python.el forms usable, to import emacs.py
-         (process-environment
-          (cons (concat "PYTHONPATH="
-                        (if path (concat path path-separator))
-                        data-directory)
-                process-environment))
          ;; reset later on
          (py-buffer-name
           (or py-buffer-name
@@ -11277,6 +11398,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
       (set (make-local-variable 'comment-column) 40)
       (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+      (setq py-smart-indentation)
       (font-lock-fontify-buffer))
     (set (make-local-variable 'indent-region-function) 'py-indent-region)
     (set (make-local-variable 'indent-line-function) 'py-indent-line)
@@ -11837,17 +11959,23 @@ return `jython', otherwise return nil."
 (defun py-which-python ()
   "Returns version of Python of current environment, a number. "
   (interactive)
-  (let* ((cmd (py-choose-shell))
-         (erg (shell-command-to-string (concat cmd " --version")))
-         ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
+  (let* (treffer
+         (cmd (py-choose-shell))
+         version)
+    (setq treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
+    (if treffer
+        ;; if a number if part of python name, assume it's the version
+        (setq version (substring-no-properties cmd treffer))
+      (setq erg (shell-command-to-string (concat cmd " --version")))
+      ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
 
-         (version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
-                         (match-string-no-properties 2 erg))
-                        ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
-                         (substring erg 7 (1- (length erg)))))))
+      (setq version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
+                           (match-string-no-properties 2 erg))
+                          ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
+                           (substring erg 7 (1- (length erg)))))))
     (when (interactive-p)
-      (if erg
-          (when py-verbose-p (message "%s" erg))
+      (if version
+          (when py-verbose-p (message "%s" version))
         (message "%s" "Could not detect Python on your system")))
     (string-to-number version)))
 
@@ -11937,6 +12065,7 @@ Should you need more shells to select, extend this command by adding inside the 
       (error (concat "Could not detect " py-shell-name " on your sys
 tem")))))
 
+(defalias 'py-toggle-shells 'py-choose-shell)
 (defalias 'py-which-shell 'py-choose-shell)
 (defun py-choose-shell (&optional arg pyshell dedicated)
   "Return an appropriate executable as a string.
@@ -12119,6 +12248,7 @@ Used only, if `py-install-directory' is empty. "
 
             ("Switches"
              :help "Toggle useful modes like `highlight-indentation'"
+
              ("Docstring styles"
               :help "Toggle values of `py-docstring-style'
 In order to set permanently customize this variable"
@@ -12241,7 +12371,9 @@ Use `M-x customize-variable' to set it permanently"]
                ["Django off" py-django-docstring-style-off
                 :help "Restores default value of `py-docstring-style'
 
-Use `M-x customize-variable' to set it permanently"]))
+Use `M-x customize-variable' to set it permanently"])
+              )
+
              ("Underscore word syntax"
               :help "Toggle `py-underscore-word-syntax-p'"
 
@@ -12271,6 +12403,19 @@ Make sure, `py-underscore-word-syntax-p' is off\.
 Returns value of `py-underscore-word-syntax-p'\. .
 
 Use `M-x customize-variable' to set it permanently"])
+
+
+             ["Fill-paragraph fill docstring "
+              (setq py-paragraph-fill-docstring-p
+                    (not py-paragraph-fill-docstring-p))
+              :help "If `py-fill-paragraph', when inside a docstring, should fill the complete string\.
+
+Default is nil\.
+
+Convenient use of `M-q' inside docstrings
+See also `py-docstring-style'
+Use `M-x customize-variable' to set it permanently"
+              :style toggle :selected py-paragraph-fill-docstring-p]
 
              ["Tab shifts region "
               (setq py-tab-shifts-region-p
@@ -12365,20 +12510,31 @@ Use `M-x customize-variable' to set it permanently"
 Use `M-x customize-variable' to set it permanently"
               :style toggle :selected indent-tabs-mode]
 
-             ("Autopair"
-              :help "Toggle autopair-mode'
+             ("Autopair mode"
+              :help "Toggle `autopair-mode'"
 
-Use `M-x customize-variable' to set it permanently"
+              ["Toggle autopair mode" toggle-py-autopair-mode
+               :help " `toggle-autopair-mode'
 
-              ["Toggle autopair-mode" py-toggle-autopair-mode
-               :help "Toggles py-autopair minor-mode
+If `autopair-mode' should be on or off\.
 
-Use `M-x customize-variable' to set it permanently"]
+  Returns value of `autopair-mode ' switched to\. . "]
 
-              ["Autopair on" py-autopair-mode-on
-               :help "Switches autopair minor-mode on
+              ["Autopair mode on" py-autopair-mode-on
+               :help " `autopair-mode on'
 
-Use `M-x customize-variable' to set it permanently"])
+Make sure, `autopair-mode' is on\.
+
+Returns value of `autopair-mode'\. . "]
+
+              ["Autopair mode off" py-autopair-mode-off
+               :help " `autopair-mode' off
+
+Make sure, `autopair-mode' is off\.
+
+Returns value of `autopair-mode'\. . "]
+
+              )
 
              ("Smart indentation"
               :help "Toggle py-smart-indentation'
@@ -12398,15 +12554,36 @@ Use `M-x customize-variable' to set it permanently"]
               ["py-smart-indentation off" py-smart-indentation-off
                :help "Switches py-smart-indentation off
 
-Use `M-x customize-variable' to set it permanently"])
+Use `M-x customize-variable' to set it permanently"]
 
-             ["Smart operator mode "
-              (setq py-smart-operator-mode-p
-                    (not py-smart-operator-mode-p))
-              :help "Toggle `py-smart-operator-mode-p'
+              )
 
-Use `M-x customize-variable' to set it permanently"
-              :style toggle :selected py-smart-operator-mode-p ]
+             ;; py-smart-operator-mode-p forms
+             ("Smart operator mode"
+              :help "Toggle `smart-operator-mode'"
+
+              ["Toggle smart operator mode" toggle-py-smart-operator-mode-p
+               :help " `toggle-smart-operator-mode'
+
+If `smart-operator-mode' should be on or off\.
+
+  Returns value of `smart-operator-mode ' switched to\. . "]
+
+              ["Smart operator mode on" py-smart-operator-mode-p-on
+               :help " `smart-operator-mode -on'
+
+Make sure, `smart-operator-mode' is on\.
+
+Returns value of `smart-operator-mode'\. . "]
+
+              ["Smart operator mode off" py-smart-operator-mode-p-off
+               :help " `smart-operator-mode' off
+
+Make sure, `smart-operator-mode' is off\.
+
+Returns value of `smart-operator-mode'\. . "]
+
+              )
 
              ["Electric comment "
               (setq py-electric-comment-p
@@ -12414,7 +12591,24 @@ Use `M-x customize-variable' to set it permanently"
               :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\.
 
 Use `M-x customize-variable' to set it permanently"
-              :style toggle :selected py-electric-comment-p])
+              :style toggle :selected py-electric-comment-p]
+
+             ["Indent comment "
+              (setq py-indent-comments
+                    (not py-indent-comments))
+              :help "If comments should be indented like code. Default is `nil'.
+
+Use `M-x customize-variable' to set it permanently"
+              :style toggle :selected py-indent-comments]
+
+             ["Indent honors inline comment"
+              (setq py-indent-honors-inline-comment
+                    (not py-indent-honors-inline-comment))
+              :help "If non-nil, indents to column of inlined comment start\.
+Default is nil\. Use `M-x customize-variable' to set it permanently"
+              :style toggle :selected py-indent-honors-inline-comment]
+
+             )
 
             "-"
 
@@ -14703,6 +14897,20 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'"])
             ("Electric... "
              :help "electric commands'"
 
+             ["Hungry delete backwards" py-hungry-delete-backwards
+              :help " `py-hungry-delete-backwards'
+
+Delete the preceding character or all preceding whitespace
+back to the previous non-whitespace character\.
+See also C-c <delete>\.. "]
+
+             ["Hungry delete forward" py-hungry-delete-forward
+              :help " `py-hungry-delete-forward'
+
+Delete the following character or all following whitespace
+up to the next non-whitespace character\.
+See also C-c <C-backspace>\.. "]
+
              ["Electric colon" py-electric-colon
               :help " `py-electric-colon'
 Insert a colon and indent accordingly.
@@ -15243,7 +15451,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                            (if imports
                                (setq imports (concat imports (match-string-no-properties 0) ";"))
                              (setq imports (match-string-no-properties 0)))))))
-                   (python-shell-completion--do-completion-at-point proc imports word))
+                   (py-shell--do-completion-at-point proc imports word))
                (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
@@ -15261,7 +15469,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc nil word))))
+             (py-shell--do-completion-at-point proc nil word))))
   nil)
 
 (defun py-python3-shell-complete (&optional shell)
@@ -15276,7 +15484,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t
-           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
+           (py-shell--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
            nil))))
 
 (defun py-shell-complete (&optional shell debug)
@@ -15306,7 +15514,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                 (cond ((string= word "")
                        (tab-to-tab-stop))
                       ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                       (python-shell-completion--do-completion-at-point proc imports word))
+                       (py-shell--do-completion-at-point proc imports word))
                       (t (py-shell-complete-intern word beg end shell imports proc))))))
         ;; complete in script buffer
         (let* (
@@ -15326,7 +15534,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                 ((string-match "[iI][pP]ython" shell)
                  (ipython-complete nil nil beg end word nil debug imports))
                 ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                 (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
+                 (py-shell--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
                 ;; deals better with imports
                 ;; (imports
                 ;; (py-python-script-complete shell imports beg end word))
@@ -15334,7 +15542,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
-    (py-shell-send-string-no-output imports proc))
+    (py-send-string-no-output imports proc))
   (let ((result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
@@ -19190,61 +19398,66 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-ni
 
 ;;: Subprocess utilities and filters
 
-(defun py-postprocess-output-buffer (buf &optional file)
+(defun py-postprocess-output-buffer (buf exception-buffer start end &optional file)
   "Highlight exceptions found in BUF.
 If an exception occurred return t, otherwise return nil.  BUF must exist."
   (let ((file file)
         (expression (concat "^[ 	]+File \"\\(" file "\\)\", line \\([0-9]+\\)"))
-        line err-p)
-    (save-excursion
-      (set-buffer buf)
-      (when
-          (or (and file (re-search-forward expression nil t))
-              (and file (re-search-backward expression nil t))
-              ;; File "/tmp/python-2246WCK.py", line 7, in <module>
-              ;; "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>> \\|^[ 	]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ 	>]+>[^0-9]+\\([0-9]+\\)"
-              (re-search-forward py-traceback-line-re nil t)
-              (re-search-backward py-traceback-line-re nil t))
-        (or file (setq file (match-string 1)))
-        (setq line (if (and (match-string-no-properties 2)
-                            (save-match-data (string-match "[0-9]" (match-string-no-properties 2))))
-                       (string-to-number (match-string 2))
-                     (when (and (match-string-no-properties 3)
-                                (save-match-data (string-match "[0-9]" (match-string-no-properties 3))))
-                       (string-to-number (match-string-no-properties 3))))))
-      (overlay-put (make-overlay (match-beginning 0) (match-end 0))
-                   'face 'highlight))
+        line err-p pattern)
+    (when
+        (or (and file (re-search-forward expression nil t))
+            (and file (re-search-backward expression nil t))
+            ;; File "/tmp/python-2246WCK.py", line 7, in <module>
+            ;; "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>> \\|^[ 	]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ 	>]+>[^0-9]+\\([0-9]+\\)"
+            (re-search-forward py-traceback-line-re nil t)
+            (re-search-backward py-traceback-line-re nil t))
+      (or file (setq file (match-string 1)))
+      (setq line (if (and (match-string-no-properties 2)
+                          (save-match-data (string-match "[0-9]" (match-string-no-properties 2))))
+                     (string-to-number (match-string 2))
+                   (when (and (match-string-no-properties 3)
+                              (save-match-data (string-match "[0-9]" (match-string-no-properties 3))))
+                     (string-to-number (match-string-no-properties 3))))))
+    (overlay-put (make-overlay (match-beginning 0) (match-end 0))
+                 'face 'highlight)
+    (setq pattern (progn (forward-line 1)(back-to-indentation)(looking-at ".+")(match-string-no-properties 0)))
+    (goto-char (point-max))
     (when (and py-jump-on-exception line)
       (beep)
-      (when file
-        (py-jump-to-exception file line py-line-number-offset))
+      (py-jump-to-exception file line py-line-number-offset exception-buffer pattern start end)
       (setq err-p t))
     err-p))
 
-(defun py-jump-to-exception (file line py-line-number-offset)
+(defun py-jump-to-exception (file line py-line-number-offset &optional buffer pattern start end)
   "Jump to the Python code in FILE at LINE."
-  (let ((buffer (cond ((string-equal file "<stdin>")
-                       (if (consp py-exception-buffer)
-                           (cdr py-exception-buffer)
-                         py-exception-buffer))
-                      ((and (consp py-exception-buffer)
-                            (string-equal file (car py-exception-buffer)))
-                       (cdr py-exception-buffer))
-                      ((ignore-errors (find-file-noselect file)))
-                      ;; could not figure out what file the exception
-                      ;; is pointing to, so prompt for it
-                      (t (find-file (read-file-name "Exception file: "
-                                                    nil
-                                                    file t))))))
-    ;; Fiddle about with line number
-    (setq line (+ py-line-number-offset line))
-    (pop-to-buffer buffer)
-    ;; Force Python mode
-    (unless (eq major-mode 'python-mode)
-      (python-mode))
-    (goto-char (point-min))
-    (forward-line (1- line))
-    (message "Jumping to exception in file %s on line %d" file line)))
+  (if buffer
+      (progn
+        (set-buffer buffer)
+        ;; (switch-to-buffer (current-buffer))
+        (goto-char start)
+        (search-forward pattern end nil))
+    (let ((buffer (cond ((string-equal file "<stdin>")
+                         (if (consp py-exception-buffer)
+                             (cdr py-exception-buffer)
+                           py-exception-buffer))
+                        ((and (consp py-exception-buffer)
+                              (string-equal file (car py-exception-buffer)))
+                         (cdr py-exception-buffer))
+                        ((ignore-errors (find-file-noselect file)))
+                        ;; could not figure out what file the exception
+                        ;; is pointing to, so prompt for it
+                        (t (find-file (read-file-name "Exception file: "
+                                                      nil
+                                                      file t))))))
+      ;; Fiddle about with line number
+      (setq line (+ py-line-number-offset line))
+      (pop-to-buffer buffer)
+      ;; Force Python mode
+      (unless (eq major-mode 'python-mode)
+        (python-mode))
+      (goto-char (point-min))
+      (forward-line (1- line))
+      (message "Jumping to exception in file %s on line %d" file line))))
 
 (defun py-down-exception (&optional bottom)
   "Go to the next line down in the traceback.
@@ -19617,6 +19830,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
          '(py-font-lock-keywords nil nil nil nil
                                  (font-lock-syntactic-keywords
                                   . py-font-lock-syntactic-keywords))))
+  (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-start) "#")
@@ -19637,7 +19851,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
-  (make-local-variable 'python-saved-check-command)
   (set (make-local-variable 'tab-width) py-indent-offset)
   (set (make-local-variable 'eldoc-documentation-function)
        #'py-eldoc-function)
@@ -19649,13 +19862,14 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (py-set-load-path)
   ;; (add-to-list 'load-path py-install-directory)
   ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
-  (when py-prepare-autopair-mode-p
-    (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el") nil t)
-    (add-hook 'python-mode-hook
-              #'(lambda ()
-                  (setq autopair-handle-action-fns
-                        (list #'autopair-default-handle-action
-                              #'autopair-python-triple-quote-action)))))
+  (and py-autopair-mode (py-autopair-check)
+       (load-library "autopair")
+       (add-hook 'python-mode-hook
+                 #'(lambda ()
+                     (setq autopair-handle-action-fns
+                           (list #'autopair-default-handle-action
+                                 #'autopair-python-triple-quote-action))))
+       (py-autopair-mode-on))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
   (cond
@@ -19693,10 +19907,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     )
   ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when py-smart-operator-mode-p
-    (unless (featurep 'py-smart-operator)
-      (load (concat (py-normalize-directory py-install-directory) "extensions/py-smart-operator.el")))
-    (py-smart-operator-mode-on))
   (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string)))
 
 (define-derived-mode python2-mode python-mode "Python2"
