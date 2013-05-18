@@ -146,6 +146,7 @@
  '(jedi:complete-on-dot t)
  '(jedi:key-complete [C-tab])
  '(jedi:key-goto-definition ".")
+ '(jedi:key-goto-definition-pop-marker "")
  '(jedi:key-related-names [])
  '(jedi:setup-keys t)
  '(js-indent-level 2)
