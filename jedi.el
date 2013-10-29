@@ -4,7 +4,7 @@
 
 ;; Author: Takafumi Arakaki <aka.tkf at gmail.com>
 ;; Package-Requires: ((epc "0.1.0") (auto-complete "1.4"))
-;; Version: 0.1.2alpha2
+;; Version: 0.1.3alpha2
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -28,6 +28,8 @@
 
 ;;; Code:
 
+(require 'ring)
+
 (require 'epc)
 (require 'auto-complete)
 (declare-function pos-tip-show "pos-tip")
@@ -38,7 +40,7 @@
   :group 'completion
   :prefix "jedi:")
 
-(defconst jedi:version "0.1.2alpha2")
+(defconst jedi:version "0.1.3alpha2")
 
 (defvar jedi:source-dir (if load-file-name
                             (file-name-directory load-file-name)
@@ -216,8 +218,21 @@ To use this feature, you need to install the developmental
 version (\"dev\" branch) of Jedi."
   :group 'jedi)
 
+(defcustom jedi:imenu-create-index-function 'jedi:create-nested-imenu-index
+  "`imenu-create-index-function' for Jedi.el.
+It must be a function that takes no argument and return an object
+described in `imenu--index-alist'.
+This can be set to `jedi:create-flat-imenu-index'.
+Default is `jedi:create-nested-imenu-index'."
+  :group 'jedi)
+
+(make-obsolete-variable 'jedi:setup-keys nil "0.1.3")
 (defcustom jedi:setup-keys nil
   "Setup recommended keybinds.
+
+.. warning:: Use of this value is obsolete now.  As of 0.1.3,
+   jedi.el has default keybinds, which are different than these. See also
+   `jedi-mode'.
 
 .. admonition:: Default keybinds
 
@@ -287,6 +302,14 @@ avoid collision by something like this::
   "Keybind for command `jedi:goto-definition-pop-marker'."
   :group 'jedi)
 
+(defcustom jedi:use-shortcuts nil
+  "If non-`nil', enable the following shortcuts:
+
+| ``M-.``  `jedi:goto-definition'
+| ``M-,``  `jedi:goto-definition-pop-marker'
+"
+  :group 'jedi)
+
 (defcustom jedi:import-python-el-settings t
   "Automatically import setting from python.el variables."
   :group 'jedi)
@@ -321,6 +344,9 @@ toolitp when inside of function call.
   :keymap jedi-mode-map
   :group 'jedi
   (let ((map jedi-mode-map))
+    (when jedi:use-shortcuts
+      (define-key map (kbd "M-.") 'jedi:goto-definition)
+      (define-key map (kbd "M-,") 'jedi:goto-definition-pop-marker))
     (if jedi:complete-on-dot
         (define-key map "." 'jedi:dot-complete)
       (define-key map "." nil)))
@@ -329,13 +355,28 @@ toolitp when inside of function call.
         (when jedi:install-imenu
           (add-hook 'after-change-functions 'jedi:after-change-handler nil t)
           (jedi:defined-names-deferred)
-          (setq imenu-create-index-function 'jedi:create-imenu-index))
+          (setq imenu-create-index-function jedi:imenu-create-index-function))
         (add-hook 'post-command-hook 'jedi:handle-post-command nil t)
         (add-hook 'kill-buffer-hook 'jedi:server-pool--gc-when-idle nil t))
     (remove-hook 'post-command-hook 'jedi:handle-post-command t)
     (remove-hook 'after-change-functions 'jedi:after-change-handler t)
     (remove-hook 'kill-buffer-hook 'jedi:server-pool--gc-when-idle t)
     (jedi:server-pool--gc-when-idle)))
+
+;; Define keybinds.
+;; See: https://github.com/tkf/emacs-jedi/issues/47
+(let ((map jedi-mode-map))
+  (define-key map (kbd "<C-tab>") 'jedi:complete)
+  (define-key map (kbd "C-c ?") 'jedi:show-doc)
+  (define-key map (kbd "C-c .") 'jedi:goto-definition)
+  (define-key map (kbd "C-c ,") 'jedi:goto-definition-pop-marker)
+  (let ((command (cond
+                  ((featurep 'helm) 'helm-jedi-related-names)
+                  ((featurep 'anything) 'anything-jedi-related-names)
+                  ((locate-library "helm") 'helm-jedi-related-names)
+                  ((locate-library "anything") 'anything-jedi-related-names))))
+    (when command
+      (define-key map (kbd "C-c /") command))))
 
 (when jedi:setup-keys
   (let ((map jedi-mode-map))
@@ -521,7 +562,9 @@ See: https://github.com/tkf/emacs-jedi/issues/54"
     (deferred:nextc (jedi:complete-request)
       (lambda ()
         (let ((ac-expand-on-auto-complete expand))
-          (auto-complete '(ac-source-jedi-direct)))))))
+          (ac-start))))))
+;; Calling `auto-complete' or `ac-update-greedy' instead of `ac-start'
+;; here did not work.
 
 (defun jedi:dot-complete ()
   "Insert dot and complete code at point."
@@ -558,9 +601,20 @@ See: https://github.com/tkf/emacs-jedi/issues/54"
 
 ;;;###autoload
 (defun jedi:ac-setup ()
-  "Add Jedi AC sources to `ac-sources'."
+  "Add Jedi AC sources to `ac-sources'.
+
+If auto-completion is all you need, you can call this function instead
+of `jedi:setup', like this::
+
+   (add-hook 'python-mode-hook 'jedi:ac-setup)
+
+Note that this function calls `auto-complete-mode' if it is not
+already enabled, for people who don't call `global-auto-complete-mode'
+in their Emacs configuration."
   (interactive)
-  (add-to-list 'ac-sources 'ac-source-jedi-direct))
+  (add-to-list 'ac-sources 'ac-source-jedi-direct)
+  (unless auto-complete-mode
+    (auto-complete-mode)))
 
 
 ;;; Call signature (get_in_function_call)
@@ -880,26 +934,50 @@ one request at the time is emitted."
           (deferred:watch (jedi:defined-names-deferred)
             (lambda (_) (setq jedi:defined-names--singleton-d nil))))))
 
+(defun jedi:defined-names--sync ()
+  (unless jedi:defined-names--cache
+    (epc:sync (jedi:get-epc) (jedi:defined-names--singleton-deferred)))
+  jedi:defined-names--cache)
+
 (defun jedi:after-change-handler (&rest _)
   (unless (or (ac-menu-live-p) (ac-inline-live-p))
     (jedi:defined-names--singleton-deferred)))
 
-(defun jedi:create-imenu-index-1 (def)
-  (destructuring-bind (&key name line_nr column &allow-other-keys) def
-    (cons name (save-excursion (jedi:goto--line-column line_nr column)
-                               (point-marker)))))
+(defun jedi:imenu-make-marker (def)
+  (destructuring-bind (&key line_nr column &allow-other-keys) def
+    (save-excursion (jedi:goto--line-column line_nr column)
+                    (point-marker))))
 
-(defun jedi:create-imenu-index (&optional items)
+(defun jedi:create-nested-imenu-index--item (def)
+  (cons (plist-get def :name) (jedi:imenu-make-marker def)))
+
+(defun jedi:create-nested-imenu-index ()
   "`imenu-create-index-function' for Jedi.el.
-Return an object described in `imenu--index-alist'."
+See also `jedi:imenu-create-index-function'."
+  (when (called-interactively-p 'interactive) (jedi:defined-names--sync))
+  (jedi:create-nested-imenu-index-1))
+
+(defun jedi:create-nested-imenu-index-1 (&optional items)
   (loop for (def . subdefs) in (or items jedi:defined-names--cache)
         if subdefs
         collect (append
-                 (list (plist-get def :full_name)
-                       (jedi:create-imenu-index-1 def))
-                 (jedi:create-imenu-index subdefs))
+                 (list (plist-get def :local_name)
+                       (jedi:create-nested-imenu-index--item def))
+                 (jedi:create-nested-imenu-index-1 subdefs))
         else
-        collect (jedi:create-imenu-index-1 def)))
+        collect (jedi:create-nested-imenu-index--item def)))
+
+(defun jedi:create-flat-imenu-index ()
+  "`imenu-create-index-function' for Jedi.el to create flatten index.
+See also `jedi:imenu-create-index-function'."
+  (when (called-interactively-p 'interactive) (jedi:defined-names--sync))
+  (jedi:create-flat-imenu-index-1))
+
+(defun jedi:create-flat-imenu-index-1 (&optional items)
+  (loop for (def . subdefs) in (or items jedi:defined-names--cache)
+        collect (cons (plist-get def :local_name) (jedi:imenu-make-marker def))
+        when subdefs
+        append (jedi:create-flat-imenu-index-1 subdefs)))
 
 
 ;;; Meta info
@@ -908,7 +986,9 @@ Return an object described in `imenu--index-alist'."
   "Request version of Python modules and return a deferred object."
   (epc:call-deferred (jedi:get-epc) 'get_jedi_version nil))
 
-(defun jedi:show-jedi-version ()
+(defun jedi:show-version-info ()
+  "Show version info of Python modules used by the server.
+Paste the result of this function in bug report."
   (interactive)
   (deferred:nextc (jedi:get-jedi-version-request)
     (lambda (reply)
@@ -916,8 +996,12 @@ Return an object described in `imenu--index-alist'."
         (with-current-buffer standard-output
           (emacs-lisp-mode)
           (erase-buffer)
+          (pp `(:emacs-version ,emacs-version :jedi-version ,jedi:version))
           (pp reply)
           (display-buffer standard-output))))))
+
+(define-obsolete-function-alias
+  'jedi:show-jedi-version 'jedi:show-version-info "0.1.3")
 
 (defun jedi:print-jedi-version ()
   (pp (epc:sync (jedi:get-epc) (jedi:get-jedi-version-request))))
@@ -972,6 +1056,29 @@ what jedi can do."
 
 ;;; Debugging
 
+(defun jedi:pop-to-epc-buffer ()
+  "Open the buffer associated with EPC server process.
+Use this command to see the output (e.g., traceback) of the server process."
+  (interactive)
+  (pop-to-buffer (process-buffer (epc:manager-server-process jedi:epc))))
+
+(defun jedi:toggle-log-traceback ()
+  "Toggle on/off traceback logging for EPC server for the current buffer.
+When there is an error during traceback logging is enabled, traceback
+is printed in the EPC buffer.  You can use `jedi:pop-to-epc-buffer' to
+open that buffer.
+
+You can also pass ``--log-traceback`` option to jediepcserver.py
+to start server with traceback logging turned on.  This is useful when
+there is a problem in communication (thus this command does not work).
+You can use `jedi:start-dedicated-server' to restart EPC server for the
+current buffer with specific arguments."
+  (interactive)
+  (deferred:$
+    (epc:call-deferred (jedi:get-epc) 'toggle_log_traceback nil)
+    (deferred:nextc it
+      (lambda (flag)
+        (message "Traceback logging is %s" (if flag "enabled" "disabled"))))))
 
 (defvar jedi:server-command--backup nil)
 (defvar jedi:server-args--backup nil)
@@ -1006,6 +1113,7 @@ running server."
   (if jedi:server-command--backup
       (progn
         (setq jedi:server-command jedi:server-command--backup
+              jedi:server-command--backup nil
               jedi:server-args jedi:server-args--backup)
         (jedi:stop-server)
         (message "Quit debugging.  Original setting restored."))
