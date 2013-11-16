@@ -498,10 +498,8 @@
 
 (add-hook 'python-mode-hook (lambda ()
   ;; remove python-mode's ffap things that slow down find-file
-  (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
-  (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist))
-  (setq ffap-alist (remove '(python-mode . python-module-path) ffap-alist))
-  (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path) ffap-alist))
+  (setq ffap-alist (remove '(python-mode . python-ffap-module-path) ffap-alist))
+  (setq ffap-alist (remove '(inferior-python-mode . python-ffap-module-path) ffap-alist))
 
   ;; enable nice electric pairs like in textmate
   (autopair-mode 1)
@@ -521,12 +519,6 @@
       (flymake-mode 1))
   ;; death to trailing whitespace!
   (set-variable 'show-trailing-whitespace 1)
-
-  ;; some custom keybindings
-  (local-set-key (kbd "C-c a") 'py-beginning-of-def-or-class)
-  (local-set-key (kbd "M-<right>") 'py-forward-into-nomenclature)
-  (local-set-key (kbd "M-<left>") 'py-backward-into-nomenclature)
-  (local-set-key (kbd "M-DEL") 'py-backward-kill-nomenclature)
 
   ;; add some local hooks
   ;(add-hook 'before-save-hook 'delete-trailing-whitespace nil t)
@@ -759,26 +751,6 @@
               mark-active)
     (looking-at "\\_>")))
 
-
-(defun same-file-in-py3k ()
-  "Find this file in py3k instead of trunk."
-  (interactive)
-  (let* ((fn (buffer-file-name))
-         (m (string-match "/python\\(3k\\|30\\|26\\|\\)/" fn))
-         (rfn (replace-match "/python3k/" t t fn)))
-    (if (not (string= fn rfn))
-        (find-file-other-window rfn)
-      (message "already in py3k, or not in python at all"))))
-
-(defun same-file-in-trunk ()
-  "Find this file in trunk instead of py3k."
-  (interactive)
-  (let* ((fn (buffer-file-name))
-         (m (string-match "/python\\(3k\\|30\\|26\\|\\)/" fn))
-         (rfn (replace-match "/python/" t t fn)))
-    (if (not (string= fn rfn))
-        (find-file-other-window rfn)
-      (message "already in trunk, or not in python at all"))))
 
 (defun prompt-face-color (face)
   "Repeatedly prompt for new color for a given face."

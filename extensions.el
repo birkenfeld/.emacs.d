@@ -134,30 +134,14 @@
 (autoload 'redo "redo" nil t)
 (global-set-key (kbd "C-x U") 'redo)
 
-;; better, patched Python mode
-(require 'python)  ;; load first, so that python-mode overrides it
-(require 'python-mode)
-
+;; python-mode stuff
 (autoload 'cython-mode "cython-mode" nil t)
-
-(defun py-backward-kill-nomenclature (arg)
-  "Kill characters forward until encountering the end of a nomenclature section."
-  (interactive "p")
-  (kill-region (point) (progn (py-backward-into-nomenclature arg) (point))))
-
 
 (setq auto-mode-alist
       (append '(("\\.pyx$" . cython-mode)
                 ("\\.pxs$" . cython-mode)
                 ("\\.pxi$" . cython-mode))
               auto-mode-alist))
-
-(defadvice py-newline-and-indent (before strip-trailing-whitespace activate)
-  "Strip trailing whitespace before newline."
-  (save-excursion
-    (let ((pos (point)))
-      (skip-chars-backward " \t")
-      (delete-region (point) pos))))
 
 ;; jedi for python completion
 (autoload 'jedi:setup "jedi" nil t)
@@ -240,28 +224,6 @@
 ;; highlight symbol at point
 (require 'highlight-symbol)
 (add-hook 'python-mode-hook 'highlight-symbol-mode)
-(defun highlight-symbol-next-in-function ()
-  (interactive)
-  (if (eq major-mode 'python-mode)
-      (save-restriction
-        (save-excursion
-          (py-beginning-of-def-or-class)
-          (py-narrow-to-defun))
-        (highlight-symbol-jump 1))
-    (highlight-symbol-next-in-defun)))
-(defun highlight-symbol-prev-in-function ()
-  (interactive)
-  (if (eq major-mode 'python-mode)
-      (save-restriction
-        (save-excursion
-          (py-beginning-of-def-or-class)
-          (py-narrow-to-defun))
-        (highlight-symbol-jump -1))
-    (highlight-symbol-prev-in-defun)))
-(global-set-key (kbd "M-g M-m") 'highlight-symbol-next-in-function)
-(global-set-key (kbd "M-g M-o") 'highlight-symbol-prev-in-function)
-(repeatable-command-advice highlight-symbol-next-in-function)
-(repeatable-command-advice highlight-symbol-prev-in-function)
 
 ;; full-ack mode
 (autoload 'ack-same "full-ack" nil t)
