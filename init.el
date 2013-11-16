@@ -482,19 +482,8 @@
 
 ;; ---------- Python mode specifics --------------------------------------------
 
-;; support flymake in Python mode
-(require 'flymake)
-
-(defun flymake-pyflakes-init ()
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
-         (local-file (file-relative-name
-                      temp-file
-                      (file-name-directory buffer-file-name))))
-    (list "pyflakes" (list local-file))))
-
-(add-to-list 'flymake-allowed-file-name-masks
-             '("\\.py\\'" flymake-pyflakes-init))
+;; enable the elpy "ide" features
+(elpy-enable)
 
 (add-hook 'python-mode-hook (lambda ()
   ;; remove python-mode's ffap things that slow down find-file
@@ -515,8 +504,8 @@
   ;; reveal hidden text (folding!) when moving over it
   (reveal-mode 1)
   ;; enable flymake processing by pyflakes
-  (if buffer-file-name
-      (flymake-mode 1))
+  ;; (if buffer-file-name
+  ;;     (flymake-mode 1))
   ;; death to trailing whitespace!
   (set-variable 'show-trailing-whitespace 1)
 

@@ -10,7 +10,7 @@
 ;; make some mode line displays smaller
 (when (require 'diminish nil 'noerror)
   (eval-after-load "reveal" '(diminish 'reveal-mode))
-  (eval-after-load "yasnippet" '(diminish 'yas/minor-mode " Y")))
+  (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y")))
 
 ;; M-x enhancement
 (require 'smex)
@@ -113,9 +113,9 @@
 ;; auto-completion setup
 (require 'pos-tip)
 (require 'auto-complete)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
-(define-key ac-completing-map "\t" 'ac-complete)
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+;; (define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
+;; (define-key ac-completing-map "\t" 'ac-complete)
 (require 'auto-complete-config)
 (ac-config-default)
 
@@ -143,9 +143,9 @@
                 ("\\.pxi$" . cython-mode))
               auto-mode-alist))
 
-;; jedi for python completion
-(autoload 'jedi:setup "jedi" nil t)
-(add-hook 'python-mode-hook 'jedi:setup)
+;; jedi for python completion (done by elpy)
+;(autoload 'jedi:setup "jedi" nil t)
+;(add-hook 'python-mode-hook 'jedi:setup)
 
 ;; haskell mode
 (load "haskell-site-file" nil t)
