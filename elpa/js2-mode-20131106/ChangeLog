@@ -1,3 +1,28 @@
+2013-11-07  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* js2-mode/tests: Add copyright headers.
+
+2013-11-06  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Merge remote-tracking branch 'js2-mode/master'
+
+2013-10-06  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Add packages/js2-mode/.elpaignore
+
+2013-08-21  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	Sync from js2-mode/master
+
+2013-08-20  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* packages/js2-mode/js2-mode.el: Remove unused variables.  Use posix 
+	character classes.  Do a bit of CSE simplification.
+	(js2-parse-highlight-member-expr-node): Flip test order to simplify
+	code.
+	(js2-re-search-forward, js2-re-search-backward): Don't quote code.
+	(js2-echo-help): Defalias applies to symbol, not functions.
+
 2013-08-15  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	Fix up copyrights and the checking code
