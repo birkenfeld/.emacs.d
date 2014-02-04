@@ -159,7 +159,7 @@ These are prepended to `grep-find-ignored-directories'."
     (define-key map (kbd "<C-down>") 'elpy-nav-forward-definition)
     (define-key map (kbd "<C-up>")  'elpy-nav-backward-definition)
     ;; (define-key map (kbd "M-,")     'iedit-mode
-    (define-key map (kbd "M-.")     'elpy-goto-definition)
+    ;; (define-key map (kbd "M-.")     'elpy-goto-definition)
     (define-key map (kbd "M-a")     'elpy-nav-backward-statement)
     (define-key map (kbd "M-e")     'elpy-nav-forward-statement)
     (define-key map (kbd "M-n")     'elpy-nav-forward-definition)

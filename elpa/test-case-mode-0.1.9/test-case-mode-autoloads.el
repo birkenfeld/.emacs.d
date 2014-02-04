@@ -1,12 +1,10 @@
 ;;; test-case-mode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
+(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads (test-case-compilation-finish-run-all test-case-run-or-run-again
-;;;;;;  test-case-run test-case-find-all-tests enable-test-case-mode-if-test
-;;;;;;  test-case-mode) "test-case-mode" "test-case-mode.el" (20707
-;;;;;;  58581 894377 95000))
+;;;### (autoloads nil "test-case-mode" "test-case-mode.el" (21226
+;;;;;;  42128 0 0))
 ;;; Generated autoloads from test-case-mode.el
 
 (autoload 'test-case-mode "test-case-mode" "\
@@ -67,16 +65,9 @@ Install this the following way:
 
 ;;;***
 
-;;;### (autoloads nil nil ("test-case-mode-pkg.el") (20707 58582
-;;;;;;  300998 409000))
-
-;;;***
-
-(provide 'test-case-mode-autoloads)
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; test-case-mode-autoloads.el ends here

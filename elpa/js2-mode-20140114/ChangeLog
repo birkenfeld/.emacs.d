@@ -1,3 +1,7 @@
+2014-01-14  Dmitry Gutov  <dgutov@yandex.ru>
+
+	Merge commit '3575aaa39f311822dcedd53235ba036e9cf68ab8' from js2-mode
+
 2013-11-07  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	* js2-mode/tests: Add copyright headers.
