@@ -517,6 +517,9 @@
               (file-exists-p "Makefile"))
     (set (make-local-variable 'compile-command)
          (concat "python " buffer-file-name)))
+
+  ;; override elpy key
+  (local-set-key (kbd "M-.") 'jedi:goto-definition)
 ))
 
 ;; ignore Python 3.2+ .pyc directories
