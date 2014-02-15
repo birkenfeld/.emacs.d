@@ -57,4 +57,6 @@
    `(whitespace-tab ((,class (:background "LemonChiffon"))))
    ))
 
+(set-face-attribute 'default nil :foreground "#eeeeec" :background "#2e3436")
+
 (provide-theme 'tango-dark-enhancements)

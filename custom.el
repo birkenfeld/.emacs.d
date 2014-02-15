@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -21,7 +21,7 @@
  '(TeX-close-quote "\"'")
  '(TeX-insert-braces nil)
  '(TeX-open-quote "\"`")
- '(TeX-parse-self t)
+ '(TeX-parse-self t t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-view-program-list
@@ -88,7 +88,7 @@
  '(custom-enabled-themes (quote (tango-dark-enhancements tango-dark)))
  '(custom-safe-themes
    (quote
-    ("372b38d2494f83d01be47c7a27f7ad929d2009bed5332014b12bdd1fe53a3ddf" default)))
+    ("e8dab0a64e5b7165b13a689b40c4025e416dcdf933e7f688c843649cc3c7359e" default)))
  '(delete-selection-mode t)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
@@ -112,11 +112,6 @@
  '(eproject-completing-read-function (quote eproject--ido-completing-read))
  '(ffap-machine-p-known (quote reject))
  '(ffap-newfile-prompt t)
- '(file-cache-buffer "*File Cache*")
- '(file-cache-filter-regexps
-   (quote
-    ("~$" "\\.o$" "\\.exe$" "\\.a$" "\\.elc$" ",v$" "\\.output$" "\\.$" "#$" "\\.class$" "\\.pyc$" "\\.svn/.*$")))
- '(file-cache-find-command-posix-flag t)
  '(fill-column 80)
  '(filladapt-mode-line-string " FA")
  '(flymake-no-changes-timeout 1.5)
@@ -213,7 +208,7 @@
  '(make-cursor-line-fully-visible t)
  '(margin-column 80)
  '(mark-even-if-inactive t)
- '(menu-bar-mode nil)
+ '(menu-bar-mode t)
  '(minibuffer-electric-default-mode t)
  '(minibuffer-prompt-properties
    (quote
@@ -562,7 +557,7 @@ mouse-3: Remove current window from display")))))
  '(test-case-result-line ((t (:inherit font-lock-warning-face))))
  '(test-case-result-message ((((background light)) (:inherit font-lock-function-name-face))))
  '(trex-unicode-face ((t nil)))
- '(variable-pitch ((t (:inherit default :family "corbel"))))
+ '(variable-pitch ((t (:inherit default :family "calibri"))))
  '(vhl/default-face ((t (:background "#433"))))
  '(vline ((t (:inherit highlight))) t)
  '(web-mode-html-attr-name-face ((t (:inherit font-lock-preprocessor-face))))

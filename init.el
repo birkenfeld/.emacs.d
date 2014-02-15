@@ -117,9 +117,6 @@
 ;; indent automatically
 (global-set-key (kbd "RET") 'newline-and-indent)
 
-;; file cache
-(define-key minibuffer-local-map (kbd "C-f") 'file-cache-minibuffer-complete)
-
 ;; in the minibuffer, do not kill but delete
 (define-key minibuffer-local-map (kbd "M-DEL") 'backward-delete-word)
 
@@ -371,9 +368,6 @@
 ;; enable eldoc mode
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
-;; remove the .elc file when saving an .el file
-(add-hook 'emacs-lisp-mode-hook 'remove-elc-on-save)
-
 ;; some nice keybindings
 (define-key emacs-lisp-mode-map  (kbd "M-.") 'find-function-at-point)
 (define-key lisp-mode-shared-map (kbd "C-c v") 'eval-buffer)
@@ -454,9 +448,6 @@
 ;; enable nice electric pairs like in textmate
 (add-hook 'c-mode-hook 'autopair-mode)
 (add-hook 'c++-mode-hook 'autopair-mode)
-
-;; GLSL support
-(require 'glsl-mode)
 
 ;; Display C++ Doygen doc comments differently
 (font-lock-add-keywords 'c++-mode '(("///.*$" 0 font-lock-doc-face prepend)))
@@ -781,6 +772,9 @@
             (lambda ()
               (if (file-exists-p (concat buffer-file-name "c"))
                   (delete-file (concat buffer-file-name "c"))))))
+
+;; remove the .elc file when saving an .el file
+(add-hook 'emacs-lisp-mode-hook 'remove-elc-on-save)
 
 
 (defun count-words-wc (&optional filename)
