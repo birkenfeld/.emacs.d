@@ -148,7 +148,7 @@
 ;(add-hook 'python-mode-hook 'jedi:setup)
 
 ;; haskell mode
-(load "haskell-site-file" nil t)
+;(load "haskell-site-file" nil t)
 
 (add-hook 'haskell-mode-hook (lambda ()
   (load-library "inf-haskell")

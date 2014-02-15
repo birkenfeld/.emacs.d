@@ -5,7 +5,7 @@
 ;; Extensions I install via my distribution are loaded in distext.el.
 
 ;; set up load path
-(setq load-path `("~/.emacs.d" ,@load-path))
+(setq load-path `("~/.emacs.d/lisp" ,@load-path))
 
 ;; don't show so many messages on startup
 (setq inhibit-startup-message t)
@@ -851,9 +851,9 @@ returns the word count of that file."
 (defun load-nonstop (file) (ignore-errors (load file t)))
 
 ;; load my extensions if they are present
-(load-nonstop "extensions.el")
+(load-nonstop "~/.emacs.d/extensions.el")
 ;; and separately, those provided by the distribution (packed in different
 ;; files so that errors don't skip the whole file)
 (mapc 'load-nonstop (directory-files "~/.emacs.d/distext" t "\\.el"))
 ;; and finally, local settings that don't go into the repo
-(load-nonstop "local.el")
+(load-nonstop "~/.emacs.d/local.el")
