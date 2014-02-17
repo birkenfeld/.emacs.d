@@ -4,7 +4,7 @@
 
 ;; Author: Jorgen Schaefer <contact@jorgenschaefer.de>
 ;; URL: https://github.com/jorgenschaefer/elpy
-;; Version: 1.2.1
+;; Version: 1.3.0
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -48,7 +48,7 @@
 (require 'python)
 (require 'grep)
 (require 'thingatpt)
-(require 'virtualenv)
+(require 'pyvenv)
 (require 'yasnippet)
 
 
@@ -63,6 +63,13 @@
 (defcustom elpy-rpc-python-command "python"
   "The command to be used for the RPC backend."
   :type 'string
+  :group 'elpy)
+
+(defcustom elpy-show-installation-instructions t
+  "Whether Elpy should display installation instructions in a
+help buffer.  If nil, displays a message in the echo area
+instead."
+  :type 'boolean
   :group 'elpy)
 
 (defcustom elpy-rpc-project-specific nil
@@ -104,7 +111,7 @@ These are prepended to `grep-find-ignored-directories'."
   "Hook run when `elpy-mode' is enabled."
   :group 'elpy)
 
-(defconst elpy-version "1.2.1"
+(defconst elpy-version "1.3.0"
   "The version of the Elpy lisp code.")
 
 (defun elpy-version ()
@@ -159,7 +166,7 @@ These are prepended to `grep-find-ignored-directories'."
     (define-key map (kbd "<C-down>") 'elpy-nav-forward-definition)
     (define-key map (kbd "<C-up>")  'elpy-nav-backward-definition)
     ;; (define-key map (kbd "M-,")     'iedit-mode
-    ;; (define-key map (kbd "M-.")     'elpy-goto-definition)
+    (define-key map (kbd "M-.")     'elpy-goto-definition)
     (define-key map (kbd "M-a")     'elpy-nav-backward-statement)
     (define-key map (kbd "M-e")     'elpy-nav-forward-statement)
     (define-key map (kbd "M-n")     'elpy-nav-forward-definition)
@@ -202,7 +209,7 @@ configure those modes yourself, pass t here."
   "Minor mode in Python buffers for the Emacs Lisp Python Environment.
 
 This mode fully supports virtualenvs. Once you switch a
-virtualenv using \\[virtualenv-workon], you can use
+virtualenv using \\[pyvenv-workon], you can use
 \\[elpy-rpc-restart] to make the elpy Python process use your
 virtualenv.
 
@@ -239,52 +246,54 @@ MESSAGE is shown as the first paragraph.
 
 If SHOW-ELPY-MODULE is non-nil, the help buffer will first
 explain how to install the elpy module."
-  (with-help-window "*Elpy Installation*"
-    (with-current-buffer "*Elpy Installation*"
-      (let ((inhibit-read-only t))
-        (erase-buffer)
-        (insert "Elpy Installation Instructions\n")
-        (insert "\n")
-        (insert message)
-        (when (not (bolp))
-          (insert "\n"))
-        (insert "\n")
-        (when show-elpy-module
-          (insert "Elpy requires the Python module \"elpy\". The module "
-                  "is available from pypi, so you can install it using "
-                  "the following command:\n")
-          (insert "\n")
-          (elpy-installation-command "elpy")
-          (insert "\n"))
-        (insert "To find possible completions, Elpy uses one of two "
-                "Python modules. Either \"rope\" or \"jedi\". To use "
-                "Elpy to its fullest potential, you should install "
-                "either one of them. Which one is a matter of taste. "
-                "You can try both and even switch at runtime using "
-                "M-x elpy-set-backend.\n")
-        (insert "\n")
-        (insert "Elpy also uses the Rope module for refactoring options, "
-                "so you likely want to install it even if you use jedi "
-                "for completion.\n")
-        (insert "\n")
-        (if (string-match "Python 3" (shell-command-to-string
-                                      "python --version"))
-            (elpy-installation-command "rope_py3k")
-          (elpy-installation-command "rope"))
-        (insert "\n")
-        (elpy-installation-command "jedi")
-        (insert "\n")
-        (insert "If you are using virtualenvs, you can use the "
-                "M-x virtualenv-workon command to switch to a virtualenv "
-                "of your choice. Afterwards, running the command "
-                "M-x elpy-rpc-restart will use the packages in "
-                "that virtualenv.")
-        (fill-region (point-min) (point-max))))))
+  (if elpy-show-installation-instructions
+      (with-help-window "*Elpy Installation*"
+        (with-current-buffer "*Elpy Installation*"
+          (let ((inhibit-read-only t))
+            (erase-buffer)
+            (insert "Elpy Installation Instructions\n")
+            (insert "\n")
+            (insert message)
+            (when (not (bolp))
+              (insert "\n"))
+            (insert "\n")
+            (when show-elpy-module
+              (insert "Elpy requires the Python module \"elpy\". The module "
+                      "is available from pypi, so you can install it using "
+                      "the following command:\n")
+              (insert "\n")
+              (elpy-installation-command "elpy")
+              (insert "\n"))
+            (insert "To find possible completions, Elpy uses one of two "
+                    "Python modules. Either \"rope\" or \"jedi\". To use "
+                    "Elpy to its fullest potential, you should install "
+                    "either one of them. Which one is a matter of taste. "
+                    "You can try both and even switch at runtime using "
+                    "M-x elpy-set-backend.\n")
+            (insert "\n")
+            (insert "Elpy also uses the Rope module for refactoring options, "
+                    "so you likely want to install it even if you use jedi "
+                    "for completion.\n")
+            (insert "\n")
+            (if (string-match "Python 3" (shell-command-to-string
+                                          "python --version"))
+                (elpy-installation-command "rope_py3k")
+              (elpy-installation-command "rope"))
+            (insert "\n")
+            (elpy-installation-command "jedi")
+            (insert "\n")
+            (insert "If you are using virtualenvs, you can use the "
+                    "M-x pyvenv-workon command to switch to a virtualenv "
+                    "of your choice. Afterwards, running the command "
+                    "M-x elpy-rpc-restart will use the packages in "
+                    "that virtualenv.")
+            (fill-region (point-min) (point-max)))))
+    (message "%s" (substitute-command-keys "You don't have elpy properly installed.  Set `elpy-show-installation-instructions' to t to see the help buffer."))))
 
 (defun elpy-installation-command (python-module)
   "Insert an installation command description for PYTHON-MODULE."
   (let* ((do-user-install (not (or (getenv "VIRTUAL_ENV")
-                                   virtualenv-workon-session)))
+                                   pyvenv-virtual-env)))
          (user-option (if do-user-install
                           "--user "
                         ""))
@@ -371,10 +380,15 @@ using (defalias 'elpy-initialize-variables 'identity)"
       (yas--trigger-key-reload old)))
 
   ;; We provide some YASnippet snippets. Add them.
-  (add-to-list
-   'yas-snippet-dirs
-   (concat (file-name-directory (locate-library "elpy")) "snippets/")
-   t)
+
+  ;; yas-snippet-dirs can be a string for a single directory. Make
+  ;; sure it's a list in that case so we can add our own entry.
+  (when (not (listp yas-snippet-dirs))
+    (setq yas-snippet-dirs (list yas-snippet-dirs)))
+  (add-to-list 'yas-snippet-dirs
+               (concat (file-name-directory (locate-library "elpy"))
+                       "snippets/")
+               t)
 
   ;; Now load yasnippets.
   (yas-reload-all))
@@ -523,8 +537,7 @@ execution of code. With prefix argument, this code is executed."
   (elpy-shell-get-or-create-process)
   (if (region-active-p)
       (python-shell-send-string (elpy--region-without-indentation
-                                 (region-beginning) (region-end))
-                                nil t)
+                                 (region-beginning) (region-end)))
     (python-shell-send-buffer arg))
   (elpy-shell-switch-to-shell))
 
@@ -1018,15 +1031,16 @@ creating one if necessary."
   (when (and elpy-rpc-backend
              (not (stringp elpy-rpc-backend)))
     (error "`elpy-rpc-backend' should be nil or a string."))
-  (with-current-buffer (generate-new-buffer "*elpy-rpc*")
-    (setq elpy-rpc--buffer-p t
-          elpy-rpc--backend-project-root project-root
-          elpy-rpc--backend-python-command python-command
-          default-directory project-root)
+  (let ((new-elpy-rpc-buffer (generate-new-buffer "*elpy-rpc*")))
+    (with-current-buffer new-elpy-rpc-buffer
+      (setq elpy-rpc--buffer-p t
+            elpy-rpc--backend-project-root project-root
+            elpy-rpc--backend-python-command python-command
+            default-directory project-root))
     (let ((proc (condition-case err
                     (let ((process-connection-type nil))
                       (start-process "elpy-rpc"
-                                     (current-buffer)
+                                     new-elpy-rpc-buffer
                                      python-command
                                      "-W" "ignore"
                                      "-m" "elpy.__main__"))
@@ -1065,7 +1079,7 @@ creating one if necessary."
                     "Python library. If you are happy with the native "
                     "backend, please add the following to your .emacs:"
                     "\n\n(setq elpy-rpc-backend \"native\")")))))))
-    (current-buffer)))
+    new-elpy-rpc-buffer))
 
 (defun elpy-rpc--sentinel (process event)
   "The sentinel for the RPC process."
@@ -1253,10 +1267,21 @@ result and return that."
 (defun elpy-rpc-restart ()
   "Restart the current RPC process."
   (interactive)
-  (when (elpy-rpc--live-p elpy-rpc--buffer)
-    (kill-buffer elpy-rpc--buffer)
-    (setq elpy-rpc--buffer nil))
-  (elpy-rpc--get-rpc-buffer))
+  (dolist (b (buffer-list))
+    (when (buffer-local-value 'elpy-rpc--buffer-p b)
+      (kill-buffer b))))
+
+(defun elpy-rpc-traceback ()
+  "Print the last traceback from the backend."
+  (interactive)
+  (let ((traceback (elpy-rpc "get_traceback" nil)))
+    (with-current-buffer (get-buffer-create "*Elpy Traceback*")
+      (with-help-window "*Elpy Traceback*"
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (if traceback
+              (insert traceback)
+            (insert "No traceback")))))))
 
 (defun elpy-rpc-get-completions (&optional success error)
   "Call the find_completions API function.
@@ -1390,7 +1415,10 @@ error if the backend is not supported."
   (when (not (file-remote-p buffer-file-name))
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-inplace)))
-      (list python-check-command (list temp-file)))))
+      (list python-check-command
+            (list temp-file)
+            ;; Run flake8 from / to avoid import problems (#169)
+            "/"))))
 
 (defun elpy-flymake-forward-error ()
   "Move forward to the next Flymake error and show a
@@ -1408,7 +1436,7 @@ description."
 
 (defun elpy-flymake-show-error ()
   "Show the flymake error message at point."
-  (let* ((lineno (flymake-current-line-no))
+  (let* ((lineno (line-number-at-pos))
          (err-info (car (flymake-find-err-info flymake-err-info
                                                lineno)))
          (text (mapconcat #'flymake-ler-text
@@ -1434,19 +1462,21 @@ description."
 
 This will call Python in the background and initialize
 `elpy--ac-cache' when it returns."
-  (elpy-rpc-get-completions
-   (lambda (result)
-     (setq elpy--ac-cache nil)
-     (dolist (completion result)
-       (let ((name (car completion))
-             (doc (cadr completion)))
-         (when (not (string-prefix-p "_" name))
-           (push (cons (concat ac-prefix name)
-                       doc)
-                 elpy--ac-cache))))
-     (ac-start))
-   (lambda (err)
-     (message "Can't get completions: %s" err))))
+  (when (not (eq (python-syntax-context-type)
+                 'comment))
+    (elpy-rpc-get-completions
+     (lambda (result)
+       (setq elpy--ac-cache nil)
+       (dolist (completion result)
+         (let ((name (car completion))
+               (doc (cadr completion)))
+           (when (not (string-prefix-p "_" name))
+             (push (cons (concat ac-prefix name)
+                         doc)
+                   elpy--ac-cache))))
+       (ac-start))
+     (lambda (err)
+       (message "Can't get completions: %s" err)))))
 
 (defun elpy--ac-candidates ()
   "Return a list of possible expansions at points.
@@ -1463,7 +1493,13 @@ This uses `elpy--ac-cache'."
 
 (defun elpy--ac-document (name)
   "Return the documentation for the symbol NAME."
-  (assoc-default name elpy--ac-cache))
+  (let ((doc (assoc-default name elpy--ac-cache)))
+    ;; popup.el has a bug when the docstring is the empty string. See
+    ;; elpy tickets #182 and #154 as well as pull request #183 for
+    ;; details.
+    (if (equal doc "")
+        nil
+      doc)))
 
 (ac-define-source elpy
   '((init       . elpy--ac-init)
@@ -1479,26 +1515,6 @@ This uses `elpy--ac-cache'."
     (prefix     . c-dot)
     (requires   . 0)))
 
-
-;;;;;;;;;;;;;;
-;;; Virtualenv
-
-(defadvice virtualenv-workon (around ad-elpy-virtualenv-workon activate)
-  "Restart the elpy-rpc backend on virtualenv change."
-  (let ((old-env virtualenv-workon-session))
-    ad-do-it
-    (when (and virtualenv-workon-starts-python
-               (elpy-rpc--get-rpc-buffer)
-               (not (equal old-env virtualenv-workon-session))
-               (y-or-n-p "Virtualenv changed, restart Elpy-RPC? "))
-      (elpy-rpc-restart))))
-
-(defadvice virtualenv-deactivate (after ad-elpy-virtualenv-deactivate activate)
-  "Restart the elpy-rpc backend on virtualenv change."
-  (when (and virtualenv-workon-starts-python
-             (elpy-rpc--get-rpc-buffer)
-             (y-or-n-p "Virtualenv deactivated, restart Elpy-RPC? "))
-    (elpy-rpc-restart)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Backwards compatibility
