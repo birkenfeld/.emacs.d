@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -21,7 +21,7 @@
  '(TeX-close-quote "\"'")
  '(TeX-insert-braces nil)
  '(TeX-open-quote "\"`")
- '(TeX-parse-self t t)
+ '(TeX-parse-self t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-view-program-list
@@ -35,7 +35,7 @@
     (((output-dvi style-pstricks)
       "dvips and gv")
      (output-dvi "xdvi")
-     (output-pdf "Evince")
+     (output-pdf "xpdf")
      (output-html "xdg-open"))))
  '(ac-auto-start 3)
  '(ac-candidate-limit 20)
@@ -47,6 +47,7 @@
  '(ack-context 0)
  '(ack-heading t)
  '(ansi-color-for-comint-mode t)
+ '(apropos-do-all t)
  '(auto-completion-min-chars 0)
  '(auto-completion-syntax-alist (quote (accept . word)))
  '(auto-insert-mode t)
@@ -251,6 +252,7 @@ mouse-3: Remove current window from display"))
        (help-echo "mouse-1: Select (drag to resize)
 mouse-2: Make current window occupy the whole frame
 mouse-3: Remove current window from display")))))
+ '(mouse-yank-at-point t)
  '(mumamo-chunk-coloring (quote submode-colored))
  '(mumamo-set-major-mode-delay 0.3)
  '(next-screen-context-lines 5)
@@ -494,6 +496,7 @@ mouse-3: Remove current window from display")))))
  '(vline-face (quote vline))
  '(wdired-allow-to-change-permissions t)
  '(windmove-wrap-around t)
+ '(x-select-enable-primary t)
  '(xhtml-multi-mode t))
 
 

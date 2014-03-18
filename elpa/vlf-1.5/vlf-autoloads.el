@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "vlf" "vlf.el" (21232 35705 0 0))
+;;;### (autoloads nil "vlf" "vlf.el" (21265 33619 0 0))
 ;;; Generated autoloads from vlf.el
 
 (autoload 'vlf "vlf" "\
@@ -16,7 +16,7 @@ Return newly created buffer.
 
 ;;;***
 
-;;;### (autoloads nil "vlf-ediff" "vlf-ediff.el" (21232 35705 0 0))
+;;;### (autoloads nil "vlf-ediff" "vlf-ediff.el" (21265 33619 0 0))
 ;;; Generated autoloads from vlf-ediff.el
 
 (autoload 'vlf-ediff-buffers "vlf-ediff" "\
@@ -39,7 +39,7 @@ respectively of difference list, runs ediff over the adjacent chunks.
 
 ;;;### (autoloads nil nil ("vlf-base.el" "vlf-follow.el" "vlf-integrate.el"
 ;;;;;;  "vlf-occur.el" "vlf-pkg.el" "vlf-search.el" "vlf-write.el")
-;;;;;;  (21232 35705 643253 870000))
+;;;;;;  (21265 33619 431034 629000))
 
 ;;;***
 

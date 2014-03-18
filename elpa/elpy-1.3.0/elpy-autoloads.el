@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "elpy" "elpy.el" (21127 53452 0 0))
+;;;### (autoloads nil "elpy" "elpy.el" (21288 39535 0 0))
 ;;; Generated autoloads from elpy.el
 
 (autoload 'elpy-enable "elpy" "\
@@ -25,7 +25,7 @@ Disable Elpy in all future Python buffers.
 Minor mode in Python buffers for the Emacs Lisp Python Environment.
 
 This mode fully supports virtualenvs. Once you switch a
-virtualenv using \\[virtualenv-workon], you can use
+virtualenv using \\[pyvenv-workon], you can use
 \\[elpy-rpc-restart] to make the elpy Python process use your
 virtualenv.
 
@@ -38,8 +38,8 @@ more structured list.
 
 ;;;***
 
-;;;### (autoloads nil nil ("elpy-pkg.el" "elpy-refactor.el") (21127
-;;;;;;  53452 842767 230000))
+;;;### (autoloads nil nil ("elpy-pkg.el" "elpy-refactor.el") (21288
+;;;;;;  39536 42472 471000))
 
 ;;;***
 

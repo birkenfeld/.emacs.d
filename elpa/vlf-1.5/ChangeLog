@@ -1,3 +1,48 @@
+2014-02-23  Andrey Kotlarski  <m00naticus@gmail.com>
+
+	packages/vlf/vlf.el: use derived-mode-p to check major mode.
+
+2014-02-23  Andrey Kotlarski  <m00naticus@gmail.com>
+
+		* packages/vlf: Version 1.5.  Add hexl-mode integration and
+	hook
+	extensibility.
+
+		* vlf.el: (vlf-before-batch-functions,
+	vlf-after-batch-functions):
+	New hooks.
+	(vlf-mode): Play well with hexl-mode.  Don't disable mode in case
+	user has declined to reload whole file.
+	(vlf-keep-alive, vlf-hexl-before, vlf-hexl-after): New functions.
+	Use them in hooks.
+	(vlf-hexl-save, vlf-hexl-scroll-up, vlf-hexl-scroll-down): New
+	advices.
+
+		* vlf-write.el (vlf-write): Run batch hooks.  Check if tramp is
+	loaded.
+
+		* vlf-search.el (vlf-re-search, vlf-goto-line): Run batch
+	hooks.
+	Check if tramp is loaded.
+
+		* vlf-occur.el (vlf-occur): Run batch hooks.
+	(vlf-build-occur): Check if tramp is loaded.
+
+		* vlf-integrate.el: Minor whitespace adjustment.
+
+		* vlf-ediff.el: Enable lexical scoping.
+	(vlf-ediff-next): Run batch hooks.  Check if tramp is loaded.
+
+		* vlf-base.el (vlf-before-chunk-update,
+	vlf-after-chunk-update):
+	New hooks.
+	(vlf-move-to-chunk-1, vlf-move-to-chunk-2): Run them.
+	(vlf-move-to-chunk-2): Delete undo info only in case it's not
+	disabled.
+	(vlf-insert-file-contents-1): Use insert-file-contents instead of
+	manual decoding and remove position parameter.
+	(vlf-insert-file-contents, vlf-adjust-start): Adjust calls.
+
 2014-02-01  Andrey Kotlarski  <m00naticus@gmail.com>
 
 		* packages/vlf: Version 1.4.  Add Ediff integration.
