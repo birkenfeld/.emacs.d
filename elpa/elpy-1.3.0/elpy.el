@@ -1195,7 +1195,7 @@ This is usually an error or backtrace."
                       "the problem.\n"
                       "\n"
                       data))
-            (pop-to-buffer (current-buffer)))))))))
+            (display-buffer (current-buffer)))))))))
 
 (defun elpy-rpc--call (method-name params success &optional error)
   "Call METHOD-NAME with PARAMS in the current RPC backend.
