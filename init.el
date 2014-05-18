@@ -32,6 +32,8 @@
                  "http://marmalade-repo.org/packages/") t)
   (add-to-list 'package-archives
                '("elpy" . "http://jorgenschaefer.github.io/packages/") t)
+  (add-to-list 'package-archives
+               '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (package-initialize)
