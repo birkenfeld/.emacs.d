@@ -4,7 +4,7 @@
 
 ;; Author: Jorgen Schaefer <contact@jorgenschaefer.de>
 ;; URL: https://github.com/jorgenschaefer/elpy
-;; Version: 1.4.0
+;; Version: 1.4.1
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License
@@ -35,6 +35,14 @@
 ;; https://github.com/jorgenschaefer/elpy/wiki
 
 ;;; Code:
+
+;; Bad hack. nose.el from MELPA uses defvar-local, which breaks with
+;; older Emacsen. Of course, users use MELPA, so elpy gets blamed.
+(when (not (fboundp 'defvar-local))
+  (defmacro defvar-local (var val &optional docstring)
+    "Compatibility declaration, backported from Emacs 24.4."
+    (list 'progn (list 'defvar var val docstring)
+          (list 'make-variable-buffer-local (list 'quote var)))))
 
 (require 'auto-complete-config)
 (require 'elpy-refactor)
@@ -113,7 +121,7 @@ These are prepended to `grep-find-ignored-directories'."
   "Hook run when `elpy-mode' is enabled."
   :group 'elpy)
 
-(defconst elpy-version "1.4.0"
+(defconst elpy-version "1.4.1"
   "The version of the Elpy lisp code.")
 
 (defun elpy-version ()
