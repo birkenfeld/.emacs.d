@@ -1,9 +1,10 @@
 ;;; minimap-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+
 
-;;;### (autoloads nil "minimap" "minimap.el" (21288 39509 0 0))
+;;;### (autoloads (minimap-mode) "minimap" "minimap.el" (21469 11243
+;;;;;;  990071 824000))
 ;;; Generated autoloads from minimap.el
 
 (defvar minimap-mode nil "\
@@ -22,9 +23,15 @@ Toggle minimap mode.
 
 ;;;***
 
+;;;### (autoloads nil nil ("minimap-pkg.el") (21469 11244 8328 617000))
+
+;;;***
+
+(provide 'minimap-autoloads)
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; minimap-autoloads.el ends here
