@@ -480,7 +480,7 @@
 ;; enable the elpy "ide" features
 (elpy-enable)
 
-(add-hook 'python-mode-hook (lambda ()
+(defun my-python-mode-hook ()
   ;; remove python-mode's ffap things that slow down find-file
   (setq ffap-alist (remove '(python-mode . python-ffap-module-path) ffap-alist))
   (setq ffap-alist (remove '(inferior-python-mode . python-ffap-module-path) ffap-alist))
@@ -514,8 +514,14 @@
          (concat "python " buffer-file-name)))
 
   ;; override elpy key
-  (local-set-key (kbd "M-.") 'jedi:goto-definition)
-))
+  ;(local-set-key (kbd "M-.") 'jedi:goto-definition)
+  (define-key elpy-mode-map (kbd "<M-down>") nil)
+  (define-key elpy-mode-map (kbd "<M-up>") nil)
+  (define-key elpy-mode-map (kbd "<M-left>") nil)
+  (define-key elpy-mode-map (kbd "<M-right>") nil)
+  )
+
+(add-hook 'python-mode-hook #'my-python-mode-hook)
 
 ;; ignore Python 3.2+ .pyc directories
 (add-to-list 'completion-ignored-extensions "__pycache__/")
