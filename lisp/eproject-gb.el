@@ -1,6 +1,6 @@
 ;;; eproject-gb.el --- more eproject tools
 
-;; Copyright (C) 2010  Georg Brandl
+;; Copyright (C) 2010, 2014  Georg Brandl
 
 ;; Author: Georg Brandl <georg@python.org>
 ;; Keywords: eproject
@@ -30,19 +30,6 @@
   :relevant-files ("\\.py$" "\\.rst$" "\\.js$" "\\.html$" "\\.c$" "\\.h$")
   :irrelevant-files ("\\.py[co]$"))
 
-;; remember the last automatically opened rope project, to avoid
-;; re-opening it all the time
-(defvar eproject-auto-rope-project nil)
-
-;; automatically open rope project when visiting a Python project file
-(add-hook 'python-project-file-visit-hook
-          (lambda ()
-            (when (fboundp 'rope-open-project)
-              (let ((root (eproject-root)))
-                (unless (equal eproject-auto-rope-project root)
-                  (rope-open-project root)
-                  (setq eproject-auto-rope-project root))))))
-
 (define-project-type haskell (generic)
   (or (look-for "Setup.hs") (look-for "Setup.lhs"))
   :relevant-files ("\\.hs$" "\\.lhs$" "\\.c$"))
@@ -67,6 +54,31 @@
   (setq test-cwd (eproject-root))
   (setq test ".")
   (test-case-run))
+
+(defun eproject-find-tag ()
+  "Find a tag via tags table."
+  (interactive)
+  (let* ((root (eproject-root))
+         (table-file (concat root ".tags")))
+    (when (not (equal tags-file-name table-file))
+      (shell-command
+       (format "ctags -f %s --languages=-HTML,JavaScript --python-kinds=-iv -e -R %s"
+               table-file (directory-file-name root)))
+      (let ((revert-without-query '(".tags")))
+        (visit-tags-table table-file)))
+    (if current-prefix-arg
+        (call-interactively #'find-tag)
+      (tags-completion-table)
+      (let (tag-names)
+        (mapatoms (lambda (x)
+                    (push (prin1-to-string x t) tag-names))
+                  tags-completion-table)
+        (find-tag (ido-completing-read "Find tag: " tag-names))))))
+
+(defun eproject-find-next-tag ()
+  "Find next tag."
+  (interactive)
+  (find-tag last-tag t))
 
 (provide 'eproject-gb)
 ;;; eproject-gb.el ends here

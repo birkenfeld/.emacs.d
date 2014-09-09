@@ -519,6 +519,9 @@
   (define-key elpy-mode-map (kbd "<M-up>") nil)
   (define-key elpy-mode-map (kbd "<M-left>") nil)
   (define-key elpy-mode-map (kbd "<M-right>") nil)
+  (define-key elpy-mode-map (kbd "M-.") 'eproject-find-tag)
+  (define-key elpy-mode-map (kbd "C-M-.") 'eproject-find-next-tag)
+  (define-key elpy-mode-map (kbd "C-c C-d") 'elpy-goto-definition)
   )
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
