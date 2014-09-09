@@ -2416,7 +2416,8 @@ This is usually an error or backtrace."
   ;; We actually might get an (error "foo") thing here.
   (if (and (consp error-object)
            (not (consp (car error-object))))
-      (signal (car error-object) (cdr error-object))
+      (message "%S" error-object)
+      ;(signal (car error-object) (cdr error-object))
     (let ((message (cdr (assq 'message error-object)))
           (code (cdr (assq 'code error-object)))
           (data (cdr (assq 'data error-object))))
