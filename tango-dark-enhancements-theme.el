@@ -43,6 +43,8 @@
    `(grep-edit-file-face ((,class (:background ,blue-3 :weight bold))))
    `(header-line ((,class (:inherit nil :background ,alum-5.5))))
    `(hl-line ((,class (:background "#345"))))
+   `(ido-only-match ((,class (:foreground ,cham-2))))
+   `(ido-first-match ((,class (:weight bold :foreground ,butter-1))))
    `(linum ((,class (:inherit (shadow fringe)))))
    `(mode-line ((,class (:background ,cham-0 :foreground ,alum-6
                          :box (:line-width 3 :color ,cham-0)))))

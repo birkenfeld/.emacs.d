@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -19,9 +19,24 @@
  '(TeX-PDF-mode t)
  '(TeX-auto-local ".auto/")
  '(TeX-close-quote "\"'")
+ '(TeX-command-list
+   (quote
+    (("LaTeX" "%`%l%(mode)%' %t" TeX-run-TeX nil
+      (latex-mode doctex-mode)
+      :help "Run LaTeX")
+     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
+     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
+     ("Print" "%p" TeX-run-command t t :help "Print the file")
+     ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
+     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
+     ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t :help "Spell-check the document")
+     ("Clean" "TeX-clean" TeX-run-function nil t :help "Delete generated intermediate files")
+     ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files")
+     ("Other" "" TeX-run-command t t :help "Run an arbitrary command")
+     ("Latexmk" "latexmk -latexoption=\"--interaction=nonstopmode\" -pdf %t" TeX-run-command nil t))))
  '(TeX-insert-braces nil)
  '(TeX-open-quote "\"`")
- '(TeX-parse-self t)
+ '(TeX-parse-self t t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-view-program-list
@@ -89,7 +104,7 @@
  '(custom-enabled-themes (quote (tango-dark-enhancements tango-dark)))
  '(custom-safe-themes
    (quote
-    ("e8dab0a64e5b7165b13a689b40c4025e416dcdf933e7f688c843649cc3c7359e" default)))
+    ("b446153d2e737b001cacf3274602413a057c17cce3c1122355c30503c9e5edf4" default)))
  '(delete-selection-mode t)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
@@ -109,6 +124,9 @@
  '(dnd-open-file-other-window t)
  '(ede-project-placeholder-cache-file "~/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(elpy-project-ignored-directories
+   (quote
+    (".bzr" "CVS" ".git" ".hg" ".svn" ".tox" "build" "dist" ".cask" "_build" "html")))
  '(elpy-rpc-backend "jedi")
  '(eproject-completing-read-function (quote eproject--ido-completing-read))
  '(ffap-machine-p-known (quote reject))
@@ -167,7 +185,6 @@
     ("{" "}" "," ", ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
  '(ido-enable-flex-matching t)
  '(ido-mode (quote both) nil (ido))
- '(ido-separator ",")
  '(ido-use-virtual-buffers t)
  '(iedit-occurrence-face (quote grep-edit-face))
  '(igrep-options (quote -i) t)
@@ -268,7 +285,7 @@ mouse-3: Remove current window from display")))))
  '(pop-up-windows nil)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face))
+ '(preview-scale-function (quote preview-scale-from-face) t)
  '(preview-transparent-color t)
  '(pulse-flag nil)
  '(py-closing-list-dedents-bos t)
@@ -524,7 +541,7 @@ mouse-3: Remove current window from display")))))
  '(custom-saved ((t (:inherit custom-documentation-face :underline t))))
  '(custom-set ((((class color)) (:inherit custom-documentation-face :background "white" :foreground "blue"))))
  '(custom-state ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))
- '(diff-file-header ((t (:weight bold))))
+ '(diff-file-header ((t (:weight bold))) t)
  '(flymake-errline ((t (:underline (:color "red" :style wave)))))
  '(flymake-warnline ((((class color) (background light)) (:underline (:color "#ec0" :style wave)))))
  '(flyspell-duplicate ((t (:foreground "Gold3" :underline t))) t)
@@ -533,6 +550,7 @@ mouse-3: Remove current window from display")))))
  '(font-lock-comment-face ((t (:slant italic))))
  '(highlight-indent-face ((t (:inherit fringe :background "#2e3436"))))
  '(hl-line ((t (:background "#345"))))
+ '(ido-first-match ((t (:foreground "#fce94f" :weight bold))))
  '(linum ((t (:inherit (shadow fringe)))) t)
  '(mode-line ((t (:inherit variable-pitch))))
  '(mode-line-buffer-id ((t (:weight bold))))
