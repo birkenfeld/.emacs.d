@@ -111,13 +111,13 @@
 (global-set-key (kbd "M-Z") 'fastnav-zap-to-char-backward)
 
 ;; auto-completion setup
-(require 'pos-tip)
-(require 'auto-complete)
+;(require 'pos-tip)
+;(require 'auto-complete)
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 ;; (define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
 ;; (define-key ac-completing-map "\t" 'ac-complete)
-(require 'auto-complete-config)
-(ac-config-default)
+;(require 'auto-complete-config)
+;(ac-config-default)
 
 ;; highlight newly-inserted text etc
 (require 'volatile-highlights)

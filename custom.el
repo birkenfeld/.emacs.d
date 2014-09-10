@@ -104,7 +104,7 @@
  '(custom-enabled-themes (quote (tango-dark-enhancements tango-dark)))
  '(custom-safe-themes
    (quote
-    ("b446153d2e737b001cacf3274602413a057c17cce3c1122355c30503c9e5edf4" default)))
+    ("5b19d7e4fec18fe3515b4ca89c0e3615da1852e7b6965a281b38351d4e11a29b" default)))
  '(delete-selection-mode t)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
@@ -522,11 +522,15 @@ mouse-3: Remove current window from display")))))
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 95 :width normal :family "Consolas"))))
+ '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "microsoft" :family "Consolas"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
+ '(company-preview-common ((t (:inherit company-preview :underline t))))
  '(company-pseudo-tooltip-selection-face ((t (:inherit company-pseudo-tooltip-face :background "#ff6600"))) t)
+ '(company-scrollbar-bg ((t (:inherit company-tooltip :background "gray40"))))
+ '(company-scrollbar-fg ((t (:background "gray10"))))
+ '(company-tooltip ((t (:background "gray80" :foreground "black"))))
  '(custom-button ((t (:inherit variable-pitch :background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 0.9))))
  '(custom-button-mouse ((((type x w32 mac) (class color)) (:inherit custom-button :background "grey90" :foreground "black" :box (:line-width 2 :style released-button)))))
  '(custom-button-pressed ((t (:inherit custom-button :background "lightgrey" :foreground "black" :box (:line-width 2 :style pressed-button)))))

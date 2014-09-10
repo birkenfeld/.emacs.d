@@ -22,6 +22,8 @@
 
   (custom-theme-set-faces
    'tango-dark-enhancements
+   `(company-preview ((,class (:foreground ,alum-3))))
+   `(company-preview-search ((,class (:foreground ,blue-0))))
    `(cursor ((,class (:background "gold"))))
    `(diff-added ((,class (:inherit diff-changed :foreground ,cham-0))))
    `(diff-changed ((,class (:background ,alum-5.5))))
