@@ -85,6 +85,11 @@
  '(comint-scroll-to-bottom-on-input (quote this))
  '(comment-line-break-function (quote comment-indent-new-line) t)
  '(comment-style (quote multi-line))
+ '(company-backends
+   (quote
+    (company-nxml company-css company-clang company-capf
+                  (company-gtags company-etags company-keywords sane-company-dabbrev)
+                  company-oddmuse company-files company-dabbrev)))
  '(compilation-scroll-output (quote first-error))
  '(completion-auto-show (quote tooltip))
  '(completion-auto-show-delay 0)
@@ -531,6 +536,8 @@ mouse-3: Remove current window from display")))))
  '(company-scrollbar-bg ((t (:inherit company-tooltip :background "gray40"))))
  '(company-scrollbar-fg ((t (:background "gray10"))))
  '(company-tooltip ((t (:background "gray80" :foreground "black"))))
+ '(company-tooltip-common ((t (:inherit company-tooltip))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection))))
  '(custom-button ((t (:inherit variable-pitch :background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button) :height 0.9))))
  '(custom-button-mouse ((((type x w32 mac) (class color)) (:inherit custom-button :background "grey90" :foreground "black" :box (:line-width 2 :style released-button)))))
  '(custom-button-pressed ((t (:inherit custom-button :background "lightgrey" :foreground "black" :box (:line-width 2 :style pressed-button)))))

@@ -392,7 +392,7 @@
   (setq ido-decorations (quote ("{" "}" ", " ", ..." " [" "]"
                                 " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
 
-  ;; Display ido results vertically, rather than horizontally
+;  ;; Display ido results vertically, rather than horizontally
 ;  (setq ido-decorations (quote ("\n-> " "" "\t" "\n   ..." " [" "]"
 ;                                " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
 ;  (defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
@@ -402,3 +402,17 @@
 ;    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match))
                                         ;  (add-hook 'ido-setup-hook 'ido-define-keys)
   )
+
+(defun sane-company-dabbrev (command &optional arg &rest ignored)
+  "Just provide dabbrevs to company."
+  (interactive (list 'interactive))
+  (cl-case command
+    (interactive (company-begin-backend 'sane-company-dabbrev))
+    (prefix
+     (let ((word (company-grab-word)))
+       (if (equal word "") nil word)))
+    (candidates
+     (dabbrev--reset-global-variables)
+     (dabbrev--find-all-expansions arg t))
+    (ignore-case nil)
+    (sorted t)))
