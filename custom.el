@@ -104,7 +104,9 @@
  '(cua-enable-cua-keys (quote shift))
  '(cua-enable-cursor-indications t)
  '(cua-mode t nil (cua-base))
- '(cua-overwrite-cursor-color "red")
+ '(cua-normal-cursor-color "#fce94f")
+ '(cua-overwrite-cursor-color "#ef2929")
+ '(cua-read-only-cursor-color "#73d216")
  '(cua-remap-control-z nil)
  '(cursor-type (quote bar))
  '(custom-enabled-themes (quote (tango-dark-enhancements tango-dark)))
@@ -171,6 +173,7 @@
  '(grep-find-command
    "find . -name .svn -prune -o -type f -print0 | xargs -0 -e grep -nHE -e ")
  '(grep-highlight-matches t)
+ '(gud-pdb-command-name "python -mpdb")
  '(gud-tooltip-mode t)
  '(haskell-doc-show-global-types t)
  '(haskell-indent-after-keywords
