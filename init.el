@@ -513,8 +513,7 @@
     (set (make-local-variable 'compile-command)
          (concat "python " buffer-file-name)))
 
-  ;; override elpy key
-  ;(local-set-key (kbd "M-.") 'jedi:goto-definition)
+  ;; override elpy keys
   (define-key elpy-mode-map (kbd "<M-down>") nil)
   (define-key elpy-mode-map (kbd "<M-up>") nil)
   (define-key elpy-mode-map (kbd "<M-left>") nil)
@@ -523,6 +522,8 @@
   (define-key elpy-mode-map (kbd "C-M-.") 'eproject-find-next-tag)
   (define-key elpy-mode-map (kbd "C-c C-d") 'elpy-goto-definition)
   (define-key elpy-mode-map (kbd "M-SPC") 'company-complete)
+
+  (define-key python-mode-map (kbd "M-q") 'python-fill-paragraph)
   )
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
@@ -812,7 +813,7 @@ returns the word count of that file."
 (defun load-nonstop (file) (ignore-errors (load file t)))
 
 ;; load my extensions if they are present
-(load-nonstop "~/.emacs.d/extensions.el")
+(load "~/.emacs.d/extensions.el")
 ;; and separately, those provided by the distribution (packed in different
 ;; files so that errors don't skip the whole file)
 (mapc 'load-nonstop (directory-files "~/.emacs.d/distext" t "\\.el"))

@@ -90,6 +90,7 @@
     (company-nxml company-css company-clang company-capf
                   (company-gtags company-etags company-keywords sane-company-dabbrev)
                   company-oddmuse company-files company-dabbrev)))
+ '(company-tooltip-minimum-width 40)
  '(compilation-scroll-output (quote first-error))
  '(completion-auto-show (quote tooltip))
  '(completion-auto-show-delay 0)
@@ -129,6 +130,8 @@
  '(dnd-open-file-other-window t)
  '(ede-project-placeholder-cache-file "~/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(eldoc-idle-delay 0.1)
+ '(eldoc-print-after-edit t)
  '(elpy-project-ignored-directories
    (quote
     (".bzr" "CVS" ".git" ".hg" ".svn" ".tox" "build" "dist" ".cask" "_build" "html")))
@@ -553,6 +556,7 @@ mouse-3: Remove current window from display")))))
  '(custom-set ((((class color)) (:inherit custom-documentation-face :background "white" :foreground "blue"))))
  '(custom-state ((((class color) (background light)) (:inherit custom-documentation :foreground "dark green"))))
  '(diff-file-header ((t (:weight bold))) t)
+ '(eldoc-highlight-function-argument ((t (:inherit ido-first-match))))
  '(flymake-errline ((t (:underline (:color "red" :style wave)))))
  '(flymake-warnline ((((class color) (background light)) (:underline (:color "#ec0" :style wave)))))
  '(flyspell-duplicate ((t (:foreground "Gold3" :underline t))) t)

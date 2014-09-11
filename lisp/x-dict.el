@@ -46,7 +46,7 @@
 (defconst xdict-dictionaries '(leo dict-cc))
 
 (defvar xdict-use-pymacs nil)
-(defvar xdict-program-name "~/.emacs.d/x-dict.py") ;; On windows: "c:/utils/python/x-dict"
+(defvar xdict-program-name "~/.emacs.d/lisp/x-dict.py") ;; On windows: "c:/utils/python/x-dict"
 (defvar xdict-column-width 60)
 (defvar xdict-max-window-height 40)
 

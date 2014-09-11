@@ -22,8 +22,8 @@
 (require 'goto-chg)
 (global-set-key (kbd "C-,") 'goto-last-change)
 
-;; colored moccur
-(require 'color-moccur)
+;; enhanced grep
+(require 'color-grep)
 
 ;; wgrep (edit in grep results)
 (require 'wgrep)
@@ -143,10 +143,6 @@
                 ("\\.pxi$" . cython-mode))
               auto-mode-alist))
 
-;; jedi for python completion (done by elpy)
-;(autoload 'jedi:setup "jedi" nil t)
-;(add-hook 'python-mode-hook 'jedi:setup)
-
 ;; haskell mode
 ;(load "haskell-site-file" nil t)
 
@@ -231,9 +227,22 @@
 (global-set-key (kbd "<f2>") 'ack-same)
 (global-set-key (kbd "S-<f2>") 'ack)
 
-;; idomenu: switch to a buffer local tag with ido completion
+;; ido/idomenu: switch to a buffer local tag with ido completion
 (autoload 'idomenu "idomenu" nil t)
 (global-set-key (kbd "C-x m") 'idomenu)
+
+(setq ido-decorations (quote ("{" "}" ", " ", ..." " [" "]"
+                              " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+
+;  ;; Display ido results vertically, rather than horizontally
+;  (setq ido-decorations (quote ("\n-> " "" "\t" "\n   ..." " [" "]"
+;                                " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+;  (defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
+;  (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
+;  (defun ido-define-keys () ;; C-n/p is more intuitive in vertical layout
+;    (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
+;    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match))
+                                        ;  (add-hook 'ido-setup-hook 'ido-define-keys)
 
 ;; xdict: lookup dictionary
 (autoload 'xdict-query "x-dict" nil t)
@@ -388,20 +397,7 @@
 (eval-after-load "anything"
   '(define-key anything-map (kbd "M-RET") 'anything-execute-persistent-action))
 
-(eval-after-load "ido"
-  (setq ido-decorations (quote ("{" "}" ", " ", ..." " [" "]"
-                                " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-
-;  ;; Display ido results vertically, rather than horizontally
-;  (setq ido-decorations (quote ("\n-> " "" "\t" "\n   ..." " [" "]"
-;                                " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-;  (defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
-;  (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
-;  (defun ido-define-keys () ;; C-n/p is more intuitive in vertical layout
-;    (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
-;    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match))
-                                        ;  (add-hook 'ido-setup-hook 'ido-define-keys)
-  )
+;; company mode stuff
 
 (defun sane-company-dabbrev (command &optional arg &rest ignored)
   "Just provide dabbrevs to company."
@@ -416,3 +412,30 @@
      (dabbrev--find-all-expansions arg t))
     (ignore-case nil)
     (sorted t)))
+
+(defun company-select-previous-page ()
+  (interactive)
+  (dotimes (i 10) (company-select-previous)))
+
+(defun company-select-next-page ()
+  (interactive)
+  (dotimes (i 10) (company-select-next)))
+
+(eval-after-load "company"
+  '(progn
+     (define-key company-active-map (kbd "<prior>") 'company-select-previous-page)
+     (define-key company-active-map (kbd "<next>") 'company-select-next-page)
+     (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+     (define-key company-active-map [tab] 'company-complete-selection)))
+
+;; elpy customization
+
+(defadvice eldoc-message (around no-in-xxx (&rest args) activate)
+  "Do not show the \"In: ...\" in echo area."
+  (if (and (car args)
+           (string-match-p "^In: " (car args))) nil
+    ad-do-it))
+
+(eval-after-load "find-file-in-project"
+  '(progn
+     (set-variable 'ffip-full-paths t)))
