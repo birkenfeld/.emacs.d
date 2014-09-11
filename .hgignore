@@ -4,23 +4,21 @@ syntax: glob
 *.pyc
 *~
 
-_abbrevs
-_autosave/
-_backups/
-_bookmarks
-_comphist
-_desktop/
-_ede
-_games/
-_places
-_recentf
-_semantic/
-_session
-_smex
+abbrevs
+autosave/
+backups/
+bm-repository
+comphist
+desktop
+desktop.lock
+games/
+places
+recentf
+semantic/
+session
+smex-items
 _twitter/
-_url/
+url/
 
 local.el
 local/
-
-nxhtml/etc/schema/xhtml-loader.rnc

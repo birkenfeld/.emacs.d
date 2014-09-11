@@ -60,11 +60,11 @@
 
 ;; make all backups in a single directory
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name "~/.emacs.d/_backups"))))
+      `(("." . ,(expand-file-name "~/.emacs.d/backups"))))
 
 ;; put game scores in a different directory
 (setq gamegrid-user-score-file-directory
-      (locate-user-emacs-file "_games/"))
+      (locate-user-emacs-file "games/"))
 
 ;; use a nicer mouse scroll behavior
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -269,7 +269,7 @@
 ;; Save point position between sessions
 (require 'saveplace)
 (setq-default save-place t)
-(setq save-place-file (expand-file-name "_places" user-emacs-directory))
+(setq save-place-file (expand-file-name "places" user-emacs-directory))
 
 ;; ---------- Modes ------------------------------------------------------------
 
@@ -288,7 +288,7 @@
                                           "blue2" "magenta3" "cyan3" "gray80"])
 
 ;; abbrev file for abbrev-mode
-(setq abbrev-file-name "~/.emacs.d/_abbrevs")
+(setq abbrev-file-name "~/.emacs.d/abbrevs")
 (when (file-exists-p abbrev-file-name)
   (read-abbrev-file abbrev-file-name t))
 
