@@ -193,6 +193,7 @@
     ("{" "}" "," ", ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
  '(ido-enable-flex-matching t)
  '(ido-mode (quote both) nil (ido))
+ '(ido-save-directory-list-file "/home/gbr/.emacs.d/ido.last")
  '(ido-use-virtual-buffers t)
  '(iedit-occurrence-face (quote grep-edit-face))
  '(igrep-options (quote -i) t)

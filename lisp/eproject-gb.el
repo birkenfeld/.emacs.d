@@ -35,7 +35,7 @@
   :relevant-files ("\\.hs$" "\\.lhs$" "\\.c$"))
 
 (define-project-type elisp (generic)
-  (look-for "recompile")
+  (look-for "init.el")
   :relevant-files ("\\.el$")
   :irrelevant-files ("\\.elc$"))
 
