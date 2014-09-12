@@ -10,6 +10,10 @@
 ;; make some mode line displays smaller
 (when (require 'diminish nil 'noerror)
   (eval-after-load "reveal" '(diminish 'reveal-mode))
+  (eval-after-load "eproject" '(diminish 'eproject-mode))
+  (eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
+  (eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
+  (eval-after-load "autopair" '(diminish 'autopair-mode " ()"))
   (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y")))
 
 ;; M-x enhancement

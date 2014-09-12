@@ -557,6 +557,17 @@
 
 ;; ---------- Custom interactive functions -------------------------------------
 
+(defun kill-this-buffer ()	; for the menu bar
+  "Kill the current buffer.
+When called in the minibuffer, get out of the minibuffer
+using `abort-recursive-edit'."
+  (interactive)
+  (cond
+   ((menu-bar-non-minibuffer-window-p)
+    (kill-buffer (current-buffer)))
+   (t
+    (abort-recursive-edit))))
+
 (defun backward-delete-word (arg)
   "Delete word before point."
   (interactive "p")
