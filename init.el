@@ -674,6 +674,8 @@
        (list regexp files))))
   (rgrep regexp files default-directory))
 
+(defalias 'wgrep 'wgrep-change-to-wgrep-mode)
+
 (defun smart-tab ()
   "This smart tab is minibuffer compliant: it acts as usual in
    the minibuffer. Else, if mark is active, indents region. Else if
