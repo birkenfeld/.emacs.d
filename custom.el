@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -36,7 +36,7 @@
      ("Latexmk" "latexmk -latexoption=\"--interaction=nonstopmode\" -pdf %t" TeX-run-command nil t))))
  '(TeX-insert-braces nil)
  '(TeX-open-quote "\"`")
- '(TeX-parse-self t)
+ '(TeX-parse-self t t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-view-program-list
@@ -127,6 +127,21 @@
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(dnd-open-file-other-window t)
+ '(ecb-directories-menu-user-extension-function (quote ignore))
+ '(ecb-history-menu-user-extension-function (quote ignore))
+ '(ecb-layout-name "left14")
+ '(ecb-methods-menu-user-extension-function (quote ignore))
+ '(ecb-mode-line-display-window-number nil)
+ '(ecb-options-version "2.40")
+ '(ecb-primary-secondary-mouse-buttons (quote mouse-1--mouse-2))
+ '(ecb-source-file-regexps
+   (quote
+    ((".*"
+      ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\|pyc\\)$\\)\\)")
+      ("^\\.\\(emacs\\|gnus\\)$")))))
+ '(ecb-sources-menu-user-extension-function (quote ignore))
+ '(ecb-tip-of-the-day nil)
+ '(ecb-tree-buffer-style (quote image))
  '(ede-project-placeholder-cache-file "~/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(eldoc-idle-delay 0.1)
@@ -253,7 +268,7 @@
  '(powerline-height 23)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face))
+ '(preview-scale-function (quote preview-scale-from-face) t)
  '(preview-transparent-color t)
  '(pulse-flag nil)
  '(python-fill-docstring-style (quote pep-257-nn))
@@ -491,6 +506,10 @@
  '(ack-match ((nil (:inherit match))))
  '(custom-button ((t (:inherit variable-pitch :background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button)))))
  '(diff-file-header ((t (:weight bold))) t)
+ '(ecb-default-general-face ((t (:inherit variable-pitch :height 1.0))))
+ '(ecb-default-highlight-face ((t (:inherit highlight))))
+ '(ecb-mode-line-data-face ((t (:inherit variable-pitch :background "#555753"))))
+ '(ecb-tag-header-face ((t (:inherit highlight))))
  '(eldoc-highlight-function-argument ((t (:inherit ido-first-match))))
  '(flymake-errline ((t (:underline (:color "red" :style wave)))))
  '(flyspell-duplicate ((t (:foreground "Gold3" :underline t))) t)
