@@ -20,6 +20,8 @@
 ;; load package manager and add the alternate package repo
 (when (require 'package nil t)
   (add-to-list 'package-archives
+               '("gnu" . "http://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives
                '("marmalade" .
                  "http://marmalade-repo.org/packages/") t)
   (add-to-list 'package-archives
@@ -87,8 +89,6 @@
 (setq time-stamp-pattern "10/[Ll]ast modified: %:y-%02m-%02d %02H:%02M by %u$")
 (add-hook 'before-save-hook 'time-stamp)
 
-;; fetch semantic tags after saving (now local)
-;(add-hook 'after-save-hook 'semantic-fetch-tags)
 ;; make file executable if it's a script
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
@@ -221,7 +221,7 @@
 
 ;; like vim's '*' binding
 (global-set-key (kbd "C-+")   'search-for-this-word)
-(global-set-key (kbd "C-*")   'isearch-lazy-highlight-cleanup)
+(global-set-key (kbd "C-*")   'lazy-highlight-cleanup)
 
 ;; fixup-whitespace puts the "right" amount of whitespace at the point
 (global-set-key (kbd "S-SPC") 'fixup-whitespace)
@@ -287,11 +287,6 @@
 
 ;; electric bindings for help mode
 (require 'ehelp)
-
-;; terminal mode: display gray color a bit darker
-(require 'term)
-(setq ansi-term-color-vector [unspecified "black" "red3" "green3" "yellow3"
-                                          "blue2" "magenta3" "cyan3" "gray80"])
 
 ;; abbrev file for abbrev-mode
 (setq abbrev-file-name "~/.emacs.d/abbrevs")

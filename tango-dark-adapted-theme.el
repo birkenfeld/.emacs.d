@@ -215,12 +215,22 @@
    `(paradox-mode-line-face ((,xwin (:foreground ,blue-3))))
    `(path-header-directory-face ((,xwin (:foreground "#8fb28f")) (,term (:foreground "white"))))
    `(path-header-filename-face ((,xwin (:foreground ,alum-1)) (,term (:foreground "white"))))
+   `(ace-jump-face-foreground ((,xwin (:foreground ,butter-2))))
+   ;; Terminal faces
+   `(term-color-black ((,xwin (:foreground ,alum-7))))
+   `(term-color-red ((,xwin (:foreground ,red-0))))
+   `(term-color-green ((,xwin (:foreground ,cham-0))))
+   `(term-color-yellow ((,xwin (:foreground ,butter-1))))
+   `(term-color-blue ((,xwin (:foreground ,blue-1))))
+   `(term-color-magenta ((,xwin (:foreground ,plum-1))))
+   `(term-color-cyan ((,xwin (:foreground ,blue-0))))
+   `(term-color-white ((,xwin (:foreground ,alum-1))))
    )
 
   (custom-theme-set-variables
    'tango-dark-adapted
-   `(ansi-color-names-vector [,alum-7 ,red-0 ,cham-0 ,butter-1
-                                      ,blue-1 ,plum-1 ,blue-0 ,alum-1])
+   `(ansi-color-names-vector [,alum-7 ,red-0 ,cham-0 ,butter-1  ;; not sure this is needed 
+                              ,blue-1 ,plum-1 ,blue-0 ,alum-1])
    `(cua-normal-cursor-color ,butter-1)
    `(cua-overwrite-cursor-color ,red-1)
    `(cua-read-only-cursor-color ,cham-2)

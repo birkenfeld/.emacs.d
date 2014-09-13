@@ -24,7 +24,7 @@
 
 ;; go to last change in buffer
 (require 'goto-chg)
-(global-set-key (kbd "C-,") 'goto-last-change)
+(global-set-key (kbd "C-;") 'goto-last-change)
 
 ;; enhanced grep
 (require 'color-grep)
@@ -85,7 +85,7 @@
 ;; Martin Blais' repeatable macros
 (require 'repeatable)
 (repeatable-command-advice kmacro-end-and-call-macro)
-(repeatable-substitute-binding 'search-for-this-word)
+;(repeatable-substitute-binding 'search-for-this-word)
 (repeatable-command-advice hl-symbol-and-jump)
 (repeatable-command-advice next-error)
 (repeatable-command-advice previous-error)
@@ -114,14 +114,16 @@
 (global-set-key (kbd "M-z") 'fastnav-zap-to-char-forward)
 (global-set-key (kbd "M-Z") 'fastnav-zap-to-char-backward)
 
-;; auto-completion setup
-;(require 'pos-tip)
-;(require 'auto-complete)
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-;; (define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
-;; (define-key ac-completing-map "\t" 'ac-complete)
-;(require 'auto-complete-config)
-;(ac-config-default)
+;; expand-region + change-inner
+(require 'expand-region)
+(require 'change-inner)
+(global-set-key (kbd "C-,") 'er/expand-region)
+(global-set-key (kbd "M-i") 'change-inner)
+(global-set-key (kbd "M-o") 'change-outer)
+
+;; ace-jump
+(require 'ace-jump-mode)
+(global-set-key (kbd "C-ö") 'ace-jump-mode)
 
 ;; highlight newly-inserted text etc
 (require 'volatile-highlights)
@@ -395,9 +397,6 @@
   (hg-tools-at-branch-root dirname
    (grep-find (format hg-tools-grep-command (shell-quote-argument expression)))))
 
-(eval-after-load "anything"
-  '(define-key anything-map (kbd "M-RET") 'anything-execute-persistent-action))
-
 ;; company mode stuff
 
 (defun sane-company-dabbrev (command &optional arg &rest ignored)
@@ -440,3 +439,16 @@
 (eval-after-load "find-file-in-project"
   '(progn
      (set-variable 'ffip-full-paths t)))
+
+;; anzu -- display match count while searching/replacing
+
+(require 'anzu)
+(global-anzu-mode 1)
+(global-set-key (kbd "M-%") 'anzu-query-replace)
+(global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+
+;; neotree: hide files otherwise hidden in find-file etc.
+
+(eval-after-load "neotree"
+  '(setq neo-hidden-files-regexp
+         (concat "\\(" (regexp-opt completion-ignored-extensions) "\\|#\\)$")))
