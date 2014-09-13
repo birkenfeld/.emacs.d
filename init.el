@@ -185,6 +185,9 @@
 ;; sometimes it's useful to re-highlight the whole buffer
 (global-set-key (kbd "<f8>") 'font-lock-fontify-buffer)
 
+;; speedbar in our frame? sure.
+(global-set-key (kbd "<f9>") 'sr-speedbar-toggle)
+
 ;; switch menu-bar on/off
 (global-set-key (kbd "<f10>") 'menu-bar-mode)
 

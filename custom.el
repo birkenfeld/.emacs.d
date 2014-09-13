@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -36,7 +36,7 @@
      ("Latexmk" "latexmk -latexoption=\"--interaction=nonstopmode\" -pdf %t" TeX-run-command nil t))))
  '(TeX-insert-braces nil)
  '(TeX-open-quote "\"`")
- '(TeX-parse-self t t)
+ '(TeX-parse-self t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-view-program-list
@@ -109,7 +109,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("df0a15c3c073e58278567d564eb586e925ea9b367bc0665bb980981be8f5d7ea" "a70853034fb45f0e297e46ccf0333696ae3551cda874e5effc2ec8ebb3ca45df" "2c2b836fe7de05d4901fed8c21566370536293691f9d9a677f5d471b5edb0e02" "ec1ac7e3d08d436fe14a38acd53a8338dd0e46a58b4ee73394458ea276e28e88" "84ef1085a97c1bc3662600f359cb1e54104c6ddc7d0603af1b327f7fc4257e84" "251bfca65a18556b68b75d05128acb3b2c04d648cc69163676a8975bcf48f7c3" default)))
+    ("d9b61d8846e2d760f3526b353400e18bd46ee567310a5d03f992d2ad356ccbfa" "df0a15c3c073e58278567d564eb586e925ea9b367bc0665bb980981be8f5d7ea" "a70853034fb45f0e297e46ccf0333696ae3551cda874e5effc2ec8ebb3ca45df" "2c2b836fe7de05d4901fed8c21566370536293691f9d9a677f5d471b5edb0e02" "ec1ac7e3d08d436fe14a38acd53a8338dd0e46a58b4ee73394458ea276e28e88" "84ef1085a97c1bc3662600f359cb1e54104c6ddc7d0603af1b327f7fc4257e84" "251bfca65a18556b68b75d05128acb3b2c04d648cc69163676a8975bcf48f7c3" default)))
  '(delete-selection-mode t)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
@@ -253,7 +253,7 @@
  '(powerline-height 23)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face) t)
+ '(preview-scale-function (quote preview-scale-from-face))
  '(preview-transparent-color t)
  '(pulse-flag nil)
  '(python-fill-docstring-style (quote pep-257-nn))

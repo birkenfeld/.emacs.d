@@ -203,16 +203,18 @@
      ((,xwin (:background ,alum-5.5))))
    `(semantic-tag-boundary-face ((,xwin (:overline ,blue-1))))
    `(semantic-unmatched-syntax-face ((,xwin (:underline ,red-1))))
-   ;; Misc faces
-   `(paradox-mode-line-face ((,xwin (:foreground ,blue-3))))
    ;; Speedbar faces
-;   `(speedbar-button-face ((,xwin (:foreground ,cham-2 :weight bold :height 1.2))))
+   `(speedbar-button-face ((,xwin (:foreground ,cham-2 :weight bold :height 1.2))))
    `(speedbar-directory-face ((,xwin (:inherit variable-pitch :foreground ,butter-2 :weight bold))))
    `(speedbar-file-face ((,xwin (:inherit variable-pitch :foreground ,blue-0))))
    `(speedbar-highlight-face ((,xwin (:background ,choc-2))))
    `(speedbar-selected-face ((,xwin (:inherit speedbar-file-face :weight bold))))
-   `(speedbar-separator-face ((,xwin (:inherit variable-pitch :background ,blue-1 :overline "gray"))))
+   `(speedbar-separator-face ((,xwin (:inherit variable-pitch :background ,choc-3 :foreground ,alum-1))))
    `(speedbar-tag-face ((,xwin (:inherit variable-pitch :foreground ,plum-0))))
+   ;; Misc faces
+   `(paradox-mode-line-face ((,xwin (:foreground ,blue-3))))
+   `(path-header-directory-face ((,xwin (:foreground "#8fb28f")) (,term (:foreground "white"))))
+   `(path-header-filename-face ((,xwin (:foreground ,alum-1)) (,term (:foreground "white"))))
    )
 
   (custom-theme-set-variables

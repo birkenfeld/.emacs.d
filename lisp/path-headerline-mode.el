@@ -73,8 +73,8 @@
 (defun ph--make-header ()
   ""
   (list
-   (powerline-raw "     " 'path-header-elision-face)
-   (funcall (pl/arrow left) 'fringe 'path-header-filename-face)
+   (powerline-raw " " 'fringe)
+   (funcall (pl/slant left) 'fringe 'path-header-filename-face)
    (powerline-raw "  ")
 
    (if (buffer-file-name)
@@ -87,19 +87,9 @@
   
 (defun ph--display-header ()
   "Display path on headerline."
-  (setq header-line-format
-        '("" ;; invocation-name
-          (:eval (concat (powerline-render (ph--make-header)))))))
-
-(defun path-header-line-on ()
-  "Display path on headerline for current buffer."
-  (interactive)
-  (ph--display-header))
-
-(defun path-header-line-off ()
-  "Undisplay path on headerline for current buffer."
-  (interactive)
-  (setq header-line-format nil))
+  (when (window-system)
+    (setq header-line-format
+          '(:eval (powerline-render (ph--make-header))))))
 
 ;;;###autoload
 (define-minor-mode path-headerline-mode
