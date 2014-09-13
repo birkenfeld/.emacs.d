@@ -397,7 +397,7 @@ of a speedbar-window.  It will be created if necessary."
         (sr-speedbar-select-window)
         (sr-speedbar-remember-window-width)
         ;; Close window.
-        (if (and (require 'ecb nil t)
+        (if (and (featurep 'ecb)
                  ecb-activated-window-configuration)
             ;; Toggle ECB window when ECB window activated.
             (progn
