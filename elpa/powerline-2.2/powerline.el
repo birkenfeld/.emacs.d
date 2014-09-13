@@ -493,7 +493,7 @@ static char * %s[] = {
 
 
 ;; weird hack to fix bug #29
-(message "powerlne loaded")
+(message "powerline loaded")
 
 (provide 'powerline)
 

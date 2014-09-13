@@ -189,7 +189,8 @@
    `(tabbar-highlight ((,xwin (:background ,blue-0 :box (:line-width 4 :color ,blue-0)))))
    `(tabbar-unselected ((,xwin (:inherit tabbar-default :box (:line-width 4 :color "grey90")))))
    `(tabbar-button ((,xwin (:inherit tabbar-default :foreground "dark red"))))
-   `(tabbar-button-highlight ((,xwin (:inherit tabbar-default :background "white" :box (:line-width 2 :color "white")))))
+   `(tabbar-button-highlight ((,xwin (:inherit tabbar-default :background "white"
+                                      :box (:line-width 2 :color "white")))))
    ;; Semantic faces
    `(semantic-decoration-on-includes ((,xwin (:underline ,alum-4))))
    `(semantic-decoration-on-private-members-face
@@ -202,6 +203,16 @@
      ((,xwin (:background ,alum-5.5))))
    `(semantic-tag-boundary-face ((,xwin (:overline ,blue-1))))
    `(semantic-unmatched-syntax-face ((,xwin (:underline ,red-1))))
+   ;; Misc faces
+   `(paradox-mode-line-face ((,xwin (:foreground ,blue-3))))
+   ;; Speedbar faces
+;   `(speedbar-button-face ((,xwin (:foreground ,cham-2 :weight bold :height 1.2))))
+   `(speedbar-directory-face ((,xwin (:inherit variable-pitch :foreground ,butter-2 :weight bold))))
+   `(speedbar-file-face ((,xwin (:inherit variable-pitch :foreground ,blue-0))))
+   `(speedbar-highlight-face ((,xwin (:background ,choc-2))))
+   `(speedbar-selected-face ((,xwin (:inherit speedbar-file-face :weight bold))))
+   `(speedbar-separator-face ((,xwin (:inherit variable-pitch :background ,blue-1 :overline "gray"))))
+   `(speedbar-tag-face ((,xwin (:inherit variable-pitch :foreground ,plum-0))))
    )
 
   (custom-theme-set-variables
@@ -215,3 +226,5 @@
   )
 
 (provide-theme 'tango-dark-adapted)
+
+;;; tango-dark-adapted-theme.el ends here
