@@ -32,7 +32,6 @@
 
 (require 'eproject)
 (require 'cl)
-(require 'iswitchb)
 (require 'ibuffer)
 (require 'ibuf-ext)
 
@@ -63,32 +62,17 @@ to select from, open file when selected."
   "Use completing-read to do a completing read."
   (completing-read prompt choices nil t))
 
-(defun eproject--icompleting-read (prompt choices)
-  "Use iswitchb to do a completing read."
-  (let ((iswitchb-make-buflist-hook
-         (lambda ()
-           (setq iswitchb-temp-buflist choices))))
-    (unwind-protect
-        (progn
-          (when (not iswitchb-mode)
-            (add-hook 'minibuffer-setup-hook 'iswitchb-minibuffer-setup))
-          (iswitchb-read-buffer prompt nil t))
-      (when (not iswitchb-mode)
-        (remove-hook 'minibuffer-setup-hook 'iswitchb-minibuffer-setup)))))
-
 (defun eproject--ido-completing-read (prompt choices)
   "Use ido to do a completing read."
   (ido-completing-read prompt choices nil t))
 
 (defcustom eproject-completing-read-function
-  #'eproject--icompleting-read
+  #'eproject--ido-completing-read
   "Ask the user select a single file from a list of files.
 Used by `eproject-find-file'."
   :group 'eproject
   :type '(radio (function-item :doc "Use emacs' standard completing-read function."
                                eproject--completing-read)
-                (function-item :doc "Use iswitchb's completing-read function."
-                               eproject--icompleting-read)
                 (function-item :doc "Use ido's completing-read function."
                                eproject--ido-completing-read)
                 (function)))
