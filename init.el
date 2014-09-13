@@ -39,6 +39,10 @@
   (package-initialize)
   )
 
+;; powerline: do it right now
+(require 'powerline)
+(powerline-default-theme)
+
 ;; scroll one line at a time
 (setq scroll-step 1)
 
@@ -556,6 +560,11 @@
 
 
 ;; ---------- Custom interactive functions -------------------------------------
+
+(defun remove-powerline-cache ()
+  "Remove powerline cache before saving desktop file."
+  (dolist (frame (frame-list))
+    (set-frame-parameter frame 'powerline-cache nil)))
 
 (defun kill-this-buffer ()	; for the menu bar
   "Kill the current buffer.

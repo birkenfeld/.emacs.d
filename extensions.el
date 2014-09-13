@@ -235,9 +235,6 @@
 (autoload 'idomenu "idomenu" nil t)
 (global-set-key (kbd "C-x m") 'idomenu)
 
-(setq ido-decorations (quote ("{" "}" ", " ", ..." " [" "]"
-                              " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-
 ;  ;; Display ido results vertically, rather than horizontally
 ;  (setq ido-decorations (quote ("\n-> " "" "\t" "\n   ..." " [" "]"
 ;                                " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))

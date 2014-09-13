@@ -89,7 +89,7 @@
    (quote
     (company-nxml company-css company-clang company-capf
                   (company-gtags company-etags company-keywords sane-company-dabbrev)
-                  company-oddmuse company-files company-dabbrev)))
+                  company-oddmuse company-files)))
  '(company-tooltip-minimum-width 40)
  '(compilation-scroll-output (quote first-error))
  '(completion-auto-show (quote tooltip))
@@ -109,7 +109,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("697ba30ba552b01407cc273f42a3180eef5ff911fdd6b231f9950a53736c1016" default)))
+    ("251bfca65a18556b68b75d05128acb3b2c04d648cc69163676a8975bcf48f7c3" default)))
  '(delete-selection-mode t)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")
@@ -119,6 +119,7 @@
  '(desktop-path (quote ("~/.emacs.d")))
  '(desktop-restore-eager 5)
  '(desktop-save t)
+ '(desktop-save-hook (quote (remove-powerline-cache)))
  '(desktop-save-mode t)
  '(diff-switches "-u")
  '(display-buffer-alist (quote ((".*" display-buffer-reuse-window))))
@@ -138,7 +139,7 @@
  '(ffap-machine-p-known (quote reject))
  '(ffap-newfile-prompt t)
  '(fill-column 80)
- '(filladapt-mode-line-string " FA")
+ '(filladapt-mode-line-string "")
  '(flymake-no-changes-timeout 1.5)
  '(flyspell-default-dictionary "german")
  '(flyspell-use-meta-tab nil)
@@ -189,8 +190,9 @@
  '(icomplete-mode nil)
  '(ido-decorations
    (quote
-    ("{" "}" "," ", ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+    ("{" "}" ", " ", ..." " [" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
  '(ido-enable-flex-matching t)
+ '(ido-ignore-buffers (quote ("\\` " "Completions\\*" "\\*elpy-rpc")))
  '(ido-mode (quote both) nil (ido))
  '(ido-save-directory-list-file "/home/gbr/.emacs.d/ido.last")
  '(ido-use-virtual-buffers t)
@@ -210,15 +212,7 @@
  '(ispell-highlight-face (quote flyspell-incorrect))
  '(ispell-local-dictionary-alist nil)
  '(ispell-program-name "aspell")
- '(iswitchb-buffer-ignore
-   (quote
-    ("^ " "\\*Pymacs\\*" "\\*Completions\\*" "\\*Help\\*" "\\*rope-")))
- '(iswitchb-use-virtual-buffers t nil (recentf))
  '(javascript-indent-level 2)
- '(jedi:complete-on-dot t)
- '(jedi:key-complete [C-tab])
- '(jedi:key-related-names [])
- '(jedi:setup-keys t)
  '(js-indent-level 2)
  '(js2-allow-rhino-new-expr-initializer nil)
  '(js2-basic-offset 2)
@@ -239,44 +233,6 @@
  '(minibuffer-prompt-properties
    (quote
     (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
- '(mode-line-format
-   (quote
-    ("%e"
-     #("-" 0 1
-       (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))
-     mode-line-mule-info mode-line-client mode-line-modified mode-line-remote
-     #("-   " 0 1
-       (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))
-     mode-line-buffer-identification
-     #("   " 0 3
-       (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))
-     (po-mode-flag
-      ("  " po-mode-line-string))
-     mode-line-position
-     (vc-mode vc-mode)
-     mode-line-modes
-     (which-func-mode
-      ("" which-func-format
-       #("--" 0 2
-         (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))))
-     (global-mode-string
-      (#("--" 0 2
-         (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))
-       global-mode-string))
-     #("-%-" 0 3
-       (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display")))))
  '(mouse-yank-at-point t)
  '(mumamo-chunk-coloring (quote submode-colored))
  '(mumamo-set-major-mode-delay 0.3)
@@ -286,11 +242,14 @@ mouse-3: Remove current window from display")))))
  '(nxml-sexp-element-flag t)
  '(nxml-slash-auto-complete-flag t)
  '(outline-blank-line t t)
+ '(paradox-github-token t)
  '(password-cache-expiry 3600)
  '(paste-kill-url t)
  '(paste-show-in-browser nil)
  '(po-highlight-face (quote pesche-hardspace))
  '(pop-up-windows nil)
+ '(powerline-default-separator (quote arrow))
+ '(powerline-height 23)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
  '(preview-scale-function (quote preview-scale-from-face) t)
@@ -526,9 +485,6 @@ mouse-3: Remove current window from display")))))
  '(flyspell-duplicate ((t (:foreground "Gold3" :underline t))) t)
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))) t)
  '(font-latex-sectioning-2-face ((t (:inherit font-latex-sectioning-3-face :height 1.2))))
- '(mode-line ((t (:inherit variable-pitch))))
- '(mode-line-buffer-id ((t (:weight bold))))
- '(mode-line-inactive ((t (:inherit mode-line))))
  '(mumamo-background-chunk-major ((t nil)))
  '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face))))
  '(mumamo-border-face-out ((t (:inherit mumamo-border-face-in))))

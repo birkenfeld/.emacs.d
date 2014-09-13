@@ -70,13 +70,29 @@
                             (,term (:inherit nil))))
    ;; Header/Mode line faces
    `(header-line ((,xwin (:inherit nil :background ,alum-5.5))))
-   `(mode-line ((,xwin (:background ,cham-0 :foreground ,alum-6
-                                    :box (:line-width 3 :color ,cham-0)))
+   ;; `(mode-line ((,xwin (:inherit variable-pitch :background ,cham-0 :foreground ,alum-6
+   ;;                                  :box (:line-width 3 :color ,cham-0)))
+   ;;              (,term (:background ,cham-0))))
+   ;; `(mode-line-inactive ((,xwin (:background ,alum-5.5 :foreground ,alum-1
+   ;;                                           :box (:line-width 3 :color ,alum-5.5)))
+   ;;                       (,term (:background ,alum-2))))
+   ;; Settings for powerline
+   `(mode-line ((,xwin (;:inherit variable-pitch
+                        :background ,cham-0 :foreground ,alum-6))
                 (,term (:background ,cham-0))))
-   `(mode-line-inactive ((,xwin (:background ,alum-5.5 :foreground ,alum-1
-                                             :box (:line-width 3 :color ,alum-5.5)))
+   `(mode-line-inactive ((,xwin (;:inherit variable-pitch
+                                 :background ,alum-5 :foreground ,alum-1))
                          (,term (:background ,alum-2))))
+   `(mode-line-buffer-id ((t (:weight bold))))
    `(mode-line-highlight ((,xwin (:foreground ,red-2 :underline nil))))
+   `(powerline-active1 ((,xwin (:background ,cham-1 :foreground ,alum-6))
+                        (,term (:background ,cham-1))))
+   `(powerline-active2 ((,xwin (:background ,cham-3 :foreground ,alum-1))
+                        (,term (:background ,cham-3 :foreground "#ffffff"))))
+   `(powerline-inactive1 ((,xwin (:background ,alum-4))
+                          (,term (:background ,alum-3))))
+   `(powerline-inactive2 ((,xwin (:background ,alum-4))
+                          (,term (:background ,alum-3))))
    `(compilation-mode-line-fail ((,xwin (:foreground ,red-3))))
    `(compilation-mode-line-run  ((,xwin (:foreground ,orange-3))))
    `(compilation-mode-line-exit ((,xwin (:foreground ,cham-3))))
