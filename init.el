@@ -1,6 +1,5 @@
 ;; ---------- .emacs.d/init.el customization file ------------------------------
 
-;; This file should load with every stock Emacs 22 and higher.
 ;; Extensions only present in my .emacs.d are loaded in extensions.el.
 ;; Extensions I install via my distribution are loaded in distext.el.
 
@@ -15,15 +14,8 @@
 (require 'server)
 (unless (server-running-p) (server-start))
 
-;; load custom variables and fonts
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
-
 ;; load path for Python modules, must be set before loading pymacs
 (setq pymacs-load-path '("~/.emacs.d/pymacs"))
-
-
-;; ---------- Some influential variables ---------------------------------------
 
 ;; load package manager and add the alternate package repo
 (when (require 'package nil t)
@@ -39,9 +31,16 @@
   (package-initialize)
   )
 
+;; load custom variables and fonts
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
 ;; powerline: do it right now
 (require 'powerline)
+(setq powerline-selected-window (selected-window))
 (powerline-default-theme)
+
+;; ---------- Some influential variables ---------------------------------------
 
 ;; scroll one line at a time
 (setq scroll-step 1)
