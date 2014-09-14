@@ -1,5 +1,7 @@
 ;; Eproject setup
 
+(add-to-list 'load-path "~/.emacs.d/ext-lisp/eproject")
+
 (require 'eproject)
 (require 'eproject-extras)
 (require 'eproject-compile)
