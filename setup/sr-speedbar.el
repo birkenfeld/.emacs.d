@@ -71,4 +71,4 @@
 
 (defun sr-speedbar-visiting-tag-hook ()
   "Function that hooks `speedbar-visiting-tag-hook'."
-  (select-window last-selected-window))))
+  (select-window last-selected-window))

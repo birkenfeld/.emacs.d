@@ -1,0 +1,110 @@
+;; Setup for misc modes
+
+;; SGML ------------------------------------------------------------------------
+
+;; close HTML tags with C-t in sgml mode
+(eval-after-load "sgml-mode"
+  '(define-key sgml-mode-map (kbd "C-t") 'sgml-close-tag))
+
+;; Elisp -----------------------------------------------------------------------
+
+;; Enable eldoc mode
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+
+;; Some nice keybindings
+(define-key emacs-lisp-mode-map  (kbd "M-.") 'find-function-at-point)
+(define-key lisp-mode-shared-map (kbd "C-c v") 'eval-buffer)
+
+;; auto-pair `' in elisp comments and docstrings
+(defun my-emacs-lisp-mode-hook ()
+  (autopair-mode)
+  (push '(?` . ?')
+        (getf autopair-extra-pairs :comment))
+  (push '(?` . ?')
+        (getf autopair-extra-pairs :string)))
+(add-hook 'emacs-lisp-mode-hook #'my-emacs-lisp-mode-hook)
+
+;; Remove the .elc file when saving an .el file
+(defun remove-elc-on-save ()
+  "If you're saving an elisp file, likely the .elc is no longer valid."
+  (make-local-variable 'after-save-hook)
+  (add-hook 'after-save-hook
+            (lambda ()
+              (if (file-exists-p (concat buffer-file-name "c"))
+                  (delete-file (concat buffer-file-name "c"))))))
+
+(add-hook 'emacs-lisp-mode-hook 'remove-elc-on-save)
+
+;; McStas ----------------------------------------------------------------------
+
+(autoload 'mcstas-mode "mcstas-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.instr$" . mcstas-mode))
+(add-to-list 'auto-mode-alist '("\\.comp$" . mcstas-mode))
+
+;; Dired: better navigation of Ctrl-Home/End -----------------------------------
+
+(defun dired-back-to-top ()
+  (interactive)
+  (beginning-of-buffer)
+  (dired-next-line 4))
+(defun dired-jump-to-bottom ()
+  (interactive)
+  (end-of-buffer)
+  (dired-next-line -1))
+(define-key dired-mode-map [remap beginning-of-buffer] 'dired-back-to-top)
+(define-key dired-mode-map [remap end-of-buffer] 'dired-jump-to-bottom)
+
+;; Shell/terminal --------------------------------------------------------------
+
+;; let the shell buffer change the default directory
+(defadvice shell-pop-up (before change-to-default-directory activate)
+  (let ((dir default-directory)
+        (buf (get-buffer shell-pop-internal-mode-buffer)))
+    (when buf
+      (with-current-buffer buf
+        (cond ((eq major-mode 'term-mode)
+               (term-send-raw-string (concat "cd " dir "\n")))
+              ((eq major-mode 'shell-mode)
+               (insert (concat "cd " dir))
+               (comint-send-input)))))))
+
+;; shell-pop: easy pop-up of a shell buffer
+(autoload 'shell-pop "shell-pop" nil t)
+(eval-after-load "shell-pop"
+  '(progn
+     (shell-pop-set-internal-mode "ansi-term")
+     (shell-pop-set-internal-mode-shell "/bin/zsh")))
+(global-set-key (kbd "<menu>") 'shell-pop)
+(setq term-term-name "eterm-color")
+
+;; This helps with a bug in ansi-term when output lines are longer than
+;; the terminal width
+(defun turn-off-truncate-lines ()
+  (setq truncate-lines nil
+        word-wrap t))
+(add-hook 'term-mode-hook 'turn-off-truncate-lines)
+
+;; PO mode ---------------------------------------------------------------------
+
+;; Fixes and enhancements for po-mode
+(eval-after-load 'po-mode '(require 'gb-po-mode))
+
+;; Web stuff -------------------------------------------------------------------
+
+;; web-mode for HTML/Jinja/CSS/JS
+(autoload 'web-mode "web-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+;; rainbow-mode: color for color names
+(autoload 'rainbow-mode "rainbow-mode" nil t)
+(add-hook 'css-mode-hook 'rainbow-mode)
+
+;; xdict: lookup dictionary
+(autoload 'xdict-query "x-dict" nil t)
+(global-set-key (kbd "C-c d") 'xdict-query)
+(eval-after-load 'x-dict
+  '(add-hook 'xdict-mode-hook (lambda () (setq truncate-lines t))))

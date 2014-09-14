@@ -1,29 +1,17 @@
-;;; eproject-gb.el --- more eproject tools
-
-;; Copyright (C) 2010, 2014  Georg Brandl
-
-;; Author: Georg Brandl <georg@python.org>
-;; Keywords: eproject
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-;;; Commentary:
-
-;;; Code:
+;; Eproject setup
 
 (require 'eproject)
-(require 'full-ack)
+(require 'eproject-extras)
+(require 'eproject-compile)
+
+(global-set-key (kbd "C-c p f") 'eproject-find-file)
+(global-set-key (kbd "C-c p a") 'eproject-ack)
+(global-set-key (kbd "C-c p g") 'eproject-grep)
+(global-set-key (kbd "C-c p i") 'eproject-ibuffer)
+(global-set-key (kbd "C-c p t") 'eproject-todo)
+(global-set-key (kbd "C-c p d") 'eproject-revisit-project)
+(global-set-key (kbd "C-c p k") 'eproject-kill-project-buffers)
+(global-set-key (kbd "C-c p e") 'eproject-test)
 
 (define-project-type python (generic)
   (look-for "setup.py")
@@ -42,6 +30,7 @@
 (defun eproject-ack (regexp)
   "Search all files in the current project for REGEXP, using Ack."
   (interactive "sRegexp ack: ")
+  (require 'full-ack)
   (let* ((root (eproject-root))
          (default-directory root)
          (files (eproject-list-project-files-relative root)))
@@ -79,6 +68,3 @@
   "Find next tag."
   (interactive)
   (find-tag last-tag t))
-
-(provide 'eproject-gb)
-;;; eproject-gb.el ends here

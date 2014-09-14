@@ -1,10 +1,12 @@
-;; ---------- auctex.el init file: some auctex customizations ------------------
+;; Setup LaTeX/AuCTeX related stuff.
 
-;; load preview-latex
+(add-to-list 'load-path "~/.emacs.d/talcum")
+
+;; Load preview-latex
 (eval-after-load 'tex
   '(require 'preview))
 
-;; scale up the default size a bit
+;; Scale up the default size a bit
 (defun my-preview-scale-from-face ()
   "Calculate preview scale from `preview-reference-face'.
 This calculates the scale of EPS images from a document assumed
@@ -16,6 +18,10 @@ so that they match the reference face in height."
 	(* (preview-document-pt) 0.85))))
 
 (setq preview-scale-function 'my-preview-scale-from-face)
+
+;; talcum-mode: replaces LaTeX commands by Unicode symbols
+(autoload 'talcum-mode "talcum" nil t)
+(add-hook 'LaTeX-mode-hook 'talcum-mode)
 
 (defun TeX-build-master ()
   "Run all necessary steps to build the master file, then view it."
