@@ -146,6 +146,9 @@
 (global-set-key (kbd "C-x <up>")    'windmove-up)
 (global-set-key (kbd "C-x <down>")  'windmove-down)
 
+;; better buffer list
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
 ;; custom margin keys (useful for Python indentation)
 (global-set-key (kbd "C-M-+") 'increase-left-margin)
 (global-set-key (kbd "C-M--") 'decrease-left-margin)

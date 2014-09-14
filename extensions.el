@@ -111,8 +111,8 @@
 (global-set-key (kbd "M-J") 'fastnav-jump-to-char-backward)
 (global-set-key (kbd "M-m") 'fastnav-mark-to-char-forward)
 (global-set-key (kbd "M-M") 'fastnav-mark-to-char-backward)
-(global-set-key (kbd "M-z") 'fastnav-zap-to-char-forward)
-(global-set-key (kbd "M-Z") 'fastnav-zap-to-char-backward)
+(global-set-key (kbd "M-z") 'fastnav-zap-up-to-char-forward)
+(global-set-key (kbd "M-Z") 'fastnav-zap-up-to-char-backward)
 
 ;; expand-region + change-inner
 (require 'expand-region)
