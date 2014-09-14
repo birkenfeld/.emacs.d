@@ -19,6 +19,8 @@
 (global-set-key (kbd "C-,") 'er/expand-region)
 (global-set-key (kbd "M-i") 'change-inner)
 (global-set-key (kbd "M-o") 'change-outer)
+(global-set-key (kbd "s-i") 'copy-inner)
+(global-set-key (kbd "s-o") 'copy-outer)
 
 ;; ace-jump
 (require 'ace-jump-mode)
@@ -104,3 +106,49 @@
 (eval-after-load "neotree"
   '(setq neo-hidden-files-regexp
          (concat "\\(" (regexp-opt completion-ignored-extensions) "\\|#\\)$")))
+
+;; When popping the mark, continue popping until the cursor actually moves
+;; Also, if the last command was a copy - skip past all the expand-region cruft.
+(defadvice pop-to-mark-command (around ensure-new-position activate)
+  (let ((p (point)))
+    (when (eq last-command 'save-region-or-current-line)
+      ad-do-it
+      ad-do-it
+      ad-do-it)
+    (dotimes (i 10)
+      (when (= p (point)) ad-do-it))))
+
+;; Multiple cursors ------------------------------------------------------------
+
+;; ;; Experimental multiple-cursors
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
+;; (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
+
+;; ;; Mark additional regions matching current region
+;; (global-set-key (kbd "M-æ") 'mc/mark-all-dwim)
+;; (global-set-key (kbd "C-å") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-æ") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-Æ") 'mc/mark-more-like-this-extended)
+;; (global-set-key (kbd "M-å") 'mc/mark-all-in-region)
+
+;; ;; Symbol and word specific mark-more
+;; (global-set-key (kbd "s-æ") 'mc/mark-next-word-like-this)
+;; (global-set-key (kbd "s-å") 'mc/mark-previous-word-like-this)
+;; (global-set-key (kbd "M-s-æ") 'mc/mark-all-words-like-this)
+;; (global-set-key (kbd "s-Æ") 'mc/mark-next-symbol-like-this)
+;; (global-set-key (kbd "s-Å") 'mc/mark-previous-symbol-like-this)
+;; (global-set-key (kbd "M-s-Æ") 'mc/mark-all-symbols-like-this)
+
+;; ;; Extra multiple cursors stuff
+;; (global-set-key (kbd "C-~") 'mc/reverse-regions)
+;; (global-set-key (kbd "M-~") 'mc/sort-regions)
+;; (global-set-key (kbd "H-~") 'mc/insert-numbers)
+
+;; (global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+
+;; ;; Set anchor to start rectangular-region-mode
+;; (global-set-key (kbd "H-SPC") 'set-rectangular-region-anchor)
+
+;; ;; Replace rectangle-text with inline-string-rectangle
+;; (global-set-key (kbd "C-x r t") 'inline-string-rectangle)

@@ -96,6 +96,7 @@
   '(progn
      (require 'disaster)
      (defun my-c-mode-common-hook ()
+       (flycheck-mode 1)
        (define-key c-mode-base-map (kbd "C-c C-d") 'disaster)
        (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
      (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)))

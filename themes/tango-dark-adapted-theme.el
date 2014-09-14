@@ -166,11 +166,17 @@
    `(ediff-fine-diff-B ((,xwin (:background ,choc-3))))
    `(ediff-even-diff-B ((,xwin (:background ,alum-5.5))))
    `(ediff-odd-diff-B ((,xwin (:background ,alum-5.5))))
-   ;; Flyspell/flymake faces
+   ;; Flyspell/flymake/flycheck faces
    `(flyspell-duplicate ((,xwin (:underline (:color ,orange-1 :style wave)))))
    `(flyspell-incorrect ((,xwin (:underline (:color ,red-1 :style wave)))))
    `(flymake-warnline ((,xwin (:underline (:color ,orange-1 :style wave)))))
    `(flymake-errline ((,xwin (:underline (:color ,red-0 :style wave)))))
+   `(flycheck-error ((,xwin (:underline (:color ,red-0 :style wave)))))
+   `(flycheck-warning ((,xwin (:underline (:color ,orange-1 :style wave)))))
+   `(flycheck-info ((,xwin (:underline (:color ,cham-1 :style wave)))))
+   `(flycheck-fringe-error ((,xwin (:foreground ,red-0))))
+   `(flycheck-fringe-warning ((,xwin (:foreground ,orange-1))))
+   `(flycheck-fringe-info ((,xwin (:foreground ,cham-1))))
    ;; Grep/edit mode
    `(grep-edit-face ((,xwin (:foreground ,butter-1 :background ,alum-7 :weight bold))))
    `(grep-edit-done-face ((,xwin (:foreground ,blue-0 :weight bold))))

@@ -6,6 +6,10 @@
 ;; Enable the elpy "ide" features
 (elpy-enable)
 
+;; Use flycheck instead of flymake
+(setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+(add-hook 'elpy-mode-hook 'flycheck-mode)
+
 ;; Override some elpy keys
 (define-key elpy-mode-map (kbd "<M-down>") nil)
 (define-key elpy-mode-map (kbd "<M-up>") nil)
@@ -15,6 +19,8 @@
 (define-key elpy-mode-map (kbd "C-M-.") 'eproject-find-next-tag)
 (define-key elpy-mode-map (kbd "C-c C-d") 'elpy-goto-definition)
 (define-key elpy-mode-map (kbd "M-SPC") 'company-complete)
+
+(put 'font-lock-regexp-grouping-backslash 'face-alias 'font-lock-builtin-face)
 
 ;; Elpy related features customization
 
@@ -48,11 +54,13 @@
   (require 'highlight-symbol)
   (highlight-symbol-mode 1)
 
+  ;; Highlight escape sequences
+  (require 'highlight-escape-sequences)
+  (setq hes-simple-modes '(python-mode js-mode js2-mode))
+  (hes-mode)
+
   ;; Reveal hidden text (folding!) when moving over it
   ;(reveal-mode 1)
-  ;; enable flymake processing by pyflakes
-  ;(if buffer-file-name
-  ;    (flymake-mode 1))
 
   ;; Death to trailing whitespace!
   (set-variable 'show-trailing-whitespace 1)
@@ -92,6 +100,7 @@
 (eval-after-load 'rst
   '(add-hook 'rst-mode-hook
              (lambda () (set-variable 'show-trailing-whitespace 1))))
+(add-hook 'rst-mode-hook 'flycheck-mode)
 
 
 ;; test-case-mode: add a nose backend

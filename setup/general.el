@@ -23,6 +23,9 @@
 (setq backup-directory-alist
       `(("." . ,(expand-file-name "~/.emacs.d/saved/backups"))))
 
+;; Make backups of files, even when they're in version control
+(setq vc-make-backup-files t)
+
 ;; Put game scores in a different directory
 (setq gamegrid-user-score-file-directory
       (locate-user-emacs-file "saved/games/"))
@@ -135,6 +138,30 @@
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
+;; Smooth scrolling (keep cursor away from screen edges)
+(require 'smooth-scrolling)
+
+;; guide-key: pop up a list of keybindings for prefixes with lots of commands
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +"
+                                     "C-c p" "C-c !" "C-x RET"))
+(guide-key-mode 1)
+(setq guide-key/idle-delay 0.75)
+(setq guide-key/recursive-key-sequence-flag t)
+(setq guide-key/popup-window-position 'bottom)
+
+;; Keep region when undoing in region
+(defadvice undo-tree-undo (around keep-region activate)
+  (if (use-region-p)
+      (let ((m (set-marker (make-marker) (mark)))
+            (p (set-marker (make-marker) (point))))
+        ad-do-it
+        (goto-char p)
+        (set-mark m)
+        (set-marker p nil)
+        (set-marker m nil))
+    ad-do-it))
 
 ;; tabbar
 ;; (require 'tabbar)

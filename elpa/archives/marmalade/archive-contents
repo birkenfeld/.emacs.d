@@ -1,6 +1,6 @@
 (1
  (om-mode .
-	  [(0 2 20140914)
+	  [(0 3 20140914)
 	   nil "Insert Om component template with life cycle." single])
  (zone-matrix .
 	      [(0 0 1)

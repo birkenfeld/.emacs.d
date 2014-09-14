@@ -13,6 +13,9 @@
 ;; Display same buffer in other window too
 (global-set-key (kbd "C-x C-o") 'clone-indirect-buffer-other-window)
 
+;; Rotate windows
+(global-set-key (kbd "C-x M-o") 'rotate-windows)
+
 ;; Indent automatically
 (global-set-key (kbd "RET") 'newline-and-indent)
 
@@ -66,6 +69,11 @@
 (global-set-key (kbd "C-x k")   'kill-this-buffer)
 (global-set-key (kbd "C-x K")   'kill-other-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
+
+;; Toggle two most recent buffers
+(fset 'quick-switch-buffer [?\C-x ?b return])
+(global-set-key (kbd "s-b") 'quick-switch-buffer)
+(global-set-key (kbd "s-y") 'bury-buffer)
 
 ;; Align code in a pretty way
 (global-set-key (kbd "C-x \\") 'align-regexp)
@@ -133,8 +141,7 @@
 
 ;; Find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
-
-;; Copy from above lines
+ from above lines
 (global-set-key (kbd "C-c <right>") 'copy-above-while-same)
 
 ;; Font size management
@@ -147,24 +154,42 @@
 
 ;; Rename buffer and file at the same time
 (global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
+(global-set-key (kbd "C-c r") 'revert-buffer)
+
+;; Copy common beginning from the last two lines
+(global-set-key (kbd "C-ä") 'copy-above-while-same)
 
 ;; Goto line with linum turned on
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 
+;; Killing text
+(global-set-key (kbd "C-S-k") 'kill-and-retry-line)
+
+;; Use M-w for copy-line if no active region
+(global-set-key (kbd "M-w") 'save-region-or-current-line)
 
 ;; more powerful tab-completion in minibuffer
 (add-hook 'minibuffer-setup-hook
           '(lambda ()
              (define-key minibuffer-local-map "\t" 'comint-dynamic-complete)))
 
-;; Outline
+;; More neat bindings for C-x 8
+(global-set-key (kbd "C-x 8 t m") (lambda () (interactive) (insert "™")))
+(global-set-key (kbd "C-x 8 ( c )") (lambda () (interactive)  (insert "©")))
+(global-set-key (kbd "C-x 8 8") (lambda () (interactive)  (insert "∞")))
+
+;; Evaluate expression and replace anywhere
+(global-set-key (kbd "C-c C-e") 'eval-and-replace)
+(global-set-key (kbd "C-c C-j") 'eval-print-last-sexp)
+
+;; Outline ---------------------------------------------------------------------
 
 (eval-after-load "outline"
   '(progn
      (global-set-key (kbd "C-c <C-left>")  'hide-body)
      (global-set-key (kbd "C-c <C-right>") 'show-subtree)))
 
-;; Help/info
+;; Help/info -------------------------------------------------------------------
 
 ;; Support back and forward mouse buttons
 (eval-after-load "help-mode"
@@ -176,7 +201,7 @@
      (define-key Info-mode-map (kbd "<mouse-8>") 'Info-history-back)
      (define-key Info-mode-map (kbd "<mouse-9>") 'Info-history-forward)))
 
-;; Isearch
+;; Isearch ---------------------------------------------------------------------
 
 ;; C-k is "kill match" in isearch
 (define-key isearch-mode-map (kbd "C-k") 'isearch-kill-match)
@@ -189,8 +214,9 @@
 ;; ... while C-Backspace goes back
 (define-key isearch-mode-map (kbd "<C-backspace>") 'isearch-delete-char)
 
-;; Occur
+;; Occur -----------------------------------------------------------------------
 
 ;; next/previous match in occur
 (define-key occur-mode-map "n" 'next-error-no-select)
 (define-key occur-mode-map "p" 'previous-error-no-select)
+(define-key occur-mode-map "v" 'occur-mode-display-occurrence)

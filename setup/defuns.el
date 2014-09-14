@@ -275,3 +275,81 @@ returns the word count of that file."
         (linum-mode 1)
         (goto-line (read-number "Goto line: ")))
     (linum-mode -1)))
+
+(defun sudo-edit (&optional arg)
+  "Edit current or specified file as root using sudo."
+  (interactive "p")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(defun kill-and-retry-line ()
+  "Kill the entire current line and reposition point at indentation"
+  (interactive)
+  (back-to-indentation)
+  (kill-line))
+
+(defun save-region-or-current-line (arg)
+  "If no region is active, copy the current line instead of nothing."
+  (interactive "P")
+  (if (region-active-p)
+      (kill-ring-save (region-beginning) (region-end))
+    (copy-line arg)))
+
+(defun rotate-windows ()
+  "Rotate two windows in a split frame."
+  (interactive)
+  (cond ((not (> (count-windows)1))
+         (message "You can't rotate a single window!"))
+        (t
+         (setq i 1)
+         (setq numWindows (count-windows))
+         (while  (< i numWindows)
+           (let* (
+                  (w1 (elt (window-list) i))
+                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
+
+                  (b1 (window-buffer w1))
+                  (b2 (window-buffer w2))
+
+                  (s1 (window-start w1))
+                  (s2 (window-start w2))
+                  )
+             (set-window-buffer w1  b2)
+             (set-window-buffer w2 b1)
+             (set-window-start w1 s2)
+             (set-window-start w2 s1)
+             (setq i (1+ i)))))))
+
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
+(defun duplicate-region (&optional num start end)
+  "Duplicates the region bounded by START and END NUM times.
+If no START and END is provided, the current region-beginning and
+region-end is used."
+  (interactive "p")
+  (save-excursion
+   (let* ((start (or start (region-beginning)))
+          (end (or end (region-end)))
+          (region (buffer-substring start end)))
+     (goto-char end)
+     (dotimes (i num)
+       (insert region)))))
+
+(defun duplicate-current-line (&optional num)
+  "Duplicate the current line NUM times."
+  (interactive "p")
+  (save-excursion
+   (when (eq (point-at-eol) (point-max))
+     (goto-char (point-max))
+     (newline)
+     (forward-char -1))
+   (duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
