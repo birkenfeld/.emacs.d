@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -287,7 +287,7 @@
  '(pop-up-windows nil)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face))
+ '(preview-scale-function (quote preview-scale-from-face) t)
  '(preview-transparent-color t)
  '(pulse-flag nil)
  '(python-fill-docstring-style (quote pep-257-nn))
@@ -364,6 +364,7 @@
  '(tooltip-delay 1)
  '(tooltip-short-delay 0.5)
  '(tramp-debug-buffer nil)
+ '(tramp-persistency-file-name "/home/gbr/.emacs.d/saved/tramp")
  '(tramp-verbose 5)
  '(transient-mark-mode 1)
  '(trex-unicode-mappings

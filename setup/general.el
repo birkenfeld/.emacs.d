@@ -163,6 +163,12 @@
         (set-marker m nil))
     ad-do-it))
 
+;; Coloring in the minibuffer completion buffer
+(autoload 'dircolors "dircolors" nil t)
+(add-hook 'completion-list-mode-hook 'dircolors)
+(add-hook 'buffer-menu-mode-hook 'dircolors)
+
+
 ;; tabbar
 ;; (require 'tabbar)
 ;; (global-set-key [C-prior] 'tabbar-backward)
