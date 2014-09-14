@@ -146,6 +146,7 @@
  '(ecb-tree-buffer-style (quote image))
  '(ede-project-placeholder-cache-file "~/.emacs.d/projects.ede")
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(eldoc-idle-delay 0.1)
  '(eldoc-print-after-edit t)
  '(elpy-project-ignored-directories
@@ -154,6 +155,7 @@
  '(elpy-rpc-backend "jedi")
  '(eproject-completing-read-function (quote eproject--ido-completing-read))
  '(expand-region-fast-keys-enabled nil)
+ '(fancy-narrow-mode t)
  '(ffap-machine-p-known (quote reject))
  '(ffap-newfile-prompt t)
  '(fill-column 80)
@@ -172,6 +174,7 @@
  '(global-anzu-mode t)
  '(global-font-lock-mode t nil (font-core))
  '(global-hl-line-mode t)
+ '(global-undo-tree-mode t)
  '(grep-files-aliases
    (quote
     (("asm" . "*.[sS]")
@@ -294,6 +297,7 @@
  '(reftex-save-parse-info t)
  '(reftex-use-multiple-selection-buffers t)
  '(reftex-vref-is-default t)
+ '(require-final-newline t)
  '(rng-nxml-auto-validate-flag nil)
  '(rst-definition-face (quote font-lock-function-name-face))
  '(rst-directive-face (quote font-lock-builtin-face))
@@ -491,6 +495,7 @@
  '(truncate-partial-width-windows nil)
  '(undo-limit 200000)
  '(undo-strong-limit 300000)
+ '(undo-tree-mode-lighter " U")
  '(uniquify-buffer-name-style (quote reverse) nil (uniquify))
  '(url-configuration-directory "~/.emacs.d/url/")
  '(url-show-status nil)
