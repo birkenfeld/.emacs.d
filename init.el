@@ -4,7 +4,11 @@
 ;; Extensions I install via my distribution are loaded in distext.el.
 
 ;; set up load path
-(setq load-path `("~/.emacs.d/lisp" "~/.emacs.d/ecb-2.40" ,@load-path))
+(setq load-path `("~/.emacs.d/lisp"
+		  "~/.emacs.d/ext-lisp/ecb-2.40"
+		  "~/.emacs.d/ext-lisp/emacs-goodies-el"
+		  "~/.emacs.d/ext-lisp/talcum"
+		  ,@load-path))
 
 ;; don't show so many messages on startup
 (setq inhibit-startup-message t)
