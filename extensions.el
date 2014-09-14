@@ -26,9 +26,6 @@
 (require 'goto-chg)
 (global-set-key (kbd "C-;") 'goto-last-change)
 
-;; enhanced grep
-(require 'color-grep)
-
 ;; wgrep (edit in grep results)
 (require 'wgrep)
 
@@ -452,3 +449,77 @@
 (eval-after-load "neotree"
   '(setq neo-hidden-files-regexp
          (concat "\\(" (regexp-opt completion-ignored-extensions) "\\|#\\)$")))
+
+;; dired: better navigation of Ctrl-Home/End
+
+(defun dired-back-to-top ()
+  (interactive)
+  (beginning-of-buffer)
+  (dired-next-line 4))
+(defun dired-jump-to-bottom ()
+  (interactive)
+  (end-of-buffer)
+  (dired-next-line -1))
+(define-key dired-mode-map [remap beginning-of-buffer] 'dired-back-to-top)
+(define-key dired-mode-map [remap end-of-buffer] 'dired-jump-to-bottom)
+
+;; rename buffer and file
+
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (ignore-errors (make-directory new-name t))
+          (ignore-errors (vc-call rename-file filename new-name))
+          (when (file-exists-p filename)  ;; if no vc was there
+            (rename-file filename new-name 1))
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+
+(global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
+
+;; move whole lines
+(require 'move-text)
+(global-set-key (kbd "<C-S-down>") 'move-text-down)
+(global-set-key (kbd "<C-S-up>") 'move-text-up)
+
+
+;; vim-like open line
+
+(defun open-line-below ()
+  (interactive)
+  (end-of-line)
+  (newline)
+  (indent-for-tab-command))
+
+(defun open-line-above ()
+  (interactive)
+  (beginning-of-line)
+  (newline)
+  (forward-line -1)
+  (indent-for-tab-command))
+
+(global-set-key (kbd "C-o") 'open-line-below)
+(global-set-key (kbd "C-S-o") 'open-line-above)
+
+;; goto-line with feedback
+
+(defun goto-line-with-feedback ()
+  "Show line numbers temporarily, while prompting for the line number input"
+  (interactive)
+  (unwind-protect
+      (progn
+        (linum-mode 1)
+        (goto-line (read-number "Goto line: ")))
+    (linum-mode -1)))
+
+(global-set-key [remap goto-line] 'goto-line-with-feedback)

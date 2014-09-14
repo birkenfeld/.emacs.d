@@ -217,8 +217,6 @@
 (global-set-key (kbd "M-s") 'isearch-forward-symbol)
 
 ;; scroll without moving cursor
-(global-set-key (kbd "C-M-<up>") '(lambda () (interactive) (scroll-down 1)))
-(global-set-key (kbd "C-M-<down>") '(lambda () (interactive) (scroll-up 1)))
 (global-set-key (kbd "M-<up>") '(lambda () (interactive) (scroll-down 5)))
 (global-set-key (kbd "M-<down>") '(lambda () (interactive) (scroll-up 5)))
 
