@@ -34,6 +34,7 @@
 ;;
 ;;; Change Log:
 ;;
+;; Changed by Georg Brandl 2014 to use powerline functions.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -69,6 +70,8 @@
   "Face for the file name."
   :group 'path-headerline-mode)
 
+(defvar path-headerline-excluded-buffers '("*SPEEDBAR*" "*Packages*")
+  "Buffers that should not get a header-line with buffer name.")
 
 (defun ph--make-header ()
   ""
@@ -87,7 +90,9 @@
   
 (defun ph--display-header ()
   "Display path on headerline."
-  (when (window-system)
+  (when (and (window-system)
+             (not (string-match-p "^ " (buffer-name)))
+             (not (member (buffer-name) path-headerline-excluded-buffers)))
     (setq header-line-format
           '(:eval (powerline-render (ph--make-header))))))
 
