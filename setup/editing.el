@@ -118,6 +118,25 @@
     (dotimes (i 10)
       (when (= p (point)) ad-do-it))))
 
+;; The new register-preview feature in 24.4 is nice, but it destroys my window
+;; configuration; use popwin to pop up the preview in the bottom
+(require 'popwin)
+(add-to-list 'display-buffer-alist '("Register Preview" popwin:special-display-popup-window))
+
+;; Colorize register preview a bit
+(defun register-preview-color (r)
+  (let* ((c (car r))
+         (d (replace-regexp-in-string
+             "\n[ \t]*" " "
+             (with-output-to-string (describe-register-1 c t))))
+         (s (if (string-match "Register.+? contains \\(?:an? \\|the \\)?" d)
+                (substring d (match-end 0)) d))
+         (k (propertize (single-key-description c) 'face 'font-lock-function-name-face)))
+  (concat k ": " s "\n")))
+
+(setq register-preview-function #'register-preview-color)
+
+
 ;; Multiple cursors ------------------------------------------------------------
 
 ;; ;; Experimental multiple-cursors

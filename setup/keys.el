@@ -81,9 +81,9 @@
 ;; Join line with previous
 (global-set-key (kbd "C-c ^") 'join-line)
 
-;; F6 stores a position in a file, F7 brings you back to this position
+;; F6 stores a position in a file, S-F6 brings you back to this position
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
-(global-set-key (kbd "<f7>") '(lambda () (interactive) (register-to-point ?1)))
+(global-set-key (kbd "<S-f6>") '(lambda () (interactive) (register-to-point ?1)))
 
 ;; Sometimes it's useful to re-highlight the whole buffer
 (global-set-key (kbd "<f8>") 'font-lock-fontify-buffer)
@@ -172,7 +172,7 @@
 ;; more powerful tab-completion in minibuffer
 (add-hook 'minibuffer-setup-hook
           '(lambda ()
-             (define-key minibuffer-local-map "\t" 'comint-dynamic-complete)))
+             (define-key minibuffer-local-map "\t" 'completion-at-point)))
 
 ;; More neat bindings for C-x 8
 (global-set-key (kbd "C-x 8 t m") (lambda () (interactive) (insert "™")))
