@@ -12,6 +12,7 @@
   (list "flycheck_haskell.pl"
         (list source base-dir)))
 
+(require 'flymake)
 (push '(".+\\.hs$" flymake-Haskell-init flymake-simple-java-cleanup)
       flymake-allowed-file-name-masks)
 (push '(".+\\.lhs$" flymake-Haskell-init flymake-simple-java-cleanup)
