@@ -65,11 +65,11 @@
 
 ;; make all backups in a single directory
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name "~/.emacs.d/backups"))))
+      `(("." . ,(expand-file-name "~/.emacs.d/saved/backups"))))
 
 ;; put game scores in a different directory
 (setq gamegrid-user-score-file-directory
-      (locate-user-emacs-file "games/"))
+      (locate-user-emacs-file "saved/games/"))
 
 ;; use a nicer mouse scroll behavior
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -290,7 +290,7 @@
 (require 'ehelp)
 
 ;; abbrev file for abbrev-mode
-(setq abbrev-file-name "~/.emacs.d/abbrevs")
+(setq abbrev-file-name "~/.emacs.d/saved/abbrevs")
 (when (file-exists-p abbrev-file-name)
   (read-abbrev-file abbrev-file-name t))
 

@@ -4,22 +4,7 @@ syntax: glob
 *.pyc
 *~
 
-abbrevs
-autosave/
-backups/
-bm-repository
-comphist
-desktop
-desktop.lock
-games/
-ido.last
-places
-recentf
-semantic/
-session
-smex-items
-_twitter/
-url/
+saved/
 
 local.el
 local/
