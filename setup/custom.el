@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -36,7 +36,7 @@
      ("Latexmk" "latexmk -latexoption=\"--interaction=nonstopmode\" -pdf %t" TeX-run-command nil t))))
  '(TeX-insert-braces nil)
  '(TeX-open-quote "\"`")
- '(TeX-parse-self t t)
+ '(TeX-parse-self t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
  '(TeX-view-program-list
@@ -287,7 +287,7 @@
  '(pop-up-windows nil)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face) t)
+ '(preview-scale-function (quote preview-scale-from-face))
  '(preview-transparent-color t)
  '(pulse-flag nil)
  '(python-fill-docstring-style (quote pep-257-nn))
