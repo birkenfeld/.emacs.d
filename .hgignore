@@ -5,6 +5,4 @@ syntax: glob
 *~
 
 saved/
-
-local.el
-local/
+local-setup/

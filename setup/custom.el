@@ -112,6 +112,7 @@
  '(custom-safe-themes
    (quote
     ("bc4def46c4b5953507a0d5096e273eb69173bf9d2f5835cd30ded30001889896" default)))
+ '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-selection-mode t)
  '(desktop-base-file-name "desktop")
  '(desktop-base-lock-name "desktop.lock")

@@ -21,6 +21,9 @@
 ;; load path for Python modules, must be set before loading pymacs
 (setq pymacs-load-path '("~/.emacs.d/pymacs"))
 
+;; set up our theme path
+(setq custom-theme-directory "~/.emacs.d/themes")
+
 ;; load package manager and add the alternate package repo
 (when (require 'package nil t)
   (add-to-list 'package-archives
@@ -38,8 +41,8 @@
   )
 
 ;; load custom variables and fonts
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
+(setq custom-file "~/.emacs.d/setup/custom.el")
+(load custom-file)
 
 ;; powerline: do it right now
 (require 'powerline)
@@ -833,13 +836,7 @@ returns the word count of that file."
 
 ;; ---------- Extension configuration ------------------------------------------
 
-;; load all these files without stopping on errors
-(defun load-nonstop (file) (ignore-errors (load file t)))
-
-;; load my extensions if they are present
-(load "~/.emacs.d/extensions.el")
-;; and separately, those provided by the distribution (packed in different
-;; files so that errors don't skip the whole file)
-(mapc 'load-nonstop (directory-files "~/.emacs.d/distext" t "\\.el"))
-;; and finally, local settings that don't go into the repo
-(load-nonstop "~/.emacs.d/local.el")
+;; load all files under setup/
+(mapc 'load (directory-files "~/.emacs.d/setup" t "\\.el"))
+;; and under local/ (settings that are not in the repo)
+(mapc 'load (directory-files "~/.emacs.d/local-setup" t "\\.el"))
