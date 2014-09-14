@@ -1,6 +1,6 @@
 ;; Setup LaTeX/AuCTeX related stuff.
 
-(add-to-list 'load-path "~/.emacs.d/talcum")
+(add-to-list 'load-path "~/.emacs.d/ext-lisp/talcum")
 
 ;; Load preview-latex
 (eval-after-load 'tex
