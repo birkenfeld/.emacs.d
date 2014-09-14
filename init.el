@@ -5,7 +5,6 @@
 
 ;; Set up load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(add-to-list 'load-path "~/.emacs.d/ext-lisp")
 
 ;; Don't show so many messages on startup
 (setq inhibit-startup-message t)

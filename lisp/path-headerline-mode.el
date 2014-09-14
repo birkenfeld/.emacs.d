@@ -70,7 +70,8 @@
   "Face for the file name."
   :group 'path-headerline-mode)
 
-(defvar path-headerline-excluded-buffers '("*SPEEDBAR*" "*Packages*")
+(defvar path-headerline-excluded-buffers
+  '("*SPEEDBAR*" "*Packages*" "*Register Preview*")
   "Buffers that should not get a header-line with buffer name.")
 
 (defun ph--make-header ()

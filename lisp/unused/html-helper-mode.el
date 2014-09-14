@@ -1,18 +1,42 @@
 ;;; html-helper-mode.el --- Major mode for composing html files.
+;;; v 3.0.4jolly
 
-;; Author: Nelson Minar <nelson@santafe.edu>
-;; Maintainer: Nelson Minar <nelson@santafe.edu>
+;; Mantainer : Gian Uberto "Saint" Lauri <saint@eng.it>
+;;                                       <saint@dei.unipd.it>*
+;;                                * works only from DEI, Padova.
+;;             http://www.gest.unipd.it/~saint/
+;; Original Author: Nelson Minar <nelson@santafe.edu>
+;; Original version Maintainer: Nelson Minar <nelson@santafe.edu>
+;; Changes by by: Gian Uberto Lauri <lauri@eng.it>, <saint@dei.unipd.it>*
+;;                                * works only from DEI, Padova.
+;; Credits : Larry Smith and Tony Graham for the ASP/PHP matching regexp
+;;           prototype.
+;;           Stan Lanning for the defadvice code that prevents indenting
+;;           of <PRE></PRE>, for the defadvice code that leaves the cursor
+;;           where it is during narrowing to script code, enhancments to
+;;           the scripting narrowing
+;;           Charles Curley for the commentary of tempo.el behaviour
+;;           Samir Barjoud for giving me the luser cap when I didn't notice
+;;           that *ALL* I needed to write  html-helper-match-asp-php was in
+;;           font-lock.el.
+;;           Theodore A. Jump for fixing fold tags in this source (after I
+;;           broke them
+;;           David J. Biesack for suggesting a good version checking.
+
+;; URL: http://www.gest.unipd.it/~saint/html-helper-mode.el.gz
+
 ;; Created: 01 Feb 1994
-;; $Id: html-helper-mode.el,v 2.19.1.1 1998/08/06 18:53:03 nelson Exp $
+;; $Id: html-helper-mode.el,v 3.0.4jolly 1998/08/06 18:53:03 nelson Exp $
 ;; Keywords: HTML major-mode
 
 ;; LCD Archive Entry:
-;; html-helper-mode|Nelson Minar|nelson@santafe.edu|
+;; html-helper-mode|Gian Uberto Lauri|lauri@eng.it|
 ;; Major mode for editing HTML.|
-;; 16-Mar-94|Version 2.?|ftp://ftp.reed.edu/pub/src/html-helper-mode.tar.Z
+;; 26-Oct-99|Version 3.?.?|http://www.gest.unipd.it/~saint/html-helper-mode.el.gz
 
 ;; Copyright (C) 1994 Nelson Minar
 ;; Copyright (C) 1995 Nelson Minar and Ulrik Dickow
+;; Copyright (C) 1999 Nelson Minar, Ulrik Dickow and Gian Uberto Lauri
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,14 +53,18 @@
 ;; the Free Software Foundation, 675 Massachusettes Ave,
 ;; Cambridge, MA 02139, USA.
 
-;;; Commentary:
-;;{{{ 
+;;{{{ Commentary
 
 ;; Installation:
 ;;   Add this line in your .emacs:
 ;;     (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
 ;;   To invoke html-helper-mode automatically on .html files, do this:
 ;;     (setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
+;;   To invoke html-helper-mode automatically on .asp files, do this:
+;;     (setq auto-mode-alist (cons '("\\.asp$" . html-helper-mode) auto-mode-alist))
+;;   To invoke html-helper-mode automatically on .phtml files, do this:
+;;     (setq auto-mode-alist (cons '("\\.phtml$" . html-helper-mode) auto-mode-alist))
+
 ;;
 ;;   This mode requires another lisp file, tempo.el. This can be
 ;;     retrieved from ftp://ftp.lysator.liu.se/pub/emacs/tempo.el
@@ -51,6 +79,9 @@
 ;;   configure, particularly html-helper-address-string and
 ;;   html-helper-use-expert-menu
 
+;; See also: http://www.gest.unipd.it/~saint/hth.html for further details
+;; regarding server code support.
+
 ;; Description:
 ;;   html-helper-mode makes it easier to write HTML documents. This mode
 ;;   handles inserting HTML codes in a variety of ways (keybindings, menus,
@@ -61,7 +92,7 @@
 
 ;; Thank yous:
 ;;   David Kågedal <davidk@lysator.liu.se> for the tempo code which
-;;     forms the core of the HTML insertion, as well as the HTML+ tags.
+;;     forms the core of the HTML insertion, as well as the HTML+ tag.
 ;;   Marc Hedlund <march@europa.com> for general encouragement and
 ;;     many helpful suggestions, especially with HTML/2.0 compliance
 ;;     and form design.
@@ -73,17 +104,104 @@
 ;;   Marc Andreessen <marca@mcom.com> for writing the original html-mode
 
 ;; The newest version of html-helper-mode should always be available from
-;;   http://www.santafe.edu/~nelson/tools/
+;;   http://www.gest.unipd.it/~saint/hth.html
+
+;; Changes moved to hhm-changelog
 
 ;; This code was writting using folding.el, a wonderful folding editor
 ;; minor mode for emacs. That's what the strange {{{ comments are for.
 
 ;;}}}
 
-;;; Code:
+;;{{{ Code:
 
-(defconst html-helper-mode-version (substring "$Revision: 2.19.1.1 $" 11 15))
+(defconst html-helper-mode-version 
+  (progn
+    (let ((revs "$Revision: 3.0.4jolly$")
+	  (lastchar 0)) 
+      ; revs is a string of single byte characters
+      (set 'lastchar (1- (string-width revs)))
+      (substring revs 11 lastchar))))
+
 ;;{{{ user variables
+
+;;{{{ defcustoms
+(defgroup html-helper nil
+  "Customizing html-helper-mode"
+  :group 'languages
+  :group 'hypermedia
+  :group 'local)
+
+(defgroup html-helper-faces nil
+  "Customizing html-helper-mode custom faces"
+  :group 'html-helper
+  :group 'faces)
+
+;; Default distribution doesn't include visual-basic-mode
+(defcustom html-helper-mode-uses-visual-basic nil
+  "Non nil to require visual-basic-mode"
+  :type 'boolean
+  :initialize 'custom-initialize-default
+  :group 'html-helper
+  :require 'html-helper-mode)
+
+;; Default distribution doesn't include jde
+;;
+;; Suggestion by :
+;; Jari Aalto <jari.aalto@poboxes.com>
+;;
+;;    I think that people that have installed JDE, use it, so
+;;    it would be logical to preset this automatically using
+;;    `locate-library'
+(defcustom html-helper-mode-uses-JDE nil
+  "No nil to use jde instead of java-mode"
+  :type 'boolean
+  :initialize 'custom-initialize-default
+  :group 'html-helper
+  :require 'html-helper-mode)
+
+(defcustom html-helper-mode-uses-bold-italic nil
+  "Non nil to use the bold-italic font (if your font supports it)"
+  :type 'boolean
+  :initialize 'custom-initialize-default
+  :group 'html-helper
+  :require 'html-helper-mode)
+
+(defcustom html-helper-mode-uses-KG-style nil
+  "Non nil to make Emacs consider PHP/ASP code blocks beginning in 
+the first column"
+  :type 'boolean
+  :initialize 'custom-initialize-default
+  :group 'html-helper
+  :require 'html-helper-mode)
+
+(defcustom html-helper-mode-global-JSP-not-ASP t
+  "Non nil to make Emacs consider <% %> blocks as JSP (global default behaviour)"
+  :type 'boolean
+  :initialize 'custom-initialize-default
+  :group 'html-helper
+  :require 'html-helper-mode)
+
+(defcustom html-helper-mode-insert-attributes-always nil
+  "non nil to make Emacs insert empty tag attributes when tempo-interactive is nil"
+  :type 'boolean
+  :initialize 'custom-initialize-default
+  :group 'html-helper
+  :require 'html-helper-mode)
+;;}}}
+
+;;{{{ defvars...
+(defvar html-helper-mode-local-JSP-not-ASP 
+  html-helper-mode-global-JSP-not-ASP
+  "Non nil to make Emacs consider <% %> blocks as JSP (buffer local behaviour)")
+
+(defvar html-helper-mode-run-the-mode t "When t, make the local variables, else skip")
+;; Visual basic mode is not in the standard distribution, so I let the user
+;; override html-helper-mode-uses-visual-basic with a nil value.
+(cond (html-helper-mode-uses-visual-basic (require 'visual-basic-mode)))
+(cond (html-helper-mode-uses-JDE (require 'jde)))
+(require 'cc-mode)
+(require 'cl)
 
 ;; Set this to be whatever signature you want on the bottom of your pages.
 (defvar html-helper-address-string ""
@@ -91,7 +209,7 @@
 
 ;; Features; these are all good to have on. (see also tempo.el)
 
-(defvar html-helper-use-expert-menu nil
+(defvar html-helper-use-expert-menu t
   "*If not nil, then use the full HTML menu.")
 
 (defvar html-helper-do-write-file-hooks t
@@ -114,14 +232,41 @@ list of vectors or lists which themselves are vectors (for submenus).")
 (defvar html-helper-basic-offset 2
   "*Basic indentation size used for list indentation")
 
-(defvar html-helper-item-continue-indent 4
-  "*Indentation of lines that follow a <li> item.
-Default is 4, the length of things like \"<li>\" and \"<dd>\".")
+;; Wed Jan 10 09:35:53 2001 Saint
+;; 
+;; fixing indentation
+;;(defvar html-helper-item-continue-indent 2
+;;  "*Indentation of lines that follow a <li> item.
+;;Default is 2, the length of things like \"<li>\" and \"<dd>\".")
 
 (defvar html-helper-never-indent nil
   "*If not nil, the indentation code for html-helper is turned off.")
 
 ;; hooks (see also tempo.el)
+
+;; On prompts... Charles Curley (http://w3.trib.com/~ccurley/): It took
+;; some time to figure this out... The (p "prompt: ") and (r "prompt:
+;; ") entries indicate where the prompting mode should prompt for a
+;; field in the tag. (p ) indicates a parameter, such as the color of a
+;; <font> tag. (r ) indicates a region, where the text to be surrounded
+;; by the tag should go, such as the text to be turned that color. The
+;; difference is this: when prompting mode is turned off and the user
+;; is surrounding a region with the tag, the (r ) (region) parameter
+;; indicates where the surrounded region will go. The first (p )
+;; (parameter) is where the cursor will go, ready to input the first
+;; parameter to the tag.
+
+;; So when you have prompting on, and use the font with color and size
+;; tag, put the cursor where you want the modified text to go. Start
+;; inserting the tag. You will be prompted for the color, the size, and
+;; then the text to display that way. When you have prompting turned
+;; off, and don't have a region blocked, insert the font tag, and the
+;; cursor will be at the the first parameter. Then tab over to the
+;; space between the two parts of the tag, and type in your text. If
+;; you have region blocked, C-u followed by the tag will surround the
+;; region with the tag. The blocked region goes into the (r )
+;; parameter. Then the cursor is placed at the first (p ) location,
+;; ready for you to type in a parameter, such as the color of the text.
 
 (defvar html-helper-mode-hook nil
   "*Hook run when html-helper-mode is started.")
@@ -151,7 +296,44 @@ Override this for your own timestamp styles.")
 Inserted by `html-helper-insert-new-buffer-strings' if
 `html-helper-build-new-buffer' is set to t")
 
-(defvar html-helper-timestamp-start "<!-- hhmts start -->\n"
+(defvar html-helper-new-ASP-buffer-template
+  '("<%@ LANGUAGE=\"" p "\" %>\n"
+    "<html> <head>\n"    
+    "<%\n\n%>\n"
+    "</head><body>\n"
+    "<% '<!-- " html-helper-timestamp-start "  " html-helper-timestamp-end
+    " --> %>\n"
+    "\n</body></html>\n")
+"*Template for new ASP buffers.
+Inserted by `html-helper-insert-new-ASP-buffer-strings' if
+`html-helper-build-new-buffer' is set to t")
+
+(defvar html-helper-new-PHP-buffer-template
+  '("<html> <head>\n"    
+    "<? PHP\n\n?>"
+    "</head><body>\n"
+    "<? /* " html-helper-timestamp-start "\n\n"
+    html-helper-timestamp-end
+    " */ ?>\n"
+    "\n</body></html>\n"
+    )
+"*Template for new PHP buffers.
+Inserted by `html-helper-insert-new-PHP-buffer-strings' if
+`html-helper-build-new-buffer' is set to t")
+
+;; Someone has some better idea ?
+(defvar html-helper-new-JSP-buffer-template
+  '("<html> <head>\n"    
+    "<%\n\n%>\n"
+    "</head><body>\n"
+    "<% '<!-- " html-helper-timestamp-start "  " html-helper-timestamp-end
+    " --> %>\n"
+    "\n</body></html>\n")
+"*Template for new JSP buffers.
+Inserted by `html-helper-insert-new-ASP-buffer-strings' if
+`html-helper-build-new-buffer' is set to t")
+
+(defvar html-helper-timestamp-start "<!-- hhmts start --> "
   "*Start delimiter for timestamps.
 Everything between `html-helper-timestamp-start' and
 `html-helper-timestamp-end' will be deleted and replaced with the output
@@ -169,7 +351,7 @@ of the function `html-helper-insert-timestamp' if
 ;; ones we know of.
 
 (defvar html-helper-types-to-install
-  '(anchor list header logical phys textel entity image head form)
+  '(anchor list header logical phys textel entity image table head form script)
   "*List of tag types to install when html-helper-mode is first loaded.
 If you want to not install some type of tag, override this variable.
 Order is significant: menus go in this order.")
@@ -181,13 +363,27 @@ Order is significant: menus go in this order.")
        (or (and (boundp 'epoch::version) epoch::version)
            (string-lessp emacs-version "19")))
   "I'll do minimal emacs18 support, grumble.")
+;;}}} end of defvars
 
 ;;}}} end of user variables
+
+;;{{{ Prologue
 
 (require 'tempo)			;essential part of html-helper-mode
 (condition-case nil			;menu support, standard in emacs19
     (require 'auc-menu)			;add-on for XEmacs. *why* does this
   (error (require 'easymenu)))		;package have to have two names?
+
+;; Wed Mar 28 09:55:29 2001 Saint
+;; 
+;; Placing here (require 'psgml-html ) after a suggestion from Graham
+;; Gough who explored the faces problem with XEmacs (many thanks)
+(if (string-match "XEmacs\\|Lucid" (emacs-version))
+      ;; This will initialize html-helper-bold-face
+      (require 'psgml-html))
+
+(require 'font-lock)
+;;}}}
 
 ;;{{{ html-helper-mode-syntax-table and html-helper-mode-abbrev-table
 
@@ -212,6 +408,7 @@ Order is significant: menus go in this order.")
 (define-abbrev-table 'html-helper-mode-abbrev-table ())
 
 ;;}}}
+
 ;;{{{ type based keymap and menu variable and function setup
 
 ;; Our basic keymap.
@@ -230,8 +427,6 @@ Order is significant: menus go in this order.")
 (defconst html-helper-type-alist nil
   "Alist: type of tag -> keymap, keybinding, menu, menu string.
 Add to this with `html-helper-add-type-to-alist'.")
-
-;;{{{ accessor functions for html-helper-type-alist
 
 (defun html-helper-keymap-for (type)
   "Accessor function for alist: for type, return keymap or nil"
@@ -254,8 +449,6 @@ Add to this with `html-helper-add-type-to-alist'.")
   (cons (html-helper-menu-string-for type)
 	(eval (html-helper-menu-for type))))
 
-;;}}}
-
 (defun html-helper-add-type-to-alist (type)
   "Add a type specification to the alist.
 The spec goes (type . (keymap-symbol keyprefix menu-symbol menu-string)).
@@ -266,21 +459,59 @@ See code for an example."
 (mapcar 'html-helper-add-type-to-alist
   '((entity  . (nil nil html-helper-entity-menu "Insert Character Entities"))
     (textel  . (nil nil html-helper-textel-menu "Insert Text Elements"))
-    (head    . (html-helper-head-map "\C-c\C-b" html-helper-head-menu "Insert Structural Elements"))
-    (header  . (html-helper-header-map "\C-c\C-t" html-helper-header-menu "Insert Headers"))
-    (anchor  . (html-helper-anchor-map "\C-c\C-a" html-helper-anchor-menu "Insert Hyperlinks"))
-    (logical . (html-helper-logical-map "\C-c\C-s" html-helper-logical-menu "Insert Logical Styles"))
-    (phys    . (html-helper-phys-map "\C-c\C-p" html-helper-phys-menu "Insert Physical Styles"))
-    (list    . (html-helper-list-map "\C-c\C-l" html-helper-list-menu "Insert List Elements"))
-    (form    . (html-helper-form-map "\C-c\C-f" html-helper-form-menu "Insert Form Elements"))
-    (image   . (html-helper-image-map "\C-c\C-i" html-helper-image-menu "Insert Inlined Images"))))
+    (head    . (html-helper-head-map "\C-c\C-h" 
+				     html-helper-head-menu 
+				     "Insert Structural Elements"))
+    (header  . (html-helper-header-map "\C-c\M-h" 
+				       html-helper-header-menu 
+				       "Insert Headers"))
+    (anchor  . (html-helper-anchor-map "\C-c\C-a" 
+				       html-helper-anchor-menu 
+				       "Insert Hyperlinks"))
+    (logical . (html-helper-logical-map "\C-c\M-l" 
+					html-helper-logical-menu 
+					"Insert Logical Styles"))
+    (phys    . (html-helper-phys-map "\C-c\C-p" 
+				     html-helper-phys-menu 
+				     "Insert Physical Styles"))
+    (list    . (html-helper-list-map "\C-c\C-l" 
+				     html-helper-list-menu 
+				     "Insert List Elements"))
+    (form    . (html-helper-form-map "\C-c\C-f" 
+				     html-helper-form-menu 
+				     "Insert Form Elements"))
+    (image   . (html-helper-image-map "\C-c\C-i" 
+				      html-helper-image-menu 
+				      "Insert Inlined Images"))
+    (table   . (html-helper-table-map "\C-c\C-t" 
+				      html-helper-table-menu 
+				      "Insert Tables"))
+    (script  . (html-helper-script-map "\C-c\C-s" 
+				       html-helper-script-menu 
+				       "Insert Scripts"))
+    ))
 
-;; Once html-helper-mode is aware of a type, it can then install the
+;; Once html-helper-mde is aware of a type, it can then install the
 ;; type: arrange for keybindings, menus, etc.
 
 (defconst html-helper-installed-types nil
   "The types that have been installed (used when building menus).
 There is no support for removing a type once it has been installed.")
+
+;; For easy ASP/JSP switch
+(defun html-helper-use-JSP-this-buffer ()
+  (interactive)
+  (setq html-helper-mode-local-JSP-not-ASP t)
+  (setq mode-name "HTML/JSP helper")
+  (setq major-mode 'jsp-html-helper-mode))
+
+(defun html-helper-use-ASP-this-buffer ()
+  (interactive)
+  (cond (html-helper-mode-uses-visual-basic 
+	 (setq html-helper-mode-local-JSP-not-ASP nil)
+	 (setq mode-name "HTML/ASP helper")
+	 (setq major-mode 'asp-html-helper-mode))
+	(t (error "Visual basic mode required for ASP"))))
 
 (defun html-helper-install-type (type)
   "Install a new tag type: add it to the keymap, menu structures, etc.
@@ -317,11 +548,20 @@ with html-helper-add-type-to-alist."
 ;; Extra commands that HTML helper supports that aren't insertions
 (defvar html-helper-mode-functions-map nil
   "Keymap for extra HTML mode functions")
+
 (define-prefix-command 'html-helper-mode-functions-map)
 (define-key html-helper-mode-map "\C-c\C-z"
   'html-helper-mode-functions-map)
 (define-key html-helper-mode-functions-map "t"
   'html-helper-insert-timestamp-delimiter-at-point)
+(define-key html-helper-mode-functions-map "a"
+  'html-script-narrow-to-asp)
+(define-key html-helper-mode-functions-map "p"
+  'html-script-narrow-to-php)
+(define-key html-helper-mode-functions-map "b"
+  'html-script-narrow-to-vbscript)
+(define-key html-helper-mode-functions-map "j"
+  'html-script-narrow-to-javascript)
  
 ;; indentation keys - only rebind these if the user wants indentation
 (if html-helper-never-indent
@@ -332,8 +572,32 @@ with html-helper-add-type-to-alist."
 ;; browse url stuff
 (if (fboundp 'browse-url-of-file)
     (define-key html-helper-mode-functions-map "v" 'browse-url-of-file))
-(if (and (boundp 'browse-url-browser-function) (fboundp browse-url-browser-function))
-    (define-key html-helper-mode-functions-map "u" browse-url-browser-function))
+
+;; Fri Jan 12 18:30:32 2001 Saint
+;; 
+;; Jack Vinson supplies this code to handle the case when
+;; browse-url-browser-function is a list and not a function (it can be
+;; a list, says its documentation)
+;; 
+;; Replacing :
+;; (if (and (boundp 'browse-url-browser-function) 
+;; 	 (fboundp browse-url-browser-function))
+;;     (define-key html-helper-mode-functions-map "u" 
+;;       browse-url-browser-function))
+
+(if (boundp 'browse-url-browser-function)
+    (let ((bf browse-url-browser-function)
+	  re)
+      (while (consp bf)
+	(setq re (car (car bf))
+	      bf (if (string-match re "http")
+		     (cdr (car bf))	; The function
+		   (cdr bf))))		; More pairs
+      (or bf (error "No browser in browse-url-browser-function for =
+general URL's"))
+      (fboundp bf)
+      (define-key html-helper-mode-functions-map "u" bf)
+      ))
 
 ;;}}}
 
@@ -370,9 +634,11 @@ appropriate keymap if a key is requested. Format:
 	 (name (nth 3 l))
 	 (tag (nth 4 l))
 	 (doc (nth 5 l))
-	 (command (tempo-define-template (html-helper-string-to-symbol name)
+	 (command (if (string-equal completer "function")
+		      (nth 4 l)
+		      (tempo-define-template (html-helper-string-to-symbol name)
 					 tag completer doc
-					 'html-helper-tempo-tags)))
+					 'html-helper-tempo-tags))))
 
     (if (null (memq type html-helper-installed-types))    ;type loaded?
 	t                                                 ;no, do nothing.
@@ -392,6 +658,31 @@ appropriate keymap if a key is requested. Format:
 ;;}}}
 
 ;;{{{ most of the HTML tags
+
+
+(defun html-helper-insert-or-wipe (string)
+  "Propmts for the value of an optional attribute named STRING and
+inserts it in the current buffer. Inserts nothing if the users replies
+with a null string."
+  (cond ((and (stringp string)
+	      tempo-interactive)
+	 (let ((val (read-from-minibuffer (concat string " :"))))
+	   (cond ((> (string-width val) 0) 
+		  (insert-string (concat " " string "=\"" val "\"" )))	 
+	  )))
+	;; just to tell that there's something weird in the calling
+	;; code... But behaves like a no op if tempo-interactive is 
+	;; nil
+	(tempo-interactive 
+	 (error (concat "Wrong type argument: stringp, " string)))
+	;; Wed Mar 28 10:06:24 2001 Saint
+	;;
+ 	;; To insert empty attributes if
+	;; html-helper-mode-insert-attributes-always is non nil
+	((and (stringp string)
+	      html-helper-mode-insert-attributes-always)
+	 (insert-string (concat " " string "=\"\"" )))
+	      ))
 
 ;; These tags are an attempt to be HTML/2.0 compliant, with the exception
 ;; of container <p>, <li>, <dd>, <dt> (we adopt 3.0 behaviour).
@@ -414,86 +705,245 @@ appropriate keymap if a key is requested. Format:
    (entity  "\C-c&"   "&amp;"		"Ampersand"	  ("&amp;"))
    (entity  "\C-c>"   "&gt;"	  	"Greater Than"       ("&gt;"))
    (entity  "\C-c<"   "&lt;"		"Less Than"	  ("&lt;"))
-   
+   ;; letters with accents common in italian
+   (entity  "\C-ca"   "&agrave;"        "a` (&&agrave;)"          ("&agrave;"))        
+   (entity  "\C-ce"   "&egrave;"        "e` (&&egrave;)"          ("&egrave;"))
+   (entity  "\C-cE"   "&eacute;"        "e' (&&eacute;)"          ("&eacute;"))
+   (entity  "\C-co"   "&ograve;"        "o` (&&ograve;)"          ("&ograve;"))
+   (entity  "\C-ci"   "&igrave;"        "i` (&&igrave;)"          ("&igrave;"))
+   (entity  "\C-cu"   "&ugrave;"        "u` (&&ugrave;)"          ("&ugrave;"))
+
    ;; logical styles
-   (logical "b"       "<blockquote>"	"Blockquote"     	  ("<blockquote>" (r "Quote: ") "</blockquote>"))
-   (logical "c"       "<code>"		"Code"           	  ("<code>" (r "Code: ") "</code>"))
-   (logical "x"       "<samp>"		"Sample"         	  ("<samp>" (r "Sample code") "</samp>"))
-   (logical "r"       "<cite>"		"Citation"       	  ("<cite>" (r "Citation: ") "</cite>"))
-   (logical "k"       "<kbd>"		"Keyboard Input"       	  ("<kbd>" (r "Keyboard: ") "</kbd>"))
-   (logical "v"       "<var>"		"Variable"       	  ("<var>" (r "Variable: ") "</var>"))
-   (logical "d"       "<dfn>"		"Definition"     	  ("<dfn>" (r "Definition: ") "</dfn>"))
-   (logical "a"	      "<address>"	"Address"		  ("<address>" r "</address>"))
-   (logical "e"       "<em>"		"Emphasized"     	  ("<em>" (r "Text: ") "</em>"))
-   (logical "s"       "<strong>"	"Strong"         	  ("<strong>" (r "Text: ") "</strong>"))
-   (logical "p"       "<pre>"		"Preformatted"   	  ("<pre>" (r "Text: ") "</pre>"))
+   (logical "b"       "<blockquote>"	"Blockquote"     	  
+	    ("<blockquote>" (r "Quote: ") "</blockquote>"))
+   (logical "c"       "<code>"		"Code"           	  
+	    ("<code>" (r "Code: ") "</code>"))
+   (logical "x"       "<samp>"		"Sample"         	  
+	    ("<samp>" (r "Sample code") "</samp>"))
+   (logical "r"       "<cite>"		"Citation"       	  
+	    ("<cite>" (r "Citation: ") "</cite>"))
+   (logical "k"       "<kbd>"		"Keyboard Input"       	  
+	    ("<kbd>" (r "Keyboard: ") "</kbd>"))
+   (logical "v"       "<var>"		"Variable"       	  
+	    ("<var>" (r "Variable: ") "</var>"))
+   (logical "d"       "<dfn>"		"Definition"     	  
+	    ("<dfn>" (r "Definition: ") "</dfn>"))
+   (logical "a"	      "<address>"	"Address"		  
+	    ("<address>" r "</address>"))
+   (logical "e"       "<em>"		"Emphasized"     	  
+	    ("<em>" (r "Text: ") "</em>"))
+   (logical "s"       "<strong>"	"Strong"         	  
+	    ("<strong>" (r "Text: ") "</strong>"))
+   (logical "p"       "<pre>"		"Preformatted"   	  
+	    ("<pre>" (r "Text: ") "</pre>"))
 
    ;;physical styles
-   (phys    "s"       "<strike>"	"Strikethru"         ("<strike>" (r "Text: ") "</strike>"))
-   (phys    "u"       "<u>"		"Underline"          ("<u>" (r "Text: ") "</u>"))
-   (phys    "i"       "<i>"		"Italic"             ("<i>" (r "Text: ") "</i>"))
-   (phys    "b"	      "<b>"    		"Bold"               ("<b>" (r "Text: ") "</b>"))
-   (phys    "f"       "<tt>"		"Fixed"              ("<tt>" (r "Text: ") "</tt>"))
+   (phys    "s"       "<strike>"	"Strikethru"         
+	    ("<strike>" (r "Text: ") "</strike>"))
+   (phys    "u"       "<u>"		"Underline"          
+	    ("<u>" (r "Text: ") "</u>"))
+   (phys    "i"       "<i>"		"Italic"             
+	    ("<i>" (r "Text: ") "</i>"))
+   (phys    "b"	      "<b>"    		"Bold"               
+	    ("<b>" (r "Text: ") "</b>"))
+   (phys    "f"       "<tt>"		"Fixed"              
+	    ("<tt>" (r "Text: ") "</tt>"))
+   (phys    "c"       "<center>"        "Center"             
+	    ("<center>" (r "Text: ") "</center>"))
+
+;; html4.0 stuff, omitted
+
+   (phys    "5" "<span style=" "Spanning style" 
+	     ("<span style=\"" (p "style: ") "\">" 'r "</span>"))
+   (phys    "l" "<span class=" "Spanning class"
+	     ("<span class=\"" (p "class: ") "\">" 'r "</span>"))
+ 
 
    ;;headers
-   (header  "6"       "<h6>"		"Header 6"       	  ("<h6>" (r "Header: ") "</h6>"))
-   (header  "5"       "<h5>"		"Header 5"       	  ("<h5>" (r "Header: ") "</h5>"))
-   (header  "4"       "<h4>"		"Header 4"       	  ("<h4>" (r "Header: ") "</h4>"))
-   (header  "3"       "<h3>"		"Header 3"       	  ("<h3>" (r "Header: ") "</h3>"))
-   (header  "2"       "<h2>"		"Header 2"       	  ("<h2>" (r "Header: ") "</h2>"))
-   (header  "1"	      "<h1>"     	"Header 1"       	  ("<h1>" (r "Header: ") "</h1>"))
+   (header  "6"       "<h6>"		"Header 6"       	  
+	    ("<h6>" (r "Header: ") "</h6>"))
+   (header  "5"       "<h5>"		"Header 5"       	  
+	    ("<h5>" (r "Header: ") "</h5>"))
+   (header  "4"       "<h4>"		"Header 4"       	  
+	    ("<h4>" (r "Header: ") "</h4>"))
+   (header  "3"       "<h3>"		"Header 3"       	  
+	    ("<h3>" (r "Header: ") "</h3>"))
+   (header  "2"       "<h2>"		"Header 2"       	  
+	    ("<h2>" (r "Header: ") "</h2>"))
+   (header  "1"	      "<h1>"     	"Header 1"       	  
+	    ("<h1>" (r "Header: ") "</h1>"))
 
    ;; forms
-   (form    "o"       "<option>"        "Option"                 (& "<option>" > ))
-   (form    "v"       "<option value"   "Option with Value"      (& "<option value=\"" (r "Value: ") "\">" >))
-   (form    "s"       "<select"		"Selections"	          ("<select name=\"" (p "Name: ") "\">\n<option>" > "\n</select>")"<select")
-   (form    "z"	      "<input"		"Reset Form"    	  ("<input type=\"RESET\" value=\"" (p "Reset button text: ") "\">"))
-   (form    "b"	      "<input"		"Submit Form"   	  ("<input type=\"SUBMIT\" value=\"" (p "Submit button text: ") "\">"))
-   (form    "i"	      "<input"		"Image Field"   	  ("<input type=\"IMAGE\" name=\"" (p "Name: ") "\" src=\"" (p "Image URL: ") "\">"))
-   (form    "h"       "<input"          "Hidden Field"            ("<input type=\"HIDDEN\" name=\"" (p "Name: ") "\" value=\"" (p "Value: ") "\">"))
-   (form    "p"	      "<textarea"	"Text Area"	  ("<textarea name=\"" (p "Name: ") "\" rows=\"" (p "Rows: ") "\" cols=\"" (p "Columns: ") "\">" r "</textarea>"))
-   (form    "c"	      "<input"		"Checkbox"   	          ("<input type=\"CHECKBOX\" name=\"" (p "Name: ") "\">"))
-   (form    "r"	      "<input"		"Radiobutton"   	  ("<input type=\"RADIO\" name=\"" (p "Name: ") "\">"))
-   (form    "t"	      "<input"		"Text Field"	          ("<input type=\"TEXT\" name=\"" (p "Name: ") "\" size=\"" (p "Size: ") "\">"))
-   (form    "f"	      "<form"           "Form"		          ("<form action=\"" (p "Action: ") "\" method=\"" (p "Method: ") "\">\n</form>\n"))
+   (form    "o"       "<option>"        "Option"                 
+	    (& "<option>" > ))
+   (form    "v"       "<option value"   "Option with Value"      
+	    (& "<option value=\"" (r "Value: ") "\">" >))
+   (form    "s"       "<select"		"Selections"	          
+	    ("<select" 
+	     (html-helper-insert-or-wipe "name") ">\n<option>" > "\n</select>")"<select")
+   (form    "z"	      "<input"		"Reset Form"    	  
+	    ("<input type=\"RESET\"" 
+	     (html-helper-insert-or-wipe "value") ">"))
+   (form    "m"	      "<input"		"Submit Form"   	  
+	    ("<input type=\"SUBMIT\"" 
+	     (html-helper-insert-or-wipe "value") ">"))
+   (form    "b"       "<input"          "Button"                  
+	    ("<input type=\"BUTTON\"" 
+	     (html-helper-insert-or-wipe "value") 
+	     (html-helper-insert-or-wipe "name") ">"))
+   (form    "i"	      "<input"		"Image Field"   	  
+	    ("<input type=\"IMAGE\"" 
+	     (html-helper-insert-or-wipe "Name")
+	     (html-helper-insert-or-wipe "src") ">"))
+   (form    "h"       "<input"          "Hidden Field"            
+	    ("<input type=\"HIDDEN\"" 
+	     (html-helper-insert-or-wipe "name")
+	     (html-helper-insert-or-wipe "value") ">"))
+   (form    "p"	      "<textarea"	"Text Area"	  
+	    ("<textarea" 
+	     (html-helper-insert-or-wipe "name")
+	     (html-helper-insert-or-wipe "rows")
+	     (html-helper-insert-or-wipe "cols") ">" r "</textarea>"))
+   (form    "c"	      "<input"		"Checkbox"   	          
+	    ("<input type=\"CHECKBOX\"" 
+	     (html-helper-insert-or-wipe "name") ">"))
+   (form    "r"	      "<input"		"Radiobutton"   	  
+	    ("<input type=\"RADIO\"" 
+	     (html-helper-insert-or-wipe "Name") ">"))
+   (form    "t"	      "<input"		"Text Field"	          
+	    ("<input type=\"TEXT\"" 
+	     (html-helper-insert-or-wipe "name")
+	     (html-helper-insert-or-wipe "size") ">"))
+   (form    "f"	      "<form"           "Form"		          
+	    ("<form" 
+	     (html-helper-insert-or-wipe "action")
+	     (html-helper-insert-or-wipe "method") ">\n</form>\n"))
 
    ;;lists
-   (list    "t"       "<dt>"            "Definition Item"         (& "<dt>" > (p "Term: ") "\n<dd>" > (r "Definition: ")))
-   (list    "l"       "<li>"            "List Item"               (& "<li>" > (r "Item: ")))
-   (list    "r"	      "<dir>"		"DirectoryList"      	  (& "<dir>" > "\n<li>" > (r "Item: ") "\n</dir>" >))
-   (list    "m"	      "<menu>"		"Menu List"		  (& "<menu>" > "\n<li>" > (r "Item: ") "\n</menu>" >))
-   (list    "o"	      "<ol>"		"Ordered List"   	  (& "<ol>" > "\n<li>" > (r "Item: ") "\n</ol>" >))
-   (list    "d"	      "<dl>"		"Definition List" 	  (& "<dl>" > "\n<dt>" > (p "Term: ") "\n<dd>" > (r "Definition: ") "\n</dl>" >))
-   (list    "u"	      "<ul>"		"Unordered List" 	  (& "<ul>" > "\n<li>" > (r "Item: ") "\n</ul>" >))
+   (list    "t"       "<dt>"            "Definition Item"         
+	    (& "<dt>" > (r "Term: ") "\n<dd>" > 
+	       (r "Definition: ")))
+   (list    "l"       "<li>"            "List Item"               
+	    (& "<li>" > (r "Item: ") > "</li>"))
+   (list    "r"	      "<dir>"		"DirectoryList"      	  
+	    (& "<dir>" > "\n<li>" > (r "Item: ") "\n</li>" > "\n</dir>" >))
+   (list    "m"	      "<menu>"		"Menu List"		  
+	    (& "<menu>" > "\n<li>" > (r "Item: ") "\n</li>" > "\n</menu>" >))
+   (list    "o"	      "<ol>"		"Ordered List"   	  
+	    (& "<ol>" > "\n<li>" > (r "Item: ") "\n</li>" > "\n</ol>" >))
+   (list    "d"	      "<dl>"		"Definition List" 	  
+	    (& "<dl>" > "\n<dt>" > 
+	       (p "Term: ") "\n<dd>" > 
+	       (r "Definition: ") "\n</dl>" >))
+   (list    "u"	      "<ul>"		"Unordered List" 	  
+	    (& "<ul>" > "\n<li>" > (r "Item: ") "\n</li>\n</ul>" >))
 
    ;;anchors
-   (anchor  "n"	      "<a name="	"Link Target"	  ("<a name=\"" (p "Anchor name: ") "\">" (r "Anchor text: ") "</a>"))
-   (anchor  "l"	      "<a href="        "Hyperlink"          	  ("<a href=\"" (p "URL: ") "\">" (r "Anchor text: ") "</a>"))                
+   (anchor  "n"	      "<a name="	"Link Target"	  
+	    ("<a " (html-helper-insert-or-wipe "name") ">" 
+	     (r "Anchor text: ") "</a>"))
+   (anchor  "l"	      "<a href="        "Hyperlink"          	  
+	    ("<a href=\"" (p "href: ") "\" >" 
+	     (r "Anchor text: ") "</a>"))                
 
    ;;graphics
-   (image   "a"       nil               "Aligned Image"	  ("<img align=\"" (r "Alignment: ") "\" src=\"" (r "Image URL: ") "\">"))
-   (image   "i"       "<img src="	"Image"		  ("<img src=\"" (r "Image URL: ") "\">"))
-   (image   "e"       "<img align="     "Aligned Image With Alt. Text"	  ("<img align=\"" (r "Alignment: ") "\" src=\"" (r "Image URL: ") "\" alt=\"" (r "Text URL: ") "\">"))
-   (image   "t"       "<img alt="	"Image With Alternate Text"	  ("<img alt=\"" (r "Text URL: ") "\" src=\"" (r "Image URL: ") "\">"))
-
+;    (image   "a"       nil               "Aligned Image"	  
+; 	    ("<img align=\"" 
+; 	     (r "Alignment: ") "\" src=\"" (r "Image URL: ") "\">"))
+;    (image   "i"       "<img src="	"Image"		  
+; 	    ("<img src=\"" 
+; 	     (r "Image URL: ") "\">"))
+;    (image   "e"       "<img align="     "Aligned Image With Alt. Text"	  
+; 	    ("<img align=\"" 
+; 	     (r "Alignment: ") "\" src=\"" 
+; 	     (r "Image URL: ") "\" alt=\"" 
+; 	     (r "Text URL: ") "\">"))
+;    (image   "t"       "<img alt="	"Image With Alternate Text"	  
+; 	    ("<img alt=\"" 
+; 	     (r "Text URL: ") "\" src=\"" 
+; 	     (r "Image URL: ") "\">"))
+;; New, (almost) all including, single menu item entry
+;; src has to be there!
+   (image	"a"	nil	"Image" 
+		("<img src=\""
+		 (p "src" ) "\" "
+		 (html-helper-insert-or-wipe  "alt" )
+		 (html-helper-insert-or-wipe  "height" )
+		 (html-helper-insert-or-wipe  "width" )
+		 (html-helper-insert-or-wipe  "align" )
+		 ">"))
+   ;; table 
+   (table   "t"       "<table>"         "Table"           
+	    ("<table" 
+	     (html-helper-insert-or-wipe  "border" )
+	     (html-helper-insert-or-wipe "width" )">\n</table>"))
+   (table   "r"       "<tr>"         "Table Row"           
+	    ("<TR>\n</TR>"))
+   (table   "h"       "<th>"         "Table Header"        
+	    ("<TH"
+	     (html-helper-insert-or-wipe "rowspan" )
+	     (html-helper-insert-or-wipe "colspan")">\n</TH>"))
+   (table   "d"       "<td>"         "Table Data"           
+	    ("<TD" 
+	     (html-helper-insert-or-wipe "align" )
+	     (html-helper-insert-or-wipe "colspan")"></TD>"))
+   (table   "p"	"<caption>"	"html table caption"	
+	    ("<caption>" (r . "Table: ") "</caption>"))   
    ;;text elements
-   (textel  "\C-c="    nil		"Horizontal Line"	  (& "<hr>\n"))
-   (textel  "\C-c\C-m" nil		"Line Break"		  ("<br>\n"))
-   (textel  "\e\C-m"  nil		"Paragraph"	  ("<p>\n"))
-
+   (textel  "\C-c="    nil		"Horizontal Line"	  
+	    (& "<hr>\n"))
+   (textel  "\C-c\C-m" nil		"Line Break"		  
+	    ("<br>\n"))
+   (textel  "\e\C-m"  nil		"Paragraph"	  
+	    ("<p>"
+	     (r "Text: ") "</p>"))
+   
    ;;head elements
-   (head    "H"       "<head>"          "Head"            ("<head>\n" "</head>\n"))
-   (head    "B"       "<body>"          "Body"            ("<body>\n" "</body>\n"))
-   (head    "i"	      "<isindex>"	"Isindex"         ("<isindex>\n"))
-   (head    "n"	      "<nextid>"	"Nextid"          ("<nextid>\n"))
-   (head    "h"       "<meta http-equiv=" "HTTP Equivalent" ("<meta http-equiv=\"" (p "Equivalent: ") "\" content=\"" (r "Content: ") "\">\n"))
-   (head    "m"       "<meta name="     "Meta Name"       ("<meta name=\"" (p "Name: ") "\" content=\"" (r "Content: ") "\">\n"))
-   (head    "l"	      "<link"		"Link"            ("<link href=\"" p "\">"))
-   (head    "b"       "<base"		"Base"            ("<base href=\"" r "\">"))
-   (head    "t"	      "<title>"		"Title"           ("<title>" (r "Document title: ") "</title>"))
+   (head    "H"       "<head>"          "Head"            
+	    ("<head>\n" "</head>\n"))
+   (head    "B"       "<body>"          "Body"            
+	    ("<body>\n" "</body>\n"))
+   (head    "i"	      "<isindex>"	"Isindex"         
+	    ("<isindex>\n"))
+   (head    "n"	      "<nextid>"	"Nextid"          
+	    ("<nextid>\n"))
+   (head    "h"       "<meta http-equiv=" "HTTP Equivalent" 
+	    ("<meta" 
+	     (html-helper-insert-or-wipe "http-equiv") " content=\"" 
+	     (r "Content: ") "\">\n"))
+   (head    "m"       "<meta name="     "Meta Name"       
+	    ("<meta" 
+	     (html-helper-insert-or-wipe "name") " content=\"" 
+	     (r "Content: ") "\">\n"))
+   (head    "l"	      "<link"		"Link"            
+	    ("<link href=\"" p "\">"))
+   (head    "b"       "<base"		"Base"            
+	    ("<base href=\"" r "\">"))
+   (head    "t"	      "<title>"		"Title"           
+	    ("<title>" (r "Document title: ") "</title>"))
+   ;; scripting elements
+   (script  "j"    "<SCRIPT>"       "JavaScript"        
+	    ("<SCRIPT TYPE=\"text/javascript\">\n" 
+	     (r "Script") "</SCRIPT>"))
+   (script  "v"    "<SCRIPT>"       "VBScript"        
+	    ("<SCRIPT TYPE=\"text/vbscript\">\n" 
+	     (r "Script") "</SCRIPT>"))
+   (script  "%"    "<%="            "ASP output"      
+	    ("<%="(p " Variabile: ")"%>"))
+   (script  "a"    "<%xx%>"         "JSP/ASP code"        
+	    ("<%\n"(r "Code: " )"\n%>"))
+   (script  "<"    "<%xx%>"         "JSP/ASP break"        
+	    ("%>\n"(r "Code: " )"\n<%"))
+   (script  "="    "<?="            "PHP output"      
+	    ("<?="(p " Variabile: ")"?>"))
+   (script  "p"    "<?xx?>"         "PHP code"      
+	    ("<? PHP\n"(r "Code: " )"\n?>"))
+   (script  "?"    "<?xx?>"         "PHP break"        
+	    ("?>\n"(r " Code: " )"\n<? PHP"))
    ))
 
 ;;}}}
+
 ;;{{{ html-helper-smart-insert-item
 
 ;; there are two different kinds of items in HTML - those in regular
@@ -521,6 +971,7 @@ appropriate keymap if a key is requested. Format:
 	   (cons '["List Item" html-helper-smart-insert-item t] html-helper-list-menu)))
 
 ;;}}}
+
 ;;{{{ menu support
 
 ;; menus are built for easymenu. html-helper-add-tag builds
@@ -567,6 +1018,10 @@ If `html-helper-use-expert-menu' is nil, then just use a novice menu."
 	  (append html-helper-novice-menu 
 		  (list ["Load This Buffer in Browser" browse-url-of-file t]))))
 
+;; Narrrowing to scripts, this don't use tempo because has to call functions
+;; and not insert templates
+
+
 ;; Expert menus: consed up out of html-helper-installed-types
 (defun html-helper-expert-menu ()
   "This menu is based on the current value of `html-helper-installed-types'.
@@ -589,17 +1044,54 @@ This function can be called again, it redoes the entire menu."
     (setq html-helper-mode-menu
 	  (cons '["Load this Buffer in Browser" browse-url-of-file t]
 		html-helper-mode-menu)))
-  (if (and (boundp 'browse-url-browser-function) (fboundp browse-url-browser-function))
-    (setq html-helper-mode-menu
-	  (cons (vector "Browse URL at point" browse-url-browser-function t)
-		html-helper-mode-menu)))
+
+  ;; Mon Jan 15 07:49:39 2001 Saint
+  ;;
+  ;; Jack Vinson supplied this code to handle the case where
+  ;; browse-url-browser-function is a list, too
+  (if (boundp 'browse-url-browser-function) 
+      (let ((bf browse-url-browser-function)
+	    re)
+	(while (consp bf)
+	  (setq re (car (car bf))
+		bf (if (string-match re "http")
+		       (cdr (car bf))	; The function
+		     (cdr bf))))		; More pairs
+	(or bf 
+	    (error 
+	     "No browser in browse-url-browser-function for general URL's"))
+	(fboundp bf)
+	(setq html-helper-mode-menu
+	      (cons (vector "Browse URL at point" bf t)
+		    html-helper-mode-menu))))
 
   ;; cons in the timestamp delimiters
   (setq html-helper-mode-menu
 	(cons '["Insert Timestamp Delimiter"
 		html-helper-insert-timestamp-delimiter-at-point t]
 	      html-helper-mode-menu))
-  
+
+  ;; cons script narrowing
+  (setq html-helper-mode-menu
+	(append html-helper-mode-menu 
+		(list ["Narrow to ASP" html-script-narrow-to-asp t])))
+  (setq html-helper-mode-menu
+	(append html-helper-mode-menu 
+		(list ["Narrow to PHP" html-script-narrow-to-php t])))
+  (setq html-helper-mode-menu
+	(append html-helper-mode-menu 
+		(list ["Narrow to VBScript" html-script-narrow-to-vbscript t])))
+   (setq html-helper-mode-menu
+	 (append html-helper-mode-menu 
+		 (list ["Narrow to JavaScript" html-script-narrow-to-javascript t])))
+   (setq html-helper-mode-menu
+	 (append html-helper-mode-menu
+		 (list ["Use ASP" html-helper-use-ASP-this-buffer  t])))
+
+   (setq html-helper-mode-menu
+	 (append html-helper-mode-menu
+		 (list ["Use JSP" html-helper-use-JSP-this-buffer t])))
+
   ;; now cons up the main menu out of the submenus
   (mapcar
    (function (lambda (type)
@@ -624,9 +1116,16 @@ This function can be called again, it redoes the entire menu."
 ;; Note, we make select/option look like a list structure too, so indentation
 ;; works. This is a bit weird, but it's ok.
 
-(defvar html-helper-any-list-item-start "<li>\\|<dt>\\|<dd>\\|<option\\|<th>\\|<td>")
+;; Wed Jan 10 09:01:06 2001 Saint
+;; 
+;; Changed regexps to handle tags with attributes
+(defvar html-helper-any-list-item-start 
+  ;;  "<li>\\|<dt>\\|<dd>\\|<option\\|<th>\\|<td>")
+  "<li\W\\|<dt\\|<dd\\|<option\\|<th\\|<td")
 (defvar html-helper-any-list-item-end "</li>\\|</dt>\\|</dd>\\|</th>\\|</td>")
-(defvar html-helper-any-list-start "<dl>\\|<ul>\\|<ol>\\|<menu>\\|<dir>\\|<select\\|<table\\|<tr>")
+(defvar html-helper-any-list-start 
+  ;;  "<dl>\\|<ul>\\|<ol>\\|<menu>\\|<dir>\\|<select\\|<table\\|<tr>")
+  "<dl\\|<ul\\|<ol\\|<menu\\|<dir\\|<select\\|<table\\|<tr")
 (defvar html-helper-any-list-end "</dl>\\|</ul>\\|</ol>\\|</menu>\\|</dir>\\|</select>\\|</table>\\|</tr>")
 (defvar html-helper-any-list
   (format "\\(%s\\)\\|\\(%s\\)\\|\\(%s\\)\\|\\(%s\\)"
@@ -634,12 +1133,15 @@ This function can be called again, it redoes the entire menu."
 	  html-helper-any-list-end
 	  html-helper-any-list-item-start
 	  html-helper-any-list-item-end))
-
-(defvar html-helper-indentation-list
-  (format "\\(%s\\)\\|\\(%s\\)\\|\\(%s\\)"
-	  html-helper-any-list-start
-	  html-helper-any-list-end
-	  html-helper-any-list-item-start))
+;; Wed Jan 10 09:50:53 2001 Saint
+;; 
+;; New indentation. As for other modes leave a single indentation
+;; sensible tag on each line.
+(defvar html-helper-indentation-list html-helper-any-list)
+  ;;  (format "\\(%s\\)\\|\\(%s\\)\\|\\(%s\\)"
+  ;;	  html-helper-any-list-start
+  ;;	  html-helper-any-list-end
+  ;;	  html-helper-any-list-item-start))
 (defvar html-helper-search-limit 2000 "limit on how far back we search")
 
 (defun html-helper-context-symbol ()
@@ -650,12 +1152,15 @@ This function can be called again, it redoes the entire menu."
 	((match-beginning 4) 'item-end)
 	(t 'error)))
 
+; Wed Jan 10 09:53:46 2001 Saint
+; 
+; Doesn't ignore item-end any more.
 (defun html-helper-guess-prev-context ()
   "Figure out the last list-type tag before point relevant to indentation.
 Returns 'item-start if the last list tag is a list item start
-        'start      if the last list tag is the start of a list
-        'end        if the last list tag is the end of a list.
-Ignores list item ends, because those aren't reliable for indentation."
+        'list-start if the last list tag is the start of a list
+        'item-end   if the last list tag is the end of a list item
+        'list-end   if the last list tag is the end of a list."
   (save-excursion
     (let* ((lim (max (point-min) (- (point) html-helper-search-limit)))
 	   (context (if (re-search-backward html-helper-indentation-list lim t)
@@ -668,7 +1173,9 @@ Ignores list item ends, because those aren't reliable for indentation."
   (message "%s" (html-helper-guess-prev-context)))
 
 ;;}}}
+
 ;;{{{ indentation
+(defvar html-helper-buffers nil "buffers using html-helper-mode alist")
 
 (defvar html-helper-print-indent-info nil
   "If t, indent will print out information as a message.")
@@ -677,8 +1184,7 @@ Ignores list item ends, because those aren't reliable for indentation."
   "Command for indenting HTML to the appropriate column.
 Calls `html-helper-indent' which tries to examine how many levels down
 in nested lists we are and does the appropriate indentation.'
-See also `html-helper-basic-offset', `html-helper-item-continue-indent',
-and `html-helper-never-indent'."
+See also `html-helper-basic-offset' and `html-helper-never-indent'."
   (interactive)
   (html-helper-indent))
 
@@ -697,6 +1203,19 @@ and `html-helper-never-indent'."
 ;;   else if this line is not a list item, and previous line is a item-start
 ;;     indent continue-indent, because this is part of the item
 
+;; code to never indent <PRE></PRE> sections. Many thanks to 
+;; Stan Lanning <lanning@pobox.com>
+(defun html-helper-indent-leave-alone-p ()
+  (let* ((pre (save-excursion (search-backward "<pre>" nil t)))
+	 (endpre (save-excursion (search-backward "</pre>" pre t))))
+    (and pre (null endpre))))
+
+(defadvice html-helper-indent (around leave-pre-alone activate)
+  (cond ((not (html-helper-indent-leave-alone-p))
+	 ad-do-it)
+	(html-helper-print-indent-info
+	 (message "In <pre> -- skipping indentation"))
+	(t nil)))
 
 (defun html-helper-indent ()
   "Indentation workhorse function."
@@ -728,28 +1247,35 @@ and `html-helper-never-indent'."
 	       ((and
 		 (or (eq this-context 'item-start) (eq this-context 'item-end))
 		 (eq prev-context 'list-end))
-		(setq newi (- newi html-helper-item-continue-indent)))
+		(setq newi (- newi html-helper-basic-offset)))
 	       
 	       ;; end of list and last line was an end: go backwards twice
 	       ((and (eq this-context 'list-end) (eq prev-context 'list-end))
-		(setq newi (- newi html-helper-item-continue-indent html-helper-basic-offset)))
+		;; Wed Jan 10 09:35:53 2001 Saint
+		;; 
+		;; fixing indentation
+		;;		(setq newi (- newi html-helper-basic-offset html-helper-item-continue-indent)))
+		(setq newi (- newi html-helper-basic-offset)))
 	       
 	       ;; Any other end of list? Indent negative
 	       ((and (eq this-context 'list-end))
 		(setq newi (- newi html-helper-basic-offset)))
 	       
 	       ;; start of list and last line beginning of item, go forwards
-	       ((and (eq this-context 'list-start) (eq prev-context 'item-start))
-		(setq newi (+ newi html-helper-item-continue-indent)))))
+	       ((and (eq this-context 'list-start) 
+		     (eq prev-context 'item-start))
+		(setq newi (+ newi html-helper-basic-offset)))))
 	  
 	  ;; default: no special case, indent forward for text
 	  (cond
 	   ;; last line an item? Beginning of continued item - go forward
 	   ((eq prev-context 'item-start)
-	    (setq newi (+ newi html-helper-item-continue-indent)))))
+	    (setq newi (+ newi html-helper-basic-offset)))))
 
 	(if html-helper-print-indent-info
-	    (message "Last Context: %s, This Context: %s, Previous: %s New: %s" prev-context this-context previ newi))
+	    (message 
+	     "Last Context: %s, This Context: %s, Previous: %s New: %s" 
+	     prev-context this-context previ newi))
 	
 	;; just in case
 	(if (< newi 0)
@@ -762,6 +1288,7 @@ and `html-helper-never-indent'."
 	    (back-to-indentation))))))
 
 ;;}}}
+
 ;;{{{ completion finder for tempo
 
 (defvar html-helper-completion-finder
@@ -819,7 +1346,7 @@ will should insert an appropriate timestamp in the buffer."
 	    (nth 1 (current-time-zone))
 	    " "
 	    (substring time -4)
-	    "\n")))
+	    " ")))
 
 (defun html-helper-insert-timestamp-delimiter-at-point ()
   "Simple function that inserts timestamp delimiters at point.
@@ -829,58 +1356,70 @@ Useful for adding timestamps to existing buffers."
   (insert html-helper-timestamp-end))
 
 ;;}}}
+
 ;;{{{ html-helper-insert-new-buffer-strings
 
 (tempo-define-template "html-skeleton" html-helper-new-buffer-template
 		       nil
 		       "Insert a skeleton for a HTML document")
 
+(tempo-define-template "ASP-skeleton" html-helper-new-ASP-buffer-template
+		       nil
+		       "Insert a skeleton for a ASP document")
+
+(tempo-define-template "PHP-skeleton" html-helper-new-PHP-buffer-template
+		       nil
+		       "Insert a skeleton for a PHP document")
+
+(tempo-define-template "JSP-skeleton" html-helper-new-JSP-buffer-template
+		       nil
+		       "Insert a skeleton for a JSP document")
+
 (defun html-helper-insert-new-buffer-strings ()
   "Insert `html-helper-new-buffer-strings'."
   (tempo-template-html-skeleton))
+
+(defun html-helper-insert-new-ASP-buffer-strings ()
+  "Insert `html-helper-new-ASP-buffer-strings' or `html-helper-new-JSP-buffer-string'."
+  (cond (html-helper-mode-local-JSP-not-ASP
+	 (tempo-template-JSP-skeleton))
+	(t
+	 (tempo-template-ASP-skeleton))))
+
+(defun html-helper-insert-new-PHP-buffer-strings ()
+  "Insert `html-helper-new-PHP-buffer-strings'."
+  (tempo-template-PHP-skeleton))
 
 ;;}}}
 
 ;;{{{ html-helper-mode
 
-(defun html-helper-mode ()
-  "Mode for editing HTML documents.
-For more documentation and the newest version, 
-see http://www.santafe.edu/~nelson/tools/
-
-The main function html-helper-mode provides is a menu and keybindings
-for the HTML tags one inserts when writing HTML documents. Selecting
-the menu item or typing the key sequence for a command inserts the
-corresponding tag and places point in the right place. If a prefix
-argument is supplied, the tags is instead wrapped around the region.
-Alternately, one can type in part of the tag and complete it with M-TAB.
-
-There is also code for indentation, timestamps, skeletons for new
-documents, and lots of other neat features.
-
-\\{html-helper-mode-map}
-Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
-"
-  (interactive)
+(defun base-html-helper-mode (mode)
+  "basic mode, called by the exported modes with MODE telling what 
+is the mode to run (that's the skeleton to insert in empty files)"
   (kill-all-local-variables)
 
   (use-local-map html-helper-mode-map)
   (setq local-abbrev-table html-helper-mode-abbrev-table)
   (set-syntax-table html-helper-mode-syntax-table)
 
-  (setq mode-name "HTML helper")
-  (setq major-mode 'html-helper-mode)
-
-  (make-local-variable 'comment-start)
-  (make-local-variable 'comment-end)
-  (make-local-variable 'comment-column)
-  (make-local-variable 'comment-start-skip)
-  (make-local-variable 'indent-line-function)
-
+  (cond (html-helper-mode-run-the-mode
+	 (make-local-variable 'comment-start)
+	 (make-local-variable 'comment-end)
+	 (make-local-variable 'comment-column)
+	 (make-local-variable 'comment-start-skip)
+	 (make-local-variable 'indent-line-function)
+	 (make-local-variable 'html-helper-count)
+	 (make-local-variable 'html-helper-mode-local-JSP-not-ASP)
+	 (make-variable-buffer-local 'html-helper-mode-run-the-mode) 
+	 (set 'html-helper-mode-run-the-mode nil)
+	 (html-helper-add-buffer (current-buffer) mode)))
+  
   ;; font-lock setup for various emacsen: XEmacs, Emacs 19.29+, Emacs <19.29.
   ;; By Ulrik Dickow <dickow@nbi.dk>.  (Last update: 05-Sep-1995).
   (cond	((string-match "XEmacs\\|Lucid" (emacs-version)) ; XEmacs/Lucid
-	 (put major-mode 'font-lock-keywords-case-fold-search t))
+	 (put major-mode 'font-lock-keywords-case-fold-search t)
+	 )
 	;; XEmacs (19.13, at least) guesses the rest correctly.
 	;; If any older XEmacsen don't, then tell me.
 	;;
@@ -908,17 +1447,215 @@ Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
       (add-hook 'local-write-file-hooks 'html-helper-update-timestamp))
 
   (if (and html-helper-build-new-buffer (zerop (buffer-size)))
-      (html-helper-insert-new-buffer-strings))
+      (cond ((string= mode "HTML")
+	     (html-helper-insert-new-buffer-strings))
+	    ((string= mode "ASP")
+	     (html-helper-insert-new-ASP-buffer-strings))
+	    ((string= mode "PHP")
+	     (html-helper-insert-new-PHP-buffer-strings))
+	    ))
 
   (easy-menu-add (html-helper-menu) html-helper-mode-map)
 
   (run-hooks 'text-mode-hook)
   (run-hooks 'html-mode-hook)
+;; qui i keybinding
   (run-hooks 'html-helper-mode-hook))
+
+(cond (html-helper-mode-uses-visual-basic
+       (defun asp-html-helper-mode ()
+  "Mode for editing HTML documents with ASP server scripts.
+
+The main function html-helper-mode provides is a menu and keybindings
+for the HTML tags one inserts when writing HTML documents. Selecting
+the menu item or typing the key sequence for a command inserts the
+corresponding tag and places point in the right place. If a prefix
+argument is supplied, the tags is instead wrapped around the region.
+Alternately, one can type in part of the tag and complete it with M-TAB.
+
+There is also code for indentation, timestamps, skeletons for new
+documents, and lots of other neat features.
+
+Uses :`visual-basic-mode'  for ASP e VBSCript
+      `easymenu' for menu creation
+      `cc-mode'  for javascript support
+      `tempo'    for templates
+Supports server (actually ASP & PHP, JSP) and client
+(JavaScript, VBScript) scripting
+
+Customizable flags you would like to alter
+
+`html-helper-mode-uses-visual-basic' : non nil requires visual-basic-mode and activates ASP and VBScript support functions
+`html-helper-mode-uses-bold-italic' : non nil creates a bold italic face (could fail if there's not such face available)
+`html-helper-mode-uses-KG-style' : nil to make Emacs consider PHP/JSP/ASP code blocks beginning in the first colum
+`html-helper-mode-global-JSP-not-ASP' : non nil to make Emacs consider <% %> sequence as JSP blocks by default in html-helper-mode, set to nil in asp-html-helper-mode, set to t in jsp-html-helper-mode. 
+Alter the behaviour locally by changing html-helper-mode-local-JSP-not-ASP value
+
+
+Special command (not in menu - default bound to [f4]): attempts a smart narrowing to the current scripting block. Fails in client script containing server script sections.
+\\{html-helper-mode-map}
+Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
+Mantained by lauri@eng.it, http:/www.gest.unipd.it/~saint/"
+  (interactive)
+  (html-helper-add-buffer (current-buffer) "ASP")
+  (asp-html-helper-mode-run)))
+)
+
+;; 
+(defun asp-html-helper-mode-run ()
+  (base-html-helper-mode "ASP")
+  (setq html-helper-mode-local-JSP-not-ASP nil)
+  (setq mode-name "HTML/ASP helper")
+  ;; Mon Jun 25 16:14:44 2001 Saint
+  ;; 
+  ;; Supporto imenu (da cui discende il supporto Speedbar)
+  (setq imenu-generic-expression 
+	'(( "VBA Variables" "\\([Dd][Ii][Mm][ \t]+\\)\\([a-z0-9]+\\)" 2)
+	  ( "ASP Output" "^.*\\(<%=[ \t]*\\)\\([a-z0-9]+\\)" 2)
+	  ( "ASP Block" "^.*\\(<%[^=][\t\n ]+\\)\\([a-z0-9]+\\)" 2)
+	  ( "VBA Sub" "^.*\\([sS]ub[\t\n ]+\\)\\([a-z0-9]+\\)" 2)
+	  ( "VBA Function" "^.*\\([fF]unciton[\t\n ]+\\)\\([a-z0-9]+\\)" 2)))
+  (speedbar-add-supported-extension ".asp")
+  ;;/Saint
+  (setq major-mode 'asp-html-helper-mode))
+
+(defun jsp-html-helper-mode ()
+  "Mode for editing HTML documents with ASP server scripts.
+
+The main function html-helper-mode provides is a menu and keybindings
+for the HTML tags one inserts when writing HTML documents. Selecting
+the menu item or typing the key sequence for a command inserts the
+corresponding tag and places point in the right place. If a prefix
+argument is supplied, the tags is instead wrapped around the region.
+Alternately, one can type in part of the tag and complete it with M-TAB.
+
+There is also code for indentation, timestamps, skeletons for new
+documents, and lots of other neat features.
+
+Uses :`visual-basic-mode'  for ASP e VBSCript
+      `easymenu' for menu creation
+      `cc-mode'  for javascript support
+      `tempo'    for templates
+Supports server (actually ASP & PHP, JSP) and client
+(JavaScript, VBScript) scripting
+
+Customizable flags you would like to alter
+
+`html-helper-mode-uses-visual-basic' : non nil requires visual-basic-mode and activates ASP and VBScript support functions
+`html-helper-mode-uses-bold-italic' : non nil creates a bold italic face (could fail if there's not such face available)
+`html-helper-mode-uses-KG-style' : nil to make Emacs consider PHP/JSP/ASP code blocks beginning in the first colum
+`html-helper-mode-global-JSP-not-ASP' : non nil to make Emacs consider <% %> sequence as JSP blocks by default in html-helper-mode, set to nil in asp-html-helper-mode, set to t in jsp-html-helper-mode. 
+Alter the behaviour locally by changing html-helper-mode-local-JSP-not-ASP value
+
+
+Special command (not in menu - default bound to [f4]): attempts a smart narrowing to the current scripting block. Fails in client script containing server script sections.
+\\{html-helper-mode-map}
+Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
+Mantained by lauri@eng.it, http:/www.gest.unipd.it/~saint/"
+  (interactive)
+  (html-helper-add-buffer (current-buffer) "JSP")
+  (jsp-html-helper-mode-run)
+)
+
+(defun jsp-html-helper-mode-run ()
+  (interactive)
+  (base-html-helper-mode "JSP")
+  (setq html-helper-mode-local-JSP-not-ASP t)
+  (setq mode-name "HTML/JSP helper")
+  (setq major-mode 'jsp-html-helper-mode))
+
+(defun html-helper-mode ()
+  "Mode for editing HTML documents.
+
+The main function html-helper-mode provides is a menu and keybindings
+for the HTML tags one inserts when writing HTML documents. Selecting
+the menu item or typing the key sequence for a command inserts the
+corresponding tag and places point in the right place. If a prefix
+argument is supplied, the tags is instead wrapped around the region.
+Alternately, one can type in part of the tag and complete it with M-TAB.
+
+There is also code for indentation, timestamps, skeletons for new
+documents, and lots of other neat features.
+
+Uses :`visual-basic-mode' (optional - see below ) for ASP and VBScript
+      `easymenu' for menu creation 
+      `cc-mode'  for javascript support
+      `tempo'    for templates
+
+Supports server (actually ASP & PHP, JSP) and client
+(JavaScript, VBScript) scripting
+
+Customizable flags you would like to alter
+
+`html-helper-mode-uses-visual-basic' : non nil requires visual-basic-mode and activates ASP and VBScript support functions
+`html-helper-mode-uses-bold-italic' : non nil creates a bold italic face (could fail if there's not such face available)
+`html-helper-mode-uses-KG-style' : nil to make Emacs consider PHP/JSP/ASP code blocks beginning in the first colum
+`html-helper-mode-global-JSP-not-ASP' : non nil to make Emacs consider <% %> sequence as JSP blocks by default in html-helper-mode, set to nil in asp-html-helper-mode, set to t in jsp-html-helper-mode. 
+Alter the behaviour locally by changing html-helper-mode-local-JSP-not-ASP value
+
+Special command (not in menu - default bound to [f4]): attempts a smart narrowing to the current scripting block. Fails in client script containing server script sections.
+\\{html-helper-mode-map}
+Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
+Mantained by lauri@eng.it, http:/www.gest.unipd.it/~saint/
+"
+  (interactive)
+  (html-helper-add-buffer (current-buffer) "HTML")
+  (html-helper-mode-run))
+
+(defun html-helper-mode-run () 
+  (interactive)
+  (base-html-helper-mode "HTML")
+  (setq mode-name "HTML helper")
+  (setq html-helper-mode-local-JSP-not-ASP html-helper-mode-global-JSP-not-ASP)
+  (setq major-mode 'html-helper-mode))
+
+(defun php-html-helper-mode ()
+  "Mode for editing HTML documents with PHP server scripts.
+
+The main function html-helper-mode provides is a menu and keybindings
+for the HTML tags one inserts when writing HTML documents. Selecting
+the menu item or typing the key sequence for a command inserts the
+corresponding tag and places point in the right place. If a prefix
+argument is supplied, the tags is instead wrapped around the region.
+Alternately, one can type in part of the tag and complete it with M-TAB.
+
+There is also code for indentation, timestamps, skeletons for new
+documents, and lots of other neat features.
+
+Uses :`visual-basic-mode' (optional) for ASP e VBSCript
+      `easymenu' for menu creation
+      `cc-mode'  for javascript support
+      `tempo'    for templates
+
+Supports server (actually ASP & PHP, JSP) and client
+(JavaScript, VBScript) scripting
+
+Customizable flags you would like to alter
+
+`html-helper-mode-uses-visual-basic' : non nil requires visual-basic-mode and activates ASP and VBScript support functions
+`html-helper-mode-uses-bold-italic' : non nil creates a bold italic face (could fail if there's not such face available)
+`html-helper-mode-uses-KG-style' : nil to make Emacs consider PHP/JSP/ASP code blocks beginning in the first colum
+`html-helper-mode-global-JSP-not-ASP' : non nil to make Emacs consider <% %> sequence as JSP blocks by default in html-helper-mode, set to nil in asp-html-helper-mode, set to t in jsp-html-helper-mode. 
+Alter the behaviour locally by changing html-helper-mode-local-JSP-not-ASP value
+
+Special command (not in menu - default bound to [f4]): attempts a smart narrowing to the current scripting block. Fails in client script containing server script sections.
+\\{html-helper-mode-map}
+Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
+Mantained by lauri@eng.it, http:/www.gest.unipd.it/~saint/
+"
+(interactive)
+  (html-helper-add-buffer (current-buffer) "HTML")
+  (php-html-helper-mode-run))
+
+(defun php-html-helper-mode-run ()
+  (interactive)
+  (base-html-helper-mode "PHP")
+  (setq mode-name "HTML/PHP helper")
+  (setq major-mode 'php-html-helper-mode))
 
 ;;}}}
 
-;;{{{ patterns for font-lock
+;;{{{ text faces
 
 ;; By Ulrik Dickow <dickow@nbi.dk>.
 ;;
@@ -928,6 +1665,8 @@ Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
 ;;
 ;; We make an effort on handling nested tags intelligently.
 
+(make-face 'info-menu-6)
+
 ;; font-lock compatibility with XEmacs/Lucid and older Emacsen (<19.29).
 ;;
 (if (string-match "XEmacs\\|Lucid" (emacs-version))
@@ -935,113 +1674,526 @@ Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
     ;; Make needed faces if the user hasn't already done so.
     ;; Respect X resources (`make-face' uses them when they exist).
     (let ((change-it
-	   (function (lambda (face)
-		       (or (if (fboundp 'facep)
-			       (facep face)
-			     (memq face (face-list)))
-			   (make-face face))
-		       (not (face-differs-from-default-p face))))))
+ 	   (function (lambda (face)
+ 		       (or (if (fboundp 'facep)
+ 			       (facep face)
+ 			     (memq face (face-list)))
+ 			   (make-face face))
+ 		       (not (face-differs-from-default-p face))))))
       (if (funcall change-it 'html-helper-bold-face)
-	  (copy-face 'bold 'html-helper-bold-face))
+ 	  (progn (make-face 'html-helper-bold-face)
+ 		 (make-face-bold 'html-helper-bold-face)
+		 (set-face-foreground html-helper-bold-face "peru")))
       (if (funcall change-it 'html-helper-italic-face)
-	  (copy-face 'italic 'html-helper-italic-face))
+ 	  (progn (make-face 'html-helper-italic-face)
+ 		 (make-face-italic 'html-helper-italic-face)
+		 (set-face-foreground 'html-helper-italic-face "medium sea green")))
       (if (funcall change-it 'html-helper-underline-face)
-	  (set-face-underline-p 'html-helper-underline-face t))
+ 	  (set-face-underline-p 'html-helper-underline-face t))
       (if (funcall change-it 'font-lock-variable-name-face)
-	  (set-face-foreground 'font-lock-variable-name-face "salmon"))
+ 	  (set-face-foreground 'font-lock-variable-name-face "salmon"))
       (if (funcall change-it 'font-lock-reference-face)
-	  (set-face-foreground 'font-lock-reference-face "violet")))
-  ;; Emacs (any version)
+ 	  (set-face-foreground 'font-lock-reference-face "violet"))
+      ; experimental code
+      (if (funcall change-it 'html-helper-bold-italic-face)
+ 	  (progn (cond (html-helper-mode-uses-bold-italic
+			(make-face 'html-helper-bold-italic-face)
+			(make-face-bold-italic 'html-helper-bold-italic-face)
+			(set-face-foreground 'html-helper-bold-italic-face "orange")))))
+      (if (funcall change-it 'html-helper-underline-face)
+	  (progn (make-face 'html-helper-underline-face)
+		 (set-face-underline-p 'html-helper-underline-face t)
+		 (set-face-foreground html-helper-underline-face "goldenrod")))
+      ;; Cheap hack to avoid autoload failure - lawrencc@debian.org
+      (defvar html-tag-face 
+        (make-face 'html-tag-face))
+      (make-face-bold 'html-tag-face)
+	;; PETER Neergaard <turtle@bu.edu> says
+	;;
+	;; "Another issue I just noticed is that font-lock-builtin-face
+	;; is not a face defined Xemacs; instead they use
+	;; font-lock-preprocessor-face (I too fail to see any good
+	;; reasons that they have made this design choice).  I did not
+	;; notice this at first because I hack define
+	;; font-lock-builtin-face in my .emacs as I had some packages
+	;; using font-lock-builtin-face when I started using Xemacs,
+	;; but this has been changed now."  Then suggests this change :
+      (make-face 'html-helper-builtin-face)
+      (copy-face 'font-lock-preprocessor-face 
+		 'html-helper-builtin-face)))
+  ;; Emacs
   ;;
   ;; Note that Emacs evaluates the face entries in `font-lock-keywords',
   ;; while XEmacs doesn't.  So XEmacs doesn't use the following *variables*,
   ;; but instead the faces with the same names as the variables.
-  (defvar html-helper-bold-face 'bold
-    "Face used as bold.  Typically `bold'.")
-  (defvar html-helper-italic-face 'italic
-    "Face used as italic.  Typically `italic'.")
-  (defvar html-helper-underline-face 'underline
-    "Face used as underline.  Typically `underline'.")
+  
+  ;; New predicate on suggestion by "David J. Biesack" <sasdjb@unx.sas.com>
+  (if (or (not (boundp 'emacs-major-version)) ; t if prior to 19.23
+	   (< emacs-major-version 20)         ; t if prior to 20.0.0
+	   (and (= emacs-major-version 20)    ; t if prior to 20.4.1
+		(< emacs-minor-version 4)))    
+       (progn
+	(defvar html-helper-bold-face
+	  (make-face 'html-helper-bold-face))
+	(make-face-bold 'html-helper-bold-face)
+	(defvar html-helper-italic-face
+	  (make-face 'html-helper-italic-face))
+	(make-face-italic 'html-helper-italic-face)
+	(cond (html-helper-mode-uses-bold-italic
+	       (defvar html-helper-bold-italic-face
+		 (make-face 'html-helper-bold-italic-face))
+	       (make-face-bold-italic 'html-helper-bold-italic-face)))
+	(defvar html-helper-underline-face 
+	  (make-face 'html-helper-underline-face))
+	(set-face-underline-p 'html-helper-underline-face t)
+	(defvar html-tag-face 
+	  (make-face 'html-tag-face))
+	(make-face-bold 'html-tag-face)
+
+	(defvar html-helper-builtin-face
+	  (make-face 'html-helper-builtin-face))
+	(copy-face 'font-lock-builtin-face 
+		   'html-helper-builtin-face)
+	;; Support for both old font-lock-background-mode and new
+	;; frame-background-mode, plus a default value if neither of the two
+	;; is non nil
+	(let ((internal-background-mode 
+	       (or (if (boundp 'font-lock-background-mode)
+                  font-lock-background-mode frame-background-mode)
+              (setq internal-background-mode 'light))))
+	  (progn
+	    (cond ((eq internal-background-mode 'light)
+		   (set-face-foreground html-tag-face "dodger blue"))
+		  ((eq internal-background-mode 'dark)
+		   (set-face-foreground html-tag-face "deep sky blue")))
+	    (cond ((eq internal-background-mode 'light)
+		   (set-face-foreground html-helper-bold-face "peru"))
+		  ((eq internal-background-mode 'dark)
+		   (set-face-foreground 'html-helper-bold-face "wheat")))
+	    (cond ((eq internal-background-mode 'light)
+		   (set-face-foreground 'html-helper-italic-face "medium sea green"))
+		  ((eq internal-background-mode 'dark)
+		   (set-face-foreground 'html-helper-italic-face "spring green")))
+	    (cond (html-helper-mode-uses-bold-italic
+		   (cond ((eq internal-background-mode 'light)
+			  (set-face-foreground 'html-helper-bold-italic-face "orange"))
+			 ((eq internal-background-mode 'dark)
+			  (set-face-foreground 'html-helper-bold-italic-face "peachpuff")))))
+	    (cond ((eq internal-background-mode 'light)
+		   (set-face-foreground html-helper-underline-face "goldenrod"))
+		  ((eq internal-background-mode 'dark)
+		   (set-face-foreground 'html-helper-underline-face "cornsilk"))))))
+    ;; Use customization. I don't recall if earier version support it...
+    (progn
+      (defvar html-tag-face 
+	(defface html-tag-face
+	  '((((class color)
+	      (background dark))
+	     (:foreground "deep sky blue" :bold t))
+	    (((class color)
+	      (background light))
+	     (:foreground "dodger blue" :bold t))
+	    (t
+	     (:foreground "dodger blue" :bold t)))
+	  "Face to use for HTML tags."
+	  :group 'html-helper-faces))
+      (defvar html-helper-bold-face 
+	(defface html-helper-bold-face
+	  '((((class color)
+	      (background dark))
+	     (:foreground "wheat" :bold t))
+	    (((class color)
+	      (background light))
+	     (:foreground "peru" :bold t))
+	    (t
+	     (:foreground "peru" :bold t)))
+	  "Custom bold face."
+	  :group 'html-helper-faces))
+	  (defvar html-helper-italic-face 
+	    (defface html-helper-italic-face
+	      '((((class color)
+		  (background dark))
+		 (:foreground "spring green" :italic t))
+		(((class color)
+		  (background light))
+		 (:foreground "medium sea green" :italic t))
+		(t
+		 (:foreground "medium sea green" :italic t)))
+	      "Custom italic face."
+	      :group 'html-helper-faces))
+	  (cond (html-helper-mode-uses-bold-italic
+		 (defvar html-helper-bold-italic-face 
+		   (defface html-helper-bold-italic-face
+		     '((((class color)
+			 (background dark))
+			(:foreground "peachpuff" :bold t:italic t))
+		       (((class color)
+			 (background light))
+			(:foreground "orange" :bold t :italic t))
+		       (t
+			(:foreground "orange" :bold t :italic t)))
+		     "Custom bold italic face."
+		     :group 'html-helper-faces))))
+	  (defvar html-helper-underline-face 
+	    (defface html-helper-underline-face
+	      '((((class color)
+		  (background dark))
+		 (:foreground "cornsilk" :underline t))
+		(((class color)
+		  (background light))
+		 (:foreground "goldenrod" :underline t))
+		(t
+		 (:foreground "goldenrod" :underline t)))
+	      "Custom underline face."
+	      :group 'html-helper-faces))
+	  (defvar html-helper-builtin-face
+	    (defface html-helper-builtin-face
+	      '((((class color)
+		  (background dark))
+		 (:foreground "light goldenrod" :underline nil))
+		(((class color)
+		  (background light))
+		 (:foreground "dark goldenrod" :underline nil))
+		(t
+		 (:foreground "light goldenrod" :underline nil)))
+	      "Custom Server Script face."
+	      :group 'html-helper-faces))))
+
   ;;
   (if (string-lessp "19.28.89" emacs-version)
-      () ; Emacs 19.29 and later
+      ()
     ;; Emacs 19.28 and older
     ;; Define face variables that don't exist until Emacs 19.29.
+    (defvar html-helper-builtin-face (html-helper-emacs-19-build-face)
     (defvar font-lock-variable-name-face 'font-lock-doc-string-face
       "Face to use for variable names -- and some HTML keywords.")
     (defvar font-lock-reference-face 'underline ; Ugly at line breaks
       "Face to use for references -- including HTML hyperlink texts.")))
 
+(defun html-helper-emacs-19-build-face ()
+  (let ((x (make-face 'font-lock-builtin-face)))
+    (set-face-foreground x "Orchid")
+    x))
+
+
+; (defvar html-helper-builtin-face 
+;   (let ((bux (make-face 'html-helper-builtin-face)))
+;     (copy-face 
+;      ;; XEmacs doesn't have font-lock-builtin-face
+;      (cond ((string-match "XEmacs\\|Lucid" emacs-version)
+; 	    font-lock-preprocessor-face)
+; 	   ;; GNU Emacs 19 doesn't have it either
+; 	   ((string-match "GNU Emacs 19" emacs-version)
+; 	    html-helper-emacs-19-build-face)
+; 	   ;; Emacs
+; 	   (t font-lock-builtin-face)) bux  )
+;     bux))
+
+(copy-face 
+ (cond ((string-match "XEmacs\\|Lucid" emacs-version)
+	font-lock-preprocessor-face)
+       ;; GNU Emacs 19 doesn't have it either
+       ((string-match "GNU Emacs 19" emacs-version)
+	html-helper-emacs-19-build-face)
+       ;; Emacs
+       (t font-lock-builtin-face)) html-helper-builtin-face)
+
+;; Tue Jan 09 12:29:45 2001 Saint
+;; 
+;; Time to KISS syntax highlight.
+;;
+;; All tags get the same highlight with attributes highlighted
+; (defvar html-helper-font-lock-keywords
+;   (let (;; Titles and H1's, like function defs.
+; 	;;   We allow for HTML 3.0 attributes, like `<h1 align=center>'.
+; 	;; All tokens get the same higlighting
+; 	(tword "\\(h1\\|title\\)\\([ \t\n]+[^>]+\\)?")
+; 	;; Names of tags to boldify.
+; 	(bword "\\(b\\|h[2-4]\\|strong\\)\\([ \t\n]+[^>]+\\)?")
+; 	;; Names of tags to italify.
+; 	(iword "\\(address\\|cite\\|em\\|i\\|var\\)\\([ \t\n]+[^>]+\\)?")
+; 	;; Regexp to match shortest sequence that surely isn't a bold end.
+; 	;; We simplify a bit by extending "</strong>" to "</str.*".
+; 	;; Do similarly for non-italic and non-title ends.
+; 	(not-bend (concat "\\([^<%?]\\|<\\([^/]\\|/\\([^bhs]\\|"
+; 			  "b[^>]\\|"
+; 			  "h\\([^2-4]\\|[2-4][^>]\\)\\|"
+; 			  "s\\([^t]\\|t[^r]\\)\\)\\)\\)"))
+; 	(not-iend (concat "\\([^<%?]\\|<\\([^/]\\|/\\([^aceiv]\\|"
+; 			  "a\\([^d]\\|d[^d]\\)\\|"
+; 			  "c\\([^i]\\|i[^t]\\)\\|"
+; 			  "e\\([^m]\\|m[^>]\\)\\|"
+; 			  "i[^>]\\|"
+; 			  "v\\([^a]\\|a[^r]\\)\\)\\)\\)"))
+; 	(not-tend (concat "\\([^<%?]\\|<\\([^/]\\|/\\([^ht]\\|"
+; 			  "h[^1]\\|t\\([^i]\\|i[^t]\\)\\)\\)\\)")))
+;     (list				
+;      ;; Avoid use of `keep', since XEmacs will treat it the same as `t'.
+;      ;; First fontify the text of a HREF anchor.  It may be overridden later.
+;      ;; Anchors in headings will be made bold, for instance 
+;      '("<a\\s-+href[^>]*>\\([^>]+\\)</a>"
+;        1 font-lock-warning-face t)
+;      ;; Titles and level 1 headings (anchors do sometimes appear in h1's)
+;      (list (concat "<" tword ">\\(" not-tend "*\\)</\\1>")
+; 	   0 'font-lock-function-name-face t)
+;      ;; Underline is rarely used. Only handle it when no tags inside.
+;      '("<u>\\([^<]*\\)</u>" 1 html-helper-underline-face t)
+;      ;; Forms, anchors & images (also fontify strings inside)
+;      '("<\\(i\\(mg\\|nput\\)\|a\\)\\>[^>\n]*>"
+;        0  font-lock-constant-face t)
+;      ;; Any tag, general rule, just after bold/italic stuff.
+;      ;; w3 org says that a tag is <element-name> not < element-name>
+;      '("\\(<[^%a=> \t][^>]*>\\)" 1 font-lock-function-name-face t)
+;      '("\\(<[^%a=> \t][^>\n]*>\\)" 1 html-tag-face t)
+;      ;; Large-scale structure keywords (like "program" in Fortran).
+;      ;;   "<html>" "</html>" "<body>" "</body>" "<head>" "</head>" "</form>"
+;      '("\\(</?\\(body\\|form\\|h\\(ead\\|tml\\)\\)[^>\n]*>\\)"
+;        0 font-lock-variable-name-face t)
+;      ;; SGML things like <!DOCTYPE ...> with possible <!ENTITY...> inside.
+;      '("<![a-z]+\\>[^<>]*\\(<[^>]*>[^<>]*\\)*>"
+;        0 font-lock-keyword-face t)
+;      ;; Paint [PA][HS]P skripts in font-lock-builtin-face,
+;      '("<[?%]=\\([^%?]\\|[?%][^>]\\)*[%?]>" 0 html-helper-builtin-face t t)
+;      '(html-helper-match-asp-php 0 html-helper-builtin-face t t)
+;      ;; This one is to pick
+;      ;; Tag pairs like <b>...</b> etc.
+;      ;; Cunning repeated fontification to handle common cases of overlap.
+;      ;; Bold complex --- possibly with arbitrary other non-bold stuff inside.
+;      (list (concat "<" bword ">\\(" not-bend "*\\)</\\1>")
+; 	   0 'html-helper-bold-face t)
+;      ;; Italic complex --- possibly with arbitrary non-italic kept inside.
+;      (list (concat "<" iword ">\\(" not-iend "*\\)</\\1>")
+; 	   0 'html-helper-italic-face t)
+;      ;; Bold simple --- first fontify bold regions with no tags inside.
+;      (list (concat "<" bword ">\\("  "[^<]"  "*\\)</\\1>")
+; 	   0 'html-helper-bold-face t)
+;      ;; string stuff is pretty weird with asp. You can have strings
+;      ;; containing asp code containing strings and empty
+;      ;; strings. Replaced original [^\"] with this one...
+;      '("[=(&]?[ \t\n]*\\(\"[^\"\n]*<%[^\"\n]*\\(\"[^\"\n]*\"\\)[^\"\n]*%>[^\"\n]*\\)" 1 font-lock-string-face t)
+;      '("[=(&]?[ \t\n]*\\(\"[^\"\n]*\"\\)"  1 font-lock-string-face t)
+;      ;; HTML special characters
+;      '("&[a-zA-Z0-9#]+;" 0 font-lock-warning-face t)
+; 					; after painting strings, you have to restore asp stuff inside strings
+;      '("\\(<%=\\w\\)" 1 html-helper-builtin-face t)
+;      '("\\(\")[^\"\n]*%>\\)" 1 html-helper-builtin-face t)
+;      '("\\(<%=[^%]*%>\\)" 1 html-helper-builtin-face t)
+;      '("\\(<\\?=\\w\\)" 1 html-helper-builtin-face t)
+;      '("\\(\")[^\"\n]*\\?>\\)" 1 html-helper-builtin-face t)
+;      '("\\(<\\?=[^%]*\\?>\\)" 1 html-helper-builtin-face t)
+;      ;; That's krazy, strings higlight matches ) too, so i paint
+;      ;; parantheses...
+;      '("\\(<%\\|\\s(\\)" 1 font-lock-function-name-face t)
+;      '("\\(\\s)\\|%>\\)" 1 font-lock-function-name-face t)
+;      '("\\(<\\?\\|\\s(\\)" 1 font-lock-function-name-face t)
+;      '("\\(\\s)\\|\\?>\\)" 1 font-lock-function-name-face t)
+;      '("\\([\"]\\)" 0 font-lock-string-face t)
+;      ;; Comment declarations according to the HTML 2.0 spec at
+;      ;; <URL:http://www.w3.org/pub/WWW/MarkUp/html-spec/html-spec_3.html>.
+;      ;; Usually `<!-- ... -->', but also e.g the single, complete declaration
+;      ;; `<!--c1--  -- c2 -- -->c3 (still comment) ----c4- c4--   >'.
+;      ;; Note that e.g. Netscape 3.01 Gold doesn't fully live up to the spec.
+     
+;      ;; A Regexp doesn't work well with big blocks...
+;      ;;      '("<!--\\(.\\|[\n]\\--[ \t]*[^>]\\)*--[ \t]*>" 0 
+;      ;;	font-lock-comment-face t)))
+;      '(html-helper-match-comments 0 font-lock-comment-face t t)
+;      '(html-helper-match-attributes 0 font-lock-variable-face t t)))
+;     "Additional expressions to highlight in HTML helper mode.")
+
+;; New highlighting
 (defvar html-helper-font-lock-keywords
-  (let (;; Titles and H1's, like function defs.
-	;;   We allow for HTML 3.0 attributes, like `<h1 align=center>'.
-	(tword "\\(h1\\|title\\)\\([ \t\n]+[^>]+\\)?")
-	;; Names of tags to boldify.
-	(bword "\\(b\\|h[2-4]\\|strong\\)\\([ \t\n]+[^>]+\\)?")
-	;; Names of tags to italify.
-	(iword "\\(address\\|cite\\|em\\|i\\|var\\)\\([ \t\n]+[^>]+\\)?")
-	;; Regexp to match shortest sequence that surely isn't a bold end.
-	;; We simplify a bit by extending "</strong>" to "</str.*".
-	;; Do similarly for non-italic and non-title ends.
-	(not-bend (concat "\\([^<]\\|<\\([^/]\\|/\\([^bhs]\\|"
-			  "b[^>]\\|"
-			  "h\\([^2-4]\\|[2-4][^>]\\)\\|"
-			  "s\\([^t]\\|t[^r]\\)\\)\\)\\)"))
-	(not-iend (concat "\\([^<]\\|<\\([^/]\\|/\\([^aceiv]\\|"
-			  "a\\([^d]\\|d[^d]\\)\\|"
-			  "c\\([^i]\\|i[^t]\\)\\|"
-			  "e\\([^m]\\|m[^>]\\)\\|"
-			  "i[^>]\\|"
-			  "v\\([^a]\\|a[^r]\\)\\)\\)\\)"))
-	(not-tend (concat "\\([^<]\\|<\\([^/]\\|/\\([^ht]\\|"
-			  "h[^1]\\|t\\([^i]\\|i[^t]\\)\\)\\)\\)")))
-    (list ; Avoid use of `keep', since XEmacs will treat it the same as `t'.
+    (list		
+     ;; Avoid use of `keep', since XEmacs will treat it the same as `t'.
      ;; First fontify the text of a HREF anchor.  It may be overridden later.
-     ;; Anchors in headings will be made bold, for instance.
+     ;; Anchors in headings will be made bold, for instance 
      '("<a\\s-+href[^>]*>\\([^>]+\\)</a>"
-       1 font-lock-reference-face t)
-     ;; Tag pairs like <b>...</b> etc.
-     ;; Cunning repeated fontification to handle common cases of overlap.
-     ;; Bold complex --- possibly with arbitrary other non-bold stuff inside.
-     (list (concat "<" bword ">\\(" not-bend "*\\)</\\1>")
-	   3 'html-helper-bold-face t)
-     ;; Italic complex --- possibly with arbitrary non-italic kept inside.
-     (list (concat "<" iword ">\\(" not-iend "*\\)</\\1>")
-	   3 'html-helper-italic-face t)
-     ;; Bold simple --- first fontify bold regions with no tags inside.
-     (list (concat "<" bword ">\\("  "[^<]"  "*\\)</\\1>")
-	   3 'html-helper-bold-face t)
-     ;; Any tag, general rule, just after bold/italic stuff.
-     '("\\(<[^>]*>\\)" 1 font-lock-type-face t)
-     ;; Titles and level 1 headings (anchors do sometimes appear in h1's)
-     (list (concat "<" tword ">\\(" not-tend "*\\)</\\1>")
-	   3 'font-lock-function-name-face t)
+       1 font-lock-warning-face t)
      ;; Underline is rarely used. Only handle it when no tags inside.
      '("<u>\\([^<]*\\)</u>" 1 html-helper-underline-face t)
-     ;; Forms, anchors & images (also fontify strings inside)
-     '("<\\(form\\|i\\(mg\\|nput\\)\\)\\>[^>]*>"
-       0 font-lock-variable-name-face t)
-     '("</a>" 0 font-lock-keyword-face t)
-     '("<a\\b[^>]*>" 0 font-lock-keyword-face t)
-     '("=[ \t\n]*\\(\"[^\"]+\"\\)" 1 font-lock-string-face t)
-     ;; Large-scale structure keywords (like "program" in Fortran).
-     ;;   "<html>" "</html>" "<body>" "</body>" "<head>" "</head>" "</form>"
-     '("</?\\(body\\|form\\|h\\(ead\\|tml\\)\\)>"
-       0 font-lock-variable-name-face t)
-     ;; HTML special characters
-     '("&[^;\n]*;" 0 font-lock-string-face t)
+     '(html-helper-match-bold
+	   0 'html-helper-bold-face t)
+     ;; Italic 
+     '(html-helper-match-italics
+	   0 'html-helper-italic-face t)
+     ;; w3 org says that a tag is <element-name> not < element-name>
+     ;; I don't know of any non alphabetic HTML entity, if you know
+     ;; about one, please drop me a mail
+     ;;						Saint
+     '("\\(</?[A-Za-z0-9]+\\)" 1 html-tag-face t)
      ;; SGML things like <!DOCTYPE ...> with possible <!ENTITY...> inside.
      '("<![a-z]+\\>[^<>]*\\(<[^>]*>[^<>]*\\)*>"
-       0 font-lock-comment-face t)
+       0 font-lock-keyword-face t)
+     ;; Paint [PA][HS]P skripts in font-lock-builtin-face,
+     '("<[?%]=\\([^%?]\\|[?%][^>]\\)*[%?]>" 0 html-helper-builtin-face t t)
+     '(html-helper-match-asp-php 0 html-helper-builtin-face t t)
+     ;; string stuff is pretty weird with asp. You can have strings
+     ;; containing asp code containing strings and empty
+     ;; strings. Replaced original [^\"] with this one...
+     '("[=(&]?[ \t\n]*\\(\"[^\"\n]*<%[^\"\n]*\\(\"[^\"\n]*\"\\)[^\"\n]*%>[^\"\n]*\\)" 1 font-lock-string-face t)
+     '("[=(&]?[ \t\n]*\\(\"[^\"\n]*\"\\)"  1 font-lock-string-face t)
+     ;; after painting strings, you have to restore asp stuff inside strings
+     '("\\(<%=\\w\\)" 1 html-helper-builtin-face t)
+     '("\\(\")[^\"\n]*%>\\)" 1 html-helper-builtin-face t)
+     '("\\(<%=[^%]*%>\\)" 1 html-helper-builtin-face t)
+     '("\\(<\\?=\\w\\)" 1 html-helper-builtin-face t)
+     '("\\(\")[^\"\n]*\\?>\\)" 1 html-helper-builtin-face t)
+     '("\\(<\\?=[^%]*\\?>\\)" 1 html-helper-builtin-face t)
      ;; Comment declarations according to the HTML 2.0 spec at
      ;; <URL:http://www.w3.org/pub/WWW/MarkUp/html-spec/html-spec_3.html>.
      ;; Usually `<!-- ... -->', but also e.g the single, complete declaration
      ;; `<!--c1--  -- c2 -- -->c3 (still comment) ----c4- c4--   >'.
      ;; Note that e.g. Netscape 3.01 Gold doesn't fully live up to the spec.
-     '("<!\\(--\\([^-]\\|-[^-]\\)*--\\s-*\\)*>" 0 font-lock-comment-face t)))
+     
+     ;; That's krazy, strings higlight matches ) too, so i paint
+     ;; parantheses...
+     '("\\(<%\\|\\s(\\)" 1 font-lock-function-name-face t)
+     '("\\(\\s)\\|%>\\)" 1 font-lock-function-name-face t)
+     '("\\(<\\?\\|\\s(\\)" 1 font-lock-function-name-face t)
+     '("\\(\\s)\\|\\?>\\)" 1 font-lock-function-name-face t)
+     '("\\([\"]\\)" 0 font-lock-string-face t)
+     ;; A Regexp doesn't work well with big blocks...
+     ;;      '("<!--\\(.\\|[\n]\\--[ \t]*[^>]\\)*--[ \t]*>" 0 
+     ;;	font-lock-comment-face t)))
+     '(html-helper-match-comments 0 font-lock-comment-face t t)
+     '(html-helper-match-attributes 0 font-lock-variable-name-face t t)
+     ;; HTML special characters
+     '("&[a-zA-Z0-9#]+;" 0 font-lock-warning-face t))
     "Additional expressions to highlight in HTML helper mode.")
 
-;;}}}
+;; internal variables
+
+(defvar html-helper-count 0 "Counter during server script matching")
+
+(defvar html-helper-verbose t 
+  "Non nil to show a counter during server script matching")
+
+(defun html-helper-ticker ()
+  "Returns the next prop image" 
+  (set 'html-helper-count (mod (incf html-helper-count) 8))
+  (make-string html-helper-count 46))
+
+;; Function to match an asp script (hopefully) without overflowing the
+;; regexp stack (not inline <%= ... %>)
+;;
+;;
+(defun html-helper-match-asp-php (last)
+  (cond (html-helper-verbose
+	 (message "Fontifying %s... (PHP/ASP %s)" bufname 
+		  (html-helper-ticker))))
+  (cond ((search-forward-regexp "[^\"]<[?%][^=]" last t) ; match inline elsewhere
+	 (backward-char 1)
+	 (let ((beg (point)))
+;	   (cond ((search-forward-regexp "\\([^%?\n]\\|[%?][^>]\\|\\(\"\\([%?]>\\|.\\)*\"\\)\\)*[?%]>" last t)
+	   (cond ((search-forward-regexp "\\([^\%\?\n\"]\\|[%?][^>]\\)*[?%]>" last t)
+		  (set-match-data (list beg (point)))
+		  t )
+		 (t nil))))
+	(t nil)))
+
+;; Html comments can overflow the buffer if used to hide the code
+;; from older browser
+(defun  html-helper-match-comments (last)
+  "Matches comments in HTML from point to LAST"
+  (cond (html-helper-verbose
+	 (message "Fontifying %s... (Comments..%s)" bufname 
+		  (html-helper-ticker))))
+  (cond ((search-forward "<!--" last t) ; match inline elsewhere
+	 (backward-char 4)
+	 (let ((beg (point)))
+	   (cond ((search-forward-regexp "--[ \t]*>" last t)
+		  (set-match-data (list beg (point)))
+		  t )
+		 (t nil))))
+	(t nil)))
+
+;; match html tag attributes
+(defun html-helper-match-attributes (last)
+  "Matches tag attributes in HTML from point to LAST"
+  (cond (html-helper-verbose
+	 (message "Fontifying %s... (Attributes %s)" bufname 
+		  (html-helper-ticker))))
+  (cond ((search-forward-regexp "[A-Za-z]+=" last t)
+	 (let ((endolo (point))
+	       (beg (progn (backward-word 1)(point)))
+	       (firstop (cond ((search-backward-regexp 
+				"<\\(@\\|[A-Za-z]+\\)" 1 t)
+			       (point))
+			      (t nil)))
+	       (firstclo (cond ((search-forward ">" last t)
+			       (point))
+			      (t nil))))
+	   (cond (firstop
+		  (cond (firstclo 
+			 (cond ((and (< firstop beg)
+				     (> firstclo endolo))
+				(goto-char endolo)
+				(set-match-data (list beg endolo))
+				t )
+			       (t 
+				(goto-char endolo) 
+				(set-match-data nil)
+				t)))
+			(t (goto-char endolo)
+			   (set-match-data (list beg endolo))
+			   t)))
+		  (t 
+		   (goto-char endolo) 
+		   (set-match-data nil)
+		   t))))
+	(t nil)))
+	       
+(defun html-helper-match-bold (last)
+  (html-helper-match-ib 
+   "\\(<\\(b\\|h[1-4]\\|strong\\title\\)\\(>\\|\\W\[^>]*>\\)\\)" 
+   "</\\(b\\|h[1-4]\\|strong\\title\\)" last))
+
+(defun html-helper-match-italics (last)
+  (html-helper-match-ib "\\(<\\(i\\|em\\)\\(>\\|\\W\[^>]*>\\)\\)" 
+			"</\\(i\\|em\\)"
+			last))
+
+(defun html-helper-match-ib (bmat emat last)
+  "Matches text between BMAT and EMAT from point to LAST"
+  (cond (html-helper-verbose
+	 (message "Fontifying %s... (Bold/Italics %s)" bufname 
+		  (html-helper-ticker))))
+  (cond ((search-forward-regexp bmat last t)
+	 (let ((beg (point))
+	       (endolo (cond ((search-forward-regexp emat last t)
+			      (backward-word 1)
+			      (backward-char 2)
+			      (point))
+			     (t nil))))
+	   (cond (endolo
+		  (set-match-data (list beg endolo))))
+	   t))
+	(t nil)))
+				
+(defun html-helper-fontify-region (beg end verbose)
+  (setq html-helper-count 0)
+  (setq html-helper-count2 0)
+  (let ((loudly (and verbose
+		     (> (- end beg) (/ (buffer-size) 2)))))
+    (setq html-helper-verbose loudly)
+    (font-lock-default-fontify-region beg end loudly)))
+
+(set (make-local-variable font-lock-fontify-region-function) 
+     'html-helper-fontify-region)
+
+(defun html-helper-fontify-buffer ()
+  (setq html-helper-count 0)
+  (setq html-helper-count2 0)
+  (setq html-helper-verbose (if (numberp font-lock-verbose)
+				(> (buffer-size) font-lock-verbose)
+			      font-lock-verbose))
+  (font-lock-default-fontify-buffer))
+
+(set (make-local-variable font-lock-fontify-buffer-function) 
+     'html-helper-fontify-buffer)
+
+;;}}} faces
+
 ;;{{{ patterns for hilit19
 
 ;; Define some useful highlighting patterns for the hilit19 package.
@@ -1065,15 +2217,269 @@ Written by nelson@santafe.edu, http://www.santafe.edu/~nelson/
        ("<i>" "</i>" italic)
        ("<u>" "</u>" underline)
        ("&[^;\n]*;" nil string)
-       ("<" ">" keyword))
+       ;; w3 org says that a tag is <element-name> not < element-name>
+       ("<[^ \t]" ">" keyword))
      nil 'case-insensitive)
   nil)
+;;}}}
+
+;;{{{ indentation
+
+(defvar html-helper-print-indent-info nil
+  "If t, indent will print out information as a message.")
+
+;; some ideas borrowed from cc-mode.el.
+;; Basic logic:
+;;   if this line is some sort of list token, indent according to prev context:
+;;     if previous context was a list-end or item-start, use its indentation
+;;     if previous context was a list start, indent forward basic-offset
+;;     ignore previous list-ends, their indentation is unreliable.
+;;     then if this is some sort of list-item, do special case fixups:
+;;       if this is a item start or end and previous was a list end, go back
+;;           item-continue-indent (the </ul> is probably indented for an <li>
+;;       if this is a list end and previous was a list end, go back
+;;           item-continue-indent (the </ul> is probably indented for an <li>
+;;       if this is a list end and prev *not* a list end, go back basic-offset
+;;   else if this line is not a list item, and previous line is a item-start
+;;     indent continue-indent, because this is part of the item
 
 ;;}}}
 
+;;{{{ Script Narrowing and mode switch
+;; These are for supporting html-script. With small changes can be useful for
+;; javascript
+
+;; Stan Lanning <lanning@pobox.com> wrote these defadvice to preserve
+;; cursor position. Thank you very much Stan!
+(defadvice html-script-narrow-to-asp (around save-excursion activate)
+  (save-excursion
+    ad-do-it))
+(defadvice html-script-narrow-to-php (around save-excursion activate)
+  (save-excursion
+    ad-do-it))
+(defadvice html-script-narrow-to-vbscript (around save-excursion activate)
+  (save-excursion
+    ad-do-it))
+(defadvice html-script-narrow-to-javascript (around save-excursion activate)
+  (save-excursion
+    ad-do-it))
+(defadvice html-script-release-region (around save-excursion activate)
+  (save-excursion
+    ad-do-it))
+
+(defun html-script-narrow-to-asp ()
+  "Narrows to an JSP/ASP script and switches to either java-mode/JDE or visual-basic-mode. 
+Does nothing if both html-helper-mode-uses-visual-basic and 
+html-helper-mode-local-JSP-not-ASP are nil"
+  (interactive)
+  (cond ((html-script-choose-mode)
+	 (html-script-search-start-tag)
+	 (let ((beg (point)))
+	   (html-script-search-end-tag)
+	   (narrow-to-region beg (point)))
+	 (html-script-choose-server-mode)
+	 (goto-char 0))))
+
+
+(defun html-script-search-start-tag ()
+ (cond ( html-helper-mode-uses-KG-style
+		 (search-backward-regexp "^<%") )
+	       (t (search-backward "<%" ))))
+
+(defun html-script-search-end-tag ()
+  (cond ( html-helper-mode-uses-KG-style
+	  (search-forward-regexp "^%>" ))
+	( t (search-forward "%>" nil t))))
+
+(defun html-script-choose-mode ()
+  (or html-helper-mode-uses-visual-basic
+	     html-helper-mode-local-JSP-not-ASP))
+
+(defun html-script-choose-server-mode ()
+  (cond (html-helper-mode-local-JSP-not-ASP
+	 (cond (html-helper-mode-uses-JDE (html-helper-enters-jde-mode))
+	       (t (java-mode))))
+	(t
+	 (visual-basic-mode))))
+
+(defun html-script-narrow-to-php ()
+  "Narrows to an ASP script and setups c-mode"
+  (interactive)
+  (search-backward "<?")
+  (let ((beg (point)))
+    (search-forward "?>" nil t)
+    (narrow-to-region beg (point)))
+  (c-mode)
+  (goto-char 0))
+
+(defun html-script-narrow-to-vbscript ()
+  "Narrows to a VB Script script and setups visual basic mode. Does nothing if html-helper-mode-uses-visual-basic is nil"
+  (interactive)
+  (cond (html-helper-mode-uses-visual-basic
+	 (search-backward-regexp "<SCRIPT[ \t]+\\(LANGUAGE=\"VBScript\"\\|TYPE=\"text/vbscript\"\\)[ \t]*>")
+	 (let ((beg (point)))
+	   (search-forward "</SCRIPT>" nil t)
+	   (narrow-to-region beg (point)))
+	 (visual-basic-mode)
+	 (goto-char 0))))
+
+(defun html-script-narrow-to-javascript ()
+  "Narrows to a JavaScript script and setups java mode"
+  (interactive)
+  (search-backward-regexp "<SCRIPT[ \t]+\\(LANGUAGE=\"JavaScript\"\\|TYPE=\"text/javascript\"\\)[ \t]*>")
+  (let ((beg (point)))
+    (search-forward "</SCRIPT>" nil t)
+    (narrow-to-region beg (point)))
+  (cond (html-helper-mode-uses-JDE (jde-mode))
+	(t java-mode))
+  (goto-char 0))
+
+(defun html-helper-add-buffer (buffer tag)
+  (cond ((and html-helper-buffers 
+	      (html-helper-buffer-listed))
+	 (set 'html-helper-buffers 
+	      (cons (cons buffer tag) html-helper-buffers )))
+	(t (set 'html-helper-buffers (list (cons buffer tag))))))
+
+;; Fri Aug 03 18:12:14 2001 Saint
+;; 
+;; This function checks if the current buffer is not in
+;; html-herlper-buffer list
+(defun html-helper-buffer-listed ()
+  (let ((retval t))
+    (mapcar (lambda (a) 
+	    (cond ((eq (current-buffer) (car a))
+		   (set 'retval nil))))
+	    html-helper-buffers)
+    retval))
+;;/Saint
+
+(defun html-helper-remove-buffer ()
+  (let ((nl nil))
+    (while html-helper-buffers 
+      (cond ((not (eq (current-buffer)
+	      (car (car html-helper-buffers))))
+	     (set 'nl (cons (car html-helper-buffers) nl))
+	     (set 'html-helper-buffers (cdr html-helper-buffers)))
+	    (t (set 'html-helper-buffers (cdr html-helper-buffers)))))
+    (set 'html-helper-buffers nl)))
+
+(defun html-script-release-region ()
+   "widens the window to the complete buffer and runs html-helper-mode. MUST be interactive."
+  (interactive)
+  (mapcar (lambda (a) 
+	    (cond ((eq (current-buffer) (car a))
+		   (html-helper-seletct-appropriate-mode (cdr a))))) 
+	  html-helper-buffers))
+
+(defun html-helper-seletct-appropriate-mode( html-helper-used-mode)
+   (interactive)
+   (goto-char 0)
+   (widen)
+   (cond ((string= "HTML" html-helper-used-mode)
+	  (html-helper-mode-run))
+	 ((string= "ASP" html-helper-used-mode)
+	  (asp-html-helper-mode-run))
+	 ((string= "JSP" html-helper-used-mode)
+	  (jsp-html-helper-mode-run))
+	 ((string= "PHP" html-helper-used-mode)
+	  (php-html-helper-mode-run))))
+	 
+(defun html-script-release-setup()
+  (interactive)
+  (local-set-key html-script-toggle-key 'html-script-release-region))
+
+(cond (html-helper-mode-uses-visual-basic 
+      (cond 
+       (visual-basic-mode-hook 
+	(add-hook 'visual-basic-mode-hook 'html-script-release-setup))
+       (t (setq visual-basic-mode-hook 'html-script-release-setup)))))
+
+(cond 
+ (c-mode-hook
+  (add-hook 'c-mode-hook 'html-script-release-setup))
+ (t (setq c-mode-hook 'html-script-release-setup)))
+
+;; Very Very ALPHA!!!
+;;
+;; Adding html-script-release-setup to jde-entering-java-buffer-hooks
+;; 
+(cond (html-helper-mode-uses-JDE
+       (if (and html-helper-mode-uses-JDE (fboundp 'jde-mode))
+	      (add-hook 'jde-mode-hook 'html-script-release-setup)))
+       (t 
+	(cond 
+	 (java-mode-hook
+	  (add-hook 'java-mode-hook 
+		    'html-script-release-setup))
+	 (t (setq java-mode-hook 
+		  'html-script-release-setup))))
+       )
+
+(defun html-helper-enters-jde-mode()
+  (interactive)
+  (and html-helper-mode-uses-JDE (fboundp 'jde-mode))
+   (add-hook 'jde-mode-hook 'html-script-release-setup)
+  (jde-mode))
+
+;; Still from Stan Lanning here it comes the code for a "smart switch" to 
+;; the appropriate scripting mode.
+
+(defvar html-script-toggle-key [f4])
+
+(defvar html-script-narrow-alist
+  `((,(regexp-quote "<%") . html-script-narrow-to-asp)
+    (,(regexp-quote "<?") . html-script-narrow-to-php)
+    ("<SCRIPT[ \t]+LANGUAGE=\"VBScript\"[ \t]*>" . html-script-narrow-to-vbscript)
+    ("<SCRIPT[ \t]+TYPE=\"text/vbscript\"[ \t]*>" . html-script-narrow-to-vbscript)
+    ("<SCRIPT[ \t]+LANGUAGE=\"JavaScript\"[ \t]*>" . html-script-narrow-to-javascript)
+    ("<SCRIPT[ \t]+TYPE=\"text/javascript\"[ \t]*>" . html-script-narrow-to-javascript)))
+
+(defvar html-script-start-regexp
+  (concat "\\(" (mapconcat (lambda (x) (car x)) html-script-narrow-alist "\\|") "\\)"))
+
+(defun html-script-toggle-narrow ()
+  (interactive)
+  (let ((handler-fn (save-excursion
+		      (if (re-search-backward html-script-start-regexp nil t)
+			  (catch 'handler-found
+			    (mapcar (lambda (p)
+				      (if (looking-at (car p))
+					  (throw 'handler-found (cdr p))))
+				    html-script-narrow-alist)
+			    nil)))))
+    (if handler-fn
+	(apply handler-fn nil)
+      (error "No script tag found"))))
+
+(defun html-script-install-toggle-key ()
+  (local-set-key html-script-toggle-key 'html-script-toggle-narrow))
+
+(add-hook 'html-helper-mode-hook 'html-script-install-toggle-key)
+
+(defadvice html-script-release-setup (after key-binding activate)
+  (local-set-key html-script-toggle-key 'html-script-release-region))
+;;}}}
+
+;; folding tags: End of code tree
+;;}}}
+
+;;{{{ Epilogue
+
 (provide 'html-helper-mode)
+(provide 'php-html-helper-mode)
+(provide 'asp-html-helper-mode)
+(provide 'jsp-html-helper-mode)
 (provide 'html-mode)			;for 14 character filename
+(cond ((boundp 'kill-buffer-hook)
+       (add-hook 'kill-buffer-hook 'html-helper-remove-buffer))
+      (t (set 'kill-buffer-hook 'html-helper-remove-buffer)))
 (run-hooks 'html-load-hook)
 (run-hooks 'html-helper-load-hook)
 
+;;}}}
+
 ;;; html-helper-mode.el ends here
+
+
+
