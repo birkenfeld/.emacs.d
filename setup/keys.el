@@ -141,7 +141,8 @@
 
 ;; Find everything with apropos
 (global-set-key (kbd "C-h a") 'apropos)
- from above lines
+
+;; Copy from above lines
 (global-set-key (kbd "C-c <right>") 'copy-above-while-same)
 
 ;; Font size management
