@@ -58,8 +58,9 @@
 ;(global-set-key (kbd "<f5>")   'recompile)
 ;(global-set-key (kbd "S-<f5>") 'compile)
 
-;; C-k is kill-whole-line
+;; C-k is kill-whole-line, C-l is kill to end of line
 (global-set-key (kbd "C-k") 'kill-whole-line)
+(global-set-key (kbd "C-l") 'kill-line)
 
 ;; shortcuts for switching to "other" file
 ;; (binding interferes with gud)

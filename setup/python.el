@@ -10,6 +10,11 @@
 (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
 (add-hook 'elpy-mode-hook 'flycheck-mode)
 
+;; Always switch to shell after executing
+(defadvice elpy-shell-send-region-or-buffer (around switch activate)
+  ad-do-it
+  (elpy-shell-switch-to-shell))
+
 ;; Override some elpy keys
 (define-key elpy-mode-map (kbd "<M-down>") nil)
 (define-key elpy-mode-map (kbd "<M-up>") nil)
