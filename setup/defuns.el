@@ -119,19 +119,6 @@ using `abort-recursive-edit'."
   (interactive)
   (increase-font-size -10))
 
-(require 'grep)
-(defun grep (regexp &optional files)
-  "Always grep from the current directory."
-  (interactive
-   (progn
-     (grep-compute-defaults)
-     (let* ((regexp (grep-read-regexp))
-            (files (grep-read-files regexp)))
-       (list regexp files))))
-  (rgrep regexp files default-directory))
-
-(defalias 'wgrep 'wgrep-change-to-wgrep-mode)
-
 (defun smart-tab ()
   "This smart tab is minibuffer compliant: it acts as usual in
    the minibuffer. Else, if mark is active, indents region. Else if

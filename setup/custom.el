@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
+    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -81,6 +81,7 @@
      (awk-mode . "awk")
      (other . "python"))))
  '(c-electric-pound-behavior (quote (alignleft)))
+ '(calendar-week-start-day 1)
  '(column-number-mode t)
  '(comint-input-autoexpand (quote history))
  '(comint-move-point-for-output (quote this))
@@ -105,10 +106,9 @@
  '(css-electric-brace-behavior t)
  '(css-electric-semi-behavior t)
  '(cua-auto-tabify-rectangles nil)
- '(cua-enable-cua-keys (quote shift))
+ '(cua-enable-cua-keys nil)
  '(cua-enable-cursor-indications t)
  '(cua-mode t nil (cua-base))
- '(cua-remap-control-z nil)
  '(cursor-type (quote bar))
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
@@ -128,6 +128,7 @@
  '(desktop-save-hook (quote (remove-powerline-cache)))
  '(desktop-save-mode t)
  '(diff-switches "-u")
+ '(dired-dwim-target t)
  '(display-buffer-alist (quote ((".*" display-buffer-reuse-window))))
  '(display-buffer-reuse-frames t)
  '(display-time-24hr-format t)
@@ -201,7 +202,7 @@
      (rst . "*.rst")
      (py . "*.py"))))
  '(grep-find-command
-   "find . -name .svn -prune -o -type f -print0 | xargs -0 -e grep -nHE -e ")
+   "find . \\( -name .hg -o -name .git \\) -prune -o -type f -print0 | xargs -0 -e grep -nHE -e ")
  '(grep-highlight-matches t)
  '(gud-pdb-command-name "python -mpdb")
  '(gud-tooltip-mode t)
@@ -290,7 +291,7 @@
  '(pop-up-windows nil)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face))
+ '(preview-scale-function (quote preview-scale-from-face) t)
  '(preview-transparent-color t)
  '(pulse-flag nil)
  '(python-fill-docstring-style (quote pep-257-nn))

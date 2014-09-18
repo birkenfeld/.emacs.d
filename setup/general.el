@@ -56,8 +56,6 @@
       '(try-complete-file-name-partially
         try-complete-file-name
         try-expand-all-abbrevs
-        ;try-expand-list
-        ;try-expand-line
         try-expand-dabbrev
         try-expand-dabbrev-all-buffers
         try-expand-dabbrev-from-kill
@@ -102,9 +100,6 @@
 ;; Nice xterm mouse handling (fails with dragging)
 ;(xterm-mouse-mode t)
 
-;; Don't wrap lines in grep mode
-(add-hook 'grep-mode-hook (lambda () (setq truncate-lines t)))
-
 ;; Bindings for textmate-like auto pairing of parens/quotes
 (require 'autopair)
 
@@ -131,6 +126,7 @@
   (eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
   (eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
   (eval-after-load "autopair" '(diminish 'autopair-mode " ()"))
+  (eval-after-load "guide-key" '(diminish 'guide-key-mode))
   (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y")))
 
 ;; M-x enhancement

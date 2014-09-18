@@ -11,5 +11,4 @@
     (error (flycheck-first-error))))
 
 
-;; Flymake error finding with the same keys as grep/occur/etc.
 (global-set-key (kbd "M-g M-e") 'flycheck-next-or-first-error)

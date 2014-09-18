@@ -61,9 +61,6 @@
 (require 'goto-chg)
 (global-set-key (kbd "C-;") 'goto-last-change)
 
-;; wgrep (edit in grep results)
-(require 'wgrep)
-
 ;; Adaptive fill is great
 (require 'filladapt)
 (setq-default filladapt-mode t)

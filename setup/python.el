@@ -116,10 +116,10 @@
 
   ;; set up hide-show mode
   ;; remove old python-mode value first
-  (setq hs-special-modes-alist (assq-delete-all 'python-mode hs-special-modes-alist))
-  (add-to-list 'hs-special-modes-alist
-               `(python-mode "^\\(?:from\\|import\\|\\s-*\\(?:def\\|class\\)\\)\\>" nil "#"
-                             python-hs-end-of-folding-block nil))
+  ;(setq hs-special-modes-alist (assq-delete-all 'python-mode hs-special-modes-alist))
+  ;(add-to-list 'hs-special-modes-alist
+  ;             `(python-mode "^\\(?:from\\|import\\|\\s-*\\(?:def\\|class\\)\\)\\>" nil "#"
+  ;                           python-hs-end-of-folding-block nil))
 
   (hs-minor-mode)
   (hideshowvis-minor-mode))
