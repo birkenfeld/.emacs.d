@@ -39,6 +39,17 @@
   '(progn
      (set-variable 'ffip-full-paths t)))
 
+(defun python-hs-end-of-folding-block (arg)
+  (interactive)
+  (if (looking-at "from\\|import")
+      (forward-paragraph)
+    (python-nav-end-of-defun)))
+
+;; Enable nice display of folded regions
+(hideshowvis-symbols)
+(define-fringe-bitmap 'hs-marker [0 32 48 56 60 56 48 32 0])   ;; "plus"
+(define-fringe-bitmap 'hideshowvis-hideable-marker [0 0 0 254 124 56 16 0 0])   ;; "minus"
+
 (defun my-python-mode-hook ()
   ;; Remove python-mode's ffap things that slow down find-file
   (setq ffap-alist (remove '(python-mode . python-ffap-module-path) ffap-alist))
@@ -80,7 +91,15 @@
          (concat "python " buffer-file-name)))
 
   (define-key python-mode-map (kbd "M-q") 'python-fill-paragraph)
-  )
+
+  ;; remove old python-mode value first
+  (setq hs-special-modes-alist (assq-delete-all 'python-mode hs-special-modes-alist))
+  (add-to-list 'hs-special-modes-alist
+               `(python-mode "^\\(?:from\\|import\\|\\s-*\\(?:def\\|class\\)\\)\\>" nil "#"
+                             python-hs-end-of-folding-block nil))
+
+  (hs-minor-mode)
+  (hideshowvis-minor-mode))
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
 
