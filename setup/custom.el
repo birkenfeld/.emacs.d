@@ -168,6 +168,7 @@
  '(ffap-newfile-prompt t)
  '(fill-column 80)
  '(filladapt-mode-line-string "")
+ '(flx-ido-mode t)
  '(flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
  '(flycheck-completion-system (quote ido))
  '(flycheck-disabled-checkers (quote (python-pylint)))
@@ -222,6 +223,8 @@
  '(highlight-symbol-idle-delay 0.5)
  '(history-delete-duplicates t)
  '(icomplete-mode nil)
+ '(ido-auto-merge-work-directories-length -1)
+ '(ido-create-new-buffer (quote always))
  '(ido-decorations
    (quote
     ("{" "}" ", " ", ..." " [" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
@@ -537,6 +540,7 @@
  '(ecb-mode-line-data-face ((t (:inherit variable-pitch :background "#555753"))))
  '(ecb-tag-header-face ((t (:inherit highlight))))
  '(eldoc-highlight-function-argument ((t (:inherit ido-first-match))))
+ '(flx-highlight-face ((t nil)))
  '(flymake-errline ((t (:underline (:color "red" :style wave)))))
  '(flyspell-duplicate ((t (:foreground "Gold3" :underline t))))
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))

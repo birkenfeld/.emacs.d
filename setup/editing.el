@@ -84,10 +84,6 @@
 (global-set-key (kbd "<f2>") 'ack-same)
 (global-set-key (kbd "S-<f2>") 'ack)
 
-;; ido/idomenu: switch to a buffer local tag with ido completion
-(autoload 'idomenu "idomenu" nil t)
-(global-set-key (kbd "C-x m") 'idomenu)
-
 ;; Color dabbrev-expanded phrases
 (require 'dabbrev-highlight)
 
