@@ -25,6 +25,13 @@
 (define-key elpy-mode-map (kbd "C-c C-d") 'elpy-goto-definition)
 (define-key elpy-mode-map (kbd "M-SPC") 'company-complete)
 
+(defun company-insert-and-complete ()
+  (interactive)
+  (self-insert-command 1)
+  (company-complete))
+
+(define-key elpy-mode-map (kbd ".") 'company-insert-and-complete)
+
 (put 'font-lock-regexp-grouping-backslash 'face-alias 'font-lock-builtin-face)
 
 ;; Elpy related features customization
@@ -102,6 +109,12 @@
   (hideshowvis-minor-mode))
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
+
+(defun my-elpy-mode-hook ()
+  ;; Elpy resets this to zero, do not want.
+  (setq company-idle-delay 1)
+  )
+(add-hook 'elpy-mode-hook #'my-elpy-mode-hook)
 
 ;; Cython mode
 (autoload 'cython-mode "cython-mode" nil t)
