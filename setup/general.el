@@ -145,7 +145,7 @@
 ;; guide-key: pop up a list of keybindings for prefixes with lots of commands
 (require 'guide-key)
 (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +"
-                                     "C-c p" "C-c !" "C-x RET"))
+                                     "C-c p" "C-c !" "C-x RET" "C-c ,"))
 (guide-key-mode 1)
 (setq guide-key/idle-delay 0.75)
 (setq guide-key/recursive-key-sequence-flag t)

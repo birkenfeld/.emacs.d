@@ -184,12 +184,16 @@
 (global-set-key (kbd "C-c C-e") 'eval-and-replace)
 (global-set-key (kbd "C-c C-j") 'eval-print-last-sexp)
 
-;; Outline ---------------------------------------------------------------------
+;; Hide-show mode --------------------------------------------------------------
 
-(eval-after-load "outline"
+(eval-after-load "hideshow"
   '(progn
-     (global-set-key (kbd "C-c <C-left>")  'hide-body)
-     (global-set-key (kbd "C-c <C-right>") 'show-subtree)))
+     (define-key hs-minor-mode-map (kbd "C-c , ,") 'hs-toggle-hiding)
+     (define-key hs-minor-mode-map (kbd "C-c , .") 'hs-hide-all)
+     (define-key hs-minor-mode-map (kbd "C-c , :") 'hs-show-all)
+     (define-key hs-minor-mode-map (kbd "C-c , -") (lambda () (interactive) (hs-hide-level 2)))
+     (define-key hs-minor-mode-map (kbd "C-c <C-left>")  'hs-hide-block)
+     (define-key hs-minor-mode-map (kbd "C-c <C-right>") 'hs-show-block)))
 
 ;; Help/info -------------------------------------------------------------------
 

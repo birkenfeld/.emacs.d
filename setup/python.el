@@ -52,6 +52,15 @@
       (forward-paragraph)
     (python-nav-end-of-defun)))
 
+;; Fix hs-hide-level to hide all defs correctly (HACK HACK)
+(fset 'forward-comment-orig (symbol-function 'forward-comment))
+(defadvice hs-hide-level-recursive (around fix-forward-comment activate)
+  (flet ((forward-comment (arg)
+                          (forward-comment-orig arg)
+                          (when (looking-at "def")
+                            (beginning-of-line))))
+    ad-do-it))
+
 ;; Enable nice display of folded regions
 (hideshowvis-symbols)
 (define-fringe-bitmap 'hs-marker [0 32 48 56 60 56 48 32 0])   ;; "plus"
