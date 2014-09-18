@@ -54,10 +54,6 @@
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
-;; compile/make
-;(global-set-key (kbd "<f5>")   'recompile)
-;(global-set-key (kbd "S-<f5>") 'compile)
-
 ;; C-k is kill-whole-line, C-l is kill to end of line
 (global-set-key (kbd "C-k") 'kill-whole-line)
 (global-set-key (kbd "C-l") 'kill-line)
@@ -82,9 +78,15 @@
 ;; Join line with previous
 (global-set-key (kbd "C-c ^") 'join-line)
 
+;; compile/make
+;(global-set-key (kbd "<f5>")   'recompile)
+;(global-set-key (kbd "S-<f5>") 'compile)
+
 ;; F6 stores a position in a file, S-F6 brings you back to this position
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
 (global-set-key (kbd "<S-f6>") '(lambda () (interactive) (register-to-point ?1)))
+
+;; f7 is free
 
 ;; Sometimes it's useful to re-highlight the whole buffer
 (global-set-key (kbd "<f8>") 'font-lock-fontify-buffer)
@@ -136,6 +138,13 @@
 (global-set-key (kbd "M-&") (lambda () (interactive)
                               (setq current-prefix-arg (list 4))
                               (call-interactively 'shell-command-on-region)))
+
+;; Transpose stuff with M-t
+(global-unset-key (kbd "M-t")) ;; which used to be transpose-words
+(global-set-key (kbd "M-t l") 'transpose-lines)
+(global-set-key (kbd "M-t w") 'transpose-words)
+(global-set-key (kbd "M-t s") 'transpose-sexps)
+(global-set-key (kbd "M-t p") 'transpose-params)
 
 ;; Repeat simple and complex commands
 (global-set-key (kbd "C-.") 'repeat)

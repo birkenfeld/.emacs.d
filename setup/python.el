@@ -66,6 +66,12 @@
 (define-fringe-bitmap 'hs-marker [0 32 48 56 60 56 48 32 0])   ;; "plus"
 (define-fringe-bitmap 'hideshowvis-hideable-marker [0 0 0 254 124 56 16 0 0])   ;; "minus"
 
+;; Electric colon: only indent if on a dedenter statement
+(defadvice python-indent-post-self-insert-function (around fix-colon activate)
+  (unless (and (eq ?: last-command-event)
+               (not (python-info-dedenter-statement-p)))
+    ad-do-it))
+
 (defun my-python-mode-hook ()
   ;; Remove python-mode's ffap things that slow down find-file
   (setq ffap-alist (remove '(python-mode . python-ffap-module-path) ffap-alist))
@@ -108,6 +114,7 @@
 
   (define-key python-mode-map (kbd "M-q") 'python-fill-paragraph)
 
+  ;; set up hide-show mode
   ;; remove old python-mode value first
   (setq hs-special-modes-alist (assq-delete-all 'python-mode hs-special-modes-alist))
   (add-to-list 'hs-special-modes-alist

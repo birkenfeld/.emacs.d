@@ -61,3 +61,4 @@
 ;; To be called after all other initialization
 (require 'session)
 (session-initialize)
+(put 'scroll-left 'disabled nil)
