@@ -243,7 +243,7 @@ returns the word count of that file."
       (let ((new-name (read-file-name "New name: " filename)))
         (if (get-buffer new-name)
             (error "A buffer named '%s' already exists!" new-name)
-          (ignore-errors (make-directory new-name t))
+          (ignore-errors (make-directory (file-name-directory new-name) t))
           (ignore-errors (vc-call rename-file filename new-name))
           (when (file-exists-p filename)  ;; if no vc was there
             (rename-file filename new-name 1))
