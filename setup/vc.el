@@ -25,6 +25,14 @@
 
 ;; full screen magit-status
 
+(defun magit-or-monky-status ()
+  (interactive)
+  (if (magit-get-top-dir)
+      (magit-status)
+    (monky-status)))
+
+(global-set-key (kbd "C-x v x") 'magit-or-monky-status)
+
 (defadvice magit-status (around magit-fullscreen activate)
   (window-configuration-to-register :magit-fullscreen)
   ad-do-it
