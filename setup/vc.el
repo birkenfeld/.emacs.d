@@ -25,11 +25,11 @@
 
 ;; full screen magit-status
 
-(defun magit-or-monky-status ()
-  (interactive)
+(defun magit-or-monky-status (arg)
+  (interactive "P")
   (if (magit-get-top-dir)
-      (magit-status)
-    (monky-status)))
+      (magit-status arg)
+    (monky-status arg)))
 
 (global-set-key (kbd "C-x v x") 'magit-or-monky-status)
 

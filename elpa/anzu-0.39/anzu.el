@@ -4,8 +4,8 @@
 
 ;; Author: Syohei YOSHIDA <syohex@gmail.com>
 ;; URL: https://github.com/syohex/emacs-anzu
-;; Version: 0.38
-;; X-Original-Version: 0.38
+;; Version: 0.39
+;; X-Original-Version: 0.39
 ;; Package-Requires: ((cl-lib "0.5") (emacs "24"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -526,15 +526,22 @@
 
 (defun anzu--thing-begin (thing)
   (let ((bound (bounds-of-thing-at-point thing)))
-    (and bound (car bound))))
+    (if bound
+        (car bound)
+      (let ((fallback-bound (bounds-of-thing-at-point 'symbol)))
+        (if fallback-bound
+            (car fallback-bound)
+          (point))))))
 
-(defun anzu--thing-end (thing)
+(defsubst anzu--thing-end (thing)
   (let ((bound (bounds-of-thing-at-point thing)))
-    (and bound (cdr bound))))
+    (if bound
+        (cdr bound)
+      (point-max))))
 
 (defun anzu--region-begin (use-region thing backward)
   (cond (current-prefix-arg (line-beginning-position))
-        (thing (or (anzu--thing-begin thing) (point)))
+        (thing (anzu--thing-begin thing))
         (use-region (region-beginning))
         (backward (point-min))
         (t (point))))
@@ -547,7 +554,7 @@
 (defun anzu--region-end (use-region thing)
   (cond (current-prefix-arg
          (anzu--line-end-position (prefix-numeric-value current-prefix-arg)))
-        (thing (or (anzu--thing-end thing) (point-max)))
+        (thing (anzu--thing-end thing))
         (use-region (region-end))
         (t (point-max))))
 
