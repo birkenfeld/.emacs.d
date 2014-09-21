@@ -4,7 +4,7 @@
 
 ;; Author: Jorgen Schaefer <contact@jorgenschaefer.de>
 ;; URL: http://github.com/jorgenschaefer/pyvenv
-;; Version: 1.3
+;; Version: 1.4
 ;; Keywords: Python, Virtualenv, Tools
 
 ;; This program is free software; you can redistribute it and/or
@@ -71,6 +71,16 @@ virtualenv. If a virtualenv is already enabled, it will ask first."
   :safe #'stringp
   :group 'pyvenv)
 
+(defcustom pyvenv-tracking-ask-before-change nil
+  "Non-nil means pyvenv will ask before automatically changing a virtualenv.
+
+This can happen when a new file is opened with a buffer-local
+value (from file-local or directory-local variables) for
+`pyvenv-workon' or `pyvenv-workon', or if `pyvenv-tracking-mode'
+is active, after every command."
+  :type 'boolean
+  :group 'pyvenv)
+
 (defcustom pyvenv-virtualenvwrapper-python
   (or (getenv "VIRTUALENVWRAPPER_PYTHON")
       (executable-find "python"))
@@ -135,7 +145,7 @@ This is usually the base name of `pyvenv-virtual-env'.")
   (setq directory (expand-file-name directory))
   (pyvenv-deactivate)
   (setq pyvenv-virtual-env directory
-        pyvenv-virtual-env-name (file-name-base directory))
+        pyvenv-virtual-env-name (file-name-nondirectory directory))
   ;; Preserve variables from being overwritten.
   (let ((old-exec-path exec-path)
         (old-process-environment process-environment))
@@ -148,15 +158,16 @@ This is usually the base name of `pyvenv-virtual-env'.")
         pyvenv-old-process-environment process-environment
         ;; For some reason, Emacs adds some directories to `exec-path'
         ;; but not to `process-environment'?
-        exec-path (cons (format "%s/bin" directory)
-                        exec-path)
+        exec-path (if (file-exists-p (format "%s/Scripts" directory))
+                      (cons (format "%s/Scripts" directory) exec-path)
+                    (cons (format "%s/bin" directory) exec-path))
         process-environment (append
                              (list
                               (format "VIRTUAL_ENV=%s" directory)
                               (format "PATH=%s" (mapconcat (lambda (x)
                                                              (or x "."))
                                                            exec-path
-                                                           ":"))
+                                                           (if (eq system-type 'windows-nt) ";" ":")))
                               ;; No "=" means to unset
                               "PYTHONHOME")
                              process-environment)
@@ -277,39 +288,49 @@ This is usually the base name of `pyvenv-virtual-env'.")
 (define-minor-mode pyvenv-mode
   "Global minor mode for pyvenv.
 
-Will show the current virtual env in the mode line, and respect a
+Will show the current virtualenv in the mode line, and respect a
 `pyvenv-workon' setting in files."
   :global t
   (cond
    (pyvenv-mode
     (add-to-list 'mode-line-misc-info '(pyvenv-mode pyvenv-mode-line-indicator))
-    (add-hook 'hack-local-variables-hook #'pyvenv-set-file-virtualenv))
+    (add-hook 'hack-local-variables-hook #'pyvenv-track-virtualenv))
    ((not pyvenv-mode)
     (setq mode-line-misc-info (delete '(pyvenv-mode pyvenv-mode-line-indicator)
                                       mode-line-misc-info))
-    (remove-hook 'hack-local-variables-hook #'pyvenv-set-file-virtualenv))))
+    (remove-hook 'hack-local-variables-hook #'pyvenv-track-virtualenv))))
 
-(defun pyvenv-set-file-virtualenv ()
-  "If `pyvenv-workon' or `pyvenv-activate' is set, switch to that
-virtual env. If both are specified, `pyvenv-activate' takes
-precedence over `pyvenv-workon'."
+;;;###autoload
+(define-minor-mode pyvenv-tracking-mode
+  "Global minor mode to track the current virtualenv.
+
+When this mode is active, pyvenv will activate a buffer-specific
+virtualenv whenever the user switches to a buffer with a
+buffer-local `pyvenv-workon' or `pyvenv-activate' variable."
+  :global t
+  (if pyvenv-tracking-mode
+      (add-hook 'post-command-hook 'pyvenv-track-virtualenv)
+    (remove-hook 'post-command-hook 'pyvenv-track-virtualenv)))
+
+(defun pyvenv-track-virtualenv ()
+  "Set a virtualenv as specified for the current buffer.
+
+If either `pyvenv-activate' or `pyvenv-workon' are specified, and
+they specify a virtualenv different from the current one, switch
+to that virtualenv."
   (cond
    (pyvenv-activate
-    (cond
-     ((not pyvenv-virtual-env)
-      (pyvenv-activate pyvenv-activate))
-     ((not (equal pyvenv-activate pyvenv-virtual-env))
-      (when (y-or-n-p (format "Switch to virtual env %s (currently %s)? "
-                              pyvenv-activate pyvenv-virtual-env))
-        (pyvenv-activate pyvenv-activate)))))
+    (when (and (not (equal pyvenv-activate pyvenv-virtual-env))
+               (or (not pyvenv-tracking-ask-before-change)
+                   (y-or-n-p (format "Switch to virtualenv %s (currently %s)"
+                                     pyvenv-activate pyvenv-virtual-env))))
+      (pyvenv-activate pyvenv-activate)))
    (pyvenv-workon
-    (cond
-     ((and pyvenv-workon (not pyvenv-virtual-env))
-      (pyvenv-workon pyvenv-workon))
-     ((not (equal pyvenv-workon pyvenv-virtual-env-name))
-      (when (y-or-n-p (format "Switch to virtual env %s (currently %s)? "
-                              pyvenv-workon pyvenv-virtual-env-name))
-        (pyvenv-workon pyvenv-workon)))))))
+    (when (and (not (equal pyvenv-workon pyvenv-virtual-env-name))
+               (or (not pyvenv-tracking-ask-before-change)
+                   (y-or-n-p (format "Switch to virtualenv %s (currently %s)"
+                                     pyvenv-workon pyvenv-virtual-env-name))))
+      (pyvenv-workon pyvenv-workon)))))
 
 (defun pyvenv-run-virtualenvwrapper-hook (hook &rest args)
   "Run a virtualenvwrapper hook, and update the environment.
@@ -319,46 +340,46 @@ environment accordingly.
 
 CAREFUL! This will modify your `process-environment' and
 `exec-path'."
-  (when (getenv "VIRTUALENVWRAPPER_LOG_DIR")
-    (with-temp-buffer
-      (let ((tmpfile (make-temp-file "pyvenv-virtualenvwrapper-")))
-        (unwind-protect
-            (progn
-              (apply #'call-process
-                     pyvenv-virtualenvwrapper-python
-                     nil t nil
-                     "-c"
-                     "from virtualenvwrapper.hook_loader import main; main()"
-                     "--script" tmpfile
-                     (if (getenv "HOOK_VERBOSE_OPTION")
-                         (cons (getenv "HOOK_VERBOSE_OPTION")
-                               (cons hook args))
-                       (cons hook args)))
-              (call-process-shell-command
-               (format ". '%s' ; echo ; echo =-=-= ; python -c \"import os, json ; print json.dumps(dict(os.environ))\""
-                       tmpfile)
-               nil t nil))
-          (delete-file tmpfile)))
-      (goto-char (point-min))
-      (when (re-search-forward "\n=-=-=\n" nil t)
-        (let ((output (buffer-substring (point-min)
-                                        (match-beginning 0))))
-          (when (> (length output) 0)
-            (with-help-window "*Virtualenvwrapper Hook Output*"
-              (with-current-buffer "*Virtualenvwrapper Hook Output*"
-                (let ((inhibit-read-only t))
-                  (erase-buffer)
-                  (insert
-                   (format
-                    "Output from the virtualenvwrapper hook %s:\n\n"
-                    hook)
-                   output))))))
-        (dolist (binding (json-read))
-          (let ((env (format "%s=%s" (car binding) (cdr binding))))
-            (when (not (member env process-environment))
-              (setq process-environment (cons env process-environment))))
-          (when (eq (car binding) 'PATH)
-            (setq exec-path (split-string (cdr binding) ":"))))))))
+  (with-temp-buffer
+    (let ((tmpfile (make-temp-file "pyvenv-virtualenvwrapper-")))
+      (unwind-protect
+          (progn
+            (apply #'call-process
+                   pyvenv-virtualenvwrapper-python
+                   nil t nil
+                   "-c"
+                   "from virtualenvwrapper.hook_loader import main; main()"
+                   "--script" tmpfile
+                   (if (getenv "HOOK_VERBOSE_OPTION")
+                       (cons (getenv "HOOK_VERBOSE_OPTION")
+                             (cons hook args))
+                     (cons hook args)))
+            (call-process-shell-command
+             (format ". '%s' ; echo ; echo =-=-= ; python -c \"import os, json ; print(json.dumps(dict(os.environ)))\""
+                     tmpfile)
+             nil t nil))
+        (delete-file tmpfile)))
+    (goto-char (point-min))
+    (when (and (not (re-search-forward "ImportError: No module named virtualenvwrapper" nil t))
+               (re-search-forward "\n=-=-=\n" nil t))
+      (let ((output (buffer-substring (point-min)
+                                      (match-beginning 0))))
+        (when (> (length output) 0)
+          (with-help-window "*Virtualenvwrapper Hook Output*"
+            (with-current-buffer "*Virtualenvwrapper Hook Output*"
+              (let ((inhibit-read-only t))
+                (erase-buffer)
+                (insert
+                 (format
+                  "Output from the virtualenvwrapper hook %s:\n\n"
+                  hook)
+                 output))))))
+      (dolist (binding (json-read))
+        (let ((env (format "%s=%s" (car binding) (cdr binding))))
+          (when (not (member env process-environment))
+            (setq process-environment (cons env process-environment))))
+        (when (eq (car binding) 'PATH)
+          (setq exec-path (split-string (cdr binding) ":")))))))
 
 ;;;###autoload
 (defun pyvenv-restart-python ()
@@ -378,7 +399,7 @@ CAREFUL! This will modify your `process-environment' and
           (goto-char (point-max))
           (insert "\n\n"
                   "###\n"
-                  (format "### Restarting in virtual env %s (%s)\n"
+                  (format "### Restarting in virtualenv %s (%s)\n"
                           pyvenv-virtual-env-name pyvenv-virtual-env)
                   "###\n"
                   "\n\n")
