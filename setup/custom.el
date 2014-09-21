@@ -168,7 +168,7 @@
  '(ffap-newfile-prompt t)
  '(fill-column 80)
  '(filladapt-mode-line-string "")
- '(flx-ido-mode t)
+ '(flx-ido-mode nil)
  '(flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
  '(flycheck-completion-system (quote ido))
  '(flycheck-disabled-checkers (quote (python-pylint)))
