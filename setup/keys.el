@@ -82,9 +82,10 @@
 ;(global-set-key (kbd "<f5>")   'recompile)
 ;(global-set-key (kbd "S-<f5>") 'compile)
 
-;; F6 stores a position in a file, S-F6 brings you back to this position
+;; F6 stores a position in a file, S-F6 or C-F6 brings you back to this position
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
 (global-set-key (kbd "<S-f6>") '(lambda () (interactive) (register-to-point ?1)))
+(global-set-key (kbd "<C-f6>") '(lambda () (interactive) (register-to-point ?1)))
 
 ;; f7 is free
 

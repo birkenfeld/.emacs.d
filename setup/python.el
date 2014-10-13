@@ -122,7 +122,11 @@
   ;                           python-hs-end-of-folding-block nil))
 
   (hs-minor-mode)
-  (hideshowvis-minor-mode))
+  (hideshowvis-minor-mode)
+
+  ;; No auto-fill please
+  (auto-fill-mode 0)
+  )
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
 
