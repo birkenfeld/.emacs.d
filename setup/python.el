@@ -27,6 +27,8 @@
 
 (defun company-insert-and-complete ()
   (interactive)
+  ;;  (company-complete-selection)  ; in case it's already completing
+  (company-abort)
   (self-insert-command 1)
   (company-complete))
 

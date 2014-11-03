@@ -3,8 +3,8 @@
 ;; Ido -------------------------------------------------------------------------
 
 ;; Try out flx-ido for better flex matching between words
-(require 'flx-ido)
-(flx-ido-mode 1)
+;(require 'flx-ido)
+;(flx-ido-mode 1)
 
 ;; Use C-w to go back up a dir to better match normal usage of C-w
 ;; - insert current file name with C-x C-w instead.
