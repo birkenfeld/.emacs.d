@@ -39,6 +39,9 @@
 (setq custom-file "~/.emacs.d/setup/custom.el")
 (load custom-file)
 
+;; No horizontal scrolling please
+(horizontal-scroll-bar-mode -1)
+
 ;; Powerline: start it up right now to get the modeline early
 (require 'powerline)
 (setq powerline-height 23)
