@@ -28,6 +28,9 @@
 
 (defalias 'wgrep 'wgrep-change-to-wgrep-mode)
 
+;; wgrep expects a regex with 3 capturing groups
+(setq wgrep-line-file-regexp "^\\(.*?[^/\n]\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)[ \t]*:")
+
 ;; Use same keybinding as occur
 (setq wgrep-enable-key "e")
 
