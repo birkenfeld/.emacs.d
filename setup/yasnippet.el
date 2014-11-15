@@ -88,6 +88,7 @@ $0" "module header" nil nil ((yas-indent-line 'fixed)))
 
 $0" "module header, executable")
    ("prexc" "import traceback; traceback.print_exc()" "print tb" nil ("Debug"))
+   ("pdb" "import pdb; pdb.set_trace()" "pdb trace" nil ("Debug"))
    ("ipdb" "import ipdb; ipdb.set_trace()" "ipdb trace" nil ("Debug"))
    ("stack" "import traceback; traceback.print_stack()" "print stack" nil ("Debug"))
    ("ipprint" "import pprint; pprint.pprint($0)" "pprint" nil ("Debug"))

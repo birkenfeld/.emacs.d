@@ -6,6 +6,10 @@
 ;; Enable the elpy "ide" features
 (elpy-enable)
 
+;; Correct indentation for elpy test function
+(function-put 'elpy-testcase 'lisp-indent-function 1)
+(function-put 'mletf* 'lisp-indent-function 1)
+
 ;; Use flycheck instead of flymake
 (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
 (add-hook 'elpy-mode-hook 'flycheck-mode)
@@ -14,6 +18,19 @@
 (defadvice elpy-shell-send-region-or-buffer (around switch activate)
   ad-do-it
   (elpy-shell-switch-to-shell))
+
+;; Find root in site-packages
+(defun elpy-project-find-site-packages-root ()
+  "Return site-packages root.
+
+Here, we only consider the current "
+  (when (locate-dominating-file default-directory "site-packages")
+    (let ((root default-directory))
+      (while (file-exists-p (expand-file-name "__init__.py" (file-name-directory (directory-file-name root))))
+        (setq root (file-name-directory (directory-file-name root))))
+      root)))
+
+(add-to-list 'elpy-project-root-finder-functions #'elpy-project-find-site-packages-root)
 
 ;; Override some elpy keys
 (define-key elpy-mode-map (kbd "<M-down>") nil)
