@@ -3,8 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "paradox" "paradox.el" (21523 63024 965789
-;;;;;;  581000))
+;;;### (autoloads nil "paradox" "paradox.el" (21607 53197 93857 998000))
 ;;; Generated autoloads from paradox.el
 
 (autoload 'paradox--refresh-star-count "paradox" "\
@@ -54,7 +53,7 @@ Passing a non-nil REFRESH argument forces this update.
 ;;;***
 
 ;;;### (autoloads nil nil ("paradox-compat.el" "paradox-pkg.el")
-;;;;;;  (21523 63024 975854 427000))
+;;;;;;  (21607 53197 137120 861000))
 
 ;;;***
 

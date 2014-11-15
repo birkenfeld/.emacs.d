@@ -4,9 +4,9 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/paradox
-;; Version: 1.2.2
+;; Version: 1.2.4
 ;; Keywords: package packages mode-line
-;; Package-Requires: ((emacs "24.1") (tabulated-list) (package "1.0") (dash "2.6.0") (cl-lib "1.0") (json "1.3"))
+;; Package-Requires: ((emacs "24.1") (dash "2.6.0") (cl-lib "0.5") (json "1.3"))
 ;; Prefix: paradox
 ;; Separator: -
 
@@ -131,7 +131,7 @@
 (require 'package)
 (require 'cl-lib)
 (require 'dash)
-(defconst paradox-version "1.2.2" "Version of the paradox.el package.")
+(defconst paradox-version "1.2.4" "Version of the paradox.el package.")
 (defun paradox-bug-report ()
   "Opens github issues page in a web browser. Please send any bugs you find.
 Please include your Emacs and paradox versions."
@@ -148,6 +148,11 @@ Please include your Emacs and paradox versions."
   :prefix "paradox-"
   :group 'emacs
   :package-version '(paradox . "0.1"))
+(defgroup paradox-commit-list nil
+  "Customization group for paradox."
+  :prefix "paradox-"
+  :group 'paradox
+  :package-version '(paradox . "1.2.3"))
 (defun paradox--compat-p ()
   "Non-nil if we need to enable pre-24.4 compatibility features."
   (version< emacs-version "24.3.50"))
@@ -238,11 +243,11 @@ On the Package Menu, you can always manually star packages with \\[paradox-menu-
   :group 'paradox
   :package-version '(paradox . "1.1"))
 
-(defcustom paradox-display-download-count t
+(defcustom paradox-display-download-count nil
   "If non-nil, adds a \"Download\" column to the Package Menu."
   :type 'boolean
   :group 'paradox
-  :package-version '(paradox . "1.1"))
+  :package-version '(paradox . "1.2.3"))
 
 (defface paradox-mode-line-face
   '((t :inherit mode-line-buffer-id :weight normal :foreground "Black"))
@@ -298,6 +303,13 @@ If `paradox-lines-per-entry' = 1, the face
   '((t :weight bold :inherit font-lock-variable-name-face))
   "Face used on highlighted stuff."
   :group 'paradox)
+
+(defface paradox-commit-tag-face
+  '((t :foreground "goldenrod4"
+       :background "LemonChiffon1"
+       :box 1))
+  "Face used for tags on the commit list."
+  :group 'paradox-commit-list)
 
 (defvar paradox--star-count nil)
 (defvar paradox--download-count nil)
@@ -418,22 +430,26 @@ With prefix KILL, kill the buffer instead of burying."
 (defun paradox--refresh-star-count ()
   "Download the star-count file and populate the respective variable."
   (interactive)
-  (with-current-buffer
-      (url-retrieve-synchronously paradox--star-count-url)
-    (when (search-forward "\n\n" nil t)
-      (setq paradox--star-count (read (current-buffer)))
-      (setq paradox--package-repo-list (read (current-buffer)))
-      (setq paradox--download-count (ignore-errors (read (current-buffer)))))
-    (kill-buffer))
+  (unwind-protect
+      (with-current-buffer
+          (url-retrieve-synchronously paradox--star-count-url)
+        (when (search-forward "\n\n" nil t)
+          (setq paradox--star-count (read (current-buffer)))
+          (setq paradox--package-repo-list (read (current-buffer)))
+          (setq paradox--download-count (read (current-buffer))))
+        (kill-buffer))
+    (unless (and (listp paradox--star-count)
+                 (listp paradox--package-repo-list)
+                 (listp paradox--download-count))
+      (message "[Paradox] Error downloading the list of repositories. This might be a proxy"))
+    (unless (listp paradox--download-count)
+      (setq paradox--download-count nil))
+    (unless (listp paradox--package-repo-list)
+      (setq paradox--package-repo-list nil))
+    (unless (listp paradox--star-count)
+      (setq paradox--star-count nil)))
   (when (stringp paradox-github-token)
     (paradox--refresh-user-starred-list)))
-
-(defcustom paradox-hide-buffer-identification t
-  "If non-nil, the name of the buffer will not be displayed in the mode-line."
-  :type 'boolean
-  :group 'paradox
-  :package-version '(paradox . "0.5"))
-(defvaralias 'paradox-hide-buffer-name 'paradox-hide-buffer-identification)
 
 (defun paradox--build-buffer-id (st n)
   "Return a list that propertizes ST and N for the mode-line."
@@ -469,6 +485,8 @@ for packages.
 (defun paradox-enable ()
   "Enable paradox, overriding the default package-menu."
   (interactive)
+  (ad-enable-advice 'package-menu-execute 'around
+                    'paradox-around-package-menu-execute-advice)
   (ad-activate 'package-menu-execute)
   (if (paradox--compat-p)
       (progn
@@ -484,7 +502,8 @@ for packages.
 (defun paradox-disable ()
   "Disable paradox, and go back to regular package-menu."
   (interactive)
-  (ad-deactivate 'package-menu-execute)
+  (ad-disable-advice 'package-menu-execute 'around
+                    'paradox-around-package-menu-execute-advice)
   (dolist (it paradox--backups)
     (message "Restoring %s to %s" (car it) (eval (cdr it)))
     (fset (car it) (eval (cdr it))))
@@ -573,8 +592,6 @@ This button takes you to the package's homepage."
   :group 'paradox
   :package-version '(paradox . "0.10"))
 
-(defvar-local paradox--repo nil)
-
 (defun paradox--print-info (pkg)
   "Return a package entry suitable for `tabulated-list-entries'.
 PKG has the form (PKG-DESC . STATUS).
@@ -641,21 +658,6 @@ Return (PKG-DESC [STAR NAME VERSION STATUS DOC])."
        " ")
      'face 'paradox-download-face
      'value (or c 0))))
-
-(defun paradox-menu-view-commit-list (pkg)
-  "Visit the commit list of package named PKG.
-PKG is a symbol. Interactively it is the package under point."
-  (interactive '(nil))
-  (let ((repo (cdr (assoc (paradox--get-or-return-package pkg)
-                          paradox--package-repo-list))))
-    (if repo
-        (with-selected-window
-            (display-buffer (get-buffer-create paradox--commit-list-buffer))
-          (paradox-commit-list-mode)
-          (setq paradox--repo repo)
-          (paradox--commit-list-update-entries)
-          (tabulated-list-print))
-      (message "Package %s is not a GitHub repo." pkg))))
 
 (defun paradox-menu-visit-homepage (pkg)
   "Visit the homepage of package named PKG.
@@ -1014,6 +1016,7 @@ Throws error if repo is malformed."
         (setq paradox--user-starred-list
               (remove repo paradox--user-starred-list))
       (add-to-list 'paradox--user-starred-list repo))))
+
 (defun paradox--unstar-repo (repo &optional delete query)
   "Unstar REPO.
 Calls (paradox--star-repo REPO (not DELETE) QUERY)."
@@ -1022,9 +1025,10 @@ Calls (paradox--star-repo REPO (not DELETE) QUERY)."
 (defun paradox--refresh-user-starred-list ()
   "Fetch the user's list of starred repos."
   (setq paradox--user-starred-list
-        (paradox--github-action
-         "user/starred?per_page=100" nil
-         'paradox--full-name-reader)))
+        (ignore-errors
+          (paradox--github-action
+           "user/starred?per_page=100" nil
+           'paradox--full-name-reader))))
 
 (defun paradox--prettify-key-descriptor (desc)
   "Prettify DESC to be displayed as a help menu."
@@ -1135,49 +1139,164 @@ May I take you to the token generation page? ")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Paradox Commit List Mode
+(defcustom paradox-commit-list-query-max-pages 1
+  "Max number of pages we read from github when fetching the commit-list.
+Each page lists 100 commits, so 1 page should be more than enough
+for most repositories.
+
+Increasing this number consequently multiplies the time it takes
+to load the commit list on repos which actually use that many
+pages."
+  :type 'integer
+  :group 'paradox
+  :package-version '(paradox . "1.2.3"))
+
+(defcustom paradox-date-format "%Y-%m-%d"
+  "Format used for the date displayed on the commit list.
+See `format-time-string' for more information.
+
+Set it to \"%x\" for a more \"human\" date format."
+  :type 'string
+  :group 'paradox-commit-list
+  :package-version '(paradox . "1.2.3"))
+
+(defvar paradox--commit-message-face nil
+  "Face currently being used on commit messages.
+Gets dynamically changed to `font-lock-comment-face' on old commits.
+nil means `default'.")
+
+(defvar-local paradox--package-repo nil
+  "Repo of the package in a commit-list buffer.")
+(defvar-local paradox--package-name nil
+  "Name of the package in a commit-list buffer.")
+(defvar-local paradox--package-version nil
+  "Installed version of the package in a commit-list buffer.")
+(defvar-local paradox--package-tag-commit-alist nil
+  "Alist of (COMMIT-SHA . TAG) for this package's repo.")
+
+(defun paradox-menu-view-commit-list (pkg)
+  "Visit the commit list of package named PKG.
+PKG is a symbol. Interactively it is the package under point."
+  (interactive '(nil))
+  (let* ((name (paradox--get-or-return-package pkg))
+         (repo (cdr (assoc name paradox--package-repo-list))))
+    (if repo
+        (with-selected-window
+            (display-buffer (get-buffer-create paradox--commit-list-buffer))
+          (paradox-commit-list-mode)
+          (setq paradox--package-repo repo)
+          (setq paradox--package-name name)
+          (setq paradox--package-version
+                (paradox--get-installed-version name))
+          (setq paradox--package-tag-commit-alist
+                (paradox--get-tag-commit-alist repo))
+          (paradox--commit-list-update-entries)
+          (tabulated-list-print))
+      (message "Package %s is not a GitHub repo." pkg))))
+
+(defun paradox--get-tag-commit-alist (repo)
+  "Get REPO's tag list and associate them to commit hashes."
+  (require 'json)
+  (mapcar
+   (lambda (x)
+     (cons
+      (cdr (assoc 'sha (cdr (assoc 'commit x))))
+      (cdr (assoc 'name x))))
+   (paradox--github-action
+    (format "repos/%s/tags?per_page=100" repo)
+    "GET" 'json-read paradox-commit-list-query-max-pages)))
+
+(defun paradox--get-installed-version (pkg)
+  "Return the installed version of PKG.
+- If PKG isn't installed, return '(0).
+- If it has a Melpa-like version (YYYYMMDD HHMM), return it as a
+  time value.
+- If it has a regular version number, return it as a string."
+  (-if-let (desc (and (null (paradox--compat-p))
+                      (cadr (assoc pkg package-alist))))
+      (let ((version (package-desc-version desc)))
+        (if (> (car version) 19000000)
+            (date-to-time
+             (format "%8dT%2d:%2d"
+                     (car version)
+                     (/ (cadr version) 100)
+                     (% (cadr version) 100)))
+          ;; Regular version numbers.
+          (mapconcat 'int-to-string version ".")))
+    '(0 0)))
+
 (defun paradox--commit-tabulated-list (repo)
   "Return the tabulated list for REPO's commit list."
   (require 'json)
-  (let ((feed (paradox--github-action (format "repos/%s/commits?per_page=100" repo)
-                                      "GET" 'json-read 1)))
+  (let ((paradox--commit-message-face nil)
+        (feed (paradox--github-action
+               (format "repos/%s/commits?per_page=100" repo)
+               "GET" 'json-read paradox-commit-list-query-max-pages)))
     (apply 'append (mapcar 'paradox--commit-print-info feed))))
 
 (defun paradox--commit-print-info (x)
   "Parse json in X into a tabulated list entry."
   (let* ((commit (cdr (assoc 'commit x)))
-         (date  (cdr (assoc 'date (cdr (assoc 'committer commit)))))
+         (date  (date-to-time (cdr (assoc 'date (cdr (assoc 'committer commit))))))
          (title (split-string (cdr (assoc 'message commit)) "[\n\r][ \t]*" t))
-         (url   (cdr (assoc 'url commit)))
-         (cc    (cdr (assoc 'comment_count commit))))
+         ;; (url   (cdr (assoc 'html_url commit)))
+         (cc    (cdr (assoc 'comment_count commit)))
+         (sha   (cdr (assoc 'sha x)))
+         (tag   (cdr (assoc-string sha paradox--package-tag-commit-alist))))
+    ;; Have we already crossed the installed commit, or is it not even installed?
+    (unless (or paradox--commit-message-face
+                (equal '(0) paradox--package-version))
+      ;; Is this where we cross to old commits?
+      (when (paradox--version<= date tag paradox--package-version)
+        (setq paradox--commit-message-face 'paradox-comment-face)))
+    ;; Return the tabulated list entry.
     (cons
-     (list (cons (car title) x)
+     ;; The ID
+     (list `((is-old . ,(null paradox--commit-message-face))
+             (lisp-date . ,date)
+             ,@x)
+           ;; The actual displayed data
            (vector
-            (propertize (format-time-string "%x" (date-to-time date))
+            (propertize (format-time-string paradox-date-format date)
                         'button t
                         'follow-link t
                         'action 'paradox-commit-list-visit-commit
-                        'face 'link)
+                        'face (or paradox--commit-message-face 'link))
             (concat (if (> cc 0)
                         (propertize (format "(%s comments) " cc)
                                     'face 'font-lock-function-name-face)
                       "")
-                    (or (car-safe title) ""))))
-     (when (cdr title)
-       (mapcar (lambda (m) (list (cons m x)
-                            (vector "" m))) (cdr title))))))
+                    (if (stringp tag)
+                        (propertize tag 'face 'paradox-commit-tag-face)
+                      "")
+                    (if (stringp tag) " " "")
+                    (propertize (or (car-safe title) "")
+                                'face paradox--commit-message-face))))
+     (mapcar
+      (lambda (m) (list x (vector "" (propertize m 'face paradox--commit-message-face))))
+      (cdr title)))))
+
+(defun paradox--version<= (date version package-version)
+  "Non-nil if commit at DATE tagged with VERSION is older or equal to PACKAGE-VERSION."
+  ;; Melpa date-like versions
+  (if (listp paradox--package-version)
+      ;; Installed date >= to commit date
+      (null (time-less-p paradox--package-version date))
+    ;; Regular version numbers.
+    (and version
+         (ignore-errors (version<= version paradox--package-version)))))
 
 (defun paradox--commit-list-update-entries ()
   "Update entries of current commit-list."
   (setq tabulated-list-entries
-        (paradox--commit-tabulated-list paradox--repo)))
+        (paradox--commit-tabulated-list paradox--package-repo)))
 
 (defun paradox-commit-list-visit-commit (&optional ignore)
   "Visit this commit on GitHub.
 IGNORE is ignored."
   (interactive)
   (when (derived-mode-p 'paradox-commit-list-mode)
-    (browse-url
-     (cdr (assoc 'html_url (tabulated-list-get-id))))))
+    (browse-url (cdr (assoc 'html_url (tabulated-list-get-id))))))
 
 (defun paradox-previous-commit (&optional n)
   "Move to previous commit, which might not be the previous line.
@@ -1203,7 +1322,7 @@ Letters do not insert themselves; instead, they are commands.
 \\{paradox-commit-list-mode-map}"
   (hl-line-mode 1)
   (setq tabulated-list-format
-        `[("Date" ,(length (format-time-string "%x" (current-time))) nil)
+        `[("Date" ,(length (format-time-string paradox-date-format (current-time))) nil)
           ("Message" 0 nil)])
   (setq tabulated-list-padding 1)
   (setq tabulated-list-sort-key nil)
@@ -1247,4 +1366,3 @@ Passing a non-nil REFRESH argument forces this update."
 (provide 'paradox)
 
 ;;; paradox.el ends here.
-
