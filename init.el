@@ -48,6 +48,12 @@
 (setq powerline-selected-window (selected-window))
 (powerline-default-theme)
 
+;; Fix the annoying "popup-buffer-is-1-line-too-small" glitch with powerline
+(setq orig-window-scroll-bar-height (symbol-function 'window-scroll-bar-height))
+(defun window-scroll-bar-height (&optional window)
+  (let ((res (funcall orig-window-scroll-bar-height window)))
+    (+ res 1)))
+
 ;; This goes in desktop-save-hook
 (defun remove-powerline-cache ()
   "Remove powerline cache before saving desktop file."

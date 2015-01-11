@@ -26,6 +26,7 @@
 (require 'ace-jump-mode)
 (global-set-key (kbd "C-ö") 'ace-jump-mode)  ;; nothing else free...
                                              ;; let's make use of these umlauts
+(global-set-key (kbd "M-g l") 'ace-jump-line-mode)
 
 ;; Display match count while searching/replacing
 (require 'anzu)

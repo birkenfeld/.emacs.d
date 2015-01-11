@@ -82,9 +82,7 @@
 	     ))
 
 (defvar dircolors-extension
-       '((("txt" "doc" "tex" "texi" "man" 
-	   (r "README") (r "readme")
-	   )                                dircolors-face)
+       '(
 	 (("htm" "html" "html\\.gz" "htm\\.gz")
 	                                    dircolors-face-html)
 	 (("rpm" "deb" )                    dircolors-face-package)
