@@ -113,7 +113,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("bb06fc6df190253ab733935b15f3b3a09e218b45539214de289766dbece11013" "0c1197ee994a7bc13a044d19f689d4ddeb89a6b670275b8953783b1aee5739f1" "39ba14b1649b13df292fafd6d18a4f884822877c9f00e65242d7fe7e86c9bd64" "578d91a02129e00bfb206b5917835a82be77ef06bd1606aca5aac172b347b288" "e69004ef51b9e975f7eb8878e8bd0199f6d8025bfaabd6d386fac991fe84c082" default)))
+    ("bb06fc6df190253ab733935b15f3b3a09e218b45539214de289766dbece11013" default)))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
@@ -286,6 +286,7 @@
  '(nxml-sexp-element-flag t)
  '(nxml-slash-auto-complete-flag t)
  '(outline-blank-line t t)
+ '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
  '(password-cache-expiry 3600)
  '(paste-kill-url t)

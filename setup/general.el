@@ -164,6 +164,9 @@
 (add-hook 'completion-list-mode-hook 'dircolors)
 (add-hook 'buffer-menu-mode-hook 'dircolors)
 
+;; Jump windows with ace-jump
+(global-set-key (kbd "C-x o") 'ace-window)
+
 
 ;; tabbar
 ;; (require 'tabbar)
