@@ -94,8 +94,8 @@
    `(powerline-inactive2 ((,xwin (:background ,alum-4))
                           (,term (:background ,alum-3))))
    `(compilation-mode-line-fail ((,xwin (:foreground ,red-3))))
-   `(compilation-mode-line-run  ((,xwin (:foreground ,orange-3))))
-   `(compilation-mode-line-exit ((,xwin (:foreground ,cham-3))))
+   `(compilation-mode-line-run  ((,xwin (:foreground ,butter-1))))
+   `(compilation-mode-line-exit ((,xwin (:foreground "#99ff00"))))
    `(linum ((,xwin (:inherit (shadow fringe)))))
    `(vhl/default-face ((,xwin (:background ,alum-7))))
    ;; Escape and prompt faces
