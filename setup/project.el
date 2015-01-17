@@ -12,6 +12,7 @@
 ;; (global-set-key (kbd "C-c p g") 'projectile-grep-with-default)
 
 (define-key projectile-command-map (kbd "x") 'projectile-todo)
+; (define-key projectile-command-map (kbd "i") 'projectile-isearch)
 
 ;; remove a few bindings I won't need
 (define-key projectile-command-map (kbd "A") nil)  ;; ag 
@@ -24,6 +25,13 @@
 ;;   (setq test-cwd (projectile-project-root))
 ;;   (setq test ".")
 ;;   (test-case-run))
+
+(defun projectile-isearch ()
+  "Multi-buffer isearch in project buffers.  BUGGY."
+  (interactive)
+  (let ((files (projectile-current-project-files))
+        (default-directory (projectile-project-root)))
+    (multi-isearch-files files)))
 
 (defun projectile-todo ()
   "Find todo tags in project."

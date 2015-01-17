@@ -223,6 +223,7 @@
  '(hi-lock-auto-select-face t)
  '(highlight-symbol-idle-delay 0.5)
  '(history-delete-duplicates t)
+ '(ibuffer-expert t)
  '(icomplete-mode nil)
  '(ido-auto-merge-work-directories-length -1)
  '(ido-create-new-buffer (quote always))
