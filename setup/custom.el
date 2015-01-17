@@ -59,6 +59,7 @@
  '(ac-quick-help-delay 0.8)
  '(ac-trigger-key "TAB")
  '(ac-use-fuzzy nil)
+ '(ack-and-a-half-use-ido t)
  '(ack-context 0)
  '(ack-heading t)
  '(ansi-color-for-comint-mode t)
@@ -160,7 +161,6 @@
     (".bzr" "CVS" ".git" ".hg" ".svn" ".tox" "build" "dist" ".cask" "_build" "html")))
  '(elpy-rpc-backend "jedi")
  '(elpy-rpc-timeout 2)
- '(eproject-completing-read-function (quote eproject--ido-completing-read))
  '(eval-expression-print-level nil)
  '(expand-region-fast-keys-enabled nil)
  '(fancy-narrow-lighter "")
@@ -298,6 +298,17 @@
  '(preview-default-document-pt 12)
  '(preview-scale-function (quote preview-scale-from-face) t)
  '(preview-transparent-color t)
+ '(projectile-cache-file "/home/gbr/.emacs.d/saved/projectile.cache")
+ '(projectile-global-mode t)
+ '(projectile-globally-ignored-directories
+   (quote
+    (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" "build" "_build")))
+ '(projectile-globally-ignored-files (quote ("TAGS" ".tags")))
+ '(projectile-known-projects-file "/home/gbr/.emacs.d/saved/projectile-bookmarks.eld")
+ '(projectile-mode-line-lighter "Prj")
+ '(projectile-sort-order (quote recently-active))
+ '(projectile-tags-command
+   "ctags --languages=-HTML,JavaScript --python-kinds=-iv -Re %s")
  '(pulse-flag nil)
  '(python-fill-docstring-style (quote pep-257-nn))
  '(python-indent-guess-indent-offset nil)

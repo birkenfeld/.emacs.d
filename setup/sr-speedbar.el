@@ -33,10 +33,10 @@
              (define-key speedbar-mode-map [right] 'speedbar-flush-expand-line)
              (define-key speedbar-mode-map [left] 'speedbar-contract-line)))
 
-;; Overwrite to take eproject into account
+;; Overwrite to take projectile into account
 (defun sr-speedbar-refresh ()
   "Refresh the context of speedbar."
-  (let ((eproot (condition-case nil (eproject-root) (error default-directory))))
+  (let ((eproot (condition-case nil (projectile-project-root) (error default-directory))))
     (when (and (not (equal eproot sr-speedbar-last-refresh-dictionary)) ;if directory is change
                (not (sr-speedbar-window-p))) ;and is not in speedbar buffer
       (setq sr-speedbar-last-refresh-dictionary eproot)
