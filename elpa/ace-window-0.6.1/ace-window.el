@@ -4,8 +4,8 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/ace-window
-;; Version: 0.6.0
-;; X-Original-Version: 0.6.0
+;; Version: 0.6.1
+;; X-Original-Version: 0.6.1
 ;; Package-Requires: ((ace-jump-mode "2.0"))
 ;; Keywords: cursor, window, location
 
@@ -82,6 +82,12 @@
 (defcustom aw-ignore-on t
   "When t, `ace-window' will ignore `aw-ignored-buffers'.
 Use M-0 `ace-window' to toggle this value."
+  :type 'boolean
+  :group 'ace-window)
+
+(defcustom aw-background t
+  "When t, `ace-window' will dim out all buffers temporarily when used.'."
+  :type 'boolean
   :group 'ace-window)
 
 (defun aw-ignored-p (window)
@@ -193,7 +199,7 @@ Set mode line to MODE-LINE during the selection process."
                          :visual-area va))
                       visual-area-list)))
          ;; create background for each visual area
-         (if ace-jump-mode-gray-background
+         (if aw-background
              (setq ace-jump-background-overlay-list
                    (loop for va in visual-area-list
                       collect (let* ((w (aj-visual-area-window va))
@@ -214,13 +220,17 @@ Set mode line to MODE-LINE during the selection process."
           ace-jump-search-tree aw-keys)
          (setq ace-jump-mode mode-line)
          (force-mode-line-update)
+         ;; turn off helm transient map
+         (remove-hook 'post-command-hook 'helm--maybe-update-keymap)
          ;; override the local key map
-         (setq overriding-local-map
-               (let ((map (make-keymap)))
-                 (dolist (key-code aw-keys)
-                   (define-key map (make-string 1 key-code) 'aw--callback))
-                 (define-key map [t] 'ace-jump-done)
-                 map))
+         (let ((map (make-keymap)))
+           (dolist (key-code aw-keys)
+             (define-key map (make-string 1 key-code) 'aw--callback))
+           (define-key map [t] 'ace-jump-done)
+           (if (fboundp 'set-transient-map)
+               (set-transient-map map)
+             (set-temporary-overlay-map map)))
+
          (add-hook 'mouse-leave-buffer-hook 'ace-jump-done)
          (add-hook 'kbd-macro-termination-hook 'ace-jump-done))))))
 
