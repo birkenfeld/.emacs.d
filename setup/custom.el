@@ -304,8 +304,9 @@
    (quote
     (".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" "build" "_build")))
  '(projectile-globally-ignored-files (quote ("TAGS" ".tags")))
+ '(projectile-idle-timer-hook nil)
  '(projectile-known-projects-file "/home/gbr/.emacs.d/saved/projectile-bookmarks.eld")
- '(projectile-mode-line-lighter "Prj")
+ '(projectile-mode-line-lighter "P")
  '(projectile-sort-order (quote recently-active))
  '(projectile-tags-command
    "ctags --languages=-HTML,JavaScript --python-kinds=-iv -Re %s")

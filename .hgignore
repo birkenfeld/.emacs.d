@@ -6,3 +6,4 @@ syntax: glob
 
 saved/
 local-setup/
+TAGS
