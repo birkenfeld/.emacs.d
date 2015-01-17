@@ -6,9 +6,18 @@
 (require 'eproject-extras)
 (require 'eproject-compile)
 
+(defun eproject-grep-with-default (regexp)
+  (interactive (let* ((symbol (symbol-at-point))
+                      (symstr (if symbol (symbol-name symbol) "")))
+                 (list (read-string
+                        (format "Regexp grep%s: "
+                                (if symbol (format " [%s]" symstr) ""))
+                        nil nil symstr))))
+  (eproject-grep regexp))
+
 (global-set-key (kbd "C-c p f") 'eproject-find-file)
 (global-set-key (kbd "C-c p a") 'eproject-ack)
-(global-set-key (kbd "C-c p g") 'eproject-grep)
+(global-set-key (kbd "C-c p g") 'eproject-grep-with-default)
 (global-set-key (kbd "C-c p i") 'eproject-ibuffer)
 (global-set-key (kbd "C-c p t") 'eproject-todo)
 (global-set-key (kbd "C-c p d") 'eproject-revisit-project)
@@ -17,8 +26,8 @@
 
 (define-project-type python (generic)
   (look-for "setup.py")
-  :relevant-files ("\\.py$" "\\.rst$" "\\.js$" "\\.html$" "\\.c$" "\\.h$")
-  :irrelevant-files ("\\.py[co]$"))
+  :relevant-files ("\\.py$" "\\.rst$" "\\.js$" "\\.html$" "\\.c$" "\\.h$" "\\.ui$")
+  :irrelevant-files ("\\.py[co]$" "_build/.*$"))
 
 (define-project-type haskell (generic)
   (or (look-for "Setup.hs") (look-for "Setup.lhs"))
