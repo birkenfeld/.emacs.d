@@ -95,8 +95,21 @@
 (eval-after-load 'cc-mode
   '(progn
      (require 'disaster)
+     (require 'irony)
+     (require 'flycheck-irony)
+     (define-key c-mode-base-map (kbd "C-c C-d") 'disaster)
+     (define-key c-mode-base-map (kbd "C-c C-c") 'compile)
+     (define-key c-mode-base-map (kbd "TAB") 'company-complete)
+
      (defun my-c-mode-common-hook ()
+       (setq flycheck-checker 'irony)
        (flycheck-mode 1)
-       (define-key c-mode-base-map (kbd "C-c C-d") 'disaster)
-       (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
+
+       (irony-mode 1)
+       (irony-cdb-autosetup-compile-options)
+
+       (set (make-local-variable 'company-backends)
+            '(company-irony sane-company-dabbrev))
+       (company-mode 1)
+       )
      (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)))
