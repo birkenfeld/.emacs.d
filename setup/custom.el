@@ -231,7 +231,9 @@
    (quote
     ("{" "}" ", " ", ..." " [" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
  '(ido-enable-flex-matching t)
- '(ido-ignore-buffers (quote ("\\` " "Completions\\*" "\\*elpy-rpc")))
+ '(ido-ignore-buffers
+   (quote
+    ("\\` " "Completions\\*" "\\*elpy-rpc" "TAGS\\(\\'\\|\\\\.*\\)")))
  '(ido-mode (quote both) nil (ido))
  '(ido-save-directory-list-file "/home/gbr/.emacs.d/saved/ido.last")
  '(ido-ubiquitous-mode t)
