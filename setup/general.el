@@ -167,6 +167,13 @@
 ;; Jump windows with ace-jump
 (global-set-key (kbd "C-x o") 'ace-window)
 
+;; Bury buffer with right-click on header line
+(global-set-key (kbd "<header-line> <mouse-3>") 'bury-selected-buffer)
+
+(defun bury-selected-buffer (event)
+  (interactive "e")
+  (with-selected-window (posn-window (event-start event))
+    (bury-buffer)))
 
 ;; tabbar
 ;; (require 'tabbar)
