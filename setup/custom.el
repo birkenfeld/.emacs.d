@@ -176,6 +176,7 @@
  '(flycheck-completion-system (quote ido))
  '(flycheck-disabled-checkers (quote (python-pylint)))
  '(flycheck-idle-change-delay 2)
+ '(flycheck-indication-mode (quote right-fringe))
  '(flymake-no-changes-timeout 1.5)
  '(flyspell-default-dictionary "german")
  '(flyspell-use-meta-tab nil)
@@ -316,6 +317,7 @@
  '(projectile-sort-order (quote recently-active))
  '(projectile-tags-command
    "ctags --languages=-HTML,JavaScript --python-kinds=-iv -Re %s")
+ '(projectile-use-git-grep t)
  '(pulse-flag nil)
  '(python-fill-docstring-style (quote pep-257-nn))
  '(python-indent-guess-indent-offset nil)
