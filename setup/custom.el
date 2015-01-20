@@ -142,7 +142,7 @@
  '(ecb-layout-name "left14")
  '(ecb-methods-menu-user-extension-function (quote ignore))
  '(ecb-mode-line-display-window-number nil)
- '(ecb-options-version "2.40")
+ '(ecb-options-version "2.50")
  '(ecb-primary-secondary-mouse-buttons (quote mouse-1--mouse-2))
  '(ecb-source-file-regexps
    (quote
