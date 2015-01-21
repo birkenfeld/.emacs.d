@@ -108,8 +108,8 @@
 (global-set-key (kbd "M-SPC") 'hippie-expand)
 
 ;; Make commenting easy; uncommenting with prefix arg
-(global-set-key (kbd "C-#") 'comment-region)
-(global-set-key (kbd "M-#") 'comment-region)
+(global-set-key (kbd "C-#") 'comment-or-uncomment-region)
+(global-set-key (kbd "M-#") 'comment-dwim)
 
 ;; Toggle line numer display
 (global-set-key (kbd "C-c n") 'global-linum-mode)
