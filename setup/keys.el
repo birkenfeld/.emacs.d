@@ -128,8 +128,8 @@
 (global-set-key (kbd "C-+")   'search-for-this-word)
 (global-set-key (kbd "C-*")   'lazy-highlight-cleanup)
 
-;; fixup-whitespace puts the "right" amount of whitespace at the point
-(global-set-key (kbd "S-SPC") 'fixup-whitespace)
+;; cycle whitespace at the point
+(global-set-key (kbd "S-SPC") 'cycle-spacing)
 ;; M-del should delete forward
 (global-set-key (kbd "M-<delete>") 'kill-word)
 
