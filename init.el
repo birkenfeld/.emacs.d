@@ -31,8 +31,8 @@
              '("elpy" . "http://jorgenschaefer.github.io/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-;;(add-to-list 'package-archives
-;; '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
 ;; Load custom variables and faces

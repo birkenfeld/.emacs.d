@@ -572,6 +572,7 @@
  '(font-latex-sectioning-2-face ((t (:inherit font-latex-sectioning-3-face :height 1.2))))
  '(header-line ((t (:inherit variable-pitch :background "#41423f" :weight bold))))
  '(hideshowvis-hidable-face ((t (:foreground "#999"))))
+ '(highlight-indentation-face ((t nil)))
  '(hs-face ((t (:box 1 :height 0.8))))
  '(hs-fringe-face ((t (:foreground "#999"))))
  '(keywiz-command-face ((t (:inherit (quote variable-pitch) :foreground "#729fcf" :weight bold :height 1.2))))
