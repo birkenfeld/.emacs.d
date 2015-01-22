@@ -313,6 +313,7 @@
  '(projectile-globally-ignored-files (quote ("TAGS" ".tags")))
  '(projectile-idle-timer-hook nil)
  '(projectile-known-projects-file "/home/gbr/.emacs.d/saved/projectile-bookmarks.eld")
+ '(projectile-mode-line (quote (:eval (format " P[%s]" (projectile-project-name)))))
  '(projectile-mode-line-lighter "P")
  '(projectile-sort-order (quote recently-active))
  '(projectile-tags-command

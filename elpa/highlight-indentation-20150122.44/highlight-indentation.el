@@ -1,7 +1,7 @@
 ;;; highlight-indentation.el --- Minor modes for highlighting indentation
 ;; Author: Anton Johansson <anton.johansson@gmail.com> - http://antonj.se
 ;; Created: Dec 15 23:42:04 2010
-;; Version: 20150121.1451
+;; Version: 20150122.44
 ;; X-Original-Version: 0.6.0
 ;; URL: https://github.com/antonj/Highlight-Indentation-for-Emacs
 ;;
@@ -190,7 +190,6 @@ from major mode"
 
 (defconst highlight-indentation-current-column-hooks
   '((post-command-hook (lambda () 
-                         (message "post command")
                          (highlight-indentation-redraw-all-windows 'highlight-indentation-current-column-overlay
                                                                    'highlight-indentation-current-column-put-overlays-region)) nil t)))
 

@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "mc-compare" "mc-compare.el" (21696 41385 694763
-;;;;;;  518000))
+;;;### (autoloads nil "mc-compare" "mc-compare.el" (21697 12111 401074
+;;;;;;  210000))
 ;;; Generated autoloads from mc-compare.el
 
 (autoload 'mc/compare-chars "mc-compare" "\
@@ -27,7 +27,7 @@ Backwards version of `mc/compare-chars-forward'.
 
 ;;;***
 
-;;;### (autoloads nil "mc-cua" "mc-cua.el" (21696 41385 684763 610000))
+;;;### (autoloads nil "mc-cua" "mc-cua.el" (21697 12111 391074 308000))
 ;;; Generated autoloads from mc-cua.el
 
 (autoload 'mc/cua-rectangle-to-multiple-cursors "mc-cua" "\
@@ -42,8 +42,19 @@ Enable interaction between multiple cursors and CUA rectangle copy & paste.
 
 ;;;***
 
-;;;### (autoloads nil "mc-remove" "mc-remove.el" (21696 41385 709763
-;;;;;;  381000))
+;;;### (autoloads nil "mc-rect" "mc-rect.el" (21697 12111 425073
+;;;;;;  975000))
+;;; Generated autoloads from mc-rect.el
+
+(autoload 'mc/rect-rectangle-to-multiple-cursors "mc-rect" "\
+Turn rectangle-mark-mode into multiple-cursors mode, keeping selections.
+
+\(fn START END)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "mc-remove" "mc-remove.el" (21697 12111 415074
+;;;;;;  73000))
 ;;; Generated autoloads from mc-remove.el
 
 (autoload 'mc/remove-current-cursor "mc-remove" "\
@@ -58,8 +69,8 @@ Remove duplicated fake cursors, including ones that overlap the real cursor.
 
 ;;;***
 
-;;;### (autoloads nil nil ("mc-extras-pkg.el" "mc-extras.el") (21696
-;;;;;;  41385 718035 899000))
+;;;### (autoloads nil nil ("mc-extras-pkg.el" "mc-extras.el") (21697
+;;;;;;  12111 441103 431000))
 
 ;;;***
 
