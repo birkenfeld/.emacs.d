@@ -1,29 +1,24 @@
 ;; VC, git, magit stuff
 
+(require 'fullframe)
+
 ;; show blame for current line
 
 (global-set-key (kbd "C-x v p") #'git-messenger:popup-message)
 
 ;; full screen vc-annotate
 
-(defun vc-annotate-quit ()
-  "Restores the previous window configuration and kills the vc-annotate buffer"
+(defun vc-annotate-quit-window ()
+  "Kills the vc-annotate buffer."
   (interactive)
-  (kill-buffer)
-  (jump-to-register :vc-annotate-fullscreen))
+  (kill-buffer))
 
 (eval-after-load "vc-annotate"
   '(progn
-     (defadvice vc-annotate (around fullscreen activate)
-       (window-configuration-to-register :vc-annotate-fullscreen)
-       ad-do-it
-       (delete-other-windows))
-
-     (define-key vc-annotate-mode-map (kbd "q") 'vc-annotate-quit)))
+     (fullframe vc-annotate vc-annotate-quit-window)
+     (define-key vc-annotate-mode-map (kbd "q") 'vc-annotate-quit-window)))
 
 (require 'magit)
-
-;; full screen magit-status
 
 (defun magit-or-monky-status (arg)
   (interactive "P")
@@ -33,18 +28,8 @@
 
 (global-set-key (kbd "C-x v x") 'magit-or-monky-status)
 
-(defadvice magit-status (around magit-fullscreen activate)
-  (window-configuration-to-register :magit-fullscreen)
-  ad-do-it
-  (delete-other-windows))
-
-(defun magit-quit-session ()
-  "Restores the previous window configuration and kills the magit buffer"
-  (interactive)
-  (kill-buffer)
-  (jump-to-register :magit-fullscreen))
-
-(define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+;; full screen magit-status
+(fullframe magit-status magit-mode-quit-window)
 
 ;; ignore whitespace
 
