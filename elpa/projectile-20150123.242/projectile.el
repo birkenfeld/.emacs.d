@@ -5,7 +5,7 @@
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
 ;; Keywords: project, convenience
-;; Version: 20150122.2153
+;; Version: 20150123.242
 ;; X-Original-Version: 0.11.0
 ;; Package-Requires: ((s "1.6.0") (f "0.17.1") (dash "1.5.0") (pkg-info "0.4"))
 
@@ -1907,12 +1907,12 @@ to run the replacement."
 (defun projectile-vc (&optional project-root)
   "Open `vc-dir' at the root of the project.
 
-For git projects `magit-status-internal' is used if available."
+For git projects `magit-status' is used if available."
   (interactive)
   (or project-root (setq project-root (projectile-project-root)))
   (if (and (eq (projectile-project-vcs project-root) 'git)
-           (fboundp 'magit-status-internal))
-      (magit-status-internal project-root)
+           (fboundp 'magit-status))
+      (magit-status project-root)
     (vc-dir project-root)))
 
 ;;;###autoload

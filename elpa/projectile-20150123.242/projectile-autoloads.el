@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "projectile" "projectile.el" (21697 60027 885068
-;;;;;;  551000))
+;;;### (autoloads nil "projectile" "projectile.el" (21698 41876 831816
+;;;;;;  298000))
 ;;; Generated autoloads from projectile.el
 
 (autoload 'projectile-cache-current-file "projectile" "\
@@ -157,7 +157,7 @@ Open `dired' at the root of the project.
 (autoload 'projectile-vc "projectile" "\
 Open `vc-dir' at the root of the project.
 
-For git projects `magit-status-internal' is used if available.
+For git projects `magit-status' is used if available.
 
 \(fn &optional PROJECT-ROOT)" t nil)
 

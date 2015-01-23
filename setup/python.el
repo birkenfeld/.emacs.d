@@ -6,6 +6,9 @@
 ;; Enable the elpy "ide" features
 (elpy-enable)
 
+;; Avoid loading highlight-indentation
+(setq elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
+
 ;; Correct indentation for elpy test function
 (function-put 'elpy-testcase 'lisp-indent-function 1)
 (function-put 'mletf* 'lisp-indent-function 1)
@@ -21,9 +24,7 @@
 
 ;; Find root in site-packages
 (defun elpy-project-find-site-packages-root ()
-  "Return site-packages root.
-
-Here, we only consider the current "
+  "Return site-packages root."
   (when (locate-dominating-file default-directory "site-packages")
     (let ((root default-directory))
       (while (file-exists-p (expand-file-name "__init__.py" (file-name-directory (directory-file-name root))))
