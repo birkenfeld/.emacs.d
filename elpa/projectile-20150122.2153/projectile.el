@@ -5,7 +5,7 @@
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
 ;; Keywords: project, convenience
-;; Version: 20150108.957
+;; Version: 20150122.2153
 ;; X-Original-Version: 0.11.0
 ;; Package-Requires: ((s "1.6.0") (f "0.17.1") (dash "1.5.0") (pkg-info "0.4"))
 
@@ -1244,6 +1244,7 @@ With a prefix ARG invalidates the cache first."
                   nil)))
     files))
 
+;;;###autoload
 (defun projectile-find-file-dwim (&optional arg)
   "Jump to a project's files using completion based on context.
 
@@ -1278,6 +1279,7 @@ the content of that directory.  If it is executed on a partial filename like
      (t (find-file (expand-file-name (projectile-completing-read "Switch to: " project-files) (projectile-project-root)))))
     (run-hooks 'projectile-find-file-hook)))
 
+;;;###autoload
 (defun projectile-find-file-dwim-other-window (&optional arg)
   "Jump to a project's files using completion based on context in other window.
 
@@ -1313,6 +1315,7 @@ is presented.
      (t (find-file-other-window (expand-file-name (projectile-completing-read "Switch to: " project-files) (projectile-project-root)))))
     (run-hooks 'projectile-find-file-hook)))
 
+;;;###autoload
 (defun projectile-find-file (&optional arg)
   "Jump to a project's file using completion.
 With a prefix ARG invalidates the cache first."
@@ -1323,6 +1326,7 @@ With a prefix ARG invalidates the cache first."
     (find-file (expand-file-name file (projectile-project-root)))
     (run-hooks 'projectile-find-file-hook)))
 
+;;;###autoload
 (defun projectile-find-file-other-window (&optional arg)
   "Jump to a project's file using completion and show it in another window.
 
@@ -2559,12 +2563,14 @@ Otherwise behave as if called interactively.
     (add-hook 'find-file-hook 'projectile-cache-projects-find-file-hook t t)
     (add-hook 'projectile-find-dir-hook 'projectile-cache-projects-find-file-hook)
     (add-hook 'find-file-hook 'projectile-visit-project-tags-table t t)
+    (add-hook 'dired-before-readin-hook 'projectile-cache-projects-find-file-hook t t)
     (ad-activate 'compilation-find-file)
     (ad-activate 'delete-file))
    (t
     (remove-hook 'find-file-hook 'projectile-cache-files-find-file-hook t)
     (remove-hook 'find-file-hook 'projectile-cache-projects-find-file-hook t)
     (remove-hook 'find-file-hook 'projectile-visit-project-tags-table t)
+    (remove-hook 'dired-before-readin-hook 'projectile-cache-projects-find-file-hook t)
     (ad-deactivate 'compilation-find-file)
     (ad-deactivate 'delete-file))))
 

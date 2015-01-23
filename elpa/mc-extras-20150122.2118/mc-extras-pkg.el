@@ -1,4 +1,4 @@
-(define-package "mc-extras" "20150122.648" "Extra functions for multiple-cursors mode."
+(define-package "mc-extras" "20150122.2118" "Extra functions for multiple-cursors mode."
   '((multiple-cursors "1.2.1"))
   :url "https://github.com/knu/mc-extras.el" :keywords
   '("editing" "cursors"))

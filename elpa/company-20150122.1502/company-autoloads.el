@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "company" "company.el" (21696 41432 64338 645000))
+;;;### (autoloads nil "company" "company.el" (21697 60030 466057
+;;;;;;  161000))
 ;;; Generated autoloads from company.el
 
 (autoload 'company-mode "company" "\
@@ -56,8 +57,8 @@ See `company-mode' for more information on Company mode.
 
 ;;;***
 
-;;;### (autoloads nil "company-abbrev" "company-abbrev.el" (21696
-;;;;;;  41432 160337 765000))
+;;;### (autoloads nil "company-abbrev" "company-abbrev.el" (21697
+;;;;;;  60030 567056 715000))
 ;;; Generated autoloads from company-abbrev.el
 
 (autoload 'company-abbrev "company-abbrev" "\
@@ -67,8 +68,8 @@ See `company-mode' for more information on Company mode.
 
 ;;;***
 
-;;;### (autoloads nil "company-bbdb" "company-bbdb.el" (21696 41432
-;;;;;;  132338 21000))
+;;;### (autoloads nil "company-bbdb" "company-bbdb.el" (21697 60030
+;;;;;;  542056 825000))
 ;;; Generated autoloads from company-bbdb.el
 
 (autoload 'company-bbdb "company-bbdb" "\
@@ -78,8 +79,8 @@ See `company-mode' for more information on Company mode.
 
 ;;;***
 
-;;;### (autoloads nil "company-css" "company-css.el" (21696 41432
-;;;;;;  59338 690000))
+;;;### (autoloads nil "company-css" "company-css.el" (21697 60030
+;;;;;;  461057 183000))
 ;;; Generated autoloads from company-css.el
 
 (autoload 'company-css "company-css" "\
@@ -89,8 +90,8 @@ See `company-mode' for more information on Company mode.
 
 ;;;***
 
-;;;### (autoloads nil "company-dabbrev" "company-dabbrev.el" (21696
-;;;;;;  41432 91338 397000))
+;;;### (autoloads nil "company-dabbrev" "company-dabbrev.el" (21697
+;;;;;;  60030 499057 15000))
 ;;; Generated autoloads from company-dabbrev.el
 
 (autoload 'company-dabbrev "company-dabbrev" "\
@@ -101,7 +102,7 @@ dabbrev-like `company-mode' completion back-end.
 ;;;***
 
 ;;;### (autoloads nil "company-dabbrev-code" "company-dabbrev-code.el"
-;;;;;;  (21696 41432 83338 470000))
+;;;;;;  (21697 60030 490057 55000))
 ;;; Generated autoloads from company-dabbrev-code.el
 
 (autoload 'company-dabbrev-code "company-dabbrev-code" "\
@@ -113,8 +114,8 @@ comments or strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-elisp" "company-elisp.el" (21696 41432
-;;;;;;  168337 692000))
+;;;### (autoloads nil "company-elisp" "company-elisp.el" (21697 60030
+;;;;;;  593056 600000))
 ;;; Generated autoloads from company-elisp.el
 
 (autoload 'company-elisp "company-elisp" "\
@@ -124,8 +125,8 @@ comments or strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-etags" "company-etags.el" (21696 41432
-;;;;;;  69338 599000))
+;;;### (autoloads nil "company-etags" "company-etags.el" (21697 60030
+;;;;;;  471057 139000))
 ;;; Generated autoloads from company-etags.el
 
 (autoload 'company-etags "company-etags" "\
@@ -135,8 +136,8 @@ comments or strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-files" "company-files.el" (21696 41432
-;;;;;;  105338 269000))
+;;;### (autoloads nil "company-files" "company-files.el" (21697 60030
+;;;;;;  508056 975000))
 ;;; Generated autoloads from company-files.el
 
 (autoload 'company-files "company-files" "\
@@ -148,8 +149,8 @@ File paths with spaces are only supported inside strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-gtags" "company-gtags.el" (21696 41432
-;;;;;;  31338 947000))
+;;;### (autoloads nil "company-gtags" "company-gtags.el" (21697 60030
+;;;;;;  439057 280000))
 ;;; Generated autoloads from company-gtags.el
 
 (autoload 'company-gtags "company-gtags" "\
@@ -159,8 +160,8 @@ File paths with spaces are only supported inside strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-ispell" "company-ispell.el" (21696
-;;;;;;  41432 164337 728000))
+;;;### (autoloads nil "company-ispell" "company-ispell.el" (21697
+;;;;;;  60030 577056 671000))
 ;;; Generated autoloads from company-ispell.el
 
 (autoload 'company-ispell "company-ispell" "\
@@ -170,8 +171,8 @@ File paths with spaces are only supported inside strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-keywords" "company-keywords.el" (21696
-;;;;;;  41432 123338 104000))
+;;;### (autoloads nil "company-keywords" "company-keywords.el" (21697
+;;;;;;  60030 522056 914000))
 ;;; Generated autoloads from company-keywords.el
 
 (autoload 'company-keywords "company-keywords" "\
@@ -181,8 +182,8 @@ File paths with spaces are only supported inside strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-nxml" "company-nxml.el" (21696 41432
-;;;;;;  142337 930000))
+;;;### (autoloads nil "company-nxml" "company-nxml.el" (21697 60030
+;;;;;;  551056 786000))
 ;;; Generated autoloads from company-nxml.el
 
 (autoload 'company-nxml "company-nxml" "\
@@ -192,8 +193,8 @@ File paths with spaces are only supported inside strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-oddmuse" "company-oddmuse.el" (21696
-;;;;;;  41432 51338 764000))
+;;;### (autoloads nil "company-oddmuse" "company-oddmuse.el" (21697
+;;;;;;  60030 453057 218000))
 ;;; Generated autoloads from company-oddmuse.el
 
 (autoload 'company-oddmuse "company-oddmuse" "\
@@ -203,8 +204,8 @@ File paths with spaces are only supported inside strings.
 
 ;;;***
 
-;;;### (autoloads nil "company-pysmell" "company-pysmell.el" (21696
-;;;;;;  41432 109338 232000))
+;;;### (autoloads nil "company-pysmell" "company-pysmell.el" (21697
+;;;;;;  60030 512056 958000))
 ;;; Generated autoloads from company-pysmell.el
 
 (autoload 'company-pysmell "company-pysmell" "\
@@ -215,8 +216,8 @@ This requires pysmell.el and pymacs.el.
 
 ;;;***
 
-;;;### (autoloads nil "company-semantic" "company-semantic.el" (21696
-;;;;;;  41432 36338 901000))
+;;;### (autoloads nil "company-semantic" "company-semantic.el" (21697
+;;;;;;  60030 443057 262000))
 ;;; Generated autoloads from company-semantic.el
 
 (autoload 'company-semantic "company-semantic" "\
@@ -226,8 +227,8 @@ This requires pysmell.el and pymacs.el.
 
 ;;;***
 
-;;;### (autoloads nil "company-tempo" "company-tempo.el" (21696 41432
-;;;;;;  87338 434000))
+;;;### (autoloads nil "company-tempo" "company-tempo.el" (21697 60030
+;;;;;;  495057 33000))
 ;;; Generated autoloads from company-tempo.el
 
 (autoload 'company-tempo "company-tempo" "\
@@ -237,8 +238,8 @@ This requires pysmell.el and pymacs.el.
 
 ;;;***
 
-;;;### (autoloads nil "company-xcode" "company-xcode.el" (21696 41432
-;;;;;;  156337 802000))
+;;;### (autoloads nil "company-xcode" "company-xcode.el" (21697 60030
+;;;;;;  562056 737000))
 ;;; Generated autoloads from company-xcode.el
 
 (autoload 'company-xcode "company-xcode" "\
@@ -249,7 +250,7 @@ This requires pysmell.el and pymacs.el.
 ;;;***
 
 ;;;### (autoloads nil "company-yasnippet" "company-yasnippet.el"
-;;;;;;  (21696 41432 146337 893000))
+;;;;;;  (21697 60030 556056 764000))
 ;;; Generated autoloads from company-yasnippet.el
 
 (autoload 'company-yasnippet "company-yasnippet" "\
@@ -281,7 +282,7 @@ shadow back-ends that come after it.  Recommended usages:
 
 ;;;### (autoloads nil nil ("company-capf.el" "company-clang.el" "company-cmake.el"
 ;;;;;;  "company-eclim.el" "company-pkg.el" "company-ropemacs.el"
-;;;;;;  "company-template.el") (21696 41432 177795 420000))
+;;;;;;  "company-template.el") (21697 60030 602102 237000))
 
 ;;;***
 
