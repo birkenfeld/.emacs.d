@@ -1,6 +1,8 @@
 *.elc
 *.pyc
 *~
+#*
+.#*
 
 saved/
 local-setup/
