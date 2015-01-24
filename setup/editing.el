@@ -130,10 +130,6 @@
 
 (setq register-preview-function #'register-preview-color)
 
-;; ido is usually less optimal for write-file
-(defalias 'write-file-original 'write-file)  ;; avoid [remap] done by ido
-(global-set-key (kbd "C-x C-w") 'write-file-original)
-
 
 ;; Multiple cursors ------------------------------------------------------------
 

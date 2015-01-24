@@ -7,8 +7,11 @@
 ;; Support file and lineno finding with "filename:linenum"
 (global-set-key (kbd "C-x C-f") 'find-file-with-linenum)
 
-;; Shortcut for reverting a buffer
-(global-set-key (kbd "C-x C-r") 'revert-buffer)
+;; Dired
+(global-set-key (kbd "C-x C-d") 'dired)
+
+;; Jump windows with ace-jump
+(global-set-key (kbd "C-x o") 'ace-window)
 
 ;; Display same buffer in other window too
 (global-set-key (kbd "C-x C-o") 'clone-indirect-buffer-other-window)
@@ -128,6 +131,10 @@
 (global-set-key (kbd "C-+")   'search-for-this-word)
 (global-set-key (kbd "C-*")   'lazy-highlight-cleanup)
 
+;; better C-a behavior: toggle indentation/start of line
+(global-set-key [remap move-beginning-of-line]
+                'prelude-move-beginning-of-line)
+
 ;; cycle whitespace at the point
 (global-set-key (kbd "S-SPC") 'cycle-spacing)
 ;; M-del should delete forward
@@ -150,8 +157,13 @@
 ;; Repeat simple and complex commands
 (global-set-key (kbd "C-.") 'repeat)
 
-;; Find everything with apropos
-(global-set-key (kbd "C-h a") 'apropos)
+;; Better C-h bindings
+(define-key 'help-command (kbd "a") 'apropos)
+(define-key 'help-command (kbd "C-f") 'find-function)
+(define-key 'help-command (kbd "C-k") 'find-function-on-key)
+(define-key 'help-command (kbd "C-v") 'find-variable)
+(define-key 'help-command (kbd "C-l") 'find-library)
+(define-key 'help-command (kbd "C-i") 'info-display-manual)
 
 ;; Copy from above lines
 (global-set-key (kbd "C-c <right>") 'copy-above-while-same)
@@ -162,6 +174,7 @@
 
 ;; Vim-like open line
 (global-set-key (kbd "C-o") 'open-line-below)
+(global-set-key (kbd "<S-return>") 'open-line-below)
 (global-set-key (kbd "C-S-o") 'open-line-above)
 
 ;; Rename buffer and file at the same time
@@ -177,8 +190,12 @@
 ;; Killing text
 (global-set-key (kbd "C-S-k") 'kill-and-retry-line)
 
-;; Use M-w for copy-line if no active region
-(global-set-key (kbd "M-w") 'save-region-or-current-line)
+;; Use M-w for easy-kill if no active region
+(global-set-key (kbd "M-w") 'easy-kill)
+
+;; ido is usually less optimal for write-file
+(defalias 'write-file-original 'write-file)  ;; avoid [remap] done by ido
+(global-set-key (kbd "C-x C-w") 'write-file-original)
 
 ;; more powerful tab-completion in minibuffer
 (add-hook 'minibuffer-setup-hook
@@ -193,6 +210,9 @@
 ;; Evaluate expression and replace anywhere
 (global-set-key (kbd "C-c C-e") 'eval-and-replace)
 (global-set-key (kbd "C-c C-j") 'eval-print-last-sexp)
+
+;; Proced
+(global-set-key (kbd "C-x p") 'proced)
 
 ;; Hide-show mode --------------------------------------------------------------
 

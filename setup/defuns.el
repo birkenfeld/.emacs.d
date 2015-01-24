@@ -232,6 +232,20 @@ returns the word count of that file."
   (forward-line -1)
   (indent-for-tab-command))
 
+(defun prelude-move-beginning-of-line (arg)
+  "Move point back to indentation or beginning of line."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
 
 (defun rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."

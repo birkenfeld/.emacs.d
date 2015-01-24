@@ -61,3 +61,5 @@
      (define-key company-active-map (kbd "<next>") 'company-select-next-page)
      (define-key company-active-map (kbd "TAB") 'company-complete-selection)
      (define-key company-active-map [tab] 'company-complete-selection)))
+
+(add-hook 'emacs-lisp-mode-hook 'company-mode)

@@ -164,9 +164,6 @@
 (add-hook 'completion-list-mode-hook 'dircolors)
 (add-hook 'buffer-menu-mode-hook 'dircolors)
 
-;; Jump windows with ace-jump
-(global-set-key (kbd "C-x o") 'ace-window)
-
 ;; Bury buffer with right-click on header line
 (global-set-key (kbd "<header-line> <mouse-3>") 'bury-selected-buffer)
 
@@ -174,6 +171,9 @@
   (interactive "e")
   (with-selected-window (posn-window (event-start event))
     (bury-buffer)))
+
+;; Ibuffer: sort by projects
+(add-hook 'ibuffer-mode-hook 'ibuffer-projectile-set-filter-groups)
 
 ;; tabbar
 ;; (require 'tabbar)
