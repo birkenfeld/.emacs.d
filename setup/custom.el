@@ -62,6 +62,7 @@
  '(ack-and-a-half-use-ido t)
  '(ack-context 0)
  '(ack-heading t)
+ '(ag-highlight-search t)
  '(ansi-color-for-comint-mode t)
  '(anzu-mode-lighter "")
  '(anzu-replace-to-string-separator "=>")

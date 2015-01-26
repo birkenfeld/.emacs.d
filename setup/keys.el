@@ -81,9 +81,12 @@
 ;; Join line with previous
 (global-set-key (kbd "C-c ^") 'join-line)
 
-;; compile/make
-;(global-set-key (kbd "<f5>")   'recompile)
-;(global-set-key (kbd "S-<f5>") 'compile)
+;; Search
+(global-set-key (kbd "<f2>") 'projectile-grep)
+(global-set-key (kbd "S-<f2>") 'projectile-ag)
+
+;; Compile project
+(global-set-key (kbd "<f5>")   'projectile-compile-project)
 
 ;; F6 stores a position in a file, S-F6 or C-F6 brings you back to this position
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
@@ -118,7 +121,7 @@
 (global-set-key (kbd "C-c n") 'global-linum-mode)
 
 ;; Global easy shortcut for occur-mode
-(global-set-key (kbd "C-c o") 'occur)
+(global-set-key (kbd "C-c o") 'occur-dwim)
 
 ;; Since M-s o isn't needed for occur, use M-s directly for word search
 (global-set-key (kbd "M-s") 'isearch-forward-symbol)

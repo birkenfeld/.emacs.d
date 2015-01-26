@@ -79,12 +79,6 @@
 (autoload 'redo "redo" nil t)
 (global-set-key (kbd "C-x U") 'redo)
 
-;; full-ack mode
-(autoload 'ack-same "full-ack" nil t)
-(autoload 'ack "full-ack" nil t)
-(global-set-key (kbd "<f2>") 'ack-same)
-(global-set-key (kbd "S-<f2>") 'ack)
-
 ;; Color dabbrev-expanded phrases
 (require 'dabbrev-highlight)
 

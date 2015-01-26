@@ -72,6 +72,17 @@ using `abort-recursive-edit'."
   (interactive)
   (isearch-yank-string (symbol-name (symbol-at-point))))
 
+(defun occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (let ((default (if (region-active-p)
+                     (buffer-substring-no-properties
+                      (region-beginning)
+                      (region-end))
+                   (symbol-name (symbol-at-point)))))
+    (when default (push default regexp-history))
+    (call-interactively 'occur)))
+
 (defun forward-char-but-not-eol ()
   (interactive)
   (if (not (looking-at "\n")) (forward-char)))
