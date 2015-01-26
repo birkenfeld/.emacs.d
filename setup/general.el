@@ -175,6 +175,9 @@
 ;; Ibuffer: sort by projects
 (add-hook 'ibuffer-mode-hook 'ibuffer-projectile-set-filter-groups)
 
+;; Automatically revert buffers (helpful with git)
+(global-auto-revert-mode t)
+
 ;; tabbar
 ;; (require 'tabbar)
 ;; (global-set-key [C-prior] 'tabbar-backward)
