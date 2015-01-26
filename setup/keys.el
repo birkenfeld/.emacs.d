@@ -252,6 +252,8 @@
 (define-key isearch-mode-map (kbd "DEL") 'isearch-del-char)
 ;; ... while C-Backspace goes back
 (define-key isearch-mode-map (kbd "<C-backspace>") 'isearch-delete-char)
+;; Zap to search string
+(define-key isearch-mode-map (kbd "M-z") 'zap-to-isearch)
 
 ;; Occur -----------------------------------------------------------------------
 
