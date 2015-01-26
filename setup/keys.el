@@ -78,9 +78,6 @@
 ;; Align code in a pretty way
 (global-set-key (kbd "C-x \\") 'align-regexp)
 
-;; Join line with previous
-(global-set-key (kbd "C-c ^") 'join-line)
-
 ;; Search
 (global-set-key (kbd "<f2>") 'projectile-grep)
 (global-set-key (kbd "S-<f2>") 'projectile-ag)
@@ -122,6 +119,9 @@
 
 ;; Global easy shortcut for occur-mode
 (global-set-key (kbd "C-c o") 'occur-dwim)
+
+;; Pop mark
+(global-set-key (kbd "C-:") 'pop-to-mark-command)
 
 ;; Since M-s o isn't needed for occur, use M-s directly for word search
 (global-set-key (kbd "M-s") 'isearch-forward-symbol)

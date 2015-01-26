@@ -140,8 +140,19 @@
 
 ;; guide-key: pop up a list of keybindings for prefixes with lots of commands
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-x v" "C-x 8" "C-x +"
-                                     "C-c p" "C-c !" "C-x RET" "C-c ," "C-c ^"))
+(setq guide-key/guide-key-sequence '("C-x 4" ;; other-window
+                                     "C-x 5" ;; other-frame
+                                     "C-x 8" ;; ucs
+                                     "C-x a" ;; abbrevs
+                                     "C-x n" ;; narrow
+                                     "C-x r" ;; registers
+                                     "C-x v" ;; VC
+                                     "C-x RET"  ;; input method
+                                     "C-c p" ;; projectile
+                                     "C-c !" ;; flycheck
+                                     "C-c ," ;; hs
+                                     "C-c ^" ;; smerge mode
+                                     ))
 (guide-key-mode 1)
 (setq guide-key/idle-delay 0.75)
 (setq guide-key/recursive-key-sequence-flag t)
