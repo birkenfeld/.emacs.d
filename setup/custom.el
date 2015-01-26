@@ -174,7 +174,7 @@
  '(flx-ido-mode nil)
  '(flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
  '(flycheck-completion-system (quote ido))
- '(flycheck-disabled-checkers (quote (python-pylint)))
+ '(flycheck-disabled-checkers (quote (python-pylint rst-sphinx)))
  '(flycheck-idle-change-delay 2)
  '(flycheck-indication-mode (quote right-fringe))
  '(flymake-no-changes-timeout 1.5)
