@@ -185,6 +185,15 @@ and the point, not include the isearch word."
               mark-active)
     (looking-at "\\_>")))
 
+(defun comment-or-uncomment-region-dwim (&optional arg)
+  "(Un)Comment active region, or the next ARG lines."
+  (interactive "*p")
+  (if mark-active
+      (call-interactively 'comment-or-uncomment-region)
+    (save-excursion
+      (let ((bol (line-beginning-position))
+            (eol (prog2 (forward-line (1- arg)) (line-end-position))))
+        (comment-or-uncomment-region bol eol)))))
 
 (defun prompt-face-color (face)
   "Repeatedly prompt for new color for a given face."
@@ -193,7 +202,6 @@ and the point, not include the isearch word."
       (setq face 'default))
   (while t
     (set-face-attribute face nil :foreground (read-color "Color: "))))
-
 
 (defun count-words-wc (&optional filename)
   "Returns the word count of the current buffer.  If `filename' is not nil,
@@ -304,7 +312,6 @@ returns the word count of that file."
           (set-buffer-modified-p nil)
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
-
 
 (defun goto-line-with-feedback ()
   "Show line numbers temporarily, while prompting for the line number input"
