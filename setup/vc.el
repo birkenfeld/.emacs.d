@@ -2,6 +2,10 @@
 
 (require 'fullframe)
 
+;; git time machine
+
+(global-set-key (kbd "C-x v t") #'git-timemachine)
+
 ;; show blame for current line
 
 (global-set-key (kbd "C-x v p") #'git-messenger:popup-message)
