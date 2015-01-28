@@ -5,7 +5,7 @@
 ;; Author: Ian Eure <ian.eure@gmail.com>
 
 ;; Keywords: languages python
-;; Version: 20140729.1117
+;; Version: 20150123.1600
 ;; X-Original-Version: 1.01
 
 ;; pylint.el is free software; you can redistribute it and/or modify it
@@ -116,7 +116,7 @@ output buffer, to go to the lines where pylint found matches.
                    'identity
                    (list pylint-command
                          (mapconcat 'identity pylint-options " ")
-                         (comint-quote-filename file)) " ")))
+                         (shell-quote-argument file)) " ")))
 
     (compilation-start command 'pylint-mode)))
 
