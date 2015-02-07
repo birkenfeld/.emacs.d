@@ -4,7 +4,7 @@
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
 ;;;### (autoloads nil "github-browse-file" "github-browse-file.el"
-;;;;;;  (21696 41407 802560 957000))
+;;;;;;  (21717 48640 121627 33000))
 ;;; Generated autoloads from github-browse-file.el
 
 (autoload 'github-browse-file "github-browse-file" "\

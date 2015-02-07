@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "bm" "bm.el" (21696 41435 104310 788000))
+;;;### (autoloads nil "bm" "bm.el" (21717 48293 145862 328000))
 ;;; Generated autoloads from bm.el
 
 (autoload 'bm-toggle "bm" "\

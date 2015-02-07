@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "test-case-mode" "test-case-mode.el" (21696
-;;;;;;  41366 120942 851000))
+;;;### (autoloads nil "test-case-mode" "test-case-mode.el" (21717
+;;;;;;  49020 219196 554000))
 ;;; Generated autoloads from test-case-mode.el
 
 (autoload 'test-case-mode "test-case-mode" "\

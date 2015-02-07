@@ -74,11 +74,9 @@
                         300
                         80
                         nil
-                        ;(* (frame-char-width)
-                        ;   (- width (length company-prefix)
-                        ;      (if (< 0 extra) extra 1)))
-                        0
-                        ))))))
+                        (* (frame-char-width)
+                           (- width (length company-prefix)
+                              (if (< 0 extra) extra 1)))))))))
 
 (defvar company-quickhelp--timer nil
   "Quickhelp idle timer.")

@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "nav-flash" "nav-flash.el" (21696 41381 802799
-;;;;;;  177000))
+;;;### (autoloads nil "nav-flash" "nav-flash.el" (21717 48756 520577
+;;;;;;  575000))
 ;;; Generated autoloads from nav-flash.el
 
 (let ((loads (get 'nav-flash 'custom-loads))) (if (member '"nav-flash" loads) nil (put 'nav-flash 'custom-loads (cons '"nav-flash" loads))))

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil nil ("keywiz.el") (21526 4074 117813 92000))
+;;;### (autoloads nil nil ("keywiz.el") (21717 48711 11779 591000))
 
 ;;;***
 

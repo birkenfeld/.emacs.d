@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "discover" "discover.el" (21698 20939 700178
-;;;;;;  690000))
+;;;### (autoloads nil "discover" "discover.el" (21717 48388 440965
+;;;;;;  762000))
 ;;; Generated autoloads from discover.el
 
 (autoload 'discover-show-context-menu "discover" "\

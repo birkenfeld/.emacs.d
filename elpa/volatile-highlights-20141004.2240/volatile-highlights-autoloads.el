@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil nil ("volatile-highlights.el") (21696 41360
-;;;;;;  971175 113000))
+;;;### (autoloads nil nil ("volatile-highlights.el") (21717 49009
+;;;;;;  571598 345000))
 
 ;;;***
 

@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "fastnav" "fastnav.el" (21696 41418 879459
-;;;;;;  461000))
+;;;### (autoloads nil "fastnav" "fastnav.el" (21717 48466 526232
+;;;;;;  18000))
 ;;; Generated autoloads from fastnav.el
 
 (autoload 'fastnav-search-char-forward "fastnav" "\

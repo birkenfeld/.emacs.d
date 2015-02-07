@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "d-mode" "d-mode.el" (21696 41428 764368 883000))
+;;;### (autoloads nil "d-mode" "d-mode.el" (21717 48352 832300 749000))
 ;;; Generated autoloads from d-mode.el
  (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
 

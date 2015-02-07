@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil nil ("smart-operator.el") (21696 41368 334039
-;;;;;;  72000))
+;;;### (autoloads nil nil ("smart-operator.el") (21717 49023 380572
+;;;;;;  645000))
 
 ;;;***
 
