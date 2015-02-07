@@ -39,9 +39,9 @@
 (volatile-highlights-mode t)
 
 ;; Move whole lines
-(require 'move-text)
-(global-set-key (kbd "<C-S-down>") 'move-text-down)
-(global-set-key (kbd "<C-S-up>") 'move-text-up)
+;(require 'move-text)
+;(global-set-key (kbd "<C-S-down>") 'move-text-down)
+;(global-set-key (kbd "<C-S-up>") 'move-text-up)
 
 ;; Martin Blais' dubious paragraphs
 (require 'dubious-paragraphs)
