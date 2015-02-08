@@ -5,7 +5,7 @@
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
 ;; Keywords: project, convenience
-;; Version: 20150201.1134
+;; Version: 20150207.1416
 ;; X-Original-Version: 0.11.0
 ;; Package-Requires: ((dash "1.5.0") (pkg-info "0.4"))
 
@@ -268,8 +268,7 @@ pattern that would have found a project root in a subdirectory."
     ".bzr"
     "_darcs"
     ".tox"
-    ".svn"
-    "build")
+    ".svn")
   "A list of directories globally ignored by projectile."
   :group 'projectile
   :type '(repeat string))
@@ -1489,6 +1488,14 @@ With a prefix ARG invalidates the cache first."
    ((funcall projectile-go-function) 'go)
    (t 'generic)))
 
+(defun projectile-project-info ()
+  "Display info for current project."
+  (interactive)
+  (message "Project dir: %s ## Project VCS: %s ## Project type: %s"
+           (projectile-project-root)
+           (projectile-project-vcs)
+           (projectile-project-type)))
+
 (defun projectile-verify-files (files)
   "Check whether all FILES exist in the current project."
   (-all? 'projectile-verify-file files))
@@ -1500,7 +1507,7 @@ Expands wildcards using `file-expand-wildcards' before checking."
 
 (defun projectile-project-vcs (&optional project-root)
   "Determine the VCS used by the project if any.
-PROJECT-ROOT is the targeted directory. If nil, use
+PROJECT-ROOT is the targeted directory.  If nil, use
 `projectile-project-root'."
   (or project-root (setq project-root (projectile-project-root)))
   (cond
@@ -2101,7 +2108,7 @@ fallback to the original function."
                 (let ((root (projectile-project-root))
                       (dirs (cons "" (projectile-current-project-dirs))))
                   (-when-let (full-filename (->> dirs
-                                                 (--map (f-join root it filename))
+                                                 (--map (expand-file-name filename (expand-file-name it root)))
                                                  (-filter #'file-exists-p)
                                                  (-first-item)))
                     (find-file-noselect full-filename))))
@@ -2478,7 +2485,7 @@ is chosen."
     (define-key map (kbd "z") 'projectile-cache-current-file)
     (define-key map (kbd "ESC") 'projectile-project-buffers-other-buffer)
     map)
-  "Keymap for Projectile commands after `projectile-keymap-prefix'")
+  "Keymap for Projectile commands after `projectile-keymap-prefix'.")
 (fset 'projectile-command-map projectile-command-map)
 
 (defvar projectile-mode-map
@@ -2514,6 +2521,7 @@ is chosen."
    ["Compile project" projectile-compile-project]
    ["Test project" projectile-test-project]
    "--"
+   ["Project info" projectile-project-info]
    ["About" projectile-version])
  "Search Files (Grep)...")
 
