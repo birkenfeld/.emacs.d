@@ -43,6 +43,9 @@
 (define-key elpy-mode-map (kbd "C-c C-b") 'pop-tag-mark)
 (define-key elpy-mode-map (kbd "M-SPC") 'company-complete)
 
+(require 'popwin)
+(add-to-list 'display-buffer-alist '("*Python Doc*" popwin:special-display-popup-window))
+
 (defun company-insert-and-complete ()
   (interactive)
   ;;  (company-complete-selection)  ; in case it's already completing
