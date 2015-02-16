@@ -117,7 +117,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("de3d74ab9f2b9b8e2cd1d9147aedd328a46d915ae0aad46f7d78e160e885e6c7" "e69004ef51b9e975f7eb8878e8bd0199f6d8025bfaabd6d386fac991fe84c082" default)))
+    ("51e40cb4ab781b28436f51bb8695ba3443c557b1a7f2ce7f4df10f4426781db2" "de3d74ab9f2b9b8e2cd1d9147aedd328a46d915ae0aad46f7d78e160e885e6c7" "e69004ef51b9e975f7eb8878e8bd0199f6d8025bfaabd6d386fac991fe84c082" default)))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)

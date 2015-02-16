@@ -71,7 +71,7 @@
   :group 'path-headerline-mode)
 
 (defvar path-headerline-excluded-buffers
-  '("*SPEEDBAR*" "*Packages*" "*Register Preview*" "*Proced*")
+  '("*SPEEDBAR*" "*Packages*" "*Register Preview*" "*Proced*" "*Python Doc*")
   "Buffers that should not get a header-line with buffer name.")
 
 (defun ph--make-header ()

@@ -119,6 +119,7 @@
                                    (,term ())))
    `(font-lock-warning-face ((,xwin (:foreground ,red-3 :background ,butter-2))
                              (,term (:foreground "red" :background "#ffd700"))))
+   `(eldoc-highlight-function-argument ((,xwin (:weight bold)) (,term ())))
    ;; Completion faces
    `(ido-only-match ((,xwin (:foreground ,cham-2))))
    `(ido-first-match ((,xwin (:weight bold :foreground ,butter-1))
