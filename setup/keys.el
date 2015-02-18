@@ -201,9 +201,7 @@
 (global-set-key (kbd "C-x C-w") 'write-file-original)
 
 ;; more powerful tab-completion in minibuffer
-(add-hook 'minibuffer-setup-hook
-          '(lambda ()
-             (define-key minibuffer-local-map "\t" 'completion-at-point)))
+(define-key minibuffer-local-map "\t" 'completion-at-point)
 
 ;; More neat bindings for C-x 8
 (global-set-key (kbd "C-x 8 t m") (lambda () (interactive) (insert "™")))
