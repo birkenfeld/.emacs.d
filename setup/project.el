@@ -56,7 +56,7 @@
   (interactive)
   (let* ((root (projectile-project-root))
          (table-file (concat root "TAGS")))
-    (message "%S %S" tags-file-name table-file)
+    ;; (message "%S %S" tags-file-name table-file)
     (when (not (equal tags-file-name table-file))
       (shell-command
        (format "ctags -f %s --languages=-HTML,JavaScript --python-kinds=-iv -e -R %s"
