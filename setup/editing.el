@@ -76,7 +76,7 @@
     ad-do-it))
 
 ;; Redo command
-(autoload 'redo "redo" nil t)
+(autoload 'redo "redo+" nil t)
 (global-set-key (kbd "C-x U") 'redo)
 
 ;; Color dabbrev-expanded phrases
