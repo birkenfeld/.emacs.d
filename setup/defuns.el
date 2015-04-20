@@ -120,7 +120,7 @@ and the point, not include the isearch word."
   (interactive)
   (let ((tag (find-tag-default)))
     (if tag (setq new-this-regex
-                  (concat "\\<" (regexp-quote tag) "\\>"))
+                  (concat "\\_<" (regexp-quote tag) "\\_>"))
       (error "point not over tag")))
   (unless (string-equal new-this-regex current-this-regex)
     (font-lock-remove-keywords
@@ -131,7 +131,7 @@ and the point, not include the isearch word."
     (font-lock-fontify-buffer)
     (message (concat "Searching for " (substring new-this-regex 2 -2))))
   (unless (search-forward-regexp current-this-regex nil t
-                                 (if (looking-at "\\<") 2 1))
+                                 (if (looking-at "\\_<") 2 1))
     (beginning-of-buffer)
     (message "search hit BOTTOM, continuing at TOP")
     (search-forward-regexp current-this-regex))
