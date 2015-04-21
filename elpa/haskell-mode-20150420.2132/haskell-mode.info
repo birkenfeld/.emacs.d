@@ -504,7 +504,7 @@ visit the ‘.cabal’ file.  If you wish, you can bind
 ‘haskell-cabal-visit-file’ to a convenient key sequence, e.g.
 
      (eval-after-load "haskell-mode"
-       (define-key haskell-mode-map (kbd "C-c v c") 'haskell-cabal-visit-file))
+       '(define-key haskell-mode-map (kbd "C-c v c") 'haskell-cabal-visit-file))
 
    TODO/WRITEME
 
@@ -609,9 +609,9 @@ Node: Compilation14634
 Node: inferior-haskell-mode17399
 Node: haskell-interactive-mode18321
 Node: haskell-cabal-mode20184
-Node: Concept index21072
-Node: Function index21820
-Node: Variable index24290
+Node: Concept index21073
+Node: Function index21821
+Node: Variable index24291
 
 End Tag Table
 

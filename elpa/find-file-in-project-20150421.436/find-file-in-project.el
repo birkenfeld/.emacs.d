@@ -5,7 +5,7 @@
 ;; Author: Phil Hagelberg, Doug Alcorn, and Will Farrington
 ;; Maintainer: Chen Bin <chenbin.sh@gmail.com>
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/FindFileInProject
-;; Package-Version: 20150419.2150
+;; Package-Version: 20150421.436
 ;; Git: git://github.com/technomancy/find-file-in-project.git
 ;; Version: 3.5
 ;; Created: 2008-03-18
@@ -101,6 +101,7 @@ May be set using .dir-locals.el. Checks each entry if set to a list.")
     ".hg"
     "cscope.files"
     "*.log"
+	"dist"
     "target"
     "node_modules"
     "bower_components"

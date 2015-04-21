@@ -1,4 +1,4 @@
-(define-package "paradox" "20150412.718" "A modern Packages Menu. Colored, with package ratings, and customizable."
+(define-package "paradox" "20150420.1229" "A modern Packages Menu. Colored, with package ratings, and customizable."
   '((emacs "24.4")
     (dash "2.6.0")
     (cl-lib "0.5")
@@ -6,7 +6,7 @@
     (let-alist "1.0.3")
     (spinner "1.0"))
   :url "http://github.com/Malabarba/paradox" :keywords
-  '("package" "packages" "mode-line"))
+  '("package" "packages"))
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; End:
