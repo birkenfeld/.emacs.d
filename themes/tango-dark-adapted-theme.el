@@ -68,6 +68,8 @@
                             (,term (:inherit nil))))
    `(highlight-symbol-face ((,xwin (:background "grey30"))
                             (,term (:inherit nil))))
+   ;; Info faces
+   `(Info-quoted ((,xwin (:foreground ,butter-1))))
    ;; Header/Mode line faces
    `(header-line ((,xwin (:inherit nil :background ,alum-5.5))))
    ;; `(mode-line ((,xwin (:inherit variable-pitch :background ,cham-0 :foreground ,alum-6
