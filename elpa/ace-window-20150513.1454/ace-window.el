@@ -5,7 +5,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; Maintainer: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/ace-window
-;; Package-Version: 20150511.935
+;; Package-Version: 20150513.1454
 ;; Version: 0.8.1
 ;; Package-Requires: ((avy "0.2.0"))
 ;; Keywords: window, location
@@ -279,7 +279,9 @@ Amend MODE-LINE to the mode line for the duration of the selection."
                    (when (eq aw-action 'exit)
                      (setq aw-action nil)))
                  (or (car wnd-list) start-window))
-                ((and (= (length wnd-list) 2) (not aw-dispatch-always))
+                ((and (= (length wnd-list) 2)
+                      (not aw-dispatch-always)
+                      (not aw-ignore-current))
                  (let ((wnd (next-window nil nil next-window-scope)))
                    (while (and (aw-ignored-p wnd)
                                (not (equal wnd start-window)))

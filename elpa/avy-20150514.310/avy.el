@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/avy
-;; Package-Version: 20150512.346
+;; Package-Version: 20150514.310
 ;; Version: 0.2.0
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: point, location
@@ -406,9 +406,10 @@ LEAF is normally ((BEG . END) . WND)."
   (let ((str (propertize
               (string (car (last path)))
               'face 'avy-lead-face))
-        (pt (if (consp (car leaf))
-                (caar leaf)
-              (car leaf)))
+        (pt (+ (if (consp (car leaf))
+                   (caar leaf)
+                 (car leaf))
+               avy--overlay-offset))
         (wnd (cdr leaf)))
     (let ((ol (make-overlay pt (1+ pt)
                             (window-buffer wnd)))
@@ -640,9 +641,13 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
             (while (< (point) (point-max))
               (unless (get-char-property
                        (max (1- (point)) ws) 'invisible)
-                (push (cons (point) (selected-window)) candidates))
+                (push (cons
+                       (if (eq avy-style 'post)
+                           (line-end-position)
+                         (line-beginning-position))
+                       (selected-window)) candidates))
               (forward-line 1))))))
-    (avy--process (nreverse candidates) #'avy--overlay-pre)))
+    (avy--process (nreverse candidates) (avy--style-fn avy-style))))
 
 ;;;###autoload
 (defun avy-goto-line (&optional arg)
@@ -692,11 +697,9 @@ ARG lines can be used."
       (save-excursion
         (save-excursion
           (goto-char start)
-          (move-end-of-line arg)
-          (kill-region start (point)))
+          (kill-whole-line))
         (insert
-         (current-kill 0)
-         "\n")))))
+         (current-kill 0))))))
 
 ;;;###autoload
 (defun avy-copy-region ()

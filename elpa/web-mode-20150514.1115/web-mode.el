@@ -3,8 +3,8 @@
 
 ;; Copyright 2011-2015 François-Xavier Bois
 
-;; Version: 11.1.05
-;; Package-Version: 20150512.2305
+;; Version: 11.1.06
+;; Package-Version: 20150514.1115
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Created: July 2011
@@ -27,7 +27,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "11.1.05"
+(defconst web-mode-version "11.1.06"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -2672,7 +2672,7 @@ the environment as needed for ac-sources, right before they're used.")
 
          ((string= web-mode-engine "template-toolkit")
           (cond
-           ((string= sub3 "[%#")
+           ((string= tagopen "[%#")
             (setq closing-string "%]"))
            (t
             (setq closing-string "%]"
@@ -10837,7 +10837,8 @@ Pos should be in a tag."
               (setq engines (append engines (list (car elt)))))
             engines))))
   (setq web-mode-content-type "html"
-        web-mode-engine engine)
+        web-mode-engine (web-mode-engine-canonical-name engine)
+        web-mode-minor-engine engine)
   (web-mode-on-engine-setted)
   (web-mode-buffer-highlight))
 
