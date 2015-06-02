@@ -1,7 +1,7 @@
 This is haskell-mode.info, produced by makeinfo version 5.2 from
 haskell-mode.texi.
 
-This manual is for Haskell mode, version 13.12
+This manual is for Haskell mode, version 13.15-git
 
    Copyright © 2013 Haskell Mode contributors.
 
@@ -587,25 +587,25 @@ Variable index
 
 
 Tag Table:
-Node: Top675
-Node: Introduction1853
-Node: Getting Help and Reporting Bugs2370
-Node: Getting Started3832
-Node: Editing Haskell Code4812
-Ref: Editing Haskell Code-Footnote-16752
-Ref: Editing Haskell Code-Footnote-26843
-Ref: Editing Haskell Code-Footnote-36902
-Node: Unicode support6986
-Node: Indentation8676
-Ref: Indentation-Footnote-112591
-Node: Declaration scanning12776
-Node: Compilation14919
-Node: Inferior Haskell interpreter17689
-Node: Interactive Haskell18619
-Node: Editing Cabal files20467
-Node: Concept index21346
-Node: Function index22095
-Node: Variable index24498
+Node: Top679
+Node: Introduction1857
+Node: Getting Help and Reporting Bugs2374
+Node: Getting Started3836
+Node: Editing Haskell Code4816
+Ref: Editing Haskell Code-Footnote-16756
+Ref: Editing Haskell Code-Footnote-26847
+Ref: Editing Haskell Code-Footnote-36906
+Node: Unicode support6990
+Node: Indentation8680
+Ref: Indentation-Footnote-112595
+Node: Declaration scanning12780
+Node: Compilation14923
+Node: Inferior Haskell interpreter17693
+Node: Interactive Haskell18623
+Node: Editing Cabal files20471
+Node: Concept index21350
+Node: Function index22099
+Node: Variable index24502
 
 End Tag Table
 

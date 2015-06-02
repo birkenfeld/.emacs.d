@@ -4,7 +4,7 @@
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
-;; Package-Version: 20150517.1305
+;; Package-Version: 20150602.557
 ;; Keywords: project, convenience
 ;; Version: 0.13.0-cvs
 ;; Package-Requires: ((dash "1.5.0") (pkg-info "0.4"))
@@ -1725,7 +1725,7 @@ to `projectile-grep-default-files'."
         ;; paths for find-grep should relative and without trailing /
         (let ((grep-find-ignored-directories
                (-union (--map (directory-file-name (file-relative-name it root-dir))
-                              (cdr (projectile-ignored-directories)))
+                              (projectile-ignored-directories))
                        grep-find-ignored-directories))
               (grep-find-ignored-files
                (-union (-map (lambda (file)

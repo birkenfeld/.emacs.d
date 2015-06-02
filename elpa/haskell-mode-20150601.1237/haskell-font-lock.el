@@ -253,8 +253,10 @@ Returns keywords suitable for `font-lock-keywords'."
             (,topdecl-var  (1 'haskell-definition-face))
             (,topdecl-var2 (2 'haskell-definition-face))
             (,topdecl-bangpat  (1 'haskell-definition-face))
-            (,topdecl-sym  (2 'haskell-definition-face))
-            (,topdecl-sym2 (1 'haskell-definition-face))
+            (,topdecl-sym  (2 (unless (member (match-string 2) '("\\" "=" "->" "→" "<-" "←" "::" "∷" "," ";" "`"))
+                                'haskell-definition-face)))
+            (,topdecl-sym2 (1 (unless (member (match-string 1) '("\\" "=" "->" "→" "<-" "←" "::" "∷" "," ";" "`"))
+                                'haskell-definition-face)))
 
             ;; These four are debatable...
             ("(\\(,*\\|->\\))" 0 'haskell-constructor-face)
@@ -269,7 +271,8 @@ Returns keywords suitable for `font-lock-keywords'."
 
             (,conid 0 'haskell-constructor-face)
 
-            (,sym 0 (if (eq (char-after (match-beginning 0)) ?:)
+            (,sym 0 (if (and (eq (char-after (match-beginning 0)) ?:)
+                             (not (member (match-string 0) '("::" "∷"))))
                         'haskell-constructor-face
                       'haskell-operator-face))))
     keywords))
@@ -330,13 +333,17 @@ that should be commented under LaTeX-style literate scripts."
     ;; This still gets fooled with "'"'"'"'"'"', but ... oh well.
     ("\\Sw\\('\\)\\([^\\'\n]\\|\\\\.[^\\'\n \"}]*\\)\\('\\)" (1 "\"") (3 "\""))
     ;; Deal with instances of `--' which don't form a comment
-    ("[!#$%&*+./:<=>?@^|~\\-]\\{3,\\}" (0 (cond ((or (nth 3 (syntax-ppss)) (numberp (nth 4 (syntax-ppss))))
-                              ;; There are no such instances inside nestable comments or strings
+    ("[!#$%&*+./:<=>?@^|~\\]*--[!#$%&*+./:<=>?@^|~\\-]*" (0 (cond ((or (nth 3 (syntax-ppss)) (numberp (nth 4 (syntax-ppss))))
+                              ;; There are no such instances inside
+                              ;; nestable comments or strings
                               nil)
                              ((string-match "\\`-*\\'" (match-string 0))
-                              ;; Sequence of hyphens.  Do nothing in
+                              ;; Sequence of hyphens. Do nothing in
                               ;; case of things like `{---'.
                               nil)
+                             ((string-match "\\`[^-]+--.*" (match-string 0))
+                              ;; Extra characters before comment starts
+                              ".")
                              (t ".")))) ; other symbol sequence
 
     ;; Implement Haskell Report 'escape' and 'gap' rules. Backslash

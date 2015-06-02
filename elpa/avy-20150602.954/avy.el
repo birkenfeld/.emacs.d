@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/avy
-;; Package-Version: 20150526.759
+;; Package-Version: 20150602.954
 ;; Version: 0.2.1
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: point, location
@@ -130,6 +130,10 @@ When nil, punctuation chars will not be matched.
 
 \"[!-/:-@[-`{-~]\" will match all printable punctuation chars."
   :type 'regexp)
+
+(defcustom avy-ignored-modes '(image-mode doc-view-mode pdf-view-mode)
+  "List of modes to ignore when searching for candidates.
+Typically, these modes don't use the text representation.")
 
 (defface avy-lead-face-0
   '((t (:foreground "white" :background "#4f57f9")))
@@ -372,7 +376,7 @@ multiple DISPLAY-FN invokations."
                             avy-all-windows)))
      (dolist (wnd (avy-window-list))
        (with-selected-window wnd
-         (unless (memq major-mode '(image-mode doc-view-mode))
+         (unless (memq major-mode avy-ignored-modes)
            ,@body)))))
 
 (defmacro avy--with-avy-keys (command &rest body)
@@ -396,7 +400,11 @@ POS is either a position or (BEG . END)."
         ((eq x 'exit))
 
         (t
-         (select-window (cdr x))
+         (let* ((window (cdr x))
+                (frame (window-frame window)))
+           (unless (equal frame (selected-frame))
+             (select-frame-set-input-focus frame))
+           (select-window window))
          (let ((pt (car x)))
            (when (consp pt)
              (setq pt (car pt)))
@@ -674,22 +682,17 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
      avy-style)))
 
 ;;;###autoload
-(defun avy-goto-char-in-line (char &optional arg)
-  "Jump to the currently visible CHAR in the current line.
-The window scope is determined by `avy-all-windows' (ARG negates it)."
-  (interactive (list (read-char "char: ")
-                     current-prefix-arg))
-  (let ((avy-all-windows
-         (if arg
-             (not avy-all-windows)
-           avy-all-windows)))
+(defun avy-goto-char-in-line (char)
+  "Jump to the currently visible CHAR in the current line."
+  (interactive (list (read-char "char: ")))
+  (let ((avy-all-windows nil))
     (avy--with-avy-keys avy-goto-char
       (avy--goto
        (avy--process
         (save-restriction
           (narrow-to-region (line-beginning-position)
                             (line-end-position))
-          (avy--regex-candidates (string char)))
+          (avy--regex-candidates (regexp-quote (string char))))
         (avy--style-fn avy-style))))))
 
 ;;;###autoload
