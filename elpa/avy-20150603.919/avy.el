@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/avy
-;; Package-Version: 20150602.954
+;; Package-Version: 20150603.919
 ;; Version: 0.2.1
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.5"))
 ;; Keywords: point, location
@@ -143,6 +143,10 @@ Typically, these modes don't use the text representation.")
     '((t (:foreground "white" :background "gray")))
   "Face used for matched leading chars.")
 
+(defface avy-lead-face-2
+    '((t (:foreground "white" :background "#f86bf3")))
+  "Face used for leading chars.")
+
 (defface avy-lead-face
   '((t (:foreground "white" :background "#e52b50")))
   "Face used for the leading chars.")
@@ -150,6 +154,14 @@ Typically, these modes don't use the text representation.")
 (defface avy-background-face
   '((t (:foreground "gray40")))
   "Face for whole window background during selection.")
+
+(defconst avy-lead-faces '(avy-lead-face
+                           avy-lead-face-0
+                           avy-lead-face-2
+                           avy-lead-face
+                           avy-lead-face-0
+                           avy-lead-face-2)
+  "Face sequence for `avy--overlay-at-full'.")
 
 ;;* Internals
 ;;** Tree
@@ -567,8 +579,16 @@ LEAF is normally ((BEG . END) . WND)."
                 (car leaf)))
          (wnd (cdr leaf))
          oov)
-    (when (or avy-highlight-first (> (length str) 1))
-      (set-text-properties 0 1 '(face avy-lead-face-0) str))
+    (dotimes (i len)
+      (set-text-properties (- len i 1) (- len i)
+                           `(face ,(nth i avy-lead-faces))
+                           str))
+    (when (eq avy-style 'de-bruijn)
+      (setq str (concat
+                 (propertize avy-current-path
+                             'face 'avy-lead-face-1)
+                 str))
+      (setq len (length str)))
     (with-selected-window wnd
       (save-excursion
         (goto-char beg)

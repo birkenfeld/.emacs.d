@@ -1,6 +1,6 @@
 ;;; markdown-mode.el --- Emacs Major mode for Markdown-formatted text files
 
-;; Copyright (C) 2007-2014 Jason R. Blevins <jrblevin@sdf.org>
+;; Copyright (C) 2007-2015 Jason R. Blevins <jrblevin@sdf.org>
 ;; Copyright (C) 2007, 2009 Edward O'Connor <ted@oconnor.cx>
 ;; Copyright (C) 2007 Conal Elliott <conal@conal.net>
 ;; Copyright (C) 2008 Greg Bognar <greg_bognar@hms.harvard.edu>
@@ -23,12 +23,13 @@
 ;; Copyright (C) 2012 Peter Jones <pjones@pmade.com>
 ;; Copyright (C) 2013 Matus Goljer <dota.keys@gmail.com>
 ;; Copyright (C) 2015 Google, Inc. (Contributor: Samuel Freilich <sfreilich@google.com>)
+;; Copyright (C) 2015 Antonis Kanouras <antonis@metadosis.gr>
 
 ;; Author: Jason R. Blevins <jrblevin@sdf.org>
 ;; Maintainer: Jason R. Blevins <jrblevin@sdf.org>
 ;; Created: May 24, 2007
 ;; Version: 2.0
-;; Package-Version: 20150601.2108
+;; Package-Version: 20150603.1042
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: http://jblevins.org/projects/markdown-mode/
 
@@ -458,9 +459,9 @@
 ;;     Markdown previewer which is capable of opening Markdown source files
 ;;     directly (default: `nil').  This command will be called
 ;;     with a single argument, the filename of the current buffer.
-;;     A representative program is the Mac app [Marked][], a
-;;     live-updating MultiMarkdown previewer which has a command line
-;;     utility at `/usr/local/bin/mark`.
+;;     A representative program is the Mac app [Marked 2][], a
+;;     live-updating Markdown previewer which can be [called from a
+;;     simple shell script](http://jblevins.org/log/marked-2-command).
 ;;
 ;;   * `markdown-hr-strings' - list of strings to use when inserting
 ;;     horizontal rules.  Different strings will not be distinguished
@@ -495,8 +496,8 @@
 ;;     support by default.  Math support can be toggled later using
 ;;     the function `markdown-enable-math'."
 ;;
-;;   * `markdown-css-path' - CSS file to link to in XHTML output
-;;     (default: `""`).
+;;   * `markdown-css-paths' - CSS files to link to in XHTML output
+;;     (default: `nil`).
 ;;
 ;;   * `markdown-content-type' - when set to a nonempty string, an
 ;;     `http-equiv` attribute will be included in the XHTML `<head>`
@@ -553,7 +554,7 @@
 ;; or by using the "Markdown Faces" link at the bottom of the mode
 ;; customization screen.
 ;;
-;; [Marked]: https://itunes.apple.com/us/app/marked/id448925439?ls=1&mt=12&partnerId=30&siteID=GpHp3Acs1Yo
+;; [Marked 2]: https://itunes.apple.com/us/app/marked-2/id890031187?mt=12&uo=4&at=11l5Vs&ct=mm
 
 ;;; Extensions:
 
@@ -610,13 +611,18 @@
 ;; the code block.  You will be prompted for the name of the language,
 ;; but may press enter to continue without naming a language.
 ;;
+;; Similarly, strike through text is supoorted in GFM mode and can be
+;; inserted (and toggled) using `C-c C-s d`. Following the mnemonics
+;; for the other style keybindings, the letter `d` coincides with the
+;; HTML tag `<del>`.
+;;
 ;; For a more complete GitHub Flavored Markdown experience, consider
 ;; adding README.md to your `auto-mode-alist':
 ;;
 ;;     (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 ;;
 ;; For GFM preview can be powered by setting `markdown-command' to
-;; use [Docter][].  This may also be configured to work with [Marked][]
+;; use [Docter][].  This may also be configured to work with [Marked 2][]
 ;; for `markdown-open-command'.
 ;;
 ;; [GFM]: http://github.github.com/github-flavored-markdown/
@@ -699,7 +705,13 @@
 ;;   * Gunnar Franke <Gunnar.Franke@gmx.de> for a completion bug report.
 ;;   * David Glasser <glasser@meteor.com> for a `paragraph-separate' fix.
 ;;   * Daniel Brotsky <dev@brotsky.com> for better auto-fill defaults.
-;;   * Samuel Freilich <sfreilich@google.com> for improved list item filling.
+;;   * Samuel Freilich <sfreilich@google.com> for improved filling
+;;     behavior regarding list items, footnotes, and reference
+;;     definitions, improved killing of footnotes, and numerous other
+;;     tests and bug fixes.
+;;   * Antonis Kanouras <antonis@metadosis.gr> for strike through support.
+;;   * Tim Visher <tim.visher@gmail.com> for multiple CSS files and other
+;;     general improvements.
 
 ;;; Bugs:
 
@@ -863,10 +875,10 @@ or \\[markdown-enable-math]."
   :type 'boolean
   :safe 'booleanp)
 
-(defcustom markdown-css-path ""
+(defcustom markdown-css-paths nil
   "URL of CSS file to link to in the output XHTML."
   :group 'markdown
-  :type 'string)
+  :type 'list)
 
 (defcustom markdown-content-type ""
   "Content type string for the http-equiv header in XHTML output.
@@ -923,6 +935,9 @@ and `iso-latin-1'.  Use `list-coding-systems' for more choices."
 
 (defvar markdown-bold-face 'markdown-bold-face
   "Face name to use for bold text.")
+
+(defvar markdown-strike-through-face 'markdown-strike-through-face
+  "Face name to use for strike-through text.")
 
 (defvar markdown-header-delimiter-face 'markdown-header-delimiter-face
   "Face name to use as a base for header delimiters.")
@@ -1012,6 +1027,11 @@ and `iso-latin-1'.  Use `list-coding-systems' for more choices."
 (defface markdown-bold-face
   '((t (:inherit font-lock-variable-name-face :weight bold)))
   "Face for bold text."
+  :group 'markdown-faces)
+
+(defface markdown-strike-through-face
+  '((t (:inherit font-lock-variable-name-face :strike-through t)))
+  "Face for strike-through text."
   :group 'markdown-faces)
 
 (defface markdown-header-rule-face
@@ -1246,6 +1266,15 @@ Group 4 matches the text inside the delimiters.")
   "Regular expression for matching italic text.
 Group 1 matches the character before the opening asterisk or
 underscore, if any, ensuring that it is not a backslash escape.
+Group 2 matches the entire expression, including delimiters.
+Groups 3 and 5 matches the opening and closing delimiters.
+Group 4 matches the text inside the delimiters.")
+
+(defconst markdown-regex-strike-through
+  "\\(^\\|[^\\]\\)\\(\\(~~\\)\\([^ \n\t\\]\\|[^ \n\t]\\(?:.\\|\n[^\n]\\)*?[^\\ ]\\)\\(~~\\)\\)"
+  "Regular expression for matching strike-through text.
+Group 1 matches the character before the opening tilde, if any,
+ensuring that it is not a backslash escape.
 Group 2 matches the entire expression, including delimiters.
 Groups 3 and 5 matches the opening and closing delimiters.
 Group 4 matches the text inside the delimiters.")
@@ -2138,6 +2167,25 @@ insert italic delimiters and place the cursor in between them."
           (markdown-unwrap-thing-at-point nil 2 4)
         (markdown-wrap-or-insert delim delim 'word nil nil)))))
 
+(defun markdown-insert-strike-through ()
+  "Insert markup to make a region or word strike-through.
+If there is an active region, make the region strike-through.  If the point
+is at a non-bold word, make the word strike-through.  If the point is at a
+strike-through word or phrase, remove the strike-through markup.  Otherwise,
+simply insert bold delimiters and place the cursor in between them."
+  (interactive)
+  (let ((delim "~~"))
+    (if (markdown-use-region-p)
+        ;; Active region
+        (let ((bounds (markdown-unwrap-things-in-region
+                       (region-beginning) (region-end)
+                       markdown-regex-strike-through 2 4)))
+          (markdown-wrap-or-insert delim delim nil (car bounds) (cdr bounds)))
+      ;; Strike-through markup removal, strike-through word at point, or empty markup insertion
+      (if (thing-at-point-looking-at markdown-regex-strike-through)
+          (markdown-unwrap-thing-at-point nil 2 4)
+        (markdown-wrap-or-insert delim delim 'word nil nil)))))
+
 (defun markdown-insert-code ()
   "Insert markup to make a region or word an inline code fragment.
 If there is an active region, make the region an inline code
@@ -2810,6 +2858,10 @@ text to kill ring), and list items."
      ((thing-at-point-looking-at markdown-regex-italic)
       (kill-new (match-string 4))
       (delete-region (match-beginning 2) (match-end 2)))
+     ;; Strike-through
+     ((thing-at-point-looking-at markdown-regex-strike-through)
+      (kill-new (match-string 4))
+      (delete-region (match-beginning 2) (match-end 2)))
      ;; Footnote marker (add footnote text to kill ring)
      ((thing-at-point-looking-at markdown-regex-footnote)
       (markdown-footnote-kill))
@@ -3284,6 +3336,7 @@ Assumes match data is available for `markdown-regex-italic'."
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map markdown-mode-map)
     (define-key map (kbd "C-c C-s P") 'markdown-insert-gfm-code-block)
+    (define-key map (kbd "C-c C-s d") 'markdown-insert-strike-through)
     map)
   "Keymap for `gfm-mode'.
 See also `markdown-mode-map'.")
@@ -3321,6 +3374,7 @@ See also `markdown-mode-map'.")
     "---"
     ["Bold" markdown-insert-bold]
     ["Italic" markdown-insert-italic]
+    ["Strike-through" markdown-insert-strike-through]
     ["Blockquote" markdown-insert-blockquote]
     ["Preformatted" markdown-insert-pre]
     ["Code" markdown-insert-code]
@@ -4213,6 +4267,11 @@ Standalone XHTML output is identified by an occurrence of
    (save-excursion (goto-char (point-min)) (forward-line 4) (point))
    t))
 
+(defun markdown-stylesheet-link-string (stylesheet-path)
+  (concat "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\""
+          stylesheet-path
+          "\"  />"))
+
 (defun markdown-add-xhtml-header-and-footer (title)
   "Wrap XHTML header and footer with given TITLE around current buffer."
   (insert "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
@@ -4235,10 +4294,8 @@ Standalone XHTML output is identified by an occurrence of
                (coding-system-get buffer-file-coding-system
                                   'mime-charset))
           "iso-8859-1"))))
-  (if (> (length markdown-css-path) 0)
-      (insert "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\""
-              markdown-css-path
-              "\"  />\n"))
+  (if (> (length markdown-css-paths) 0)
+      (insert (mapconcat 'markdown-stylesheet-link-string markdown-css-paths "\n")))
   (when (> (length markdown-xhtml-header-content) 0)
     (insert markdown-xhtml-header-content))
   (insert "\n</head>\n\n"
@@ -4300,7 +4357,7 @@ current filename, but with the extension removed and replaced with .html."
 (defun markdown-export-and-preview ()
   "Export to XHTML using `markdown-export' and browse the resulting file."
   (interactive)
-  (browse-url (markdown-export)))
+  (browse-url-of-file (markdown-export)))
 
 (defun markdown-open ()
   "Open file for the current buffer with `markdown-open-command'."
@@ -4728,6 +4785,11 @@ if ARG is omitted or nil."
   ;; Indentation
   (setq indent-line-function markdown-indent-function)
 
+  ;; Backwards compatibility with markdown-css-path
+  (when (boundp 'markdown-css-path)
+    (warn "markdown-css-path is deprecated, see markdown-css-paths.")
+    (add-to-list 'markdown-css-paths markdown-css-path))
+
   ;; Prepare hooks for XEmacs compatibility
   (when (featurep 'xemacs)
     (make-local-hook 'after-change-functions)
@@ -4767,7 +4829,8 @@ if ARG is omitted or nil."
     (cons 'markdown-match-gfm-code-blocks '((1 markdown-pre-face)
                                             (2 markdown-language-keyword-face t t)
                                             (3 markdown-pre-face)
-                                            (4 markdown-pre-face))))
+                                            (4 markdown-pre-face)))
+    (cons markdown-regex-strike-through '(2 markdown-strike-through-face)))
    ;; Basic Markdown features (excluding possibly overridden ones)
    markdown-mode-font-lock-keywords-basic
    ;; GFM features to match last
