@@ -7,5 +7,20 @@
 
 (add-hook 'rust-mode-hook #'flycheck-rust-setup)
 
-; this does add-hook already
-(eval-after-load "rust-mode" '(require 'racer))
+(defun compile-now ()
+  (interactive)
+  (compile compile-command))
+
+(eval-after-load "rust-mode"
+  '(progn
+
+     ;; Racer setup: this does add-hook already
+     (require 'racer)
+     (racer-activate)
+
+     (define-key rust-mode-map (kbd "TAB") 'racer-complete-or-indent)
+     (define-key rust-mode-map (kbd "M-.") 'racer-find-definition)
+
+     ;; some bindings
+     (define-key rust-mode-map (kbd "C-c C-c") 'compile-now)
+     ))

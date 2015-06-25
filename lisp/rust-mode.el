@@ -333,7 +333,7 @@
 (defun regexp-opt-symbols (words)
   (concat "\\_<" (regexp-opt words t) "\\_>"))
 
-(set-variable 'rust-mode-font-lock-keywords
+(defvar rust-mode-font-lock-keywords
   (append
    `(
      ;; Keywords proper

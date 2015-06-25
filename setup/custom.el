@@ -301,7 +301,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm autopair auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm autopair auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -336,7 +336,7 @@
  '(python-skeleton-autoinsert nil)
  '(python-use-skeletons nil)
  '(racer-cmd "/home/gbr/devel/ext/racer/target/release/racer")
- '(racer-rust-src-path "/tmp/rustc-1.0.0/src")
+ '(racer-rust-src-path "~/devel/ext/rustc-nightly/src")
  '(recentf-max-saved-items 200)
  '(recentf-menu-open-all-flag t)
  '(recentf-mode t)
