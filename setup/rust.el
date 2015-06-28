@@ -16,7 +16,7 @@
 
      ;; Racer setup: this does add-hook already
      (require 'racer)
-     (racer-activate)
+     (add-hook 'rust-mode-hook 'racer-activate)
 
      (define-key rust-mode-map (kbd "TAB") 'racer-complete-or-indent)
      (define-key rust-mode-map (kbd "M-.") 'racer-find-definition)
