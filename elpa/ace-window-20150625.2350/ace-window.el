@@ -5,7 +5,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; Maintainer: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/ace-window
-;; Package-Version: 20150619.637
+;; Package-Version: 20150625.2350
 ;; Version: 0.9.0
 ;; Package-Requires: ((avy "0.2.0"))
 ;; Keywords: window, location
@@ -310,6 +310,7 @@ Amend MODE-LINE to the mode line for the duration of the selection."
                    (remove-hook 'post-command-hook 'helm--maybe-update-keymap)
                    (unwind-protect
                         (let* ((avy-handler-function aw-dispatch-function)
+                               (avy-translate-char-function #'identity)
                                (res (avy-read (avy-tree candidate-list aw-keys)
                                               #'aw--lead-overlay
                                               #'avy--remove-leading-chars)))

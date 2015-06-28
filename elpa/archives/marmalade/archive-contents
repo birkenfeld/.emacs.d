@@ -692,6 +692,9 @@
 		(magit
 		 (0 8 1)))
 	       "Saner defaults and goodies." tar])
+ (ssh-file-modes .
+		 [(1 20150626)
+		  nil "major modes for ssh authorized_keys and known_hosts files" single])
  (ssh .
       [(1 2)
        nil "Support for remote logins using ssh." single])
@@ -3259,7 +3262,7 @@
        (2 2 0)))
      "Modern API for working with files and directories" single])
  (eyebrowse .
-	    [(0 6 5)
+	    [(0 6 6)
 	     ((dash
 	       (2 7 0))
 	      (emacs
