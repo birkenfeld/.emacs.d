@@ -68,10 +68,7 @@
     (if current-prefix-arg
         (call-interactively #'find-tag)
       (tags-completion-table)
-      (let (tag-names)
-        (mapatoms (lambda (x)
-                    (push (prin1-to-string x t) tag-names))
-                  tags-completion-table)
+      (let ((tag-names (mapcar (lambda (x) (prin1-to-string x t)) tags-completion-table)))
         (find-tag (projectile-completing-read "Find tag: " tag-names))))))
 
 (defun projectile-find-next-tag ()
