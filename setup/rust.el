@@ -12,13 +12,8 @@
   (compile compile-command))
 
 (defun my-rust-mode-hook ()
-  (push '("::" . ?∷) prettify-symbols-alist)
-  (push '("!=" . ?≠) prettify-symbols-alist)
-  (push '("<=" . ?≤) prettify-symbols-alist)
-  (push '(">=" . ?≥) prettify-symbols-alist)
-  (push '("&&" . ?∧) prettify-symbols-alist)
-  (push '("||" . ?∨) prettify-symbols-alist)
-  (prettify-symbols-mode 1))
+
+  )
 
 (eval-after-load "rust-mode"
   '(progn
