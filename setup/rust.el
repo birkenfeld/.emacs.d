@@ -5,14 +5,28 @@
       (append '(("\\.rs$" . rust-mode))
               auto-mode-alist))
 
-(add-hook 'rust-mode-hook #'flycheck-rust-setup)
-
 (defun compile-now ()
   (interactive)
   (compile compile-command))
 
 (defun my-rust-mode-hook ()
+  ;; Enable nice electric pairs
+  (setq autopair-extra-pairs `(:code ((?< . ?>))))
+  (autopair-mode 1)
 
+  ;; Highlight whitespace mistakes
+  (setq whitespace-line-column 100)
+  (setq whitespace-style '(face trailing tabs lines-tail empty))
+  (require 'whitespace)
+  (whitespace-mode 1)
+
+  ;; Highlight symbol at point
+  (require 'highlight-symbol)
+  (highlight-symbol-mode 1)
+
+  ;; Flycheck
+  (flycheck-rust-setup)
+  (flycheck-mode 1)
   )
 
 (eval-after-load "rust-mode"

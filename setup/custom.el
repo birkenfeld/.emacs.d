@@ -355,6 +355,8 @@
  '(rst-level-face-base-light 85)
  '(rst-level-face-step-light -7)
  '(rst-mode-lazy nil)
+ '(rust-blink-matching-angle-brackets nil)
+ '(rust-indent-method-chain t)
  '(save-abbrevs (quote silently))
  '(save-interprogram-paste-before-kill t)
  '(save-place-file "~/.emacs.d/saved/places")
