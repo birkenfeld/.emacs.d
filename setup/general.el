@@ -189,6 +189,18 @@
 ;; Automatically revert buffers (helpful with git)
 (global-auto-revert-mode t)
 
+;; Save on switching away from Emacs
+(defun save-all ()
+  (interactive)
+  (save-some-buffers t))
+(add-hook 'focus-out-hook 'save-all)
+
+;; No query about running processes
+(require 'cl)
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+           (flet ((process-list ())) ad-do-it))
+
+
 ;; tabbar
 ;; (require 'tabbar)
 ;; (global-set-key [C-prior] 'tabbar-backward)
