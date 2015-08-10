@@ -472,3 +472,15 @@ region-end is used."
   (while (not (looking-at "}"))
     (join-line -1))
   (back-to-indentation))
+
+(defun comment-move-before-line ()
+  "Move an inline comment to a line of its own before the current line."
+  (interactive)
+  (save-excursion
+    (let ((old-kill-ring kill-ring))
+      (comment-kill 1)
+      (move-end-of-line -1)
+      (newline-and-indent)
+      (yank)
+      (comment-indent)
+      (setq kill-ring old-kill-ring))))

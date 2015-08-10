@@ -136,6 +136,7 @@
          (concat "python " buffer-file-name)))
 
   (define-key python-mode-map (kbd "M-q") 'python-fill-paragraph)
+  (define-key python-mode-map (kbd "C-c #") 'comment-move-before-line)
 
   ;; set up hide-show mode
   (hs-minor-mode)
