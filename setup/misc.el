@@ -137,7 +137,13 @@
                (lambda ()
                  (define-key markdown-mode-map (kbd "<tab>") 'yas-expand)
                  (setq imenu-generic-expression
-                       markdown-imenu-generic-expression)))))
+                       markdown-imenu-generic-expression)))
+
+     (define-key markdown-mode-map (kbd "<M-down>") nil)
+     (define-key markdown-mode-map (kbd "<M-up>") nil)
+     (define-key markdown-mode-map (kbd "<M-right>") nil)
+     (define-key markdown-mode-map (kbd "<M-left>") nil)
+     ))
 
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
