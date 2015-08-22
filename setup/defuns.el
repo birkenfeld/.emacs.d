@@ -130,8 +130,10 @@ and the point, not include the isearch word."
     (setq current-this-regex new-this-regex)
     (font-lock-fontify-buffer)
     (message (concat "Searching for " (substring new-this-regex 2 -2))))
-  (unless (search-forward-regexp current-this-regex nil t
-                                 (if (looking-at "\\_<") 2 1))
+  (unless
+      (let ((case-fold-search nil))
+        (search-forward-regexp current-this-regex nil t
+                               (if (looking-at "\\_<") 2 1)))
     (beginning-of-buffer)
     (message "search hit BOTTOM, continuing at TOP")
     (search-forward-regexp current-this-regex))
