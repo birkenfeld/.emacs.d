@@ -24,6 +24,11 @@
   (require 'highlight-symbol)
   (highlight-symbol-mode 1)
 
+  ;; Racer
+  (company-mode 1)
+  (racer-mode 1)
+  (eldoc-mode 1)
+
   ;; Flycheck
   (flycheck-rust-setup)
   (flycheck-mode 1)
@@ -34,11 +39,17 @@
 
      ;; Racer setup: this does add-hook already
      (require 'racer)
-     (add-hook 'rust-mode-hook #'racer-activate)
      (add-hook 'rust-mode-hook #'my-rust-mode-hook)
+     (diminish 'racer-mode " R")
 
-     (define-key rust-mode-map (kbd "TAB") 'racer-complete-or-indent)
-     (define-key rust-mode-map (kbd "M-.") 'racer-find-definition)
+     ;; Small completion fix
+     (defun racer-complete--annotation (arg)
+       "Return an annotation for completion candidate ARG."
+       (format "%s" (get-text-property 0 'matchtype arg)))
+
+     (define-key racer-mode-map (kbd "TAB") 'company-indent-or-complete-common)
+     (define-key racer-mode-map (kbd ".") 'company-insert-and-complete)
+     (define-key racer-mode-map (kbd ":") 'company-insert-and-complete)
 
      ;; some bindings
      (define-key rust-mode-map (kbd "C-c C-c") 'compile-now)
