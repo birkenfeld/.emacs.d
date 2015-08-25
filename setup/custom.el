@@ -99,6 +99,8 @@
  '(company-idle-delay 1)
  '(company-quickhelp-delay 0.25)
  '(company-quickhelp-mode t)
+ '(company-require-match nil)
+ '(company-show-numbers t)
  '(company-tooltip-align-annotations t)
  '(company-tooltip-minimum-width 40)
  '(compilation-ask-about-save nil)

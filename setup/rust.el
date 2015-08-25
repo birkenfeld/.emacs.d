@@ -42,11 +42,6 @@
      (add-hook 'rust-mode-hook #'my-rust-mode-hook)
      (diminish 'racer-mode " R")
 
-     ;; Small completion fix
-     (defun racer-complete--annotation (arg)
-       "Return an annotation for completion candidate ARG."
-       (format "%s" (get-text-property 0 'matchtype arg)))
-
      (define-key racer-mode-map (kbd "TAB") 'company-indent-or-complete-common)
      (define-key racer-mode-map (kbd ".") 'company-insert-and-complete)
      (define-key racer-mode-map (kbd ":") 'company-insert-and-complete)
