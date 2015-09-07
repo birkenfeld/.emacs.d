@@ -337,7 +337,7 @@
  '(python-indent-trigger-commands (quote (indent-for-tab-command yas-expand)))
  '(python-skeleton-autoinsert nil)
  '(python-use-skeletons nil)
- '(racer-cmd "/home/gbr/devel/ext/racer/target/release/racer")
+ '(racer-cmd "/home/gbr/devel/racer/target/release/racer")
  '(racer-rust-src-path "~/devel/ext/rust/src")
  '(recentf-max-saved-items 200)
  '(recentf-menu-open-all-flag t)
