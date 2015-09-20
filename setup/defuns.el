@@ -124,9 +124,9 @@ and the point, not include the isearch word."
       (error "point not over tag")))
   (unless (string-equal new-this-regex current-this-regex)
     (font-lock-remove-keywords
-     nil (list (list current-this-regex 0 'lazy-highlight-face t)))
+     nil (list (list current-this-regex 0 'lazy-highlight-face 'prepend)))
     (font-lock-add-keywords
-     nil (list (list new-this-regex 0 'lazy-highlight-face t)))
+     nil (list (list new-this-regex 0 'lazy-highlight-face 'prepend)))
     (setq current-this-regex new-this-regex)
     (font-lock-fontify-buffer)
     (message (concat "Searching for " (substring new-this-regex 2 -2))))
@@ -136,7 +136,8 @@ and the point, not include the isearch word."
                                (if (looking-at "\\_<") 2 1)))
     (beginning-of-buffer)
     (message "search hit BOTTOM, continuing at TOP")
-    (search-forward-regexp current-this-regex))
+    (let ((case-fold-search nil))
+      (search-forward-regexp current-this-regex)))
   (while (not (looking-at current-this-regex))
     (backward-char 1)))
 
