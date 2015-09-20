@@ -3,8 +3,8 @@
 
 ;; Copyright 2011-2015 François-Xavier Bois
 
-;; Version: 12.2.4
-;; Package-Version: 20150916.907
+;; Version: 12.2.6
+;; Package-Version: 20150920.37
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Created: July 2011
@@ -27,7 +27,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "12.2.4"
+(defconst web-mode-version "12.2.6"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -4324,7 +4324,8 @@ the environment as needed for ac-sources, right before they're used.")
 
         (when (and beg (>= reg-end (point)) token-type)
           (put-text-property beg (point) 'part-token token-type)
-          (when (eq token-type 'comment)
+          (cond
+           ((eq token-type 'comment)
             (put-text-property beg (1+ beg) 'syntax-table (string-to-syntax "<"))
             (when (< (point) (point-max))
               (if (< (point) (line-end-position))
@@ -4333,6 +4334,18 @@ the environment as needed for ac-sources, right before they're used.")
                 )
               )
             )
+           ((eq token-type 'string)
+
+            (put-text-property beg (1+ beg) 'syntax-table (string-to-syntax "|"))
+            (when (< (point) (point-max))
+              (if (< (point) (line-end-position))
+                  (put-text-property (1- (point)) (point) 'syntax-table (string-to-syntax "|"))
+                (put-text-property (point) (1+ (point)) 'syntax-table (string-to-syntax "|"))
+                )
+              )
+
+            )
+           ) ;cond
           )
 
         (when (> (point) reg-end)
@@ -8960,12 +8973,16 @@ Pos should be in a tag."
             web-mode-expand-initial-scroll nil))
 
     (when (member this-command '(yank))
-      (setq web-mode-inhibit-fontification nil)
-      ;;(web-mode-font-lock-highlight web-mode-change-end)
-      (when (and web-mode-change-beg web-mode-change-end)
-        (save-excursion
-          (font-lock-fontify-region web-mode-change-beg web-mode-change-end)
-          ))
+      (let ((beg web-mode-change-beg) (end web-mode-change-end))
+        ;;(message "%S %S" web-mode-change-beg web-mode-change-end)
+        (setq web-mode-inhibit-fontification nil)
+        (when (and web-mode-change-beg web-mode-change-end)
+          (save-excursion
+            (font-lock-fontify-region web-mode-change-beg web-mode-change-end))
+          (when web-mode-enable-auto-indentation
+            (indent-region beg end))
+          ) ; and
+        )
       )
 
     (when (< (point) 16)
