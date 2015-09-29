@@ -9,6 +9,8 @@
 ;;                         nil nil symstr))))
 ;;   (projectile-grep regexp))
 
+(require 'subr-x)
+
 ;; (global-set-key (kbd "C-c p g") 'projectile-grep-with-default)
 
 (define-key projectile-command-map (kbd "x") 'projectile-todo)
