@@ -1,9 +1,9 @@
-;;; s-autoloads.el --- automatically extracted autoloads
+;;; seq-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil nil ("s.el") (22019 34006 961009 600000))
+;;;### (autoloads nil nil ("seq.el") (22026 24761 452140 890000))
 
 ;;;***
 
@@ -12,4 +12,4 @@
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
 ;; End:
-;;; s-autoloads.el ends here
+;;; seq-autoloads.el ends here

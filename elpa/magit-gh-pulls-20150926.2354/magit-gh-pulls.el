@@ -4,7 +4,7 @@
 
 ;; Author: Yann Hodique <yann.hodique@gmail.com>
 ;; Keywords: git tools
-;; Package-Version: 20150920.543
+;; Package-Version: 20150926.2354
 ;; Version: 0.5.2
 ;; URL: https://github.com/sigma/magit-gh-pulls
 ;; Package-Requires: ((emacs "24") (gh "0.9.1") (magit "2.1.0") (pcache "0.2.3") (s "1.6.1"))
@@ -283,7 +283,7 @@
                    "Branch base: "
                    (oref (oref req :base) :ref)))
             (inhibit-magit-refresh t))
-       (magit-branch branch base)
+       (magit-branch-and-checkout branch base)
        (magit-merge (oref (oref req :head) :sha)))
      (magit-refresh))
     (unfetched-pull
@@ -299,7 +299,7 @@
             (branch (magit-gh-pulls-guess-topic-name req))
             (base (oref (oref req :base) :ref))
             (inhibit-magit-refresh t))
-       (magit-branch branch base)
+       (magit-branch-and-checkout branch base)
        (magit-merge (oref (oref req :head) :sha))
        (magit-checkout base)
        (magit-merge branch)
