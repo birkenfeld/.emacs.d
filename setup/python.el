@@ -135,6 +135,7 @@
     (set (make-local-variable 'compile-command)
          (concat "python " buffer-file-name)))
 
+  (setq fill-column 79)
   (define-key python-mode-map (kbd "M-q") 'python-fill-paragraph)
   (define-key python-mode-map (kbd "C-c #") 'comment-move-before-line)
 
