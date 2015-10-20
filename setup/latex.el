@@ -1,7 +1,5 @@
 ;; Setup LaTeX/AuCTeX related stuff.
 
-(add-to-list 'load-path "~/.emacs.d/ext-lisp/talcum")
-
 ;; Load preview-latex
 (eval-after-load 'tex
   '(require 'preview))
@@ -18,10 +16,6 @@ so that they match the reference face in height."
 	(* (preview-document-pt) 0.85))))
 
 (setq preview-scale-function 'my-preview-scale-from-face)
-
-;; talcum-mode: replaces LaTeX commands by Unicode symbols
-(autoload 'talcum-mode "talcum" nil t)
-(add-hook 'LaTeX-mode-hook 'talcum-mode)
 
 (defun TeX-build-master ()
   "Run all necessary steps to build the master file, then view it."

@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup talcum-mode LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
+    (preview-mode-setup LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -402,9 +402,6 @@
  '(tabbar-cycle-scope (quote tabs))
  '(tabbar-separator (quote (1)))
  '(table-time-before-update 0)
- '(talcum-desired-features (quote (talcum-render talcum-newcmd)))
- '(talcum-use-prod-flag nil)
- '(talcum-verbosity 7)
  '(test-case-ask-about-save nil)
  '(tex-close-quote "\"'")
  '(tex-open-quote "\"`")
