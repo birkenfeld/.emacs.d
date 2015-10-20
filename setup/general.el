@@ -200,6 +200,8 @@
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
            (flet ((process-list ())) ad-do-it))
 
+;; Grepping
+(global-set-key (kbd "C-c g") 'grep-find)
 
 ;; tabbar
 ;; (require 'tabbar)
