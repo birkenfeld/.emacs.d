@@ -11,7 +11,7 @@
  '(LaTeX-menu-max-items 40)
  '(LaTeX-mode-hook
    (quote
-    (preview-mode-setup LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)) t)
+    (preview-mode-setup LaTeX-install-toolbar turn-on-reftex LaTeX-math-mode auto-fill-mode)))
  '(LaTeX-verbatim-environments
    (quote
     ("verbatim" "verbatim*" "alltt" "listing" "asy" "asydef")))
@@ -39,18 +39,12 @@
  '(TeX-parse-self t)
  '(TeX-source-correlate-method (quote synctex))
  '(TeX-source-correlate-mode t)
- '(TeX-view-program-list
-   (quote
-    (("Evince"
-      ("evince"
-       (mode-io-correlate " -p %(outpage)")
-       " %o")))))
  '(TeX-view-program-selection
    (quote
     (((output-dvi style-pstricks)
       "dvips and gv")
      (output-dvi "xdvi")
-     (output-pdf "xpdf")
+     (output-pdf "PDF Tools")
      (output-html "xdg-open"))))
  '(ac-auto-start 3)
  '(ac-candidate-limit 20)
@@ -303,7 +297,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode guide-key change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm autopair auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode guide-key change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm autopair auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -315,7 +309,7 @@
  '(pop-up-windows nil)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face) t)
+ '(preview-scale-function (quote preview-scale-from-face))
  '(preview-transparent-color t)
  '(projectile-cache-file "/home/gbr/.emacs.d/saved/projectile.cache")
  '(projectile-global-mode t)
@@ -570,6 +564,7 @@
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
  '(custom-button ((t (:inherit variable-pitch :background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button)))))
+ '(custom-button-pressed ((t (:inherit custom-button :background "lightgrey" :foreground "black" :box (:line-width 2 :style pressed-button)))))
  '(diff-file-header ((t (:weight bold))))
  '(diff-hl-change ((t (:background "blue2"))))
  '(diff-hl-delete ((t (:background "red4"))))
