@@ -309,7 +309,7 @@
  '(pop-up-windows nil)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
- '(preview-scale-function (quote preview-scale-from-face))
+ '(preview-scale-function (quote preview-scale-from-face) t)
  '(preview-transparent-color t)
  '(projectile-cache-file "/home/gbr/.emacs.d/saved/projectile.cache")
  '(projectile-global-mode t)
@@ -560,7 +560,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :family "Menlo"))))
+ '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "PfEd" :family "Menlo"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
@@ -618,4 +618,5 @@
  '(variable-pitch ((t (:inherit default :family "calibri"))))
  '(web-mode-html-attr-name-face ((t (:inherit font-lock-preprocessor-face))))
  '(web-mode-html-tag-face ((t (:inherit font-lock-function-name-face))))
+ '(whitespace-empty ((t (:foreground "firebrick" :underline (:color foreground-color :style wave)))))
  '(whitespace-line ((t (:underline (:color foreground-color :style wave))))))
