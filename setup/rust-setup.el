@@ -32,9 +32,6 @@
   ;; Flycheck
   (flycheck-rust-setup)
   (flycheck-mode 1)
-
-  ;; show unsafe in different face
-  (font-lock-add-keywords nil '(("\\<unsafe\\>" 0 font-lock-warning-face prepend)))
   )
 
 (eval-after-load "rust-mode"
