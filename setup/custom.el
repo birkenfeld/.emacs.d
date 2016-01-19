@@ -115,7 +115,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("62ebee71b2fb472aa451e697433472f0a418a4209dbe86fb3527d20d29c3b26c" default)))
+    ("8c36d56a0de9563f0459b1f15f447d14e892e1eb9b77cca5b559b85574ef01d7" default)))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)

@@ -44,9 +44,8 @@
 ;(add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; Update copyright headers before saving
 (add-hook 'before-save-hook 'copyright-update)
-;; Update timestamp ("last modified") before saving
-(setq time-stamp-pattern "10/[Ll]ast modified: %:y-%02m-%02d %02H:%02M by %u$")
-(add-hook 'before-save-hook 'time-stamp)
+;; But don't try to update GPL versions
+(setq copyright-current-gpl-version nil)
 
 ;; Make file executable if it's a script
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)

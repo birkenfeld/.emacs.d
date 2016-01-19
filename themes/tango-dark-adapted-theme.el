@@ -63,7 +63,7 @@
    `(isearch ((,xwin (:foreground ,alum-1 :background ,orange-3))))
    `(lazy-highlight ((,xwin (:background ,choc-3))))
    `(trailing-whitespace ((,xwin (:background ,red-3))))
-   `(whitespace-tab ((,xwin (:background "LemonChiffon"))))
+   `(whitespace-tab ((,xwin (:background "#502525"))))
    `(highlight-indent-face ((,xwin (:inherit fringe :background ,alum-6))
                             (,term (:inherit nil))))
    `(highlight-symbol-face ((,xwin (:background "grey30"))
