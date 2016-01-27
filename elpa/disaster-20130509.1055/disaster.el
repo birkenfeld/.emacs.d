@@ -5,6 +5,7 @@
 ;; Author: Justine Tunney <jtunney@gmail.com>
 ;; Created: 2013-03-02
 ;; Version: 0.1
+;; Package-Version: 20130509.1055
 ;; Keywords: tools
 ;; URL: https://github.com/jart/disaster
 
@@ -29,7 +30,7 @@
 
 ;; ![Screenshot](http://i.imgur.com/kMoN1m6.png)
 ;;
-;; Disaster lets you press `C-c C-d` to see the compiled assembly code for the
+;; Disaster lets you press `C-c d` to see the compiled assembly code for the
 ;; C/C++ file you're currently editing. It even jumps to and highlights the
 ;; line of assembly corresponding to the line beneath your cursor.
 ;;
@@ -40,16 +41,13 @@
 ;;; Installation:
 
 ;; Make sure to place `disaster.el` somewhere in the load-path and add the
-;; following lines to your `.emacs` file to enable the `C-c C-d` shortcut to
+;; following lines to your `.emacs` file to enable the `C-c d` shortcut to
 ;; invoke `disaster':
 ;;
-;;     (eval-after-load 'cc-mode
-;;       '(progn
-;;          (require 'disaster)
-;;          (defun my-c-mode-common-hook ()
-;;            (define-key c-mode-base-map (kbd "C-c C-d") 'disaster)
-;;            (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
-;;          (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)))
+;;     (add-to-list 'load-path "/PATH/TO/DISASTER")
+;;     (require 'disaster)
+;;     (define-key c-mode-base-map (kbd "C-c d") 'disaster)
+;;
 
 ;;; Code:
 
@@ -131,14 +129,14 @@ If FILE and LINE are not specified, the current editing location
 is used."
   (interactive)
   (save-buffer)
-  (let* ((file (or file (buffer-name)))
+  (let* ((file (or file (file-name-nondirectory (buffer-file-name))))
          (line (or line (line-number-at-pos)))
          (file-line (format "%s:%d" file line))
          (makebuf (get-buffer-create disaster-buffer-compiler))
          (asmbuf (get-buffer-create disaster-buffer-assembly)))
     (if (not (string-match "\\.c[cp]?p?$" file))
         (message "Not C/C++ non-header file")
-      (let* ((cwd (file-name-directory (expand-file-name (buffer-name))))
+      (let* ((cwd (file-name-directory (expand-file-name (buffer-file-name))))
              (obj-file (concat (file-name-sans-extension file) ".o"))
              (make-root (disaster-find-project-root "Makefile" file))
              (cc (if make-root
@@ -219,10 +217,10 @@ For example:
     (disaster--find-parent-dirs \"/home/jart/disaster-disaster.el\")
     => (\"/home/jart/disaster-\" \"/home/jart/\" \"/home/\" \"/\")
 
-FILE defaults to `buffer-name'."
+FILE defaults to `buffer-file-name'."
   (let ((res nil)
         (dir (file-name-directory
-              (expand-file-name (or file (buffer-name))))))
+              (expand-file-name (or file (buffer-file-name))))))
     (while dir
       (setq res (cons dir res)
             dir (if (string-match "/[^/]+/$" dir)

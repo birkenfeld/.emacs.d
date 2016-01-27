@@ -17,11 +17,8 @@
 
 ;; auto-pair `' in elisp comments and docstrings
 (defun my-emacs-lisp-mode-hook ()
-  (autopair-mode)
-  (push '(?` . ?')
-        (getf autopair-extra-pairs :comment))
-  (push '(?` . ?')
-        (getf autopair-extra-pairs :string)))
+  (smartparens-mode)
+)
 (add-hook 'emacs-lisp-mode-hook #'my-emacs-lisp-mode-hook)
 
 ;; Remove the .elc file when saving an .el file

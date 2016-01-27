@@ -99,15 +99,6 @@
 ;; Nice xterm mouse handling (fails with dragging)
 ;(xterm-mouse-mode t)
 
-;; Bindings for textmate-like auto pairing of parens/quotes
-(require 'autopair)
-
-;; Use it in latex mode for dollar-style inline math
-(add-hook 'latex-mode-hook
-          #'(lambda ()
-              (autopair-mode)
-              (modify-syntax-entry ?$ \"\\\"\")))
-
 ;; Sphinx templated files: find mode after removing _t suffix
 (add-to-list 'auto-mode-alist '("_t$" nil t))
 
@@ -124,8 +115,7 @@
   (eval-after-load "eproject" '(diminish 'eproject-mode))
   (eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
   (eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
-  (eval-after-load "autopair" '(diminish 'autopair-mode " ()"))
-  (eval-after-load "guide-key" '(diminish 'guide-key-mode))
+  (eval-after-load "which-key" '(diminish 'which-key-mode))
   (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y")))
 
 ;; M-x enhancement
@@ -136,26 +126,6 @@
 
 ;; Smooth scrolling (keep cursor away from screen edges)
 (require 'smooth-scrolling)
-
-;; guide-key: pop up a list of keybindings for prefixes with lots of commands
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x 4" ;; other-window
-                                     "C-x 5" ;; other-frame
-                                     "C-x 8" ;; ucs
-                                     "C-x a" ;; abbrevs
-                                     "C-x n" ;; narrow
-                                     "C-x r" ;; registers
-                                     "C-x v" ;; VC
-                                     "C-x RET"  ;; input method
-                                     "C-c p" ;; projectile
-                                     "C-c !" ;; flycheck
-                                     "C-c ," ;; hs
-                                     "C-c ^" ;; smerge mode
-                                     ))
-(guide-key-mode 1)
-(setq guide-key/idle-delay 0.75)
-(setq guide-key/recursive-key-sequence-flag t)
-(setq guide-key/popup-window-position 'bottom)
 
 ;; Keep region when undoing in region
 (defadvice undo-tree-undo (around keep-region activate)

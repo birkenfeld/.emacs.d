@@ -230,6 +230,7 @@
    `(path-header-directory-face ((,xwin (:foreground "#8fb28f")) (,term (:foreground "white"))))
    `(path-header-filename-face ((,xwin (:foreground ,alum-1)) (,term (:foreground "white"))))
    `(ace-jump-face-foreground ((,xwin (:foreground ,butter-2))))
+   `(show-paren-match ((,xwin (:weight bold :underline t :foreground ,cham-1))))
    ;; Terminal faces
    `(term-color-black ((,xwin (:foreground ,alum-7))))
    `(term-color-red ((,xwin (:foreground ,red-0))))

@@ -101,10 +101,8 @@
   (setq ffap-alist (remove '(inferior-python-mode . python-ffap-module-path) ffap-alist))
 
   ;; Enable nice electric pairs like in textmate
-  (autopair-mode 1)
-  (setq autopair-handle-action-fns
-        (list #'autopair-default-handle-action
-              #'autopair-python-triple-quote-action))
+  (require 'smartparens-python)
+  (smartparens-mode 1)
 
   ;; Highlight whitespace mistakes
   (setq whitespace-style '(face trailing tabs lines-tail empty))
@@ -145,6 +143,7 @@
 
   ;; No auto-fill please
   (auto-fill-mode 0)
+  (fci-mode 1)
   )
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
