@@ -115,7 +115,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("92c1e10206919ecf3da9b7f6bf4aa24da1a7f92295d55adfbd42519310454b9e" "8c36d56a0de9563f0459b1f15f447d14e892e1eb9b77cca5b559b85574ef01d7" default)))
+    ("8c7689874ec4f401b2565a1a2059bc33f15159d8b44dd0b0d0b06d3a93cf81ce" "92c1e10206919ecf3da9b7f6bf4aa24da1a7f92295d55adfbd42519310454b9e" "8c36d56a0de9563f0459b1f15f447d14e892e1eb9b77cca5b559b85574ef01d7" default)))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
@@ -301,7 +301,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (smartparens disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (shell-pop smartparens disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -377,6 +377,11 @@
  '(semanticdb-default-save-directory "~/.emacs.d/saved/semantic")
  '(session-save-file "~/.emacs.d/saved/session")
  '(session-use-package t nil (session))
+ '(shell-pop-shell-type
+   (quote
+    ("shell" "*shell*"
+     (lambda nil
+       (ansi-term "/bin/zsh")))))
  '(show-paren-mode nil)
  '(show-smartparens-global-mode t)
  '(show-ws-style (quote color))

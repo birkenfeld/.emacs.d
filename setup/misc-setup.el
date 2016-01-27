@@ -76,10 +76,6 @@
 
 ;; shell-pop: easy pop-up of a shell buffer
 (autoload 'shell-pop "shell-pop" nil t)
-(eval-after-load "shell-pop"
-  '(progn
-     (shell-pop-set-internal-mode "ansi-term")
-     (shell-pop-set-internal-mode-shell "/bin/zsh")))
 (global-set-key (kbd "<menu>") 'shell-pop)
 (setq term-term-name "eterm-color")
 
