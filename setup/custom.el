@@ -115,7 +115,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("8c36d56a0de9563f0459b1f15f447d14e892e1eb9b77cca5b559b85574ef01d7" default)))
+    ("92c1e10206919ecf3da9b7f6bf4aa24da1a7f92295d55adfbd42519310454b9e" "8c36d56a0de9563f0459b1f15f447d14e892e1eb9b77cca5b559b85574ef01d7" default)))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
@@ -297,7 +297,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode guide-key change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm autopair auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode guide-key change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm autopair auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -331,7 +331,7 @@
  '(python-indent-trigger-commands (quote (indent-for-tab-command yas-expand)))
  '(python-skeleton-autoinsert nil)
  '(python-use-skeletons nil)
- '(racer-cmd "/home/gbr/devel/racer/target/release/racer")
+ '(racer-cmd "/usr/bin/racer")
  '(racer-rust-src-path "~/devel/ext/rust/src")
  '(recentf-max-saved-items 200)
  '(recentf-menu-open-all-flag t)
@@ -544,6 +544,8 @@
  '(undo-limit 200000)
  '(undo-strong-limit 300000)
  '(undo-tree-mode-lighter " U")
+ '(undo-tree-visualizer-diff t)
+ '(undo-tree-visualizer-timestamps t)
  '(uniquify-buffer-name-style (quote reverse) nil (uniquify))
  '(url-configuration-directory "~/.emacs.d/saved/url/")
  '(url-show-status nil)
@@ -560,7 +562,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width semi-condensed :family "Menlo"))))
+ '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :family "Menlo"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
@@ -581,6 +583,8 @@
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))
  '(font-latex-sectioning-2-face ((t (:inherit font-latex-sectioning-3-face :height 1.2))))
  '(header-line ((t (:inherit variable-pitch :background "#41423f" :weight bold))))
+ '(hexl-address-region ((t (:inherit font-lock-constant-face))))
+ '(hexl-ascii-region ((t (:inherit font-lock-string-face))))
  '(hideshowvis-hidable-face ((t (:foreground "#999"))))
  '(highlight-indentation-face ((t nil)))
  '(hs-face ((t (:box 1 :height 0.8))))

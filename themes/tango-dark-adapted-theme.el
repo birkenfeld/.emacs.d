@@ -46,7 +46,9 @@
       (alum-4 "#888a85") (alum-5 "#555753") (alum-6 "#2e3436")
       ;; Not in Tango palette; used for better contrast.
       (cham-0 "#b4fa70") (blue-0 "#8cc4ff") (plum-0 "#e6a8df")
-      (red-0 "#ff4b4b")  (alum-5.5 "#41423f") (alum-7 "#212526"))
+      (red-0 "#ff4b4b")  (alum-5.5 "#41423f") (alum-7 "#212526")
+      (red-4 "#662020")  (cham-4 "#105a00")
+      )
 
   (custom-theme-set-faces
    'tango-dark-adapted
@@ -156,6 +158,9 @@
    `(diff-context ((,xwin (:inherit shadow :foreground ,plum-0))))
    `(diff-file-header ((,xwin (:weight bold :foreground ,blue-0))))
    `(diff-header ((,xwin (:foreground ,blue-1 :background ,alum-7))))
+   `(diff-hl-change ((,xwin (:background ,blue-3))))
+   `(diff-hl-delete ((,xwin (:background ,red-4))))
+   `(diff-hl-insert ((,xwin (:background ,cham-4))))
    `(diff-hunk-header ((,xwin (:weight bold))))
    `(diff-indicator-added ((,xwin (:inherit diff-added :weight bold))))
    `(diff-indicator-removed ((,xwin (:inherit diff-removed :weight bold))))
