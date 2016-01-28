@@ -62,8 +62,8 @@
 (add-hook 'c++-mode-hook (lambda ()
   (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
 ;; Enable nice electric pairs like in textmate
-(add-hook 'c-mode-hook 'smartparens-mode)
-(add-hook 'c++-mode-hook 'smartparens-mode)
+(add-hook 'c-mode-hook 'autopair-mode)
+(add-hook 'c++-mode-hook 'autopair-mode)
 
 ;; Display C++ Doygen doc comments differently
 (font-lock-add-keywords 'c++-mode '(("///.*$" 0 font-lock-doc-face prepend)))

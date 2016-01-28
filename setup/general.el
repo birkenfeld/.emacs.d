@@ -99,6 +99,15 @@
 ;; Nice xterm mouse handling (fails with dragging)
 ;(xterm-mouse-mode t)
 
+;; Bindings for textmate-like auto pairing of parens/quotes
+(require 'autopair)
+
+;; Use it in latex mode for dollar-style inline math
+(add-hook 'latex-mode-hook
+          #'(lambda ()
+              (autopair-mode)
+              (modify-syntax-entry ?$ \"\\\"\")))
+
 ;; Sphinx templated files: find mode after removing _t suffix
 (add-to-list 'auto-mode-alist '("_t$" nil t))
 
@@ -115,6 +124,7 @@
   (eval-after-load "eproject" '(diminish 'eproject-mode))
   (eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
   (eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
+  (eval-after-load "autopair" '(diminish 'autopair-mode " ()"))
   (eval-after-load "which-key" '(diminish 'which-key-mode))
   (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y")))
 

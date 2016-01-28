@@ -301,7 +301,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (shell-pop smartparens disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (shell-pop autopair disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -382,8 +382,7 @@
     ("shell" "*shell*"
      (lambda nil
        (ansi-term "/bin/zsh")))))
- '(show-paren-mode nil)
- '(show-smartparens-global-mode t)
+ '(show-paren-mode t)
  '(show-ws-style (quote color))
  '(size-indication-mode t)
  '(smerge-auto-leave nil)
@@ -624,8 +623,6 @@
  '(show-ws-spaces ((((class color)) nil)) t)
  '(show-ws-tabs ((((class color)) (:inherit trailing-whitespace))) t)
  '(show-ws-unbr-spaces ((((class color)) nil)) t)
- '(sp-pair-overlay-face ((t (:inherit default))))
- '(sp-wrap-overlay-face ((t (:inherit show-paren-match))))
  '(tabbar-default ((t (:inherit variable-pitch :height 0.9))))
  '(tabbar-selected ((t (:weight bold))))
  '(test-case-assertion ((t (:inherit font-lock-keyword-face))))
