@@ -563,6 +563,7 @@
  '(wgrep-auto-save-buffer t)
  '(which-key-idle-delay 0.75)
  '(which-key-mode t)
+ '(which-key-separator " > ")
  '(windmove-wrap-around t)
  '(x86-lookup-pdf "/home/gbr/x86.pdf")
  '(xhtml-multi-mode t))

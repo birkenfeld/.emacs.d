@@ -9,9 +9,17 @@
   (interactive)
   (compile compile-command))
 
+(defun my-autopair-rust-action (action pair pos-before)
+  (unless (and (eq action 'opening)
+               (eq pair ?>)
+               (save-excursion (backward-char 2)
+                               (or (looking-at " <") (looking-at "<<"))))
+    (autopair-default-handle-action action pair pos-before)))
+
 (defun my-rust-mode-hook ()
   ;; Enable nice electric pairs
   (setq autopair-extra-pairs `(:code ((?< . ?>))))
+  (setq autopair-handle-action-fns (list #'my-autopair-rust-action))
   (autopair-mode 1)
 
   ;; Highlight whitespace mistakes
