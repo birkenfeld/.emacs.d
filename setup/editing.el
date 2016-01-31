@@ -53,7 +53,6 @@
 ;; Martin Blais' repeatable macros
 (require 'repeatable)
 (repeatable-command-advice kmacro-end-and-call-macro)
-;(repeatable-substitute-binding 'search-for-this-word)
 (repeatable-command-advice hl-symbol-and-jump)
 (repeatable-command-advice next-error)
 (repeatable-command-advice previous-error)

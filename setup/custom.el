@@ -60,6 +60,7 @@
  '(ansi-color-for-comint-mode t)
  '(anzu-mode-lighter "")
  '(anzu-replace-to-string-separator "=>")
+ '(anzu-search-threshold 500)
  '(apropos-do-all t)
  '(auto-completion-min-chars 0)
  '(auto-completion-syntax-alist (quote (accept . word)))
@@ -116,7 +117,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("d525e956342d82511da159580956143d27db97f2fe7faedfbe2a4a75f75328c8" default)))
+    ("6a1c3a97e68a10ca1cf3fde2d57e8c6e7fd51ca7a3a6afdeca8b015c21079a68" default)))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
@@ -303,7 +304,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (smart-region crux shell-pop autopair disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (smart-region shell-pop autopair disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu flycheck highlight-indentation web-mode company pos-tip pyvenv irony projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -313,6 +314,7 @@
  '(path-headerline-mode t nil (path-headerline-mode))
  '(po-highlight-face (quote pesche-hardspace))
  '(pop-up-windows nil)
+ '(powerline-default-separator (quote slant))
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
  '(preview-scale-function (quote preview-scale-from-face) t)
@@ -557,7 +559,9 @@
  '(undo-tree-mode-lighter " U")
  '(undo-tree-visualizer-diff t)
  '(undo-tree-visualizer-timestamps t)
- '(uniquify-buffer-name-style (quote reverse) nil (uniquify))
+ '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
+ '(uniquify-ignore-buffers-re "^\\*")
+ '(uniquify-trailing-separator-p t)
  '(url-configuration-directory "~/.emacs.d/saved/url/")
  '(url-show-status nil)
  '(vc-delete-logbuf-window nil)
@@ -637,6 +641,7 @@
  '(variable-pitch ((t (:inherit default :family "calibri"))))
  '(web-mode-html-attr-name-face ((t (:inherit font-lock-preprocessor-face))))
  '(web-mode-html-tag-face ((t (:inherit font-lock-function-name-face))))
- '(which-key-command-description-face ((t (:inherit font-lock-function-name-face :weight normal))))
+ '(which-key-command-description-face ((t (:inherit default))))
+ '(which-key-key-face ((t (:inherit font-lock-type-face :weight normal))))
  '(whitespace-empty ((t (:foreground "firebrick" :underline (:color foreground-color :style wave)))))
  '(whitespace-line ((t (:underline (:color foreground-color :style wave))))))

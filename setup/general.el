@@ -95,6 +95,8 @@
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 (font-lock-add-keywords 'latex-mode
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
+(font-lock-add-keywords 'rust-mode
+ '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
 
 ;; Nice xterm mouse handling (fails with dragging)
 ;(xterm-mouse-mode t)

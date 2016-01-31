@@ -47,7 +47,7 @@
       ;; Not in Tango palette; used for better contrast.
       (cham-0 "#b4fa70") (blue-0 "#8cc4ff") (plum-0 "#e6a8df")
       (red-0 "#ff4b4b")  (alum-5.5 "#41423f") (alum-7 "#212526")
-      (red-4 "#662020")  (cham-4 "#105a00")
+      (red-4 "#662020")  (cham-4 "#105a00") (orange-4 "#5e3c10")
       )
 
   (custom-theme-set-faces
@@ -63,7 +63,7 @@
    `(region ((,xwin (:background ,alum-5))))
    `(secondary-selection ((,xwin (:background ,blue-3))))
    `(isearch ((,xwin (:foreground ,alum-1 :background ,orange-3))))
-   `(lazy-highlight ((,xwin (:background ,choc-3))))
+   `(lazy-highlight ((,xwin (:background ,orange-4))))
    `(trailing-whitespace ((,xwin (:background ,red-3))))
    `(whitespace-tab ((,xwin (:background "#502525"))))
    `(highlight-indent-face ((,xwin (:inherit fringe :background ,alum-6))
@@ -232,6 +232,11 @@
    `(ace-jump-face-foreground ((,xwin (:foreground ,butter-2))))
    `(show-paren-match ((,xwin (:weight bold :background ,blue-1))))
    `(mc/cursor-face ((,xwin (:underline ,butter-1))))
+   `(query-replace ((,xwin (:background ,choc-1 :foreground "black"))))
+   `(anzu-match-1 ((,xwin (:background ,butter-1 :foreground "black"))))
+   `(anzu-match-2 ((,xwin (:background ,cham-1 :foreground "black"))))
+   `(anzu-match-3 ((,xwin (:background ,blue-1 :foreground "black"))))
+   `(anzu-replace-to ((,xwin (:foreground ,orange-1))))
    ;; Terminal faces
    `(term-color-black ((,xwin (:foreground ,alum-7))))
    `(term-color-red ((,xwin (:foreground ,red-0))))
