@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "diff-hl" "diff-hl.el" (22185 11444 963465
-;;;;;;  613000))
+;;;### (autoloads nil "diff-hl" "diff-hl.el" (22189 47318 809005
+;;;;;;  18000))
 ;;; Generated autoloads from diff-hl.el
 
 (autoload 'diff-hl-mode "diff-hl" "\
@@ -40,8 +40,8 @@ See `diff-hl-mode' for more information on Diff-Hl mode.
 
 ;;;***
 
-;;;### (autoloads nil "diff-hl-amend" "diff-hl-amend.el" (22185 11444
-;;;;;;  974465 547000))
+;;;### (autoloads nil "diff-hl-amend" "diff-hl-amend.el" (22189 47318
+;;;;;;  815004 976000))
 ;;; Generated autoloads from diff-hl-amend.el
 
 (autoload 'diff-hl-amend-mode "diff-hl-amend" "\
@@ -75,8 +75,8 @@ See `diff-hl-amend-mode' for more information on Diff-Hl-Amend mode.
 
 ;;;***
 
-;;;### (autoloads nil "diff-hl-dired" "diff-hl-dired.el" (22185 11444
-;;;;;;  982465 500000))
+;;;### (autoloads nil "diff-hl-dired" "diff-hl-dired.el" (22189 47318
+;;;;;;  824004 914000))
 ;;; Generated autoloads from diff-hl-dired.el
 
 (autoload 'diff-hl-dired-mode "diff-hl-dired" "\
@@ -91,8 +91,8 @@ Toggle VC diff highlighting on the side of a Dired window.
 
 ;;;***
 
-;;;### (autoloads nil "diff-hl-flydiff" "diff-hl-flydiff.el" (22185
-;;;;;;  11444 959465 637000))
+;;;### (autoloads nil "diff-hl-flydiff" "diff-hl-flydiff.el" (22189
+;;;;;;  47318 799005 87000))
 ;;; Generated autoloads from diff-hl-flydiff.el
 
 (defvar diff-hl-flydiff-mode nil "\
@@ -111,8 +111,8 @@ Highlight diffs on-the-fly
 
 ;;;***
 
-;;;### (autoloads nil "diff-hl-margin" "diff-hl-margin.el" (22185
-;;;;;;  11444 955465 661000))
+;;;### (autoloads nil "diff-hl-margin" "diff-hl-margin.el" (22189
+;;;;;;  47318 794005 121000))
 ;;; Generated autoloads from diff-hl-margin.el
 
 (defvar diff-hl-margin-mode nil "\
@@ -131,8 +131,8 @@ Toggle displaying `diff-hl-mode' highlights on the margin.
 
 ;;;***
 
-;;;### (autoloads nil nil ("diff-hl-pkg.el") (22185 11444 978465
-;;;;;;  523000))
+;;;### (autoloads nil nil ("diff-hl-pkg.el") (22189 47318 820004
+;;;;;;  942000))
 
 ;;;***
 
