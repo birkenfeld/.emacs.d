@@ -263,3 +263,7 @@
 (define-key occur-mode-map "n" 'next-error-no-select)
 (define-key occur-mode-map "p" 'previous-error-no-select)
 (define-key occur-mode-map "v" 'occur-mode-display-occurrence)
+
+;; Rectangles with multiple-cursors --------------------------------------------
+
+(global-set-key (kbd "<C-return>") 'set-or-deactivate-rectangular-region-anchor)

@@ -502,3 +502,10 @@ as in the line above."
         (delete-backward-char 1))
       (while (< (current-column) col)
         (insert " ")))))
+
+(defun set-or-deactivate-rectangular-region-anchor ()
+  "Set rectangular region or exit it."
+  (interactive)
+  (if (or rectangular-region-mode multiple-cursors-mode)
+      (rrm/keyboard-quit)
+    (set-rectangular-region-anchor)))

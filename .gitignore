@@ -4,7 +4,6 @@
 #*
 .#*
 
-.mc-lists.el
 elpa/*-readme.txt
 saved/
 local-setup/

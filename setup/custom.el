@@ -111,6 +111,7 @@
  '(cua-enable-cua-keys nil)
  '(cua-enable-cursor-indications t)
  '(cua-mode t nil (cua-base))
+ '(cua-rectangle-mark-key [ignore])
  '(cursor-type (quote bar))
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
