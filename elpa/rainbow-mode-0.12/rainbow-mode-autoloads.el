@@ -1,10 +1,10 @@
 ;;; rainbow-mode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "rainbow-mode" "rainbow-mode.el" (22054 39215
-;;;;;;  413314 741000))
+;;;### (autoloads nil "rainbow-mode" "rainbow-mode.el" (22190 33004
+;;;;;;  897115 253000))
 ;;; Generated autoloads from rainbow-mode.el
 
 (autoload 'rainbow-mode "rainbow-mode" "\

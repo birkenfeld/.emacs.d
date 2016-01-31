@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "irony" "irony.el" (22185 11434 389528 727000))
+;;;### (autoloads nil "irony" "irony.el" (22190 32969 297338 440000))
 ;;; Generated autoloads from irony.el
 
 (defvar irony-additional-clang-options nil "\
@@ -42,8 +42,8 @@ Get the type of symbol under cursor.
 
 ;;;***
 
-;;;### (autoloads nil "irony-cdb" "irony-cdb.el" (22185 11434 160530
-;;;;;;  94000))
+;;;### (autoloads nil "irony-cdb" "irony-cdb.el" (22190 32969 63339
+;;;;;;  907000))
 ;;; Generated autoloads from irony-cdb.el
 
 (autoload 'irony-cdb-autosetup-compile-options "irony-cdb" "\
@@ -59,7 +59,7 @@ Get the type of symbol under cursor.
 ;;;***
 
 ;;;### (autoloads nil "irony-cdb-clang-complete" "irony-cdb-clang-complete.el"
-;;;;;;  (22185 11434 381528 775000))
+;;;;;;  (22190 32969 283338 528000))
 ;;; Generated autoloads from irony-cdb-clang-complete.el
 
 (autoload 'irony-cdb-clang-complete "irony-cdb-clang-complete" "\
@@ -69,8 +69,8 @@ Get the type of symbol under cursor.
 
 ;;;***
 
-;;;### (autoloads nil "irony-cdb-json" "irony-cdb-json.el" (22185
-;;;;;;  11434 385528 751000))
+;;;### (autoloads nil "irony-cdb-json" "irony-cdb-json.el" (22190
+;;;;;;  32969 287338 503000))
 ;;; Generated autoloads from irony-cdb-json.el
 
 (autoload 'irony-cdb-json "irony-cdb-json" "\
@@ -93,7 +93,7 @@ directories to project directory.
 ;;;***
 
 ;;;### (autoloads nil "irony-cdb-libclang" "irony-cdb-libclang.el"
-;;;;;;  (22185 11434 362528 888000))
+;;;;;;  (22190 32969 273338 591000))
 ;;; Generated autoloads from irony-cdb-libclang.el
 
 (autoload 'irony-cdb-libclang "irony-cdb-libclang" "\
@@ -103,8 +103,8 @@ directories to project directory.
 
 ;;;***
 
-;;;### (autoloads nil "irony-completion" "irony-completion.el" (22185
-;;;;;;  11434 172530 22000))
+;;;### (autoloads nil "irony-completion" "irony-completion.el" (22190
+;;;;;;  32969 75339 832000))
 ;;; Generated autoloads from irony-completion.el
 
 (autoload 'irony-completion-at-point "irony-completion" "\
@@ -120,7 +120,7 @@ directories to project directory.
 ;;;***
 
 ;;;### (autoloads nil nil ("irony-diagnostics.el" "irony-pkg.el"
-;;;;;;  "irony-snippet.el") (22185 11434 394528 697000))
+;;;;;;  "irony-snippet.el") (22190 32969 306338 384000))
 
 ;;;***
 

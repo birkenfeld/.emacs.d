@@ -130,6 +130,9 @@
   (eval-after-load "which-key" '(diminish 'which-key-mode))
   (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y")))
 
+;; Make yasnippet less noisy
+(setq yas-verbosity 3)
+
 ;; M-x enhancement
 (require 'smex)
 (smex-initialize)
