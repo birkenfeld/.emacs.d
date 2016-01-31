@@ -125,6 +125,46 @@
 (setq register-preview-function #'register-preview-color)
 
 
+;; Rectangle mode enhancements -------------------------------------------------
+
+;; (require 'rect)
+
+;; (defun move-or-space-to-column (col)
+;;   (move-to-column col)
+;;   (while (not (eq (current-column) col))
+;;     (insert " ")))
+
+;; (defun rectangle-self-insert-on-line (startcol endcol n)
+;;     (move-or-space-to-column endcol)
+;;     (self-insert-command n))
+
+;; (defun rectangle-self-insert-command (n start end)
+;;   (interactive "*p\nr")
+;;   (apply-on-rectangle 'rectangle-self-insert-on-line start end n)
+;;   (rectangle-forward-char n)
+;;   (setq deactivate-mark nil)
+;;   (undo-boundary))
+
+;; (defun rectangle-delete-backward-char-on-line (startcol endcol n)
+;;   (save-excursion
+;;     (move-to-column endcol)
+;;     (when (eq (current-column) endcol)
+;;       (delete-backward-char n))))
+
+;; (defun rectangle-delete-backward-char (n start end)
+;;   (interactive "*p\nr")
+;;   (let* ((cols (rectangle--pos-cols start end))
+;;          (startcol (car cols))
+;;          (endcol (cdr cols)))
+;;     (when (> endcol startcol)
+;;       (apply-on-rectangle 'rectangle-delete-backward-char-on-line start end n)
+;;       (rectangle-backward-char 1)
+;;       (setq deactivate-mark nil)
+;;       (undo-boundary))))
+
+;(define-key rectangle-mark-mode-map [remap self-insert-command] 'rectangle-self-insert-command)
+;(define-key rectangle-mark-mode-map (kbd "DEL") 'rectangle-delete-backward-char)
+
 ;; Multiple cursors ------------------------------------------------------------
 
 ;; ;; Experimental multiple-cursors

@@ -487,3 +487,18 @@ region-end is used."
       (yank)
       (comment-indent)
       (setq kill-ring old-kill-ring))))
+
+(defun align-around-point-to-above ()
+  "Adjust whitespace around point so that the following word is aligned
+as in the line above."
+  (interactive)
+  (let ((col (save-excursion
+               (previous-line)
+               (skip-chars-forward " ")
+               (current-column))))
+    (save-excursion
+      (skip-chars-forward " ")
+      (while (> (current-column) col)
+        (delete-backward-char 1))
+      (while (< (current-column) col)
+        (insert " ")))))

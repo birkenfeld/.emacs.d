@@ -68,7 +68,7 @@
    `(whitespace-tab ((,xwin (:background "#502525"))))
    `(highlight-indent-face ((,xwin (:inherit fringe :background ,alum-6))
                             (,term (:inherit nil))))
-   `(highlight-symbol-face ((,xwin (:background "grey30"))
+   `(highlight-symbol-face ((,xwin (:background "#1c1c1c"))
                             (,term (:inherit nil))))
    ;; Info faces
    `(Info-quoted ((,xwin (:foreground ,butter-1))))
@@ -231,6 +231,7 @@
    `(path-header-filename-face ((,xwin (:foreground ,alum-1)) (,term (:foreground "white"))))
    `(ace-jump-face-foreground ((,xwin (:foreground ,butter-2))))
    `(show-paren-match ((,xwin (:weight bold :background ,blue-1))))
+   `(mc/cursor-face ((,xwin (:underline ,butter-1))))
    ;; Terminal faces
    `(term-color-black ((,xwin (:foreground ,alum-7))))
    `(term-color-red ((,xwin (:foreground ,red-0))))

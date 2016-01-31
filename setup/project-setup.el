@@ -23,6 +23,7 @@
 (define-key projectile-command-map (kbd "A") nil)  ;; ag 
 (define-key projectile-command-map (kbd "m") nil)  ;; commander
 
+
 ;; (defun projectile-test ()
 ;;   "Run test suite."
 ;;   (interactive)
@@ -80,3 +81,9 @@
 
 (defun projectile-visit-project-tags-table ()
   "Disable this function.")
+
+(defun projectile-recompile-project (arg)
+  "Compile project with last compile command."
+  (interactive "P")
+  (let ((compilation-read-command nil))
+    (projectile-compile-project arg)))

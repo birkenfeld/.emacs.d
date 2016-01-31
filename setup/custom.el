@@ -115,7 +115,7 @@
  '(custom-enabled-themes (quote (tango-dark-adapted)))
  '(custom-safe-themes
    (quote
-    ("cc7badfed5b38fcbd160d3990ba2913edc41aa6ddfbd14d3ad0953f5cb267d87" default)))
+    ("d525e956342d82511da159580956143d27db97f2fe7faedfbe2a4a75f75328c8" default)))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
@@ -282,6 +282,7 @@
  '(make-cursor-line-fully-visible t)
  '(margin-column 80)
  '(mark-even-if-inactive t)
+ '(mc/edit-lines-empty-lines (quote pad))
  '(menu-bar-mode nil)
  '(minibuffer-electric-default-mode t)
  '(minibuffer-prompt-properties
@@ -301,7 +302,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (shell-pop autopair disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (smart-region crux shell-pop autopair disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nhexl-mode nasm-mode multi-line x86-lookup pdf-tools unicode-troll-stopper diffview toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu dash flycheck highlight-indentation web-mode company pos-tip pyvenv loc-changes irony load-relative projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose nav-flash monky markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haste haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger fullframe full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -604,6 +605,7 @@
  '(keywiz-command-face ((t (:inherit (quote variable-pitch) :foreground "#729fcf" :weight bold :height 1.2))))
  '(keywiz-right-face ((t (:foreground "#8ae234"))))
  '(keywiz-wrong-face ((t (:foreground "#ff4b4b"))))
+ '(mc/cursor-face ((t (:underline "yellow"))))
  '(monky-diff-add ((t (:inherit diff-added))))
  '(monky-diff-del ((t (:inherit diff-removed))))
  '(monky-diff-hunk-header ((t (:inherit diff-hunk-header))))

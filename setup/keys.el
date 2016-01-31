@@ -83,7 +83,8 @@
 (global-set-key (kbd "S-<f2>") 'projectile-ag)
 
 ;; Compile project
-(global-set-key (kbd "<f5>")   'projectile-compile-project)
+(global-set-key (kbd "<f5>")   'projectile-recompile-project)
+(global-set-key (kbd "S-<f5>") 'projectile-compile-project)
 
 ;; F6 stores a position in a file, S-F6 or C-F6 brings you back to this position
 (global-set-key (kbd "<f6>") '(lambda () (interactive) (point-to-register ?1)))
@@ -186,6 +187,9 @@
 
 ;; Copy common beginning from the last two lines
 (global-set-key (kbd "C-ä") 'copy-above-while-same)
+
+;; Align word after point to same position as in previous line
+(global-set-key (kbd "C-ü") 'align-around-point-to-above)
 
 ;; Goto line with linum turned on
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
