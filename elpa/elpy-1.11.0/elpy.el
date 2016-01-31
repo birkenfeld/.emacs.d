@@ -4,7 +4,7 @@
 
 ;; Author: Jorgen Schaefer <contact@jorgenschaefer.de>
 ;; URL: https://github.com/jorgenschaefer/elpy
-;; Version: 1.10.0
+;; Version: 1.11.0
 ;; Keywords: Python, IDE, Languages, Tools
 ;; Package-Requires: ((company "0.8.2") (find-file-in-project "3.3")  (highlight-indentation "0.5.0") (pyvenv "1.3") (yasnippet "0.8.0"))
 
@@ -46,7 +46,7 @@
 (require 'elpy-refactor)
 (require 'pyvenv)
 
-(defconst elpy-version "1.10.0"
+(defconst elpy-version "1.11.0"
   "The version of the Elpy lisp code.")
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -144,11 +144,12 @@ These will be checked in turn. The first directory found is used."
                      elpy-project-find-svn-root))
   :group 'elpy)
 
-(defcustom elpy-company-hide-modeline t
-  "Non-nil if Elpy should remove company-mode's mode line display.
+(make-obsolete-variable 'elpy-company-hide-modeline 'elpy-remove-modeline-lighter)
+(defcustom elpy-remove-modeline-lighter t
+  "Non-nil if Elpy should remove most mode line display.
 
-Company shows the current backend there. For Elpy, this is mostly
-uninteresting information, but if you use company in other modes,
+Modeline shows many minor modes currently active. For Elpy, this is mostly
+uninteresting information, but if you rely on your modeline in other modes,
 you might want to keep it."
   :type 'boolean
   :group 'elpy)
@@ -309,6 +310,11 @@ edited instead. Setting this variable to nil disables this feature."
   :type 'string
   :group 'elpy)
 
+(defcustom elpy-disable-backend-error-display nil
+  "Non-nil if Elpy should disable backed error display."
+  :type 'boolean
+  :group 'elpy)
+
 ;;;;;;;;;;;;;
 ;;; Elpy Mode
 
@@ -337,7 +343,7 @@ edited instead. Setting this variable to nil disables this feature."
     (define-key map (kbd "C-c C-v") 'elpy-check)
     (define-key map (kbd "C-c C-z") 'elpy-shell-switch-to-shell)
     (define-key map (kbd "C-c C-r i") 'elpy-importmagic-fixup)
-    (define-key map (kbd "C-c C-r p") 'elpy-autopep8-fix-code)
+    (define-key map (kbd "C-c C-r f") 'elpy-format-code)
     (define-key map (kbd "C-c C-r r") 'elpy-refactor)
 
     (define-key map (kbd "<S-return>") 'elpy-open-and-indent-line-below)
@@ -356,6 +362,7 @@ edited instead. Setting this variable to nil disables this feature."
     (define-key map (kbd "<M-right>") 'elpy-nav-indent-shift-right)
 
     (define-key map (kbd "M-.")     'elpy-goto-definition)
+    (define-key map (kbd "C-x 4 M-.")     'elpy-goto-definition-other-window)
     (define-key map (kbd "M-TAB")   'elpy-company-backend)
 
     map)
@@ -572,6 +579,14 @@ try:
 except:
     config['autopep8_version'] = None
     config['autopep8_latest'] = latest('autopep8')
+
+try:
+    import yapf
+    config['yapf_version'] = yapf.__version__
+    config['yapf_latest'] = latest('yapf', config['yapf_version'])
+except:
+    config['yapf_version'] = None
+    config['yapf_latest'] = latest('yapf')
 
 json.dump(config, sys.stdout)
 ")
@@ -826,6 +841,26 @@ item in another window.\n\n")
                      :package "autopep8" :upgrade t)
       (insert "\n\n"))
 
+    ;; No yapf available
+    (when (not (gethash "yapf_version" config))
+      (elpy-insert--para
+       "The yapf package is not available. Commands using this will "
+       "not work.\n")
+      (insert "\n")
+      (widget-create 'elpy-insert--pip-button
+                     :package "yapf")
+      (insert "\n\n"))
+
+    ;; Newer version of yapf available
+    (when (and (gethash "yapf_version" config)
+               (gethash "yapf_latest" config))
+      (elpy-insert--para
+       "There is a newer version of the yapf package available.\n")
+      (insert "\n")
+      (widget-create 'elpy-insert--pip-button
+                     :package "yapf" :upgrade t)
+      (insert "\n\n"))
+
     ;; flake8, the default syntax checker, not found
     (when (not (executable-find python-check-command))
       (elpy-insert--para
@@ -914,8 +949,10 @@ virtual_env_short"
         (rope-latest (gethash "rope_latest" config))
         (importmagic-version (gethash "importmagic_version" config))
         (importmagic-latest (gethash "importmagic_latest" config))
-        (autopep8-version (gethash "importmagic_version" config))
-        (autopep8-latest (gethash "importmagic_latest" config))
+        (autopep8-version (gethash "autopep8_version" config))
+        (autopep8-latest (gethash "autopep8_latest" config))
+        (yapf-version (gethash "yapf_version" config))
+        (yapf-latest (gethash "yapf_latest" config))
         (virtual-env (gethash "virtual_env" config))
         (virtual-env-short (gethash "virtual_env_short" config))
         table maxwidth)
@@ -970,6 +1007,9 @@ virtual_env_short"
             ("Autopep8" . ,(elpy-config--package-link "autopep8"
                                                       autopep8-version
                                                       autopep8-latest))
+            ("Yapf" . ,(elpy-config--package-link "yapf"
+                                                  yapf-version
+                                                  yapf-latest))
             ("Syntax checker" . ,(let ((syntax-checker
                                         (executable-find
                                          python-check-command)))
@@ -1279,7 +1319,8 @@ file is <name>.py, and is either in the same directors or a
         (elpy-find-file nil))))
    (t
     (let ((ffip-prune-patterns elpy-project-ignored-directories)
-          (ffip-project-root (elpy-project-root))
+          (ffip-project-root (or (elpy-project-root)
+                                 default-directory))
           ;; Set up ido to use vertical file lists.
           (ido-decorations '("\n" "" "\n" "\n..."
                              "[" "]" " [No match]" " [Matched]"
@@ -1607,21 +1648,32 @@ with a prefix argument)."
         (elpy-goto-location (car location) (cadr location))
       (error "No definition found"))))
 
-(defun elpy-goto-location (filename offset)
-  "Show FILENAME at OFFSET to the user."
+(defun elpy-goto-definition-other-window ()
+  "Go to the definition of the symbol at point in other window, if found."
+  (interactive)
+  (let ((location (elpy-rpc-get-definition)))
+    (if location
+        (elpy-goto-location (car location) (cadr location) 'other-window)
+      (error "No definition found"))))
+
+(defun elpy-goto-location (filename offset &optional other-window-p)
+  "Show FILENAME at OFFSET to the user.
+
+If other-window-p is non-nil, show the same in other window."
   (ring-insert find-tag-marker-ring (point-marker))
-  (let ((buffer (find-file filename)))
-    (with-current-buffer buffer
-      (with-selected-window (get-buffer-window buffer)
-        (goto-char (1+ offset))
-        (recenter 0)))))
+  (let ((buffer (find-file-noselect filename)))
+    (if other-window-p
+        (pop-to-buffer buffer t)
+      (switch-to-buffer buffer))
+    (goto-char (1+ offset))
+    (recenter 0)))
 
 (defun elpy-nav-forward-block ()
   "Move to the next line indented like point.
 
 This will skip over lines and statements with different
 indentation levels."
-  (interactive)
+  (interactive "^")
   (let ((indent (current-column))
         (start (point))
         (cur nil))
@@ -1645,7 +1697,7 @@ indentation levels."
 
 This will skip over lines and statements with different
 indentation levels."
-  (interactive)
+  (interactive "^")
   (let ((indent (current-column))
         (start (point))
         (cur nil))
@@ -2797,7 +2849,7 @@ This is usually an error or backtrace."
                     elpy-rpc-error-timeout)))
         (message "Elpy error popup ignored, see `elpy-rpc-error-timeout': %s"
                  message))
-       (t
+       ((not elpy-disable-backend-error-display)
         (let ((config (elpy-config--get-config)))
           (elpy-insert--popup "*Elpy Error*"
             (elpy-insert--header "Elpy Error")
@@ -3073,17 +3125,22 @@ Make sure global-init is called first."
 (defun elpy-modules-remove-modeline-lighter (mode-name)
   "Remove the lighter for MODE-NAME.
 
-It's not necessary to see (Python Elpy yas company ElDoc) all the
-time. Honestly."
+It should not be necessary to see (Python Elpy yas company ElDoc) all the
+time. 
+
+If you need your modeline, you can set the variable `elpy-remove-modeline-lighter' to nil
+"
+
   (interactive)
-  (cond
-   ((eq mode-name 'eldoc-minor-mode)
-    (setq eldoc-minor-mode-string nil))
-   (t
-    (let ((cell (assq mode-name minor-mode-alist)))
-      (when cell
-        (setcdr cell
-                (list "")))))))
+  (when elpy-remove-modeline-lighter
+    (cond
+     ((eq mode-name 'eldoc-minor-mode)
+      (setq eldoc-minor-mode-string nil))
+     (t
+      (let ((cell (assq mode-name minor-mode-alist)))
+        (when cell
+          (setcdr cell
+                  (list ""))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Module: Sane Defaults
@@ -3108,14 +3165,13 @@ time. Honestly."
   (pcase command
     (`global-init
      (require 'company)
-     (when elpy-company-hide-modeline
-       (elpy-modules-remove-modeline-lighter 'company-mode))
+     (elpy-modules-remove-modeline-lighter 'company-mode)
      (define-key company-active-map (kbd "C-d")
        'company-show-doc-buffer))
     (`buffer-init
      ;; We want immediate completions from company.
      (set (make-local-variable 'company-idle-delay)
-          0)
+          0.01)
      ;; And annotations should be right-aligned.
      (set (make-local-variable 'company-tooltip-align-annotations)
           t)
@@ -3467,25 +3523,49 @@ description."
     (`buffer-stop
      (yas-minor-mode -1))))
 
+
+(defun elpy--fix-code-with-formatter (method)
+  "Common routine for formatting python code."
+  (let ((line (line-number-at-pos))
+        (col (current-column)))
+    (if (use-region-p)
+        (let ((new-block (elpy-rpc method (list (elpy-rpc--region-contents))))
+              (beg (region-beginning)) (end (region-end)))
+          (elpy-buffer--replace-region beg end new-block))
+      ;; Vector instead of list, json.el in Emacs 24.3 and before
+      ;; breaks for single-element lists of alists.
+      (let ((new-block (elpy-rpc method (vector (elpy-rpc--buffer-contents))))
+            (beg (point-min)) (end (point-max)))
+        (elpy-buffer--replace-region beg end new-block)))
+    (forward-line (1- line))
+    (forward-char col)))
+
+(defun elpy-format-code ()
+  "Format code using the available formatter."
+  (interactive)
+  (cond
+   ((executable-find "yapf")
+    (elpy-yapf-fix-code))
+   ((executable-find "autopep8")
+    (elpy-autopep8-fix-code))
+   (t
+    (message "Install yapf/autopep8 to format code."))))
+
 ;;;;;;;;;;;;;;;;;;
 ;;; Module: autopep8
 
 (defun elpy-autopep8-fix-code ()
   "Automatically formats Python code to conform to the PEP 8 style guide."
   (interactive)
-  (let ((line (line-number-at-pos))
-        (col (current-column)))
-    (if (use-region-p)
-        (let ((new-block (elpy-rpc "fix_code" (list (elpy-rpc--region-contents))))
-              (beg (region-beginning)) (end (region-end)))
-          (elpy-buffer--replace-region beg end new-block))
-      ;; Vector instead of list, json.el in Emacs 24.3 and before
-      ;; breaks for single-element lists of alists.
-      (let ((new-block (elpy-rpc "fix_code" (vector (elpy-rpc--buffer-contents))))
-            (beg (point-min)) (end (point-max)))
-        (elpy-buffer--replace-region beg end new-block)))
-    (forward-line (1- line))
-    (forward-char col)))
+  (elpy--fix-code-with-formatter "fix_code"))
+
+;;;;;;;;;;;;;;;;;;
+;;; Module: yapf
+
+(defun elpy-yapf-fix-code ()
+  "Automatically formats Python code with yapf."
+  (interactive)
+  (elpy--fix-code-with-formatter "fix_code_with_yapf"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Backwards compatibility

@@ -1,9 +1,9 @@
 ;;; elpy-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "elpy" "elpy.el" (22072 23837 66773 586000))
+;;;### (autoloads nil "elpy" "elpy.el" (22190 28778 511212 314000))
 ;;; Generated autoloads from elpy.el
 
 (autoload 'elpy-enable "elpy" "\
@@ -38,8 +38,8 @@ Display the version of Elpy.
 
 ;;;***
 
-;;;### (autoloads nil nil ("elpy-pkg.el" "elpy-refactor.el") (22072
-;;;;;;  23837 78773 484000))
+;;;### (autoloads nil nil ("elpy-pkg.el" "elpy-refactor.el") (22190
+;;;;;;  28778 522212 241000))
 
 ;;;***
 

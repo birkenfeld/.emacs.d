@@ -4,7 +4,7 @@
 
 ;; Author: Lars Andersen <expez@expez.com>
 ;; URL: https://www.github.com/expez/company-quickhelp
-;; Package-Version: 20160128.722
+;; Package-Version: 20160131.258
 ;; Keywords: company popup documentation quickhelp
 ;; Version: 1.2.0
 ;; Package-Requires: ((emacs "24.4") (company "0.8.9") (pos-tip "0.4.6"))
@@ -121,7 +121,8 @@ just grab the first candidate and press forward."
   (cl-letf (((symbol-function 'completing-read)
              #'company-quickhelp--completing-read))
     (let* ((doc (company-call-backend 'doc-buffer selected))
-           (doc-and-meta (company-quickhelp--doc-and-meta doc))
+           (doc-and-meta (when doc
+                           (company-quickhelp--doc-and-meta doc)))
            (truncated (plist-get doc-and-meta :truncated))
            (doc (plist-get doc-and-meta :doc)))
       (unless (string= doc "")
