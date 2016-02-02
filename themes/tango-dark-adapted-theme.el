@@ -73,7 +73,7 @@
    ;; Info faces
    `(Info-quoted ((,xwin (:foreground ,butter-1))))
    ;; Header/Mode line faces
-   `(header-line ((,xwin (:inherit nil :background ,alum-5.5))))
+   `(header-line ((,xwin (:inherit variable-pitch :background ,alum-5.5 :weight bold))))
    ;; `(mode-line ((,xwin (:inherit variable-pitch :background ,cham-0 :foreground ,alum-6
    ;;                                  :box (:line-width 3 :color ,cham-0)))
    ;;              (,term (:background ,cham-0))))
@@ -237,6 +237,7 @@
    `(anzu-match-2 ((,xwin (:background ,cham-1 :foreground "black"))))
    `(anzu-match-3 ((,xwin (:background ,blue-1 :foreground "black"))))
    `(anzu-replace-to ((,xwin (:foreground ,orange-1))))
+   `(mc/cursor-face ((,xwin (:underline ,butter-1))))
    ;; Terminal faces
    `(term-color-black ((,xwin (:foreground ,alum-7))))
    `(term-color-red ((,xwin (:foreground ,red-0))))
