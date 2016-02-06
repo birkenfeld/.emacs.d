@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        autopair-insert-opening
         browse-kill-ring-insert-and-quit
         company-insert-and-complete
         kill-region

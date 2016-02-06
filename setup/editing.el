@@ -123,6 +123,8 @@
 
 (setq register-preview-function #'register-preview-color)
 
+(require 'rectangular-region-mode)
+
 
 ;; Rectangle mode enhancements -------------------------------------------------
 

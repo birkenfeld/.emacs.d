@@ -38,8 +38,8 @@
   (eldoc-mode 1)
 
   ;; Flycheck
-  (flycheck-rust-setup)
-  (flycheck-mode 1)
+  ;(flycheck-rust-setup)
+  ;(flycheck-mode 1)
   )
 
 (eval-after-load "rust-mode"
@@ -56,4 +56,5 @@
 
      ;; some bindings
      (define-key rust-mode-map (kbd "C-c C-c") 'compile-now)
+     (define-key rust-mode-map (kbd "RET") 'maybe-comment-indent-new-line)
      ))

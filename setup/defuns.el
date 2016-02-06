@@ -509,3 +509,13 @@ as in the line above."
   (if (or rectangular-region-mode multiple-cursors-mode)
       (rrm/keyboard-quit)
     (set-rectangular-region-anchor)))
+
+(defun maybe-comment-indent-new-line ()
+  "Continue comment, if comment is more than two lines long already."
+  (interactive)
+  (if (and (save-excursion (comment-beginning))
+           (save-excursion
+             (previous-line)
+             (comment-beginning)))
+      (comment-indent-new-line)
+    (newline-and-indent)))
