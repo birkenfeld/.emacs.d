@@ -43,6 +43,11 @@
 (global-set-key (kbd "C-x <right>") 'windmove-right)
 (global-set-key (kbd "C-x <up>")    'windmove-up)
 (global-set-key (kbd "C-x <down>")  'windmove-down)
+;; these are usually bound to next-buffer, but this is better
+(global-set-key (kbd "C-x <C-left>")  'windmove-left)
+(global-set-key (kbd "C-x <C-right>") 'windmove-right)
+(global-set-key (kbd "C-x <C-up>")    'windmove-up)
+(global-set-key (kbd "C-x <C-down>")  'windmove-down)
 
 ;; Better buffer list
 (global-set-key (kbd "C-x C-b") 'ibuffer)

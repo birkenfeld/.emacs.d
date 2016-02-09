@@ -515,7 +515,8 @@ as in the line above."
   (interactive)
   (if (and (save-excursion (comment-beginning))
            (save-excursion
-             (previous-line)
+             (forward-line -1)
+             (end-of-line)
              (comment-beginning)))
       (comment-indent-new-line)
     (newline-and-indent)))
