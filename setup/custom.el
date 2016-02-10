@@ -304,7 +304,7 @@
  '(outline-blank-line t t)
  '(package-selected-packages
    (quote
-    (smart-region shell-pop autopair disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu flycheck highlight-indentation web-mode company pos-tip pyvenv irony projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
+    (easy-repeat shell-pop autopair disaster fill-column-indicator highlight-parentheses indent-guide which-key zeal-at-point nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jedi-direx jinja2-mode change-inner company-racer racer toml-mode protobuf-mode flycheck-rust rust-mode idomenu flycheck highlight-indentation web-mode company pos-tip pyvenv irony projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree test-case-mode smooth-scrolling smex smart-operator session redo+ rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode)))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -580,7 +580,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :family "Menlo"))))
+ '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "Fira Code"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))

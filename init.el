@@ -25,8 +25,7 @@
 (add-to-list 'package-archives
              '("gnu" . "http://elpa.gnu.org/packages/") t)
 (add-to-list 'package-archives
-             '("marmalade" .
-               "http://marmalade-repo.org/packages/") t)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("elpy" . "http://jorgenschaefer.github.io/packages/") t)
 (add-to-list 'package-archives

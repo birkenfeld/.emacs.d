@@ -129,6 +129,9 @@
 ;; Pop mark
 (global-set-key (kbd "C-:") 'pop-to-mark-command)
 
+;; Goto last change
+(global-set-key (kbd "C-;") 'goto-last-change)
+
 ;; Since M-s o isn't needed for occur, use M-s directly for word search
 (global-set-key (kbd "M-s") 'isearch-forward-symbol)
 
@@ -139,6 +142,9 @@
 ;; Something like vim's '*' binding
 (global-set-key (kbd "C-+")   'search-for-this-word)
 (global-set-key (kbd "C-*")   'lazy-highlight-cleanup)
+
+;; Redo
+(global-set-key (kbd "C-x U") 'redo)
 
 ;; better C-a behavior: toggle indentation/start of line
 (global-set-key [remap move-beginning-of-line]
@@ -165,6 +171,18 @@
 
 ;; Repeat simple and complex commands
 (global-set-key (kbd "C-.") 'repeat)
+
+;; expand-region + change-inner
+(global-set-key (kbd "C-,") 'er/expand-region)
+(global-set-key (kbd "M-i") 'change-inner)
+(global-set-key (kbd "M-o") 'change-outer)
+(global-set-key (kbd "s-i") 'copy-inner)
+(global-set-key (kbd "s-o") 'copy-outer)
+
+;; ace-jump
+(global-set-key (kbd "C-ö") 'ace-jump-mode)  ;; nothing else free...
+                                             ;; let's make use of these umlauts
+(global-set-key (kbd "M-g l") 'ace-jump-line-mode)
 
 ;; Better C-h bindings
 (define-key 'help-command (kbd "a") 'apropos)
@@ -224,6 +242,19 @@
 ;; Proced
 (global-set-key (kbd "C-x p") 'proced)
 
+;; Bookmarks
+(global-set-key (kbd "C-c b t") 'bm-toggle)
+(global-set-key (kbd "C-c b n") 'bm-next)
+(global-set-key (kbd "C-c b p") 'bm-previous)
+
+;; Fast jumping / killing etc. to next occurrence of a character
+(global-set-key (kbd "M-j") 'fastnav-jump-to-char-forward)
+(global-set-key (kbd "M-J") 'fastnav-jump-to-char-backward)
+(global-set-key (kbd "M-m") 'fastnav-mark-to-char-forward)
+(global-set-key (kbd "M-M") 'fastnav-mark-to-char-backward)
+(global-set-key (kbd "M-z") 'fastnav-zap-up-to-char-forward)
+(global-set-key (kbd "M-Z") 'fastnav-zap-up-to-char-backward)
+
 ;; Hide-show mode --------------------------------------------------------------
 
 (eval-after-load "hideshow"
@@ -269,6 +300,32 @@
 (define-key occur-mode-map "p" 'previous-error-no-select)
 (define-key occur-mode-map "v" 'occur-mode-display-occurrence)
 
-;; Rectangles with multiple-cursors --------------------------------------------
+;; Rectangles and stuff with multiple-cursors ----------------------------------
+
+(global-set-key (kbd "C-x C-ä") 'mc/edit-ends-of-lines)
+(global-set-key (kbd "C-x C-S-ä") 'mc/edit-beginnings-of-lines)
+(global-set-key (kbd "C-x C-M-ä") 'mc/edit-lines)
+(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+
+;; ;; Mark additional regions matching current region
+;; (global-set-key (kbd "M-æ") 'mc/mark-all-dwim)
+;; (global-set-key (kbd "C-å") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-æ") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-Æ") 'mc/mark-more-like-this-extended)
+;; (global-set-key (kbd "M-å") 'mc/mark-all-in-region)
+
+;; ;; Symbol and word specific mark-more
+;; (global-set-key (kbd "s-æ") 'mc/mark-next-word-like-this)
+;; (global-set-key (kbd "s-å") 'mc/mark-previous-word-like-this)
+;; (global-set-key (kbd "M-s-æ") 'mc/mark-all-words-like-this)
+;; (global-set-key (kbd "s-Æ") 'mc/mark-next-symbol-like-this)
+;; (global-set-key (kbd "s-Å") 'mc/mark-previous-symbol-like-this)
+;; (global-set-key (kbd "M-s-Æ") 'mc/mark-all-symbols-like-this)
+
+;; ;; Extra multiple cursors stuff
+;; (global-set-key (kbd "C-~") 'mc/reverse-regions)
+;; (global-set-key (kbd "M-~") 'mc/sort-regions)
+;; (global-set-key (kbd "H-~") 'mc/insert-numbers)
 
 (global-set-key (kbd "<C-return>") 'set-or-deactivate-rectangular-region-anchor)
+(define-key rectangular-region-mode-map (kbd "C-w") 'kill-region-deactivate-mc)
