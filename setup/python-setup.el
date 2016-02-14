@@ -38,6 +38,7 @@
 (define-key elpy-mode-map (kbd "<M-up>") nil)
 (define-key elpy-mode-map (kbd "<M-left>") nil)
 (define-key elpy-mode-map (kbd "<M-right>") nil)
+(define-key elpy-mode-map (kbd "<C-return>") nil)
 
 (define-key elpy-mode-map (kbd "C-M-.") 'projectile-find-next-tag)
 (define-key elpy-mode-map (kbd "C-c C-b") 'pop-tag-mark)

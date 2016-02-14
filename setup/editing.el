@@ -34,8 +34,8 @@
 (easy-repeat-mode 1)
 
 ;; Adaptive fill is great
-(require 'filladapt)
-(setq-default filladapt-mode t)
+(require 'adaptive-wrap)
+(setq-default adaptive-wrap-prefix-mode t)
 
 ;; Browse the kill ring for things to yank
 (require 'browse-kill-ring)
