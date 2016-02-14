@@ -1197,7 +1197,9 @@ customizations apply to the current completion session."
                      ("o" ,action "default")
                      ,@extra-actions))
                   ((null action)
-                   (cons 1 extra-actions))
+                   `(1
+                     ("o" identity "default")
+                     ,@extra-actions))
                   (t
                    (delete-dups (append action extra-actions)))))))
   (let ((extra-sources (plist-get ivy--sources-list caller)))
@@ -1335,7 +1337,8 @@ This is useful for recursive `ivy-read'."
                            (equal initial-input default-directory)
                            (equal initial-input ""))
                  (setq coll (cons initial-input coll)))
-               (unless (ivy-state-action ivy-last)
+               (unless (and (ivy-state-action ivy-last)
+                            (not (equal (ivy--get-action ivy-last) 'identity)))
                  (setq initial-input nil))))
             ((eq collection 'internal-complete-buffer)
              (setq coll (ivy--buffer-list "" ivy-use-virtual-buffers)))
