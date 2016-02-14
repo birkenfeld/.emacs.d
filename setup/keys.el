@@ -135,6 +135,9 @@
 ;; Goto last change
 (global-set-key (kbd "C-;") 'goto-last-change)
 
+;; Goto last change
+(global-set-key (kbd "C-=") 'calc-eval-region)
+
 ;; Better mark-word
 (global-set-key (kbd "M-+") 'mark-word)
 
