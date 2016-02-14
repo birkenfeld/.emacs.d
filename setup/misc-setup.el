@@ -4,7 +4,7 @@
 
 ;; close HTML tags with C-t in sgml mode
 (eval-after-load "sgml-mode"
-  '(define-key sgml-mode-map (kbd "C-t") 'sgml-close-tag))
+  '(define-key sgml-mode-map (kbd "C-t") #'sgml-close-tag))
 
 ;; Elisp -----------------------------------------------------------------------
 
@@ -12,8 +12,8 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
 ;; Some nice keybindings
-(define-key emacs-lisp-mode-map  (kbd "M-.") 'find-function-at-point)
-(define-key lisp-mode-shared-map (kbd "C-c v") 'eval-buffer)
+(define-key emacs-lisp-mode-map (kbd "M-.") #'find-function-at-point)
+(define-key lisp-mode-shared-map (kbd "C-c v") #'eval-buffer)
 
 ;; auto-pair `' in elisp comments and docstrings
 (defun my-emacs-lisp-mode-hook ()
@@ -53,15 +53,15 @@
   (end-of-buffer)
   (dired-next-line -1))
 
-(define-key dired-mode-map [remap beginning-of-buffer] 'dired-back-to-top)
-(define-key dired-mode-map [remap end-of-buffer] 'dired-jump-to-bottom)
+(define-key dired-mode-map [remap beginning-of-buffer] #'dired-back-to-top)
+(define-key dired-mode-map [remap end-of-buffer] #'dired-jump-to-bottom)
 
-(define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
+(define-key dired-mode-map "e" #'wdired-change-to-wdired-mode)
 
 (eval-after-load "wdired"
   '(progn
-     (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
-     (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)))
+     (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) #'dired-back-to-top)
+     (define-key wdired-mode-map (vector 'remap 'end-of-buffer) #'dired-jump-to-bottom)))
 
 ;; Shell/terminal --------------------------------------------------------------
 
@@ -79,7 +79,7 @@
 
 ;; shell-pop: easy pop-up of a shell buffer
 (autoload 'shell-pop "shell-pop" nil t)
-(global-set-key (kbd "<menu>") 'shell-pop)
+(global-set-key (kbd "<menu>") #'shell-pop)
 (setq term-term-name "eterm-color")
 
 ;; This helps with a bug in ansi-term when output lines are longer than
@@ -110,7 +110,7 @@
 
 ;; xdict: lookup dictionary
 (autoload 'xdict-query "x-dict" nil t)
-(global-set-key (kbd "C-c d") 'xdict-query)
+(global-set-key (kbd "C-c d") #'xdict-query)
 (eval-after-load 'x-dict
   '(add-hook 'xdict-mode-hook (lambda () (setq truncate-lines t))))
 
@@ -131,7 +131,7 @@
 
      (add-hook 'markdown-mode-hook
                (lambda ()
-                 (define-key markdown-mode-map (kbd "<tab>") 'yas-expand)
+                 (define-key markdown-mode-map (kbd "<tab>") #'yas-expand)
                  (setq imenu-generic-expression
                        markdown-imenu-generic-expression)))
 

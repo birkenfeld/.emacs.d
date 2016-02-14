@@ -11,5 +11,5 @@
     (error (flycheck-first-error))))
 
 
-(global-set-key (kbd "M-g M-e") 'flycheck-next-or-first-error)
-(global-set-key (kbd "M-g e") 'flycheck-next-or-first-error)
+(global-set-key (kbd "M-g M-e") #'flycheck-next-or-first-error)
+(global-set-key (kbd "M-g e") #'flycheck-next-or-first-error)

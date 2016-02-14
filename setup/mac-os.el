@@ -13,10 +13,10 @@
   (add-to-list 'ido-ignore-files "\\.DS_Store")
 
   ;; Keybinding to toggle full screen mode
-  (global-set-key (quote [M-f10]) (quote ns-toggle-fullscreen))
+  (global-set-key (quote [M-f10]) #'ns-toggle-fullscreen)
 
-  (global-set-key (kbd "s-u") 'universal-argument)
-  (global-set-key (kbd "s--") 'negative-argument)
+  (global-set-key (kbd "s-u") #'universal-argument)
+  (global-set-key (kbd "s--") #'negative-argument)
 
   ;; Mac friendly font
   (when window-system

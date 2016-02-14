@@ -20,8 +20,8 @@
         (move-beginning-of-line 1)
       (goto-char position))))
 
-(define-key yas-keymap (kbd "C-e") 'yas-goto-end-of-active-field)
-(define-key yas-keymap (kbd "C-a") 'yas-goto-start-of-active-field)
+(define-key yas-keymap (kbd "C-e") #'yas-goto-end-of-active-field)
+(define-key yas-keymap (kbd "C-a") #'yas-goto-start-of-active-field)
 
 ;; No dropdowns please, yas
 (setq yas-prompt-functions '(yas/ido-prompt yas/completing-prompt))

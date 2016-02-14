@@ -3,9 +3,6 @@
 ;; Scroll one line at a time
 (setq scroll-step 1)
 
-;; Don't wait for user input in redisplay
-(setq redisplay-dont-pause t)
-
 ;; Make "yes or no" "y or n"
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -82,7 +79,7 @@
 
 ;; Enable wdired, editing filenames in dired renames files
 (require 'wdired)
-(define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
+(define-key dired-mode-map (kbd "r") #'wdired-change-to-wdired-mode)
 
 ;; Highlight XXX style code tags in source files
 (font-lock-add-keywords 'python-mode
@@ -107,14 +104,16 @@
 ;; Use it in latex mode for dollar-style inline math
 (add-hook 'latex-mode-hook
           #'(lambda ()
-              (autopair-mode)
-              (modify-syntax-entry ?$ \"\\\"\")))
+              (set (make-local-variable 'autopair-handle-action-fns)
+                   (list #'autopair-default-handle-action
+                         #'autopair-latex-mode-paired-delimiter-action))))
 
 ;; Sphinx templated files: find mode after removing _t suffix
 (add-to-list 'auto-mode-alist '("_t$" nil t))
 
 ;; Kill minibuffer when changing buffer by mouseclick
 (defun stop-using-minibuffer ()
+  "Abort recursive edit in the minibuffer."
   (when (and (>= (recursion-depth) 1)
              (active-minibuffer-window))
     (abort-recursive-edit)))
@@ -136,8 +135,8 @@
 ;; M-x enhancement
 (require 'smex)
 (smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(global-set-key (kbd "M-x") #'smex)
+(global-set-key (kbd "M-X") #'smex-major-mode-commands)
 
 ;; Smooth scrolling (keep cursor away from screen edges)
 (require 'smooth-scrolling)
@@ -156,11 +155,11 @@
 
 ;; Coloring in the minibuffer completion buffer
 (autoload 'dircolors "dircolors" nil t)
-(add-hook 'completion-list-mode-hook 'dircolors)
-(add-hook 'buffer-menu-mode-hook 'dircolors)
+(add-hook 'completion-list-mode-hook #'dircolors)
+(add-hook 'buffer-menu-mode-hook #'dircolors)
 
 ;; Bury buffer with right-click on header line
-(global-set-key (kbd "<header-line> <mouse-3>") 'bury-selected-buffer)
+(global-set-key (kbd "<header-line> <mouse-3>") #'bury-selected-buffer)
 
 (defun bury-selected-buffer (event)
   (interactive "e")
@@ -185,7 +184,7 @@
            (flet ((process-list ())) ad-do-it))
 
 ;; Grepping
-(global-set-key (kbd "C-c g") 'grep-find)
+(global-set-key (kbd "C-c g") #'grep-find)
 
 ;; tabbar
 ;; (require 'tabbar)

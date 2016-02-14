@@ -50,4 +50,4 @@ so that they match the reference face in height."
     ad-do-it))
 
 (eval-after-load 'tex
-  '(define-key TeX-mode-map (kbd "C-c C-x") 'TeX-build-master))
+  '(define-key TeX-mode-map (kbd "C-c C-x") #'TeX-build-master))

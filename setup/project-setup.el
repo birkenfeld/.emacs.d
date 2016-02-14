@@ -13,11 +13,11 @@
 
 ;; (global-set-key (kbd "C-c p g") 'projectile-grep-with-default)
 
-(define-key projectile-command-map (kbd "x") 'projectile-todo)
-(define-key projectile-command-map (kbd "g") 'projectile-grep)
-(define-key projectile-command-map (kbd "f") 'projectile-find-file-dwim)
-(define-key projectile-command-map (kbd "s") 'projectile-save-project-buffers)
-; (define-key projectile-command-map (kbd "i") 'projectile-isearch)
+(define-key projectile-command-map (kbd "x") #'projectile-todo)
+(define-key projectile-command-map (kbd "g") #'projectile-grep)
+(define-key projectile-command-map (kbd "f") #'projectile-find-file-dwim)
+(define-key projectile-command-map (kbd "s") #'projectile-save-project-buffers)
+;; (define-key projectile-command-map (kbd "i") #'projectile-isearch)
 
 ;; remove a few bindings I won't need
 (define-key projectile-command-map (kbd "A") nil)  ;; ag 

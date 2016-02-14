@@ -15,7 +15,7 @@
        (list regexp files))))
   (rgrep regexp files default-directory))
 
-(global-set-key (kbd "C-x g") 'grep)
+(global-set-key (kbd "C-x g") #'grep)
 
 (add-to-list 'grep-find-ignored-files ".tags")
 (add-to-list 'grep-find-ignored-files ".noseids")
@@ -35,4 +35,4 @@
 (setq wgrep-enable-key "e")
 
 ;; Add custom keybindings
-(define-key grep-mode-map (kbd "C-x C-s") 'wgrep-save-all-buffers)
+(define-key grep-mode-map (kbd "C-x C-s") #'wgrep-save-all-buffers)

@@ -20,17 +20,9 @@
 (eval-after-load "vc-annotate"
   '(progn
      (fullframe vc-annotate vc-annotate-quit-window)
-     (define-key vc-annotate-mode-map (kbd "q") 'vc-annotate-quit-window)))
+     (define-key vc-annotate-mode-map (kbd "q") #'vc-annotate-quit-window)))
 
-(require 'magit)
-
-(defun magit-or-monky-status (arg)
-  (interactive "P")
-  (if (magit-get-top-dir)
-      (magit-status arg)
-    (monky-status arg)))
-
-(global-set-key (kbd "C-x v x") 'magit-or-monky-status)
+(global-set-key (kbd "C-x v x") #'magit-status)
 
 ;; full screen magit-status
 (fullframe magit-status magit-mode-quit-window)
@@ -53,8 +45,6 @@
   (setq magit-diff-options (remove "-w" magit-diff-options))
   (magit-refresh))
 
-(define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
-
 ;; C-c C-a to amend without any prompt
 
 (defun magit-just-amend ()
@@ -62,8 +52,6 @@
   (save-window-excursion
     (magit-with-refresh
       (shell-command "git --no-pager commit --amend --reuse-message=HEAD"))))
-
-(define-key magit-status-mode-map (kbd "C-c C-a") 'magit-just-amend)
 
 ;; C-x C-k to kill file on line
 
@@ -74,4 +62,9 @@
   (delete-current-buffer-file)
   (magit-refresh))
 
-(define-key magit-status-mode-map (kbd "C-x C-k") 'magit-kill-file-on-line)
+(eval-after-load 'magit
+  '(progn
+     (define-key magit-status-mode-map (kbd "W") #'magit-toggle-whitespace)
+     (define-key magit-status-mode-map (kbd "C-c C-a") #'magit-just-amend)
+     (define-key magit-status-mode-map (kbd "C-x C-k") #'magit-kill-file-on-line)
+     ))

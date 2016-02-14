@@ -7,8 +7,8 @@
 ;; Display match count while searching/replacing
 (require 'anzu)
 (global-anzu-mode 1)
-(global-set-key (kbd "M-%") 'anzu-query-replace)
-(global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+(global-set-key (kbd "M-%") #'anzu-query-replace)
+(global-set-key (kbd "C-M-%") #'anzu-query-replace-regexp)
 
 ;; highlight newly-inserted text etc
 (require 'volatile-highlights)
@@ -16,15 +16,15 @@
 
 ;; Move whole lines
 ;(require 'move-text)
-;(global-set-key (kbd "<C-S-down>") 'move-text-down)
-;(global-set-key (kbd "<C-S-up>") 'move-text-up)
+;(global-set-key (kbd "<C-S-down>") #'move-text-down)
+;(global-set-key (kbd "<C-S-up>") #'move-text-up)
 
 ;; Martin Blais' dubious paragraphs
 (require 'dubious-paragraphs)
-(global-set-key (kbd "M-n") 'dubious-forward-paragraph)
-(global-set-key (kbd "M-N") 'dubious-forward-paragraph-scroll)
-(global-set-key (kbd "M-p") 'dubious-backward-paragraph)
-(global-set-key (kbd "M-P") 'dubious-backward-paragraph-scroll)
+(global-set-key (kbd "M-n") #'dubious-forward-paragraph)
+(global-set-key (kbd "M-N") #'dubious-forward-paragraph-scroll)
+(global-set-key (kbd "M-p") #'dubious-backward-paragraph)
+(global-set-key (kbd "M-P") #'dubious-backward-paragraph-scroll)
 
 ;; Easy repeat by last key of key sequence
 (require 'easy-repeat)
@@ -133,5 +133,5 @@
 ;;       (setq deactivate-mark nil)
 ;;       (undo-boundary))))
 
-;(define-key rectangle-mark-mode-map [remap self-insert-command] 'rectangle-self-insert-command)
-;(define-key rectangle-mark-mode-map (kbd "DEL") 'rectangle-delete-backward-char)
+;;(define-key rectangle-mark-mode-map [remap self-insert-command] #'rectangle-self-insert-command)
+;;(define-key rectangle-mark-mode-map (kbd "DEL") #'rectangle-delete-backward-char)

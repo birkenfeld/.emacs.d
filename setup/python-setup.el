@@ -40,9 +40,9 @@
 (define-key elpy-mode-map (kbd "<M-right>") nil)
 (define-key elpy-mode-map (kbd "<C-return>") nil)
 
-(define-key elpy-mode-map (kbd "C-M-.") 'projectile-find-next-tag)
-(define-key elpy-mode-map (kbd "C-c C-b") 'pop-tag-mark)
-(define-key elpy-mode-map (kbd "M-SPC") 'company-complete)
+(define-key elpy-mode-map (kbd "C-M-.") #'projectile-find-next-tag)
+(define-key elpy-mode-map (kbd "C-c C-b") #'pop-tag-mark)
+;;(define-key elpy-mode-map (kbd "M-SPC") #'company-complete)
 
 (require 'popwin)
 (add-to-list 'display-buffer-alist '("*Python Doc*" popwin:special-display-popup-window))
@@ -54,7 +54,7 @@
   (self-insert-command 1)
   (company-complete))
 
-(define-key elpy-mode-map (kbd ".") 'company-insert-and-complete)
+(define-key elpy-mode-map (kbd ".") #'company-insert-and-complete)
 
 (put 'font-lock-regexp-grouping-backslash 'face-alias 'font-lock-builtin-face)
 
@@ -137,8 +137,8 @@
          (concat "python " buffer-file-name)))
 
   (setq fill-column 79)
-  (define-key python-mode-map (kbd "M-q") 'python-fill-paragraph)
-  (define-key python-mode-map (kbd "C-c #") 'comment-move-before-line)
+  (define-key python-mode-map (kbd "M-q") #'python-fill-paragraph)
+  (define-key python-mode-map (kbd "C-c #") #'comment-move-before-line)
 
   ;; set up hide-show mode
   (hs-minor-mode)
@@ -195,8 +195,8 @@
 ;;              (list x)))
 ;;          (default-value 'mode-line-format)))
 
-;; (global-set-key (kbd "<f9>") 'test-case-run-without-pdb)
-;; (global-set-key (kbd "S-<f9>") 'test-case-run-with-pdb)
+;; (global-set-key (kbd "<f9>") #'test-case-run-without-pdb)
+;; (global-set-key (kbd "S-<f9>") #'test-case-run-with-pdb)
 
 ;; (defun test-case-run-without-pdb ()
 ;;   (interactive)

@@ -29,9 +29,9 @@
 ;; More familiar keymap settings.
 (add-hook 'speedbar-reconfigure-keymaps-hook
           '(lambda ()
-             (define-key speedbar-mode-map [S-up] 'speedbar-up-directory)
-             (define-key speedbar-mode-map [right] 'speedbar-flush-expand-line)
-             (define-key speedbar-mode-map [left] 'speedbar-contract-line)))
+             (define-key speedbar-mode-map [S-up] #'speedbar-up-directory)
+             (define-key speedbar-mode-map [right] #'speedbar-flush-expand-line)
+             (define-key speedbar-mode-map [left] #'speedbar-contract-line)))
 
 ;; Overwrite to take projectile into account
 (defun sr-speedbar-refresh ()

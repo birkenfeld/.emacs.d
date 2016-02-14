@@ -97,8 +97,8 @@
      (require 'disaster)
      (require 'irony)
      (require 'flycheck-irony)
-     (define-key c-mode-base-map (kbd "C-c C-d") 'disaster)
-     (define-key c-mode-base-map (kbd "C-c C-c") 'compile)
+     (define-key c-mode-base-map (kbd "C-c C-d") #'disaster)
+     (define-key c-mode-base-map (kbd "C-c C-c") #'compile)
      ;(define-key c-mode-base-map (kbd "TAB") 'company-complete)
 
      (defun my-c-mode-common-hook ()

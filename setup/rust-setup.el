@@ -50,11 +50,11 @@
      (add-hook 'rust-mode-hook #'my-rust-mode-hook)
      (diminish 'racer-mode " R")
 
-     (define-key racer-mode-map (kbd "TAB") 'company-indent-or-complete-common)
-     (define-key racer-mode-map (kbd ".") 'company-insert-and-complete)
-     (define-key racer-mode-map (kbd ":") 'company-insert-and-complete)
+     (define-key racer-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+     (define-key racer-mode-map (kbd ".") #'company-insert-and-complete)
+     (define-key racer-mode-map (kbd ":") #'company-insert-and-complete)
 
      ;; some bindings
-     (define-key rust-mode-map (kbd "C-c C-c") 'compile-now)
-     (define-key rust-mode-map (kbd "RET") 'maybe-comment-indent-new-line)
+     (define-key rust-mode-map (kbd "C-c C-c") #'compile-now)
+     (define-key rust-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
      ))
