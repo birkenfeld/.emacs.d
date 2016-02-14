@@ -135,6 +135,9 @@
 ;; Goto last change
 (global-set-key (kbd "C-;") 'goto-last-change)
 
+;; Better mark-word
+(global-set-key (kbd "M-+") 'mark-word)
+
 ;; Since M-s o isn't needed for occur, use M-s directly for word search
 (global-set-key (kbd "M-s") 'isearch-forward-symbol)
 
@@ -312,8 +315,8 @@
 
 ;; Mark additional regions matching current region
 (global-set-key (kbd "s-m") 'mc/mark-all-dwim)
-(global-set-key (kbd "s-p") 'mc/mark-previous-like-this)
-(global-set-key (kbd "s-n") 'mc/mark-next-like-this)
+;;(global-set-key (kbd "s-p") 'mc/mark-previous-like-this)
+;;(global-set-key (kbd "s-n") 'mc/mark-next-like-this)
 (global-set-key (kbd "s-r") 'mc/mark-all-in-region)
 
 ;; ;; Symbol and word specific mark-more
@@ -321,8 +324,8 @@
 (global-set-key (kbd "s-a") 'mc/mark-all-symbols-like-this)
 ;;(global-set-key (kbd "s-å") 'mc/mark-previous-word-like-this)
 ;;(global-set-key (kbd "M-s-æ") 'mc/mark-all-words-like-this)
-;;(global-set-key (kbd "s-Æ") 'mc/mark-next-symbol-like-this)
-;;(global-set-key (kbd "s-Å") 'mc/mark-previous-symbol-like-this)
+(global-set-key (kbd "s-n") 'mc/mark-next-symbol-like-this)
+(global-set-key (kbd "s-p") 'mc/mark-previous-symbol-like-this)
 
 ;; Extra multiple cursors stuff
 (global-set-key (kbd "s-t") 'mc/reverse-regions)
