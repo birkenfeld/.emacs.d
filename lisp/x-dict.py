@@ -1,9 +1,7 @@
 #!/usr/bin/python
 
 # Created: 05.07.2000
-# Last checked: 15.04.2010
-
-# Note: www.dict.cc support is currently broken since htmlTableParse.py can't handle it :-(
+# Last checked: 15.05.2014
 
 # The script was formerly known as leo.py, it is now called x-dict
 
@@ -263,7 +261,7 @@ def ParseURL(url,proxy=None):
 
 import os, time, cPickle, optparse
 
-XDICT_VERSION = "2010-04-15"
+XDICT_VERSION = "2014-05-15"
 
 DEBUG_ACTIVE = os.environ.has_key("INSIDE_EMACS")
 
@@ -275,14 +273,18 @@ parser.add_option("", "--leo", action="store_true", dest="dict_leo", default=Fal
 parser.add_option("", "--dict_cc", action="store_true", dest="dict_dict_cc", default=False, help="Use www.dict.cc")
 parser.add_option("", "--http_proxy", dest="http_proxy", default=None, help="A proxy server")
 parser.add_option("", "--coding", dest="coding", default=None, help="Use the given coding system")
+parser.add_option("", "--local-file", dest="local_file", default=None, help="Use a downloaded html file as input instead of contacting the server directly")
 parser.add_option("-c", "--use-cache", action="store_true", dest="use_cache", default=False, help="Cache the results on disk")
 parser.add_option("-w", "--column-width", dest="colwidth", type="int", default=50, help="The output column width")
 parser.add_option("-n", "--do-nothing", action="store_true", dest="do_nothing", default=False, help="Do nothing, used for debugging")
 parser.add_option("", "--version", action="store_true", dest="show_version", default=False, help="Show x-dict version info")
 
 if DEBUG_ACTIVE:
-    sys.argv = ["x-dict", "car"]
-    # sys.argv.append("--dict_cc")
+    # sys.argv = ["x-dict", "car"]
+    # sys.argv = ["x-dict", "--local-file=~/tmp/leo2.html", "hello"]
+    sys.argv = ["x-dict", "--local-file=~/tmp/leo_Giraffe.html", "Giraffe"]
+    # sys.argv = ["x-dict", "--local-file=~/tmp/leo_laufen.html", "laufen"]
+    sys.argv = ["x-dict", "--local-file=~/tmp/leo.html", "crucial"]
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -329,7 +331,11 @@ urllib._urlopener = XDictUrlOpener()
 # --------------------------------------------------------------------------------
 # Common dictionary class
 # --------------------------------------------------------------------------------
-class Dict:
+class Dict(object):
+    def __repr__(self):
+        return "<%s>" % self.__class__.__name__
+    def __getitem__(self, idx):
+        return self.pd[idx]
     def wash(self, str):
         str = repr(str)
         # wash the bold face
@@ -346,6 +352,9 @@ class Dict:
         # wash smaller fonts
         str = string.replace(str,"<small>","")
         str = string.replace(str,"</small>","")
+        # wash span
+        str = string.replace(str,"<span>","")
+        str = string.replace(str,"</span>","")
         # wash kbd
         str = string.replace(str,"<kbd>","")
         str = string.replace(str,"</kbd>","")
@@ -371,8 +380,12 @@ class Dict:
         str = string.replace(str,"&nbsp;","")
         # remove chr(A0)
         str = string.replace(str, chr(0xA0),"")
+        # remove chr(C2)
+        str = string.replace(str, chr(0xC2),"")
         # remove &#160;
         str = string.replace(str,"&#160;","")
+        # remove <br>
+        str = string.replace(str,"<br>","")
         return str
     def show(self, wl):
         for eng, ger in wl:
@@ -392,9 +405,13 @@ class Dict_leo_org(Dict):
             t,wl = wcache[query]
             print "Using data from cache (%s)" % time.strftime("%c",time.localtime(t))
         else:
-            #noglob wget -O ~/tmp/leo.html http://dict.leo.org/?search=crucial
-            # pd = ParseFile(os.path.expanduser('~/tmp/leo.html'))
-            pd = ParseURL('http://dict.leo.org/?search='+query,options.http_proxy)
+            if options.local_file is None:
+                pd = ParseURL('http://dict.leo.org/?search='+query,options.http_proxy)
+            else:
+                #noglob wget -O ~/tmp/leo.html http://dict.leo.org/?search=crucial
+                # pd = ParseFile(os.path.expanduser('~/tmp/leo.html'))
+                # x-dict --local-file ~/tmp/leo.html
+                pd = ParseFile(os.path.expanduser(options.local_file))
             self.pd = pd
             wl = self.parse_result(pd)
 
@@ -403,18 +420,21 @@ class Dict_leo_org(Dict):
                 cPickle.dump(wcache, open(gCacheFilename, "w"))
         return wl
 
-    def parse_result(self,pd):
-        wordlist = pd[7]
+    def parse_result(self, pd):
+        # 15.05.2014: Adjektive / Adverbien: eng=pd[2][1..len][4], ger=pd[2][1..len][7]
+        # 15.05.2014: Substantive:           eng=pd[3][1..len][4], ger=pd[3][1..len][7]
+        # 15.05.2014: Verben:                eng=pd[4][1..len][4], ger=pd[4][1..len][7]
+        wl = []
 
-        wl=[]
-
-        for i in range(2,len(wordlist)):
-            if len(wordlist[i]) > 3:
-                eng = self.wash(wordlist[i][1])
-                ger = self.wash(wordlist[i][3])
-                if len(eng) > 0 or len(ger) > 0:
-                    #print "%-40s%-39s"%(eng,ger)
-                    wl.append((eng,ger))
+        for idx in range(2, len(pd)):
+            wordlist = pd[idx]
+            for i in range(len(wordlist)):
+                if len(wordlist[i]) > 6:
+                    eng = self.wash(wordlist[i][4])
+                    ger = self.wash(wordlist[i][7])
+                    if len(eng) > 0 or len(ger) > 0:
+                        #print "%-40s%-39s"%(eng,ger)
+                        wl.append((eng,ger))
         return wl
 
 # --------------------------------------------------------------------------------
@@ -427,6 +447,7 @@ class Dict_dict_cc(Dict):
         # pd = ParseFile(os.path.expanduser('~/tmp/di.html'))
 
         pd = ParseURL('http://www.dict.cc/?s='+query,options.http_proxy)
+        # print pd
         self.pd = pd
         wl = self.parse_result(pd)
         return wl
@@ -436,14 +457,19 @@ class Dict_dict_cc(Dict):
 
         wl=[]
 
-        for i in range(1, len(wordlist)):
+        for i in range(1,len(wordlist)):
             if len(wordlist[i]) > 1:
                 eng = self.wash(wordlist[i][1])
                 ger = self.wash(wordlist[i][2])
                 if len(eng) > 0 or len(ger) > 0:
-                    #print "%-40s%-39s"%(eng, ger)
+                    #print "%-40s%-39s"%(eng,ger)
                     wl.append((eng,ger))
         return wl
+
+if DEBUG_ACTIVE:
+    d = Dict_leo_org()
+    # d = Dict_dict_cc()
+    # d.search("")
 
 # --------------------------------------------------------------------------------
 # Emacs interface via pymacs ... not up to date at the moment
@@ -468,7 +494,7 @@ if __name__ == "__main__":
     open_wcache()
     if not options.do_nothing:
         search_string = string.join(args)
-        # search_string = "Fahrrad"
+        #search_string = "Fahrrad"
 
         if options.dict_leo:
             d = Dict_leo_org()
