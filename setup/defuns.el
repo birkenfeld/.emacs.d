@@ -49,7 +49,8 @@ using `abort-recursive-edit'."
 (defun find-file-with-linenum ()
   "Find file and go to line number specifed with :num."
   (interactive)
-  (let* ((fname (ffap-prompter))
+  (let* ((fname (car (find-file-read-args "Find file: "
+                                          (confirm-nonexistent-file-or-buffer))))
          (cpos (string-match ":" fname))
          (line (if cpos (string-to-number (substring fname (1+ cpos))) 0))
          (fpos (or (and (> line 0) cpos) (length fname))))
