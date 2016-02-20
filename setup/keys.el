@@ -337,3 +337,12 @@
 
 (global-set-key (kbd "<C-return>") #'set-or-deactivate-rectangular-region-anchor)
 (define-key rectangular-region-mode-map (kbd "C-w") #'kill-region-deactivate-mc)
+
+;; Disable electric inserting keys when rrm or mc is active
+(mapcar (lambda (map)
+          (define-key map [remap company-insert-and-complete] #'self-insert-command)
+          (define-key map [remap autopair-insert-or-skip-quote] #'self-insert-command)
+          (define-key map [remap autopair-insert-opening] #'self-insert-command)
+          (define-key map [remap autopair-extra-skip-close-maybe] #'self-insert-command)
+          (define-key map [remap autopair-skip-close-maybe] #'self-insert-command))
+        (list rectangular-region-mode-map mc/keymap))

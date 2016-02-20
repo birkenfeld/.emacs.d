@@ -3,15 +3,14 @@
 
 (setq mc/cmds-to-run-for-all
       '(
-        autopair-insert-opening
-        autopair-skip-close-maybe
         browse-kill-ring-insert-and-quit
-        company-insert-and-complete
         kill-region
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        describe-key
         set-or-deactivate-rectangular-region-anchor
         smex
+        suspend-frame
         ))
