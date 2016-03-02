@@ -55,11 +55,26 @@
   (interactive)
   (dotimes (i 10) (company-select-next)))
 
+;; don't get confused with fill-column-indicator
+(defvar-local company-fci-mode-on-p nil)
+
+(defun company-turn-off-fci (&rest ignore)
+  (when (boundp 'fci-mode)
+    (setq company-fci-mode-on-p fci-mode)
+    (when fci-mode (fci-mode -1))))
+
+(defun company-maybe-turn-on-fci (&rest ignore)
+  (when company-fci-mode-on-p (fci-mode 1)))
+
 (eval-after-load "company"
   '(progn
      (define-key company-active-map (kbd "<prior>") #'company-select-previous-page)
      (define-key company-active-map (kbd "<next>") #'company-select-next-page)
      (define-key company-active-map (kbd "TAB") #'company-complete-selection)
-     (define-key company-active-map [tab] #'company-complete-selection)))
+     (define-key company-active-map [tab] #'company-complete-selection)
+
+     (add-hook 'company-completion-started-hook 'company-turn-off-fci)
+     (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
+     (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)))
 
 (add-hook 'emacs-lisp-mode-hook 'company-mode)
