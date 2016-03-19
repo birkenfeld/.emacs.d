@@ -368,6 +368,7 @@
  '(screen-lines-minor-mode-string " \\/")
  '(scroll-bar-mode (quote right))
  '(scroll-conservatively 0)
+ '(scroll-margin 4)
  '(search-default-mode (quote character-fold-to-regexp))
  '(search-ring-update t)
  '(search-upper-case t)

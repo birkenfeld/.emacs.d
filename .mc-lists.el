@@ -13,4 +13,5 @@
         set-or-deactivate-rectangular-region-anchor
         smex
         suspend-frame
+        wgrep-finish-edit
         ))
