@@ -10,6 +10,7 @@
 (setq mc/cmds-to-run-once
       '(
         describe-key
+        gud-tooltip-mouse-motion
         set-or-deactivate-rectangular-region-anchor
         smex
         suspend-frame
