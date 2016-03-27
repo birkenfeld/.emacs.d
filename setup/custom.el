@@ -165,6 +165,7 @@
    (quote
     (".bzr" "CVS" ".git" ".hg" ".svn" ".tox" "build" "dist" ".cask" "_build" "html")))
  '(elpy-rpc-backend "jedi")
+ '(elpy-rpc-python-command "python3")
  '(elpy-rpc-timeout 2)
  '(eval-expression-print-level nil)
  '(expand-region-fast-keys-enabled nil)

@@ -551,3 +551,16 @@ argument, just echo the result in the minibuffer."
       (pcase arg
         ((or 1 4) (insert value))
         (-1 (message value))))))
+
+(defun un-camelcase-word-at-point ()
+  "Un-camelcase the word at point, replacing uppercase chars with
+the lowercase version preceded by an underscore.
+
+The first char, if capitalized (eg, PascalCase) is just
+downcased, no preceding underscore."
+  (interactive)
+  (save-excursion
+    (let ((bounds (bounds-of-thing-at-point 'word)))
+      (replace-regexp "\\([A-Z]\\)" "_\\1" nil
+                      (1+ (car bounds)) (cdr bounds))
+      (downcase-region (car bounds) (cdr bounds)))))
