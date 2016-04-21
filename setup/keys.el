@@ -68,6 +68,7 @@
 ;; C-k is kill-whole-line, C-l is kill to end of line
 (global-set-key (kbd "C-k") #'kill-whole-line)
 (global-set-key (kbd "C-l") #'kill-line)
+(global-set-key (kbd "M-k") #'kill-this-symbol)
 
 ;; shortcuts for switching to "other" file
 ;; (binding interferes with gud)
@@ -137,6 +138,9 @@
 
 ;; Goto last change
 (global-set-key (kbd "C-=") #'calc-eval-region)
+
+;; Wrap line in parens
+(global-set-key (kbd "C-(") #'wrap-line-in-parens)
 
 ;; Better mark-word
 (global-set-key (kbd "M-+") #'mark-word)

@@ -564,3 +564,20 @@ downcased, no preceding underscore."
       (replace-regexp "\\([A-Z]\\)" "_\\1" nil
                       (1+ (car bounds)) (cdr bounds))
       (downcase-region (car bounds) (cdr bounds)))))
+
+(defun kill-this-symbol ()
+  "Kill the whole symbol at point."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (kill-region (car bounds) (cdr bounds))))
+
+(defun wrap-line-in-parens ()
+  "Wrap the rest of the line (minus semicolon) in parens."
+  (interactive)
+  (insert "(")
+  (let ((beg (point)))
+    (save-excursion
+      (end-of-line)
+      (when (looking-back ";" nil)
+        (backward-char))
+      (insert ")"))))

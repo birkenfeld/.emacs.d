@@ -3,8 +3,12 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        autopair-extra-insert-opening
         browse-kill-ring-insert-and-quit
+        cua-cut-region
+        cua-paste
         kill-region
+        prelude-move-beginning-of-line
         ))
 
 (setq mc/cmds-to-run-once
