@@ -572,12 +572,12 @@ downcased, no preceding underscore."
     (kill-region (car bounds) (cdr bounds))))
 
 (defun wrap-line-in-parens ()
-  "Wrap the rest of the line (minus semicolon) in parens."
+  "Wrap the rest of the line (minus separators) in parens."
   (interactive)
   (insert "(")
   (let ((beg (point)))
     (save-excursion
       (end-of-line)
-      (when (looking-back ";" nil)
+      (when (looking-back "[;,]" nil)
         (backward-char))
       (insert ")"))))

@@ -87,3 +87,14 @@
   (interactive "P")
   (let ((compilation-read-command nil))
     (projectile-compile-project arg)))
+
+;; Overrides projectile-go. We don't have go code, and it detects e.g. the Rust
+;; compiler as go due to LLVM having some go files laying around.
+;;
+;; Also, the function is quite slow for large projects.
+(defadvice projectile-go (around no-go activate)
+  nil)
+
+;; Add a project type for rustc
+(projectile-register-project-type 'rustc '("COMPILER_TESTS.md")
+                                  "make -j4 rustc-stage1" "make check-stage1 ")
