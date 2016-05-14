@@ -91,6 +91,12 @@
   (kill-region (point) (mark))
   (rrm/keyboard-quit))
 
+(defun my-markdown-mode-hook ()
+  (set-variable 'show-trailing-whitespace 1)
+  )
+
+(add-hook 'markdown-mode-hook #'my-markdown-mode-hook)
+
 ;; Neotree: hide files otherwise hidden in find-file etc.
 ;; (eval-after-load "neotree"
 ;;   '(setq neo-hidden-files-regexp
