@@ -13,6 +13,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+        cua-cut-region
         describe-key
         gud-tooltip-mouse-motion
         set-or-deactivate-rectangular-region-anchor
