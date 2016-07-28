@@ -40,7 +40,8 @@
 (load custom-file)
 
 ;; No horizontal scrolling please
-(horizontal-scroll-bar-mode -1)
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
 
 ;; Powerline: start it up right now to get the modeline early
 (require 'powerline)
