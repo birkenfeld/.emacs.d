@@ -116,6 +116,7 @@ and the point, not include the isearch word."
   (if (not (looking-at "\n")) (forward-char)))
 
 (defvar current-this-regex "")
+
 (defun search-for-this-word ()
   "Emulate Vim's `*' binding."
   (interactive)
@@ -124,10 +125,6 @@ and the point, not include the isearch word."
                   (concat "\\_<" (regexp-quote tag) "\\_>"))
       (error "point not over tag")))
   (unless (string-equal new-this-regex current-this-regex)
-    (font-lock-remove-keywords
-     nil (list (list current-this-regex 0 'lazy-highlight-face 'prepend)))
-    (font-lock-add-keywords
-     nil (list (list new-this-regex 0 'lazy-highlight-face 'prepend)))
     (setq current-this-regex new-this-regex)
     (font-lock-fontify-buffer)
     (message (concat "Searching for " (substring new-this-regex 2 -2))))
