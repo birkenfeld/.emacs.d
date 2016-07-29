@@ -29,7 +29,8 @@
 ;; Easy repeat by last key of key sequence
 (require 'easy-repeat)
 (setq easy-repeat-command-list
-      '(previous-error
+      '(flycheck-next-or-first-error
+        previous-error
         next-error))
 (easy-repeat-mode 1)
 
