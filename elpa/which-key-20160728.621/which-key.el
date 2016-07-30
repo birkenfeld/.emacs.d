@@ -4,8 +4,8 @@
 
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20160709.1225
-;; Version: 1.1.12
+;; Package-Version: 20160728.621
+;; Version: 1.1.14
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.3"))
 
@@ -1657,18 +1657,21 @@ is the width of the live window."
     (setcar (cdr (assq 'which-key-mode minor-mode-alist)) which-key--lighter-backup)))
 
 (defun which-key--echo (text)
-  "Echo TEXT to minibuffer without logging.
-Slight delay gets around evil functions that clear the echo
-area."
+  "Echo TEXT to minibuffer without logging."
   (let* ((minibuffer (eq which-key-popup-type 'minibuffer))
-         (delay (if minibuffer
-                    0.2
-                  (+ (or echo-keystrokes 0) 0.001)))
+         ;; (delay (if minibuffer
+         ;;            0.2
+         ;;          (+ (or echo-keystrokes 0) 0.001)))
          message-log-max)
     (unless minibuffer (message "%s" text))
-    (run-with-idle-timer
-     delay nil (lambda () (let (message-log-max)
-                            (message "%s" text))))))
+
+    ;; Caused some completion commands in the minibuffer to be overwritten, so
+    ;; disable the hack for now
+
+    ;; (run-with-idle-timer
+    ;;  delay nil (lambda () (let (message-log-max)
+    ;;                         (message "%s" text))))
+    ))
 
 (defun which-key--next-page-hint (prefix-keys)
   "Return string for next page hint."

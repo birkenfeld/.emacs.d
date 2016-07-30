@@ -149,7 +149,6 @@ search of occurences."
                         (let ((ov (make-overlay p (1+ p))))
                           (overlay-put ov 'priority 100)
                           (overlay-put ov 'tag 'fastnav)
-                          (overlay-put ov 'face lazy-highlight-face)
                           ov)))
                   (fastnav-get-nth-chars arg))
           (let* ((event (read-event))

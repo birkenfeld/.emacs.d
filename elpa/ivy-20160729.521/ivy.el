@@ -314,6 +314,7 @@ action functions.")
   dynamic-collection
   ;; A lambda that transforms candidates only for display
   display-transformer-fn
+  directory
   caller)
 
 (defvar ivy-last (make-ivy-state)
@@ -733,25 +734,26 @@ If the text hasn't changed as a result, forward to `ivy-alt-done'."
     (when (eq (ivy-state-caller ivy-last) 'swiper)
       (switch-to-buffer (ivy-state-buffer ivy-last)))
     (with-current-buffer (ivy-state-buffer ivy-last)
-      (ivy-read
-       (ivy-state-prompt ivy-last)
-       (ivy-state-collection ivy-last)
-       :predicate (ivy-state-predicate ivy-last)
-       :require-match (ivy-state-require-match ivy-last)
-       :initial-input ivy-text
-       :history (ivy-state-history ivy-last)
-       :preselect (unless (eq (ivy-state-collection ivy-last)
-                              'read-file-name-internal)
-                    ivy--current)
-       :keymap (ivy-state-keymap ivy-last)
-       :update-fn (ivy-state-update-fn ivy-last)
-       :sort (ivy-state-sort ivy-last)
-       :action (ivy-state-action ivy-last)
-       :unwind (ivy-state-unwind ivy-last)
-       :re-builder (ivy-state-re-builder ivy-last)
-       :matcher (ivy-state-matcher ivy-last)
-       :dynamic-collection (ivy-state-dynamic-collection ivy-last)
-       :caller (ivy-state-caller ivy-last)))))
+      (let ((default-directory (ivy-state-directory ivy-last)))
+        (ivy-read
+         (ivy-state-prompt ivy-last)
+         (ivy-state-collection ivy-last)
+         :predicate (ivy-state-predicate ivy-last)
+         :require-match (ivy-state-require-match ivy-last)
+         :initial-input ivy-text
+         :history (ivy-state-history ivy-last)
+         :preselect (unless (eq (ivy-state-collection ivy-last)
+                                'read-file-name-internal)
+                      ivy--current)
+         :keymap (ivy-state-keymap ivy-last)
+         :update-fn (ivy-state-update-fn ivy-last)
+         :sort (ivy-state-sort ivy-last)
+         :action (ivy-state-action ivy-last)
+         :unwind (ivy-state-unwind ivy-last)
+         :re-builder (ivy-state-re-builder ivy-last)
+         :matcher (ivy-state-matcher ivy-last)
+         :dynamic-collection (ivy-state-dynamic-collection ivy-last)
+         :caller (ivy-state-caller ivy-last))))))
 
 (defvar-local ivy-calling nil
   "When non-nil, call the current action when `ivy--index' changes.")
@@ -1405,6 +1407,7 @@ customizations apply to the current completion session."
            :matcher matcher
            :dynamic-collection dynamic-collection
            :display-transformer-fn transformer-fn
+           :directory default-directory
            :caller caller))
     (ivy--reset-state ivy-last)
     (prog1
@@ -2319,7 +2322,8 @@ CANDIDATES are assumed to be static."
                    res))))
     (setq ivy--all-candidates res)))
 
-(defcustom ivy-sort-matches-functions-alist '((t . nil))
+(defcustom ivy-sort-matches-functions-alist '((t . nil)
+                                              (ivy-switch-buffer . ivy-sort-function-buffer))
   "An alist of functions for sorting matching candidates.
 
 Unlike `ivy-sort-functions-alist', which is used to sort the
@@ -2382,6 +2386,25 @@ Prefix matches to NAME are put ahead of the list."
        (nreverse res-prefix)
        (nreverse res-noprefix)))))
 
+(defun ivy-sort-function-buffer (name candidates)
+  "Re-sort CANDIDATES.
+Prefer first \"^*NAME\", then \"^NAME\"."
+  (if (or (string-match "^\\^" name) (string= name ""))
+      candidates
+    (let* ((base-re (funcall ivy--regex-function name))
+           (re-prefix (concat "^\\*" base-re))
+           res-prefix
+           res-noprefix)
+      (unless (cl-find-if (lambda (s) (string-match re-prefix s)) candidates)
+        (setq re-prefix (concat "^" base-re)))
+      (dolist (s candidates)
+        (if (string-match re-prefix s)
+            (push s res-prefix)
+          (push s res-noprefix)))
+      (nconc
+       (nreverse res-prefix)
+       (nreverse res-noprefix)))))
+
 (defun ivy--recompute-index (name re-str cands)
   (let* ((caller (ivy-state-caller ivy-last))
          (func (or (and caller (cdr (assoc caller ivy-index-functions-alist)))
@@ -2399,6 +2422,9 @@ Prefix matches to NAME are put ahead of the list."
                   (cl-position
                    (concat re-str "/") cands
                    :test #'equal))
+             (and (eq caller 'ivy-switch-buffer)
+                  (> (length name) 0)
+                  0)
              (and (not (string= name ""))
                   (not (and (require 'flx nil 'noerror)
                             (eq ivy--regex-function 'ivy--regex-fuzzy)
