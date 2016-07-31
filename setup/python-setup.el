@@ -158,8 +158,6 @@
 (add-hook 'elpy-mode-hook #'my-elpy-mode-hook)
 
 ;; Cython mode
-(autoload 'cython-mode "cython-mode" nil t)
-
 (setq auto-mode-alist
       (append '(("\\.pyx$" . cython-mode)
                 ("\\.pxs$" . cython-mode)

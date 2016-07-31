@@ -87,11 +87,9 @@
 (add-to-list 'auto-mode-alist '("\\.sip$" . sip-mode))
 
 ;; C eldoc mode (automatic function signature tips)
-(autoload 'c-turn-on-eldoc-mode "c-eldoc" nil t)
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
 ;; C disaster mode (instant disassembly)
-(autoload 'disaster "disaster" nil t)
 (eval-after-load 'cc-mode
   '(progn
      (require 'disaster)

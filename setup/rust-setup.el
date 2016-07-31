@@ -1,6 +1,5 @@
 ;; Settings and setup for Rust mode
 
-(autoload 'rust-mode "rust-mode")
 (setq auto-mode-alist
       (append '(("\\.rs$" . rust-mode))
               auto-mode-alist))
