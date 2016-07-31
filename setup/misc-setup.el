@@ -77,9 +77,7 @@
                (insert (concat "cd " dir))
                (comint-send-input)))))))
 
-;; shell-pop: easy pop-up of a shell buffer
-(autoload 'shell-pop "shell-pop" nil t)
-(global-set-key (kbd "<menu>") #'shell-pop)
+;; Let eterm show colors
 (setq term-term-name "eterm-color")
 
 ;; This helps with a bug in ansi-term when output lines are longer than

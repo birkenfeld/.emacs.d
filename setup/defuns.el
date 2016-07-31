@@ -46,6 +46,12 @@ using `abort-recursive-edit'."
     (kill-buffer nil)
     (select-window window)))
 
+(defun bury-selected-buffer (event)
+  "Bury the currently selected buffer in the window."
+  (interactive "e")
+  (with-selected-window (posn-window (event-start event))
+    (bury-buffer)))
+
 (defun find-file-with-linenum ()
   "Find file and go to line number specifed with :num."
   (interactive)

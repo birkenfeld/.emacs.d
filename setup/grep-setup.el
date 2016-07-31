@@ -15,8 +15,6 @@
        (list regexp files))))
   (rgrep regexp files default-directory))
 
-(global-set-key (kbd "C-x g") #'grep)
-
 (add-to-list 'grep-find-ignored-files ".tags")
 (add-to-list 'grep-find-ignored-files ".noseids")
 

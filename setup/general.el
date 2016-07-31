@@ -136,7 +136,6 @@
 (require 'smex)
 (smex-initialize)
 (global-set-key (kbd "M-x") #'smex)
-(global-set-key (kbd "M-X") #'smex-major-mode-commands)
 
 ;; Smooth scrolling (keep cursor away from screen edges)
 (require 'smooth-scrolling)
@@ -158,14 +157,6 @@
 (add-hook 'completion-list-mode-hook #'dircolors)
 (add-hook 'buffer-menu-mode-hook #'dircolors)
 
-;; Bury buffer with right-click on header line
-(global-set-key (kbd "<header-line> <mouse-3>") #'bury-selected-buffer)
-
-(defun bury-selected-buffer (event)
-  (interactive "e")
-  (with-selected-window (posn-window (event-start event))
-    (bury-buffer)))
-
 ;; Ibuffer: sort by projects
 (add-hook 'ibuffer-mode-hook 'ibuffer-projectile-set-filter-groups)
 
@@ -182,9 +173,6 @@
 (require 'cl)
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
            (flet ((process-list ())) ad-do-it))
-
-;; Grepping
-(global-set-key (kbd "C-c g") #'grep-find)
 
 ;; tabbar
 ;; (require 'tabbar)

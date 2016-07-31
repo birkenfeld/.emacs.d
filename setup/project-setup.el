@@ -1,17 +1,6 @@
 ;; Projectile setup
 
-;; (defun projectile-grep-with-default (regexp)
-;;   (interactive (let* ((symbol (symbol-at-point))
-;;                       (symstr (if symbol (symbol-name symbol) "")))
-;;                  (list (read-string
-;;                         (format "Regexp grep%s: "
-;;                                 (if symbol (format " [%s]" symstr) ""))
-;;                         nil nil symstr))))
-;;   (projectile-grep regexp))
-
 (require 'subr-x)
-
-;; (global-set-key (kbd "C-c p g") 'projectile-grep-with-default)
 
 (define-key projectile-command-map (kbd "x") #'projectile-todo)
 (define-key projectile-command-map (kbd "g") #'projectile-grep)

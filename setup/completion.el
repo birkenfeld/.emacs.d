@@ -2,10 +2,6 @@
 
 ;; Ido -------------------------------------------------------------------------
 
-;; Try out flx-ido for better flex matching between words
-;(require 'flx-ido)
-;(flx-ido-mode 1)
-
 ;; Use C-w to go back up a dir to better match normal usage of C-w
 ;; - insert current file name with C-x C-w instead.
 (define-key ido-file-completion-map (kbd "C-w") #'ido-delete-backward-updir)
@@ -13,12 +9,6 @@
 
 (define-key ido-file-dir-completion-map (kbd "C-w") #'ido-delete-backward-updir)
 (define-key ido-file-dir-completion-map (kbd "C-x C-w") #'ido-copy-current-file-name)
-
-;; ido/idomenu: switch to a buffer local tag with ido completion
-(autoload 'idomenu "idomenu" nil t)
-(global-set-key (kbd "C-x m") #'idomenu)
-
-;;(set-default 'imenu-auto-rescan t)
 
 ;;  ;; Display ido results vertically, rather than horizontally
 ;;  (setq ido-decorations (quote ("\n-> " "" "\t" "\n   ..." " [" "]"
