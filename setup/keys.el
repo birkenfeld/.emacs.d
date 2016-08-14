@@ -258,6 +258,8 @@
 (define-key isearch-mode-map (kbd "<C-backspace>") #'isearch-delete-char)
 ;; Zap to search string
 (define-key isearch-mode-map (kbd "M-z") #'zap-to-isearch)
+;; Start a query-replace
+(define-key isearch-mode-map (kbd "M-q") #'isearch-query-replace-regexp)
 
 ;; ---- Occur
 

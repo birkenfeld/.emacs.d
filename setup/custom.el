@@ -268,6 +268,8 @@
  '(ispell-highlight-face (quote flyspell-incorrect))
  '(ispell-local-dictionary-alist nil)
  '(ispell-program-name "aspell")
+ '(ivy-action-wrap t)
+ '(ivy-use-virtual-buffers t)
  '(javascript-indent-level 2)
  '(js-indent-level 2)
  '(js2-allow-rhino-new-expr-initializer nil)
