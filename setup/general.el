@@ -44,8 +44,8 @@
 ;; But don't try to update GPL versions
 (setq copyright-current-gpl-version nil)
 
-;; Make file executable if it's a script
-(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+;; Make file executable if it's a script (now local)
+;(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;; Useful hippie-expand functions
 (setq hippie-expand-try-functions-list

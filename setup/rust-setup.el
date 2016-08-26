@@ -36,7 +36,7 @@
   (racer-mode 1)
   (eldoc-mode 1)
 
-  ;; Flycheck
+  ;; Flycheck (will interfere with building, unfortunately)
   ;(flycheck-rust-setup)
   ;(flycheck-mode 1)
   )
@@ -56,4 +56,7 @@
      ;; some bindings
      (define-key rust-mode-map (kbd "C-c C-c") #'compile-now)
      (define-key rust-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
+
+     ;; temporary, hangs with new error format...
+     (defun rustc-scroll-down-after-next-error ())
      ))

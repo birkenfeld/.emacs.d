@@ -140,6 +140,8 @@
   (define-key python-mode-map (kbd "M-q") #'python-fill-paragraph)
   (define-key python-mode-map (kbd "C-c #") #'comment-move-before-line)
 
+  (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p t t)
+
   ;; set up hide-show mode
   (hs-minor-mode)
   (hideshowvis-minor-mode)
