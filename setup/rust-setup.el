@@ -52,6 +52,7 @@
      (define-key racer-mode-map (kbd "TAB") #'company-indent-or-complete-common)
      (define-key racer-mode-map (kbd ".") #'company-insert-and-complete)
      (define-key racer-mode-map (kbd ":") #'company-insert-and-complete)
+     (define-key rust-mode-map (kbd "C-c C-d") #'racer-describe)
 
      ;; some bindings
      (define-key rust-mode-map (kbd "C-c C-c") #'compile-now)
@@ -59,4 +60,6 @@
 
      ;; temporary, hangs with new error format...
      (defun rustc-scroll-down-after-next-error ())
+
+     (add-to-list 'display-buffer-alist '("*Racer Help" popwin:special-display-popup-window))
      ))
