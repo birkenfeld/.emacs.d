@@ -58,8 +58,6 @@
      (define-key rust-mode-map (kbd "C-c C-c") #'compile-now)
      (define-key rust-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
 
-     ;; temporary, hangs with new error format...
-     (defun rustc-scroll-down-after-next-error ())
-
+     ;; show Racer doc window in a bottom popup
      (add-to-list 'display-buffer-alist '("*Racer Help" popwin:special-display-popup-window))
      ))
