@@ -38,6 +38,8 @@ See `diff-hl-mode' for more information on Diff-Hl mode.
 
 \(fn &optional ARG)" t nil)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "diff-hl" '("diff-hl-")))
+
 ;;;***
 
 ;;;### (autoloads nil "diff-hl-amend" "diff-hl-amend.el" (0 0 0 0))
@@ -73,6 +75,8 @@ See `diff-hl-amend-mode' for more information on Diff-Hl-Amend mode.
 
 \(fn &optional ARG)" t nil)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "diff-hl-amend" '("turn-on-diff-hl-amend-mode" "diff-hl-amend-setup")))
+
 ;;;***
 
 ;;;### (autoloads nil "diff-hl-dired" "diff-hl-dired.el" (0 0 0 0))
@@ -87,6 +91,8 @@ Toggle VC diff highlighting on the side of a Dired window.
 
 
 \(fn)" nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "diff-hl-dired" '("diff-hl-dired-")))
 
 ;;;***
 
@@ -109,6 +115,8 @@ Highlight diffs on-the-fly
 
 \(fn &optional ARG)" t nil)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "diff-hl-flydiff" '("diff-hl-flydiff")))
+
 ;;;***
 
 ;;;### (autoloads nil "diff-hl-margin" "diff-hl-margin.el" (0 0 0
@@ -129,6 +137,8 @@ or call the function `diff-hl-margin-mode'.")
 Toggle displaying `diff-hl-mode' highlights on the margin.
 
 \(fn &optional ARG)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "diff-hl-margin" '("diff-hl-")))
 
 ;;;***
 

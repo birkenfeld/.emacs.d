@@ -454,7 +454,8 @@ When non-nil, it should contain at least one %d.")
   "Quit the minibuffer and call ACTION afterwards."
   (ivy-set-action
    `(lambda (x)
-      (funcall ',action x)
+      (with-ivy-window
+        (funcall ',action x))
       (ivy-set-action ',(ivy-state-action ivy-last))))
   (setq ivy-exit 'done)
   (exit-minibuffer))
@@ -954,7 +955,7 @@ Example use:
                      ivy-text)
                     (t
                      ivy--current))))
-          (prog1 (funcall action x)
+          (prog1 (with-ivy-window (funcall action x))
             (unless (or (eq ivy-exit 'done)
                         (equal (selected-window)
                                (active-minibuffer-window))
@@ -3387,7 +3388,7 @@ EVENT gives the mouse position."
         (funcall action
                  (if (and (consp coll)
                           (consp (car coll)))
-                     (cdr (assoc str coll))
+                     (assoc str coll)
                    str))
         (if (memq (ivy-state-caller ivy-last)
                   '(swiper counsel-git-grep counsel-grep))

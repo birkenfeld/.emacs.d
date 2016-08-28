@@ -1,10 +1,10 @@
 ;;; company-quickhelp.el --- Popup documentation for completion candidates
 
-;; Copyright (C) 2015, Lars Andersen
+;; Copyright (C) 2016, Lars Andersen
 
 ;; Author: Lars Andersen <expez@expez.com>
 ;; URL: https://www.github.com/expez/company-quickhelp
-;; Package-Version: 20160824.556
+;; Package-Version: 20160826.806
 ;; Keywords: company popup documentation quickhelp
 ;; Version: 1.4.0
 ;; Package-Requires: ((emacs "24.4") (company "0.8.9") (pos-tip "0.4.6"))
