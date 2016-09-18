@@ -37,8 +37,8 @@
   (eldoc-mode 1)
 
   ;; Flycheck (will interfere with building, unfortunately)
-  ;(flycheck-rust-setup)
-  ;(flycheck-mode 1)
+  (flycheck-rust-setup)
+  (flycheck-mode 1)
   )
 
 (eval-after-load "rust-mode"
