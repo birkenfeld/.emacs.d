@@ -581,6 +581,6 @@ downcased, no preceding underscore."
   (let ((beg (point)))
     (save-excursion
       (end-of-line)
-      (when (looking-back "[;,]" nil)
+      (when (looking-back "[:;,]" nil)
         (backward-char))
       (insert ")"))))
