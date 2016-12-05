@@ -11,9 +11,9 @@
   (turn-on-haskell-indentation)
   (inferior-haskell-process)
   (setq comment-start "--")
-  (add-to-list 'filladapt-token-table '("-- " haskell-comment))
-  (add-to-list 'filladapt-token-match-table '(haskell-comment haskell-comment))
-  (add-to-list 'filladapt-token-conversion-table '(haskell-comment . exact))
+  ;; (add-to-list 'filladapt-token-table '("-- " haskell-comment))
+  ;; (add-to-list 'filladapt-token-match-table '(haskell-comment haskell-comment))
+  ;; (add-to-list 'filladapt-token-conversion-table '(haskell-comment . exact))
   (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
 
 (add-hook 'haskell-mode-hook #'my-haskell-mode-hook)

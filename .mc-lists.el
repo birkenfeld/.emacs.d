@@ -14,6 +14,7 @@
 (setq mc/cmds-to-run-once
       '(
         cua-cut-region
+        cycle-spacing
         describe-key
         gud-tooltip-mouse-motion
         set-or-deactivate-rectangular-region-anchor
