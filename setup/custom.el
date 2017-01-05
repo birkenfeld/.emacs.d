@@ -183,6 +183,7 @@
  '(flycheck-idle-change-delay 2)
  '(flycheck-indication-mode (quote left-fringe))
  '(flycheck-navigation-minimum-level (quote warning))
+ '(flycheck-rust-cargo-executable "~/.cargo/bin/cargo")
  '(flymake-no-changes-timeout 1.5)
  '(flyspell-default-dictionary "german")
  '(flyspell-use-meta-tab nil)
