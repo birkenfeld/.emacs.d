@@ -23,15 +23,6 @@
 ;;   (setq test ".")
 ;;   (test-case-run))
 
-(defadvice projectile-grep (around better-query activate)
-  (let ((orig-read-string (symbol-function #'read-string)))
-    (flet ((read-string (prompt &optional initial history default inherit)
-                        (funcall orig-read-string
-                                 (if (string-empty-p initial) prompt
-                                   (concat prompt "[" initial "] "))
-                                 nil nil initial inherit)))
-      ad-do-it)))
-
 (defun projectile-isearch ()
   "Multi-buffer isearch in project buffers.  BUGGY."
   (interactive)
