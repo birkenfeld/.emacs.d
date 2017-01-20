@@ -20,6 +20,10 @@
 ;; set up our theme path
 (setq custom-theme-directory "~/.emacs.d/themes")
 
+;; XXX: compatibility hack for winpoint.el
+(unless (fboundp 'make-variable-frame-local)
+  (defun make-variable-frame-local (sym)))
+
 ;; Load package manager and add the alternate package repo
 (require 'package)
 (add-to-list 'package-archives
