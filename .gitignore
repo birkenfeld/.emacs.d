@@ -11,4 +11,5 @@ local-setup/
 TAGS
 .cask/
 irony/
+url/
 network-security.data
