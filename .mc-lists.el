@@ -5,6 +5,7 @@
       '(
         autopair-extra-insert-opening
         browse-kill-ring-insert-and-quit
+        c-electric-pound
         cua-cut-region
         cua-paste
         kill-region
