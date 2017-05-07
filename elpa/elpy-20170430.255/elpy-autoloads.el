@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "elpy" "elpy.el" (22796 2752 121008 219000))
+;;;### (autoloads nil "elpy" "elpy.el" (0 0 0 0))
 ;;; Generated autoloads from elpy.el
 
 (autoload 'elpy-enable "elpy" "\
@@ -36,10 +36,32 @@ Display the version of Elpy.
 
 \(fn)" t nil)
 
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "elpy" '("elpy-")))
+
 ;;;***
 
-;;;### (autoloads nil nil ("elpy-django.el" "elpy-pkg.el" "elpy-refactor.el")
-;;;;;;  (22796 2752 129008 245000))
+;;;### (autoloads nil "elpy-django" "elpy-django.el" (0 0 0 0))
+;;; Generated autoloads from elpy-django.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "elpy-django" '("elpy-django")))
+
+;;;***
+
+;;;### (autoloads nil "elpy-profile" "elpy-profile.el" (0 0 0 0))
+;;; Generated autoloads from elpy-profile.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "elpy-profile" '("elpy-profile-")))
+
+;;;***
+
+;;;### (autoloads nil "elpy-refactor" "elpy-refactor.el" (0 0 0 0))
+;;; Generated autoloads from elpy-refactor.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "elpy-refactor" '("elpy-refactor")))
+
+;;;***
+
+;;;### (autoloads nil nil ("elpy-pkg.el") (0 0 0 0))
 
 ;;;***
 
