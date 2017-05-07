@@ -79,4 +79,5 @@
 
 ;; Add a project type for rustc
 (projectile-register-project-type 'rustc '("COMPILER_TESTS.md")
-                                  "make -j4 rustc-stage1" "make check-stage1 ")
+                                  :compile "make -j4 rustc-stage1"
+                                  :test "make check-stage1 ")
