@@ -1,5 +1,8 @@
 ;; New general editing commands
 
+(require 's)
+(require 'dash)
+
 ;; Overwrite: the menu-bar implementation refuses to work without menubar
 (defun kill-this-buffer ()	
   "Kill the current buffer.
@@ -229,12 +232,11 @@ returns the word count of that file."
                    (concat "detex < " buffer-file " > " filename))
                   (setq tempfile t))
               (setq filename buffer-file)))))
-    (let ((result (car (split-string
-                        (shell-command-to-string
-                         (concat "wc -w " filename)) " "))))
+    (let* ((wc-result (shell-command-to-string (concat "wc -lwm " filename)))
+           (result (s-join " " (-take 3 (split-string wc-result " " t)))))
       (if tempfile
           (delete-file filename))
-      (message (concat "Word Count: " result)))))
+      (message (concat "Counts (l/w/c): " result)))))
 
 (autoload 'copy-from-above-command "misc"
   "Copy characters from previous nonblank line, starting just above point.
