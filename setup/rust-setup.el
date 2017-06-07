@@ -15,6 +15,13 @@
                                (or (looking-at " <") (looking-at "<<"))))
     (autopair-default-handle-action action pair pos-before)))
 
+(defun company-insert-and-complete-colon ()
+  ;; Insert and complete, but only on double colon.
+  (interactive)
+  (if (looking-back ":")
+      (company-insert-and-complete)
+    (self-insert-command 1)))
+
 (defun my-rust-mode-hook ()
   ;; Enable nice electric pairs
   (setq autopair-extra-pairs `(:code ((?< . ?>))))
@@ -51,7 +58,7 @@
 
      (define-key racer-mode-map (kbd "TAB") #'company-indent-or-complete-common)
      (define-key racer-mode-map (kbd ".") #'company-insert-and-complete)
-     (define-key racer-mode-map (kbd ":") #'company-insert-and-complete)
+     (define-key racer-mode-map (kbd ":") #'company-insert-and-complete-colon)
      (define-key rust-mode-map (kbd "C-c C-d") #'racer-describe)
 
      ;; some bindings
