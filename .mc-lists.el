@@ -6,6 +6,7 @@
         autopair-extra-insert-opening
         browse-kill-ring-insert-and-quit
         c-electric-pound
+        c-electric-slash
         comment-or-uncomment-region-dwim
         cua-cut-region
         cua-paste
