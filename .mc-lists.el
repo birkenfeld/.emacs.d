@@ -8,6 +8,7 @@
         c-electric-pound
         c-electric-slash
         comment-or-uncomment-region-dwim
+        company-insert-and-complete-colon
         cua-cut-region
         cua-paste
         kill-region
