@@ -11,6 +11,7 @@
         company-insert-and-complete-colon
         cua-cut-region
         cua-paste
+        downcase-region
         kill-region
         prelude-move-beginning-of-line
         ))
