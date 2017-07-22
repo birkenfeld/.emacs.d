@@ -7,7 +7,9 @@
 (elpy-enable)
 
 ;; Avoid loading highlight-indentation
-(setq elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
+(setq elpy-modules
+      (delq 'elpy-module-highlight-indentation
+            (delq 'elpy-module-yasnippet elpy-modules)))
 
 ;; Correct indentation for elpy test function
 (function-put 'elpy-testcase 'lisp-indent-function 1)
