@@ -93,6 +93,8 @@
 
 (add-hook 'markdown-mode-hook #'my-markdown-mode-hook)
 
+(add-hook 'compilation-mode-hook 'winnow-mode)
+
 ;; Neotree: hide files otherwise hidden in find-file etc.
 ;; (eval-after-load "neotree"
 ;;   '(setq neo-hidden-files-regexp
