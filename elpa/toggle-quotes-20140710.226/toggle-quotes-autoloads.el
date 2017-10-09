@@ -1,10 +1,10 @@
 ;;; toggle-quotes-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "toggle-quotes" "toggle-quotes.el" (22014 29049
-;;;;;;  346597 51000))
+;;;### (autoloads nil "toggle-quotes" "toggle-quotes.el" (23003 233
+;;;;;;  94582 585000))
 ;;; Generated autoloads from toggle-quotes.el
 
 (autoload 'toggle-quotes "toggle-quotes" "\

@@ -4,8 +4,8 @@
 
 ;; Licensed under the same terms as Emacs.
 
-;; Version: 20140520.948
-;; X-Original-Version: 0.1.1
+;; Version: 0.1.1
+;; Package-Version: 20140520.948
 ;; Keywords: nose python testing
 ;; Created: 04 Apr 2009
 

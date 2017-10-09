@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "zeal-at-point" "zeal-at-point.el" (22787 15731
-;;;;;;  91480 267000))
+;;;### (autoloads nil "zeal-at-point" "zeal-at-point.el" (23003 227
+;;;;;;  880550 401000))
 ;;; Generated autoloads from zeal-at-point.el
 
 (autoload 'zeal-at-point "zeal-at-point" "\

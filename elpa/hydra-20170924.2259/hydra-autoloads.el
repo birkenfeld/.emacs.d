@@ -1,12 +1,9 @@
 ;;; hydra-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "hydra" "hydra.el" (0 0 0 0))
+;;;### (autoloads nil "hydra" "hydra.el" (23003 253 270707 118000))
 ;;; Generated autoloads from hydra.el
 
 (autoload 'defhydra "hydra" "\
@@ -65,33 +62,10 @@ result of `defhydra'.
 
 (function-put 'defhydra 'doc-string-elt '3)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra" '("hydra-" "defhydradio")))
-
 ;;;***
 
-;;;### (autoloads nil "hydra-examples" "hydra-examples.el" (0 0 0
-;;;;;;  0))
-;;; Generated autoloads from hydra-examples.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra-examples" '("hydra-" "org-agenda-cts" "whitespace-mode")))
-
-;;;***
-
-;;;### (autoloads nil "hydra-ox" "hydra-ox.el" (0 0 0 0))
-;;; Generated autoloads from hydra-ox.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hydra-ox" '("hydra-ox")))
-
-;;;***
-
-;;;### (autoloads nil "lv" "lv.el" (0 0 0 0))
-;;; Generated autoloads from lv.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lv" '("lv-")))
-
-;;;***
-
-;;;### (autoloads nil nil ("hydra-pkg.el") (0 0 0 0))
+;;;### (autoloads nil nil ("hydra-examples.el" "hydra-ox.el" "hydra-pkg.el"
+;;;;;;  "lv.el") (23003 253 279707 173000))
 
 ;;;***
 
@@ -99,6 +73,5 @@ result of `defhydra'.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; hydra-autoloads.el ends here

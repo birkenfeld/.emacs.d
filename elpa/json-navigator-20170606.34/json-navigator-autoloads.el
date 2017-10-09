@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "json-navigator" "json-navigator.el" (22838
-;;;;;;  55351 193231 754000))
+;;;### (autoloads nil "json-navigator" "json-navigator.el" (23003
+;;;;;;  215 287472 671000))
 ;;; Generated autoloads from json-navigator.el
 
 (autoload 'json-navigator-navigate-after-point "json-navigator" "\

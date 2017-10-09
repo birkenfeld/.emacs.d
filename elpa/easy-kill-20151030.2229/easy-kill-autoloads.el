@@ -1,10 +1,10 @@
 ;;; easy-kill-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "easy-kill" "easy-kill.el" (22072 23838 494761
-;;;;;;  408000))
+;;;### (autoloads nil "easy-kill" "easy-kill.el" (23003 305 252027
+;;;;;;  952000))
 ;;; Generated autoloads from easy-kill.el
 
 (autoload 'easy-kill "easy-kill" "\

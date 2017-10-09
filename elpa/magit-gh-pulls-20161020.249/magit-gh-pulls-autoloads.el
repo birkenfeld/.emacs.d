@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "magit-gh-pulls" "magit-gh-pulls.el" (22553
-;;;;;;  34251 202798 221000))
+;;;### (autoloads nil "magit-gh-pulls" "magit-gh-pulls.el" (23003
+;;;;;;  273 151829 828000))
 ;;; Generated autoloads from magit-gh-pulls.el
 
 (autoload 'magit-gh-pulls-mode "magit-gh-pulls" "\

@@ -1,17 +1,18 @@
 ;;; winpoint-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "winpoint" "winpoint.el" (21696 41359 669001
-;;;;;;  961000))
+;;;### (autoloads nil "winpoint" "winpoint.el" (23003 326 475158
+;;;;;;  938000))
 ;;; Generated autoloads from winpoint.el
 
 (defalias 'window-point-remember-mode 'winpoint-mode)
 
 (defvar winpoint-mode nil "\
 Non-nil if Winpoint mode is enabled.
-See the command `winpoint-mode' for a description of this minor mode.
+See the `winpoint-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `winpoint-mode'.")

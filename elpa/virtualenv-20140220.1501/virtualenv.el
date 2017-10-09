@@ -6,8 +6,8 @@
 
 ;; Author: Aaron Culich <aculich@gmail.com>
 ;; Maintainer: Aaron Culich <aculich@gmail.com>
-;; Version: 20140220.1501
-;; X-Original-Version: 1.2.1
+;; Version: 1.2.1
+;; Package-Version: 20140220.1501
 ;; Created: September 2010
 ;; Updated: September 2014
 ;; Keywords: python virtualenv

@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "easy-repeat" "easy-repeat.el" (22203 17735
-;;;;;;  549317 998000))
+;;;### (autoloads nil "easy-repeat" "easy-repeat.el" (23003 223 478523
+;;;;;;  230000))
 ;;; Generated autoloads from easy-repeat.el
 
 (autoload 'easy-repeat-add-last-command "easy-repeat" "\
@@ -19,7 +19,8 @@ Add the binding of KEY in current keymaps to `easy-repeat-command-list'.
 
 (defvar easy-repeat-mode nil "\
 Non-nil if Easy-Repeat mode is enabled.
-See the command `easy-repeat-mode' for a description of this minor mode.
+See the `easy-repeat-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `easy-repeat-mode'.")

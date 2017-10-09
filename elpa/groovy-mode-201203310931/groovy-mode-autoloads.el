@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "groovy-mode" "groovy-mode.el" (0 0 0 0))
+;;;### (autoloads nil "groovy-mode" "groovy-mode.el" (23003 215 576474
+;;;;;;  454000))
 ;;; Generated autoloads from groovy-mode.el
 
 (add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
@@ -25,8 +26,6 @@ Key bindings:
 \(fn)" t nil)
 
 (add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "groovy-mode" '("cc-imenu-groovy-generic-expression" "groovy-" "is-groovy-mode")))
 
 ;;;***
 

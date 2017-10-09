@@ -1,10 +1,10 @@
 ;;; ack-and-a-half-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ack-and-a-half" "ack-and-a-half.el" (21717
-;;;;;;  48228 365471 951000))
+;;;### (autoloads nil "ack-and-a-half" "ack-and-a-half.el" (23003
+;;;;;;  324 91144 225000))
 ;;; Generated autoloads from ack-and-a-half.el
 
 (autoload 'ack-and-a-half "ack-and-a-half" "\

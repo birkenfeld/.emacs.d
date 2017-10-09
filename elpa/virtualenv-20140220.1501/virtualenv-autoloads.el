@@ -1,10 +1,10 @@
 ;;; virtualenv-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "virtualenv" "virtualenv.el" (21717 49016 883226
-;;;;;;  705000))
+;;;### (autoloads nil "virtualenv" "virtualenv.el" (23003 258 151737
+;;;;;;  245000))
 ;;; Generated autoloads from virtualenv.el
 
 (autoload 'virtualenv-workon "virtualenv" "\

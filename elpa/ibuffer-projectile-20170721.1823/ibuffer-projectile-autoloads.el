@@ -1,13 +1,10 @@
 ;;; ibuffer-projectile-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "ibuffer-projectile" "ibuffer-projectile.el"
-;;;;;;  (0 0 0 0))
+;;;;;;  (23003 279 599869 625000))
 ;;; Generated autoloads from ibuffer-projectile.el
 
 (autoload 'ibuffer-projectile-generate-filter-groups "ibuffer-projectile" "\
@@ -20,14 +17,11 @@ Set the current filter groups to filter by vc root dir.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ibuffer-projectile" '("projectile-root" "ibuffer-projectile-")))
-
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; ibuffer-projectile-autoloads.el ends here

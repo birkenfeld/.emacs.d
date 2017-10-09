@@ -1,12 +1,10 @@
 ;;; which-key-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "which-key" "which-key.el" (0 0 0 0))
+;;;### (autoloads nil "which-key" "which-key.el" (23003 227 385547
+;;;;;;  346000))
 ;;; Generated autoloads from which-key.el
 
 (defvar which-key-mode nil "\
@@ -133,14 +131,11 @@ prefix) if `which-key-use-C-h-commands' is non nil.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "which-key" '("which-key-")))
-
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; which-key-autoloads.el ends here

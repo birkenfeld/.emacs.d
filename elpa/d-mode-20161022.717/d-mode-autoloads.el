@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "d-mode" "d-mode.el" (0 0 0 0))
+;;;### (autoloads nil "d-mode" "d-mode.el" (23003 307 56039 86000))
 ;;; Generated autoloads from d-mode.el
  (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
 
@@ -24,8 +24,6 @@ Key bindings:
 \\{d-mode-map}
 
 \(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "d-mode" '("doxygen-font-lock-" "d-")))
 
 ;;;***
 

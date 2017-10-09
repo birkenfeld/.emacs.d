@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "hideshowvis" "hideshowvis.el" (0 0 0 0))
+;;;### (autoloads nil "hideshowvis" "hideshowvis.el" (23003 281 850883
+;;;;;;  519000))
 ;;; Generated autoloads from hideshowvis.el
 
 (autoload 'hideshowvis-click-fringe "hideshowvis" "\
@@ -31,8 +32,6 @@ and a yellow marker indicating the number of hidden lines at
 the end of the line for hidden regions.
 
 \(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "hideshowvis" '("hideshowvis-")))
 
 ;;;***
 

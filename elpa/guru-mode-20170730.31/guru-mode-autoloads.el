@@ -1,12 +1,10 @@
 ;;; guru-mode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "guru-mode" "guru-mode.el" (0 0 0 0))
+;;;### (autoloads nil "guru-mode" "guru-mode.el" (23003 285 593906
+;;;;;;  622000))
 ;;; Generated autoloads from guru-mode.el
 
 (autoload 'guru-mode "guru-mode" "\
@@ -36,14 +34,11 @@ See `guru-mode' for more information on Guru mode.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "guru-mode" '("guru-")))
-
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; guru-mode-autoloads.el ends here

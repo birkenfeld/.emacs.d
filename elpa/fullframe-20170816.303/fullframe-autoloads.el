@@ -1,12 +1,10 @@
 ;;; fullframe-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "fullframe" "fullframe.el" (0 0 0 0))
+;;;### (autoloads nil "fullframe" "fullframe.el" (23003 222 87514
+;;;;;;  644000))
 ;;; Generated autoloads from fullframe.el
 
 (autoload 'fullframe/current-buffer-window-config "fullframe" "\
@@ -51,14 +49,11 @@ the window it generated is the only one in in the frame.
 
 \(fn COMMAND-ON COMMAND-OFF &optional KILL-ON-COFF AFTER-COMMAND-ON-FUNC)" nil t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fullframe" '("fullframe/")))
-
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; fullframe-autoloads.el ends here

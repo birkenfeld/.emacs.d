@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "fancy-narrow" "fancy-narrow.el" (22190 33161
-;;;;;;  517132 959000))
+;;;### (autoloads nil "fancy-narrow" "fancy-narrow.el" (23003 290
+;;;;;;  481936 791000))
 ;;; Generated autoloads from fancy-narrow.el
 
 (autoload 'fancy-narrow-active-p "fancy-narrow" "\
@@ -47,7 +47,8 @@ Undo narrowing from `fancy-narrow-to-region'.
 
 (defvar fancy-narrow-mode nil "\
 Non-nil if Fancy-Narrow mode is enabled.
-See the command `fancy-narrow-mode' for a description of this minor mode.")
+See the `fancy-narrow-mode' command
+for a description of this minor mode.")
 
 (custom-autoload 'fancy-narrow-mode "fancy-narrow" nil)
 

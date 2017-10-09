@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "racer" "racer.el" (0 0 0 0))
+;;;### (autoloads nil "racer" "racer.el" (23003 235 848599 583000))
 ;;; Generated autoloads from racer.el
 
 (autoload 'racer-find-definition "racer" "\
@@ -15,8 +15,6 @@ Run the racer find-definition command and process the results.
 Minor mode for racer.
 
 \(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "racer" '("racer-")))
 
 ;;;***
 

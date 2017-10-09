@@ -1,12 +1,10 @@
 ;;; flycheck-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "flycheck" "flycheck.el" (0 0 0 0))
+;;;### (autoloads nil "flycheck" "flycheck.el" (23003 238 696617
+;;;;;;  162000))
 ;;; Generated autoloads from flycheck.el
 
 (autoload 'flycheck-manual "flycheck" "\
@@ -45,7 +43,7 @@ or call the function `global-flycheck-mode'.")
 (custom-autoload 'global-flycheck-mode "flycheck" nil)
 
 (autoload 'global-flycheck-mode "flycheck" "\
-("Toggle Flycheck mode in all buffers.
+Toggle Flycheck mode in all buffers.
 With prefix ARG, enable Global Flycheck mode if ARG is positive;
 otherwise, disable it.  If called from Lisp, enable the mode if
 ARG is omitted or nil.
@@ -54,7 +52,7 @@ Flycheck mode is enabled in all buffers where
 `flycheck-mode-on-safe' would do it.
 See `flycheck-mode' for more information on Flycheck mode.
 
-\(fn &optional ARG)" 278 291 (face ido-first-match)) t nil)
+\(fn &optional ARG)" t nil)
 
 (autoload 'flycheck-define-error-level "flycheck" "\
 Define a new error LEVEL with PROPERTIES.
@@ -227,26 +225,10 @@ Use this together with the `option', `option-list' and
 
 (function-put 'flycheck-def-option-var 'doc-string-elt '4)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck" '("flycheck-" "list-flycheck-errors" "locate-rebar3-project-root" "contains-rebar-config" "help-flycheck-checker-d" "read-flycheck-")))
-
 ;;;***
 
-;;;### (autoloads nil "flycheck-buttercup" "flycheck-buttercup.el"
-;;;;;;  (0 0 0 0))
-;;; Generated autoloads from flycheck-buttercup.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck-buttercup" '("flycheck-buttercup-format-error-list")))
-
-;;;***
-
-;;;### (autoloads nil "flycheck-ert" "flycheck-ert.el" (0 0 0 0))
-;;; Generated autoloads from flycheck-ert.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck-ert" '("flycheck-ert-")))
-
-;;;***
-
-;;;### (autoloads nil nil ("flycheck-pkg.el") (0 0 0 0))
+;;;### (autoloads nil nil ("flycheck-buttercup.el" "flycheck-ert.el"
+;;;;;;  "flycheck-pkg.el") (23003 238 686617 100000))
 
 ;;;***
 
@@ -254,6 +236,5 @@ Use this together with the `option', `option-list' and
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; flycheck-autoloads.el ends here

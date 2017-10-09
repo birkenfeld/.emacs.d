@@ -1,10 +1,10 @@
 ;;; full-ack-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "full-ack" "full-ack.el" (21717 48629 50726
-;;;;;;  798000))
+;;;### (autoloads nil "full-ack" "full-ack.el" (23003 288 548924
+;;;;;;  860000))
 ;;; Generated autoloads from full-ack.el
 
 (autoload 'ack-same "full-ack" "\

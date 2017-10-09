@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "persp-projectile" "persp-projectile.el" (0
-;;;;;;  0 0 0))
+;;;### (autoloads nil "persp-projectile" "persp-projectile.el" (23003
+;;;;;;  263 752771 815000))
 ;;; Generated autoloads from persp-projectile.el
 
 (autoload 'projectile-persp-switch-project "persp-projectile" "\
@@ -19,8 +19,6 @@ existing perspective of the project unless we're already in that
 perspective.
 
 \(fn PROJECT-TO-SWITCH)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "persp-projectile" '("projectile-persp-bridge")))
 
 ;;;***
 

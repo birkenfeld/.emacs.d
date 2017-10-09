@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "shell-pop" "shell-pop.el" (0 0 0 0))
+;;;### (autoloads nil "shell-pop" "shell-pop.el" (23003 223 849525
+;;;;;;  520000))
 ;;; Generated autoloads from shell-pop.el
 
 (defvar shell-pop-universal-key nil "\
@@ -17,8 +18,6 @@ The input format is the same as that of `kbd'.")
 
 
 \(fn ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "shell-pop" '("shell-pop-")))
 
 ;;;***
 

@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "0xc" "0xc.el" (0 0 0 0))
+;;;### (autoloads nil "0xc" "0xc.el" (23003 218 675493 583000))
 ;;; Generated autoloads from 0xc.el
 
 (autoload '0xc-convert "0xc" "\
@@ -16,8 +16,6 @@ If SILENT is non-nil, do not output anything
 Replace the number at point with its representation in base.
 
 \(fn &optional BASE)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "0xc" '("0xc-")))
 
 ;;;***
 

@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2006, 2012  Jorgen Schaefer
 
-;; Version: 20131023.1013
-;; X-Original-Version: 1.4
+;; Version: 1.4
+;; Package-Version: 20131023.1013
 ;; Author: Jorgen Schaefer <forcer@forcix.cx>
 ;; URL: https://github.com/jorgenschaefer/winpoint
 ;; Keywords: convenience

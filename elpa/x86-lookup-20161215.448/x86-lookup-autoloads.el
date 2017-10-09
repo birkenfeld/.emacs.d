@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "x86-lookup" "x86-lookup.el" (22636 4931 947393
-;;;;;;  844000))
+;;;### (autoloads nil "x86-lookup" "x86-lookup.el" (23003 228 657555
+;;;;;;  197000))
 ;;; Generated autoloads from x86-lookup.el
 
 (autoload 'x86-lookup "x86-lookup" "\

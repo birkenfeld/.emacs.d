@@ -1,10 +1,10 @@
 ;;; discover-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "discover" "discover.el" (21717 48388 440965
-;;;;;;  762000))
+;;;### (autoloads nil "discover" "discover.el" (23003 255 651721
+;;;;;;  814000))
 ;;; Generated autoloads from discover.el
 
 (autoload 'discover-show-context-menu "discover" "\
@@ -87,8 +87,9 @@ Key bindings:
 \(fn &optional ARG)" t nil)
 
 (defvar global-discover-mode nil "\
-Non-nil if Global-Discover mode is enabled.
-See the command `global-discover-mode' for a description of this minor mode.
+Non-nil if Global Discover mode is enabled.
+See the `global-discover-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `global-discover-mode'.")
@@ -97,7 +98,7 @@ or call the function `global-discover-mode'.")
 
 (autoload 'global-discover-mode "discover" "\
 Toggle Discover mode in all buffers.
-With prefix ARG, enable Global-Discover mode if ARG is positive;
+With prefix ARG, enable Global Discover mode if ARG is positive;
 otherwise, disable it.  If called from Lisp, enable the mode if
 ARG is omitted or nil.
 

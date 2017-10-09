@@ -3,8 +3,8 @@
 ;; Copyright (C) 2008, 2009, 2010  Zsolt Terek <zsolt@google.com>
 ;; Copyright (C) 2010, 2011 Gleb Peregud <gleb.peregud@gmail.com>
 
-;; Version: 20120211.657
-;; X-Original-Version: 1.0.7
+;; Version: 1.0.7
+;; Package-Version: 20120211.657
 ;; Author: Zsolt Terek <zsolt@google.com>
 ;; Keywords: nav fast fastnav navigation
 ;; Compatibility: GNU Emacs 22, 23
@@ -149,6 +149,7 @@ search of occurences."
                         (let ((ov (make-overlay p (1+ p))))
                           (overlay-put ov 'priority 100)
                           (overlay-put ov 'tag 'fastnav)
+                          (overlay-put ov 'face lazy-highlight-face)
                           ov)))
                   (fastnav-get-nth-chars arg))
           (let* ((event (read-event))

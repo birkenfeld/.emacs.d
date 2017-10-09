@@ -1,10 +1,9 @@
 ;;; session-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "session" "session.el" (21696 41369 152915
-;;;;;;  73000))
+;;;### (autoloads nil "session" "session.el" (23003 260 679752 848000))
 ;;; Generated autoloads from session.el
 
 (autoload 'session-jump-to-last-change "session" "\

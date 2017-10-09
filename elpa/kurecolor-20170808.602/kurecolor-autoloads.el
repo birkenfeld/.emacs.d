@@ -1,12 +1,10 @@
 ;;; kurecolor-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "kurecolor" "kurecolor.el" (0 0 0 0))
+;;;### (autoloads nil "kurecolor" "kurecolor.el" (23003 222 485517
+;;;;;;  101000))
 ;;; Generated autoloads from kurecolor.el
 
 (autoload 'kurecolor-increase-brightness-by-step "kurecolor" "\
@@ -94,14 +92,11 @@ Opacity is always set to 1.0.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "kurecolor" '("kurecolor-" "to-8bit")))
-
 ;;;***
 
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; kurecolor-autoloads.el ends here

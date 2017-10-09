@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "autopair" "autopair.el" t)
+;;;### (autoloads nil "autopair" "autopair.el" (23003 224 352528
+;;;;;;  625000))
 ;;; Generated autoloads from autopair.el
 
 (autoload 'autopair-mode "autopair" "\
@@ -13,7 +14,8 @@ Automagically pair braces and quotes like in TextMate.
 
 (defvar autopair-global-mode nil "\
 Non-nil if Autopair-Global mode is enabled.
-See the command `autopair-global-mode' for a description of this minor mode.
+See the `autopair-global-mode' command
+for a description of this minor mode.
 Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `autopair-global-mode'.")

@@ -1,2 +1,2 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "cython-mode" "20170907.1648" "Major mode for editing Cython files" 'nil :stars '(#("2499" 0 4 (font-lock-face paradox-star-face))) :commit "86c68858154b02ea717770e34b2ad2f9930f6b3d")
+(define-package "cython-mode" "20170907.1648" "Major mode for editing Cython files" 'nil :commit "14b085980903fa5a172a118929aecbae2d1975c4")

@@ -4,8 +4,8 @@
 ;; Copyright (C) 2009-2012 Nikolaj Schumacher
 ;;
 ;; Author: Nikolaj Schumacher <bugs * nschum de>
-;; Version: 20140223.932
-;; X-Original-Version: 1.0
+;; Version: 1.0
+;; Package-Version: 20140223.932
 ;; Keywords: tools, matching
 ;; URL: http://nschum.de/src/emacs/full-ack/
 ;; Compatibility: GNU Emacs 22.x, GNU Emacs 23.x, GNU Emacs 24.x

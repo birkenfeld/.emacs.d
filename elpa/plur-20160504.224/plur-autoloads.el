@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "plur" "plur.el" (0 0 0 0))
+;;;### (autoloads nil "plur" "plur.el" (23003 221 367510 199000))
 ;;; Generated autoloads from plur.el
 
 (autoload 'plur-isearch-forward "plur" "\

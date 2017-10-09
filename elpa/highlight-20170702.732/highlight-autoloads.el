@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "highlight" "highlight.el" (22894 59249 776538
-;;;;;;  792000))
+;;;### (autoloads nil "highlight" "highlight.el" (23003 281 399880
+;;;;;;  736000))
 ;;; Generated autoloads from highlight.el
 
 (defvar hlt-auto-face-foreground nil "\

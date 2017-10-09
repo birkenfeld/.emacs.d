@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "pretty-mode" "pretty-mode.el" (0 0 0 0))
+;;;### (autoloads nil "pretty-mode" "pretty-mode.el" (23003 261 955760
+;;;;;;  724000))
 ;;; Generated autoloads from pretty-mode.el
 
 (autoload 'pretty-mode "pretty-mode" "\

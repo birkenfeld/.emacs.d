@@ -1,10 +1,10 @@
 ;;; jinja2-mode-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "jinja2-mode" "jinja2-mode.el" (22014 28454
-;;;;;;  229127 289000))
+;;;### (autoloads nil "jinja2-mode" "jinja2-mode.el" (23003 233 449584
+;;;;;;  774000))
 ;;; Generated autoloads from jinja2-mode.el
 
 (autoload 'jinja2-mode "jinja2-mode" "\

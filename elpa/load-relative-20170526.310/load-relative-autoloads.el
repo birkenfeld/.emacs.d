@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "load-relative" "load-relative.el" (22838 55315
-;;;;;;  583128 344000))
+;;;### (autoloads nil "load-relative" "load-relative.el" (23003 247
+;;;;;;  507671 547000))
 ;;; Generated autoloads from load-relative.el
 
 (autoload '__FILE__ "load-relative" "\
@@ -96,7 +96,7 @@ same as writing (provide \\='bar-foo).
 ;;;***
 
 ;;;### (autoloads nil nil ("el-get-install.el" "load-relative-pkg.el")
-;;;;;;  (22838 55315 593128 373000))
+;;;;;;  (23003 247 511671 571000))
 
 ;;;***
 

@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "digit-groups" "digit-groups.el" (0 0 0 0))
+;;;### (autoloads nil "digit-groups" "digit-groups.el" (23003 219
+;;;;;;  881501 27000))
 ;;; Generated autoloads from digit-groups.el
 
 (defvar digit-groups-global-mode nil "\
@@ -33,8 +34,6 @@ Minor mode that highlights selected place-value positions in numbers.
 See the `digit-groups` customization group for more information.
 
 \(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "digit-groups" '("digit-groups-")))
 
 ;;;***
 

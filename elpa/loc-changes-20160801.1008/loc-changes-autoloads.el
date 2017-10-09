@@ -3,10 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "loc-changes" "loc-changes.el" (0 0 0 0))
-;;; Generated autoloads from loc-changes.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "loc-changes" '("loc-changes")))
+;;;### (autoloads nil nil ("loc-changes.el") (23003 247 152669 355000))
 
 ;;;***
 

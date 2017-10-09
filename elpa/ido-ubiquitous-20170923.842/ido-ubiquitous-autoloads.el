@@ -1,16 +1,10 @@
 ;;; ido-ubiquitous-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-
-(add-to-list 'load-path (directory-file-name
-                         (or (file-name-directory #$) (car load-path))))
-
+(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ido-ubiquitous" "ido-ubiquitous.el" (0 0 0
-;;;;;;  0))
-;;; Generated autoloads from ido-ubiquitous.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ido-ubiquitous" '("ido-ubiquitous-version")))
+;;;### (autoloads nil nil ("ido-ubiquitous.el") (23003 279 252867
+;;;;;;  484000))
 
 ;;;***
 
@@ -18,6 +12,5 @@
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
-;; coding: utf-8
 ;; End:
 ;;; ido-ubiquitous-autoloads.el ends here
