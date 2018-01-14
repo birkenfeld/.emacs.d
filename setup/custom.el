@@ -601,6 +601,7 @@
  '(ecb-mode-line-data-face ((t (:inherit variable-pitch :background "#555753"))))
  '(ecb-tag-header-face ((t (:inherit highlight))))
  '(eldoc-highlight-function-argument ((t (:inherit ido-first-match))))
+ '(fixed-pitch ((t nil)))
  '(flx-highlight-face ((t nil)))
  '(font-latex-sectioning-2-face ((t (:inherit font-latex-sectioning-3-face :height 1.2))))
  '(hexl-address-region ((t (:inherit font-lock-constant-face))))
