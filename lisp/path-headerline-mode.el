@@ -71,7 +71,7 @@
   :group 'path-headerline-mode)
 
 (defvar path-headerline-excluded-buffers
-  '("*SPEEDBAR*" "*Packages*" "*Register Preview*" "*Proced*" "*Python Doc*")
+  '("*SPEEDBAR*" "*Packages*" "*Register Preview*" "*Proced*" "*Python Doc*" "*Completions*")
   "Buffers that should not get a header-line with buffer name.")
 
 (defun ph--make-header ()
@@ -91,11 +91,13 @@
   
 (defun ph--display-header ()
   "Display path on headerline."
-  (when (and (window-system)
-             (not (string-match-p "^ " (buffer-name)))
-             (not (member (buffer-name) path-headerline-excluded-buffers)))
-    (setq header-line-format
-          '(:eval (powerline-render (ph--make-header))))))
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (window-system)
+                 (not (string-match-p "^ " (buffer-name)))
+                 (not (member (buffer-name) path-headerline-excluded-buffers)))
+        (setq header-line-format
+              '(:eval (powerline-render (ph--make-header))))))))
 
 ;;;###autoload
 (define-minor-mode path-headerline-mode
@@ -105,8 +107,8 @@
   :require 'path-headerline-mode
   (if path-headerline-mode
       (progn
-        (add-hook 'buffer-list-update-hook #'ph--display-header))
-    (remove-hook 'buffer-list-update-hook #'ph--display-header)))
+        (add-hook 'window-configuration-change-hook #'ph--display-header))
+    (remove-hook 'window-configuration-change-hook #'ph--display-header)))
 
 (provide 'path-headerline-mode)
 
