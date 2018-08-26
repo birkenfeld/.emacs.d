@@ -34,7 +34,7 @@
   "Find todo tags in project."
   (interactive)
   ;; TODO: display output in a buffer called *<project>-TODO* instead of *grep*.
-  (projectile-ack "TODO|XXX|FIXME"))
+  (projectile-grep "TODO|XXX|FIXME"))
 
 (defun projectile-find-tag ()
   "Find a tag via tags table (overrides projectile version)."
