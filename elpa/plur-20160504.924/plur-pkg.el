@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "plur" "20160504.924" "Easily search and replace multiple variants of a word" '((emacs "24.4")) :stars '(#("26" 0 2 (font-lock-face paradox-star-face))) :commit "5bdd3b9a2f0624414bd596e798644713cd1545f0" :authors '(("Chunyang Xu" . "xuchunyang.me@gmail.com")) :maintainer '("Chunyang Xu" . "xuchunyang.me@gmail.com") :url "https://github.com/xuchunyang/plur")

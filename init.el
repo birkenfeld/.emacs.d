@@ -34,7 +34,6 @@
              '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
-(package-initialize)
 
 ;; Load custom variables and faces
 (setq custom-file "~/.emacs.d/setup/custom.el")
