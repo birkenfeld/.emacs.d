@@ -272,7 +272,7 @@
  '(ivy-action-wrap t)
  '(ivy-use-virtual-buffers t)
  '(javascript-indent-level 2)
- '(js-indent-level 2)
+ '(js-indent-level 4)
  '(js2-allow-rhino-new-expr-initializer nil)
  '(js2-basic-offset 2)
  '(js2-enter-indents-newline nil)
@@ -345,7 +345,8 @@
  '(python-skeleton-autoinsert nil)
  '(python-use-skeletons nil)
  '(racer-cmd "/usr/bin/racer")
- '(racer-rust-src-path "~/devel/ext/rust/src")
+ '(racer-rust-src-path
+   "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
  '(recentf-max-saved-items 200)
  '(recentf-menu-open-all-flag t)
  '(recentf-mode t)

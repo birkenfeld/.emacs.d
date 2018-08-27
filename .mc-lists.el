@@ -13,6 +13,7 @@
         cua-cut-region
         cua-paste
         downcase-region
+        easy-kill
         indent-for-tab-command
         kill-region
         prelude-move-beginning-of-line
