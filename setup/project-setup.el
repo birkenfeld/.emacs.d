@@ -4,6 +4,7 @@
 
 (require 'projectile)
 
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (define-key projectile-command-map (kbd "x") #'projectile-todo)
 (define-key projectile-command-map (kbd "g") #'projectile-grep)
 (define-key projectile-command-map (kbd "f") #'projectile-find-file)
