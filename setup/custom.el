@@ -314,7 +314,7 @@
  '(projectile-known-projects-file "/home/gbr/.emacs.d/saved/projectile-bookmarks.eld")
  '(projectile-mode t nil (projectile))
  '(projectile-mode-line '(:eval (format " P[%s]" (projectile-project-name))))
- '(projectile-mode-line-lighter "P")
+ '(projectile-mode-line-prefix "P")
  '(projectile-sort-order 'recently-active)
  '(projectile-tags-command
    "ctags --languages=-HTML,JavaScript --python-kinds=-iv -Re %s")
@@ -566,7 +566,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :family "Fira Code"))))
+ '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight light :height 112 :width normal :foundry "CTDB" :family "Fira Code"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
@@ -581,6 +581,9 @@
  '(fixed-pitch ((t nil)))
  '(flx-highlight-face ((t nil)))
  '(font-latex-sectioning-2-face ((t (:inherit font-latex-sectioning-3-face :height 1.2))))
+ '(font-lock-constant-face ((t (:foreground "#e6a8df" :weight normal))))
+ '(font-lock-keyword-face ((t (:foreground "#b4fa70" :weight normal))))
+ '(font-lock-type-face ((t (:foreground "#8cc4ff" :weight normal))))
  '(hexl-address-region ((t (:inherit font-lock-constant-face))))
  '(hexl-ascii-region ((t (:inherit font-lock-string-face))))
  '(hideshowvis-hidable-face ((t (:foreground "#999"))))
@@ -591,6 +594,7 @@
  '(page-break-lines ((t (:inherit font-lock-doc-face :slant normal :weight normal))))
  '(realgud-backtrace-number ((t (:inherit font-lock-keyword-face))))
  '(realgud-overlay-arrow1 ((t (:inherit font-lock-function-name-face))))
+ '(rust-string-interpolation-face ((t (:inherit font-lock-string-face :slant italic :weight normal))))
  '(show-ws-spaces ((((class color)) nil)) t)
  '(show-ws-tabs ((((class color)) (:inherit trailing-whitespace))) t)
  '(show-ws-unbr-spaces ((((class color)) nil)) t)

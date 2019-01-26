@@ -41,7 +41,7 @@
   ;; Racer
   (company-mode 1)
   (racer-mode 1)
-  ;(eldoc-mode 1)
+  (eldoc-mode 0)
 
   ;; Flycheck (will interfere with building, unfortunately)
   (flycheck-rust-setup)

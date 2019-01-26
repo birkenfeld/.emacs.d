@@ -45,7 +45,7 @@
 
 ;; Powerline: start it up right now to get the modeline early
 (require 'powerline)
-(setq powerline-height 23)
+(setq powerline-height 40)
 (setq powerline-selected-window (selected-window))
 (powerline-default-theme)
 
