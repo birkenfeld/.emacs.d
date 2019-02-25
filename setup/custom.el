@@ -159,6 +159,7 @@
  '(flycheck-idle-change-delay 2)
  '(flycheck-indication-mode 'left-fringe)
  '(flycheck-navigation-minimum-level 'warning)
+ '(flycheck-python-flake8-executable "python3")
  '(flycheck-rust-cargo-executable "~/.cargo/bin/cargo")
  '(flymake-no-changes-timeout 1.5)
  '(flyspell-default-dictionary "german")
