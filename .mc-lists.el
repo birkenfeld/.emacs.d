@@ -9,6 +9,7 @@
         c-electric-semi&comma
         c-electric-slash
         comment-or-uncomment-region-dwim
+        company-indent-or-complete-common
         company-insert-and-complete-colon
         cua-cut-region
         cua-paste
