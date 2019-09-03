@@ -561,7 +561,10 @@
  '(url-show-status nil)
  '(use-dialog-box nil)
  '(vc-delete-logbuf-window nil)
+ '(vc-git-grep-template
+   "git --no-pager grep --recurse-submodules -n <C> -e <R> -- <F>")
  '(wdired-allow-to-change-permissions t)
+ '(web-mode-markup-indent-offset 2)
  '(wgrep-auto-save-buffer t)
  '(which-key-idle-delay 0.75)
  '(which-key-mode t)
