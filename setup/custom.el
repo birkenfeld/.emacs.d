@@ -170,7 +170,6 @@
  '(font-latex-match-sectioning-2-keywords '(("addsec" "") ("addsec*" "")))
  '(font-latex-quotes 'auto)
  '(fringe-mode '(nil . 0) nil (fringe))
- '(gc-cons-threshold 20000000)
  '(gdb-many-windows t)
  '(global-anzu-mode t)
  '(global-diff-hl-mode t)
