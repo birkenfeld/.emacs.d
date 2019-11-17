@@ -6,6 +6,7 @@
 
 elpa/*-readme.txt
 elpa/archives/
+elpy/
 saved/
 local-setup/
 TAGS
