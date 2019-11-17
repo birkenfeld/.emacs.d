@@ -1,2 +1,0 @@
-;;; Generated package description from /home/gbr/.emacs.d/elpa/verilog-mode-2019.6.21.103209889/verilog-mode.el  -*- no-byte-compile: t -*-
-(define-package "verilog-mode" "2019.6.21.103209889" "major mode for editing verilog source in Emacs" 'nil :stars '("") :keywords '("languages") :authors '(("Michael McNamara" . "mac@verilog.com") ("Wilson Snyder" . "wsnyder@wsnyder.org")) :maintainer '("Michael McNamara" . "mac@verilog.com") :url "http://www.veripool.org")
