@@ -4,14 +4,14 @@
 #*
 .#*
 
-elpa/*-readme.txt
-elpa/archives/
-elpy/
-saved/
-local-setup/
-TAGS
-.cask/
-irony/
-url/
-transient/
-network-security.data
+/elpa/*-readme.txt
+/elpa/archives/
+/elpy/
+/saved/
+/local-setup/
+/TAGS
+/.cask/
+/irony/
+/url/
+/transient/
+/network-security.data
