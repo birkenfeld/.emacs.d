@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "flycheck-lilypond" "20200614.2104" "LilyPond support in Flycheck" '((emacs "24.3") (flycheck "0.22")) :stars '(#("2" 0 1 (font-lock-face paradox-star-face))) :commit "17133911b519be76365103dec8c10cb2f3729f1a" :keywords '("tools" "convenience") :authors '(("Hinrik Örn Sigurðsson" . "hinrik.sig@gmail.com")) :maintainer '("Hinrik Örn Sigurðsson" . "hinrik.sig@gmail.com") :url "https://github.com/hinrik/flycheck-lilypond")
