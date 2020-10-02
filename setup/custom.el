@@ -332,7 +332,7 @@
  '(python-use-skeletons nil)
  '(racer-cmd "/usr/bin/racer")
  '(racer-rust-src-path
-   "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
+   "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/")
  '(recentf-max-saved-items 200)
  '(recentf-menu-open-all-flag t)
  '(recentf-mode t)
@@ -579,7 +579,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight light :height 112 :width normal :foundry "CTDB" :family "Fira Code"))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "JB  " :family "JetBrains Mono"))))
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
