@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "csharp-mode" "20200930.1938" "C# mode derived mode" 'nil :stars '(#("94" 0 2 (font-lock-face paradox-star-face))) :commit "795b9bbe5fe29563a77c07d70f081a729de2d77b" :keywords '("c#" "languages" "oop" "mode") :authors '(("Theodor Thornhill" . "theo@thornhill.no")) :maintainer '("Jostein Kjønigsen" . "jostein@gmail.com") :url "https://github.com/josteink/csharp-mode")

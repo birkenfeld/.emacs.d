@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "isearch-project" "20200824.134" "Incremental search through the whole project" '((emacs "26.1") (f "0.20.0")) :stars '(#("3" 0 1 (font-lock-face paradox-star-face))) :commit "c550c9bbb486eecd9993875adffee6c4436d5444" :authors '(("Shen, Jen-Chieh" . "jcs090218@gmail.com")) :maintainer '("Shen, Jen-Chieh" . "jcs090218@gmail.com") :url "https://github.com/jcs-elpa/isearch-project")
