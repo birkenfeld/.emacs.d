@@ -3,6 +3,7 @@
 *~
 #*
 .#*
+.lsp-session*
 
 /elpa/*-readme.txt
 /elpa/archives/

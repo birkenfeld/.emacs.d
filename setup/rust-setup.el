@@ -1,7 +1,7 @@
 ;; Settings and setup for Rust mode
 
 (setq auto-mode-alist
-      (append '(("\\.rs$" . rust-mode))
+      (append '(("\\.rs$" . rustic-mode))
               auto-mode-alist))
 
 (defun compile-now ()
@@ -34,37 +34,24 @@
   (require 'whitespace)
   (whitespace-mode 1)
 
-  ;; Highlight symbol at point
-  (require 'highlight-symbol)
-  (highlight-symbol-mode 1)
-
-  ;; Racer
-  (company-mode 1)
-  (racer-mode 1)
-  (eldoc-mode 0)
-
-  ;; Flycheck (will interfere with building, unfortunately)
-  (flycheck-rust-setup)
-  (flycheck-mode 1)
+  ;; Language server setup
+  (yas-minor-mode 1)
+  (lsp)
   )
 
-(eval-after-load "rust-mode"
+(eval-after-load "rustic"
   '(progn
+     (add-hook 'rustic-mode-hook #'my-rust-mode-hook)
 
-     ;; Racer setup: this does add-hook already
-     (require 'racer)
-     (add-hook 'rust-mode-hook #'my-rust-mode-hook)
-     (diminish 'racer-mode " R")
-
-     (define-key racer-mode-map (kbd "TAB") #'company-indent-or-complete-common)
-     (define-key racer-mode-map (kbd ".") #'company-insert-and-complete)
-     (define-key racer-mode-map (kbd ":") #'company-insert-and-complete-colon)
-     (define-key rust-mode-map (kbd "C-c C-d") #'racer-describe)
+     (define-key rustic-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+     (define-key rustic-mode-map (kbd ".") #'company-insert-and-complete)
+     (define-key rustic-mode-map (kbd ":") #'company-insert-and-complete-colon)
+     (define-key rustic-mode-map (kbd "C-c C-d") #'lsp-describe-thing-at-point)
 
      ;; some bindings
-     (define-key rust-mode-map (kbd "C-c C-c") #'compile-now)
-     (define-key rust-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
+     (define-key rustic-mode-map (kbd "C-c C-c") #'compile-now)
+     (define-key rustic-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
 
-     ;; show Racer doc window in a bottom popup
-     (add-to-list 'display-buffer-alist '("*Racer Help" popwin:special-display-popup-window))
+     ;; show doc window in a bottom popup
+     (add-to-list 'display-buffer-alist '("*lsp-help" popwin:special-display-popup-window))
      ))
