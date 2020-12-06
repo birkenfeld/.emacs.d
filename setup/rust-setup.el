@@ -23,6 +23,8 @@
     (self-insert-command 1)))
 
 (defun my-rust-mode-hook ()
+  (setq-local compilation-environment (cons "CARGO_TERM_COLOR=always" compilation-environment))
+
   ;; Enable nice electric pairs
   (setq autopair-extra-pairs `(:code ((?< . ?>))))
   (setq autopair-handle-action-fns (list #'my-autopair-rust-action))
@@ -38,6 +40,20 @@
   (yas-minor-mode 1)
   (lsp)
   )
+
+(defun my-rust-compile-color-hook ()
+  "Used to interpret cargo's colored output"
+  (ansi-color-apply-on-region compilation-filter-start (point)))
+
+(defadvice compilation-start (around add-ansi-color-hook activate)
+  (if (eq major-mode 'rustic-mode)
+      (let ((compilation-start-hook (cons
+                                     (lambda (proc) (add-hook 'compilation-filter-hook
+                                                              'my-rust-compile-color-hook
+                                                              nil t))
+                                     compilation-start-hook)))
+        ad-do-it)
+    ad-do-it))
 
 (eval-after-load "rustic"
   '(progn
