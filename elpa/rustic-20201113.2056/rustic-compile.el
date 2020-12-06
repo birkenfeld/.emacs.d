@@ -255,9 +255,13 @@ is set to 'on-compile. If rustfmt fails, don't start compilation."
         (directory (or (plist-get args :directory) (rustic-buffer-workspace)))
         (sentinel (or (plist-get args :sentinel) #'compilation-sentinel)))
     (rustic-compilation-setup-buffer buf directory mode)
+    (setq next-error-last-buffer buf)
     (unless (plist-get args :no-display)
       (funcall rustic-compile-display-method buf))
     (with-current-buffer buf
+      (let ((inhibit-read-only t))
+        (mapc (lambda (x) (insert x) (insert " ")) command)
+        (insert "\n\n"))
       (rustic-make-process :name process
                            :buffer buf
                            :command command
@@ -361,7 +365,7 @@ buffers are formatted after saving if turned on by `rustic-format-trigger'."
             (let ((rustic-format-trigger nil)
                   (rustic-format-on-save nil))
               (setq saved-p
-                    (if buffer-save-without-query
+                    (if (not compilation-ask-about-save)
                         (progn (save-buffer) t)
                       (if (yes-or-no-p (format "Save file %s ? "
                                                (buffer-file-name buffer)))
@@ -483,7 +487,8 @@ Otherwise use provided argument ARG and store it in
   (interactive "P")
   (let* ((command (setq compilation-arguments
                         (if (or compilation-read-command arg)
-                            (read-from-minibuffer "Compile command: ")
+                            (read-from-minibuffer "Compile command: "
+                                                  (or compilation-arguments rustic-compile-command))
                           rustic-compile-command)))
          (dir (setq compilation-directory (rustic-buffer-workspace))))
     (rustic-compilation-process-live)
