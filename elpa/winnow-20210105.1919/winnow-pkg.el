@@ -1,0 +1,2 @@
+;;; Generated package description from /home/gbr/.emacs.d/elpa/winnow-20210105.1919/winnow.el  -*- no-byte-compile: t -*-
+(define-package "winnow" "20210105.1919" "winnow ag/grep results by matching/excluding lines" '((emacs "24")) :stars '(#("11" 0 2 (font-lock-face paradox-star-face))) :commit "761b15bc31696a4f80c5fd508c84b1f5b4190ec2" :authors '(("Charles L.G. Comstock" . "dgtized@gmail.com")) :maintainer '("Charles L.G. Comstock" . "dgtized@gmail.com") :keywords '("matching") :url "https://github.com/dgtized/winnow.el")

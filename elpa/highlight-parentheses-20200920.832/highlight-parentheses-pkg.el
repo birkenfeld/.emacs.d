@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "highlight-parentheses" "20200920.832" "Highlight surrounding parentheses" '((emacs "24.3") (cl-lib "0.6.1")) :stars '(#("65" 0 2 (font-lock-face paradox-star-face))) :commit "e18f2c2b240d7586ff7ffdc2881079e2dd8944ca" :keywords '("faces" "matching") :authors '(("Nikolaj Schumacher <bugs * nschum de>")) :maintainer '("Tassilo Horn" . "tsdh@gnu.org") :url "https://github.com/tsdh/highlight-parentheses.el")
