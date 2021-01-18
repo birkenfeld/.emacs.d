@@ -107,7 +107,7 @@
  '(cua-enable-cursor-indications t)
  '(cua-mode t nil (cua-base))
  '(cua-rectangle-mark-key [ignore])
- '(cursor-type 'bar)
+ '(cursor-type '(bar . 2))
  '(custom-enabled-themes '(tango-dark-adapted))
  '(custom-safe-themes
    '("6869717b2ebe98c6f15a03431b8bf9b52916272cb3862bd448a3ae77032f9837" "07b8a3d6bb985a266458adff96d64644a2672424b4fa307d980790762e916493" default))
