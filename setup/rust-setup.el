@@ -1,7 +1,7 @@
 ;; Settings and setup for Rust mode
 
 (setq auto-mode-alist
-      (append '(("\\.rs$" . rustic-mode))
+      (append '(("\\.rs$" . rust-mode))
               auto-mode-alist))
 
 (defun compile-now ()
@@ -23,7 +23,8 @@
     (self-insert-command 1)))
 
 (defun my-rust-mode-hook ()
-  (setq-local compilation-environment (cons "CARGO_TERM_COLOR=always" compilation-environment))
+  ;; Make compilation colored
+  ;(setq-local compilation-environment (cons "CARGO_TERM_COLOR=always" compilation-environment))
 
   ;; Enable nice electric pairs
   (setq autopair-extra-pairs `(:code ((?< . ?>))))
@@ -43,30 +44,31 @@
 
 (defun my-rust-compile-color-hook ()
   "Used to interpret cargo's colored output"
-  (ansi-color-apply-on-region compilation-filter-start (point)))
+  ;(ansi-color-apply-on-region compilation-filter-start (point))
+  )
 
-(defadvice compilation-start (around add-ansi-color-hook activate)
-  (if (eq major-mode 'rustic-mode)
-      (let ((compilation-start-hook (cons
-                                     (lambda (proc) (add-hook 'compilation-filter-hook
-                                                              'my-rust-compile-color-hook
-                                                              nil t))
-                                     compilation-start-hook)))
-        ad-do-it)
-    ad-do-it))
+;; (defadvice compilation-start (around add-ansi-color-hook activate)
+;;   (if (eq major-mode 'rustic-mode)
+;;       (let ((compilation-start-hook (cons
+;;                                      (lambda (proc) (add-hook 'compilation-filter-hook
+;;                                                               'my-rust-compile-color-hook
+;;                                                               nil t))
+;;                                      compilation-start-hook)))
+;;         ad-do-it)
+;;     ad-do-it))
 
-(eval-after-load "rustic"
+(eval-after-load "rust-mode"
   '(progn
-     (add-hook 'rustic-mode-hook #'my-rust-mode-hook)
+     (add-hook 'rust-mode-hook #'my-rust-mode-hook)
 
-     (define-key rustic-mode-map (kbd "TAB") #'company-indent-or-complete-common)
-     (define-key rustic-mode-map (kbd ".") #'company-insert-and-complete)
-     (define-key rustic-mode-map (kbd ":") #'company-insert-and-complete-colon)
-     (define-key rustic-mode-map (kbd "C-c C-d") #'lsp-describe-thing-at-point)
+     (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+     (define-key rust-mode-map (kbd ".") #'company-insert-and-complete)
+     (define-key rust-mode-map (kbd ":") #'company-insert-and-complete-colon)
+     (define-key rust-mode-map (kbd "C-c C-d") #'lsp-describe-thing-at-point)
 
      ;; some bindings
-     (define-key rustic-mode-map (kbd "C-c C-c") #'compile-now)
-     (define-key rustic-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
+     ;; (define-key rust-mode-map (kbd "C-c C-c") #'compile-now)
+     (define-key rust-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
 
      ;; show doc window in a bottom popup
      (add-to-list 'display-buffer-alist '("*lsp-help" popwin:special-display-popup-window))
