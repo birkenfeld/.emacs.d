@@ -151,6 +151,8 @@
   ;; No auto-fill please
   (auto-fill-mode 0)
   (fci-mode 1)
+
+  (lsp)
   )
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
