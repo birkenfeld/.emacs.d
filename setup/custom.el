@@ -268,6 +268,7 @@
  '(lsp-ui-doc-alignment 'window)
  '(lsp-ui-doc-show-with-cursor nil)
  '(lsp-ui-doc-use-webkit nil)
+ '(lsp-ui-sideline-actions-kind-regex ".*")
  '(lsp-ui-sideline-ignore-duplicate t)
  '(magit-auto-revert-mode-lighter "")
  '(make-backup-file-name-function nil)
