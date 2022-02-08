@@ -1,0 +1,2 @@
+;;; Generated package description from pfuture.el  -*- no-byte-compile: t -*-
+(define-package "pfuture" "20211229.1513" "a simple wrapper around asynchronous processes" '((emacs "25.2")) :stars '(#("22" 0 2 (font-lock-face paradox-star-face))) :commit "bde5b06795e3e35bfb2bba4c34b538d506a0856e" :authors '(("Alexander Miller" . "alexanderm@web.de")) :maintainer '("Alexander Miller" . "alexanderm@web.de") :url "https://github.com/Alexander-Miller/pfuture")
