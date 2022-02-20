@@ -27,6 +27,7 @@
         cycle-spacing
         describe-key
         gud-tooltip-mouse-motion
+        search-for-this-word
         set-or-deactivate-rectangular-region-anchor
         smex
         suspend-frame
