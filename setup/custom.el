@@ -99,6 +99,8 @@
  '(completion-auto-show-menu t)
  '(completion-resolve-behaviour 'reject)
  '(completion-use-echo nil)
+ '(completions-detailed t)
+ '(context-menu-mode t)
  '(copyright-names-regexp "Georg Brandl")
  '(cscope-display-cscope-buffer nil)
  '(css-electric-brace-behavior t)
@@ -312,6 +314,7 @@
  '(preview-default-document-pt 12)
  '(preview-scale-function 'preview-scale-from-face t)
  '(preview-transparent-color t)
+ '(project-list-file "~/.emacs.d/saved/projects")
  '(projectile-cache-file "/home/gbr/.emacs.d/saved/projectile.cache")
  '(projectile-global-mode t)
  '(projectile-globally-ignored-directories
@@ -562,6 +565,7 @@
  '(vc-delete-logbuf-window nil)
  '(vc-git-grep-template
    "git --no-pager grep --recurse-submodules -n <C> -e <R> -- <F>")
+ '(warning-suppress-types '((comp)))
  '(wdired-allow-to-change-permissions t)
  '(web-mode-markup-indent-offset 2)
  '(wgrep-auto-save-buffer t)
@@ -605,6 +609,7 @@
  '(lsp-rust-analyzer-inlay-face ((t (:inherit font-lock-constant-face :height 0.8))))
  '(lsp-ui-sideline-code-action ((t (:foreground "gray70" :height 0.8))))
  '(nxml-comment-content-face ((t (:inherit font-lock-comment-face))) t)
+ '(nxml-glyph ((t (:background "light grey" :foreground "black" :slant normal :weight normal))))
  '(page-break-lines ((t (:inherit font-lock-doc-face :slant normal :weight normal))))
  '(realgud-backtrace-number ((t (:inherit font-lock-keyword-face))))
  '(realgud-overlay-arrow1 ((t (:inherit font-lock-function-name-face))))
