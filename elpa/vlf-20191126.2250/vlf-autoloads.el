@@ -1,9 +1,12 @@
-;;; vlf-autoloads.el --- automatically extracted autoloads
+;;; vlf-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
-;;;### (autoloads nil "vlf" "vlf.el" (24036 57158 46529 814000))
+;;;### (autoloads nil "vlf" "vlf.el" (0 0 0 0))
 ;;; Generated autoloads from vlf.el
 
 (autoload 'vlf "vlf" "\
@@ -14,10 +17,18 @@ Return newly created buffer.
 
 \(fn FILE &optional MINIMAL)" t nil)
 
+(register-definition-prefixes "vlf" '("vlf-"))
+
 ;;;***
 
-;;;### (autoloads nil "vlf-ediff" "vlf-ediff.el" (24036 57158 30529
-;;;;;;  719000))
+;;;### (autoloads nil "vlf-base" "vlf-base.el" (0 0 0 0))
+;;; Generated autoloads from vlf-base.el
+
+(register-definition-prefixes "vlf-base" '("vlf-"))
+
+;;;***
+
+;;;### (autoloads nil "vlf-ediff" "vlf-ediff.el" (0 0 0 0))
 ;;; Generated autoloads from vlf-ediff.el
 
 (autoload 'vlf-ediff-files "vlf-ediff" "\
@@ -28,22 +39,56 @@ respectively of difference list, runs ediff over the adjacent chunks.
 
 \(fn FILE-A FILE-B BATCH-SIZE)" t nil)
 
+(register-definition-prefixes "vlf-ediff" '("vlf-"))
+
 ;;;***
 
-;;;### (autoloads nil "vlf-occur" "vlf-occur.el" (24036 57158 14529
-;;;;;;  624000))
+;;;### (autoloads nil "vlf-follow" "vlf-follow.el" (0 0 0 0))
+;;; Generated autoloads from vlf-follow.el
+
+(register-definition-prefixes "vlf-follow" '("vlf-"))
+
+;;;***
+
+;;;### (autoloads nil "vlf-occur" "vlf-occur.el" (0 0 0 0))
 ;;; Generated autoloads from vlf-occur.el
 
 (autoload 'vlf-occur-load "vlf-occur" "\
-Load serialized `vlf-occur' results from current buffer.
+Load serialized `vlf-occur' results from current buffer." t nil)
 
-\(fn)" t nil)
+(register-definition-prefixes "vlf-occur" '("vlf-"))
 
 ;;;***
 
-;;;### (autoloads nil nil ("vlf-base.el" "vlf-follow.el" "vlf-pkg.el"
-;;;;;;  "vlf-search.el" "vlf-setup.el" "vlf-tune.el" "vlf-write.el")
-;;;;;;  (24036 57158 82530 28000))
+;;;### (autoloads nil "vlf-search" "vlf-search.el" (0 0 0 0))
+;;; Generated autoloads from vlf-search.el
+
+(register-definition-prefixes "vlf-search" '("vlf-"))
+
+;;;***
+
+;;;### (autoloads nil "vlf-setup" "vlf-setup.el" (0 0 0 0))
+;;; Generated autoloads from vlf-setup.el
+
+(register-definition-prefixes "vlf-setup" '("dired-vlf" "vlf-"))
+
+;;;***
+
+;;;### (autoloads nil "vlf-tune" "vlf-tune.el" (0 0 0 0))
+;;; Generated autoloads from vlf-tune.el
+
+(register-definition-prefixes "vlf-tune" '("vlf-"))
+
+;;;***
+
+;;;### (autoloads nil "vlf-write" "vlf-write.el" (0 0 0 0))
+;;; Generated autoloads from vlf-write.el
+
+(register-definition-prefixes "vlf-write" '("vlf-"))
+
+;;;***
+
+;;;### (autoloads nil nil ("vlf-pkg.el") (0 0 0 0))
 
 ;;;***
 
@@ -51,5 +96,6 @@ Load serialized `vlf-occur' results from current buffer.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; vlf-autoloads.el ends here

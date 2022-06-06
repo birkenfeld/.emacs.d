@@ -1,4 +1,4 @@
-;;; session-autoloads.el --- automatically extracted autoloads
+;;; session-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -28,11 +28,9 @@ to it due to intermediate insert/delete elements in the
 Initialize package session and read previous session file.
 Setup hooks and load `session-save-file', see variable `session-initialize'.  At
 best, this function is called at the end of the Emacs startup, i.e., add
-this function to `after-init-hook'.
+this function to `after-init-hook'." t nil)
 
-\(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "session" '("session-")))
+(register-definition-prefixes "session" '("session-"))
 
 ;;;***
 
