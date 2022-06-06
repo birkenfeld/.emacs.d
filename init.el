@@ -68,6 +68,9 @@
 ;; Load everything under local/ (settings that are not in the repo).
 (mapc 'load (directory-files "~/.emacs.d/local-setup" t "\\.el"))
 
+;; For fastnav
+(set-variable 'lazy-highlight-face 'hl-line)
+
 ;; Session (saves histories, variables, ...)
 ;; To be called after all other initialization
 (require 'session)
