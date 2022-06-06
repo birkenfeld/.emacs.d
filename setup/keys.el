@@ -355,14 +355,3 @@
 (define-key 'help-command (kbd "C-v") #'find-variable)
 (define-key 'help-command (kbd "C-l") #'find-library)
 (define-key 'help-command (kbd "C-i") #'info-display-manual)
-
-;; ---- Hide-show mode
-
-(eval-after-load "hideshow"
-  '(progn
-     (define-key hs-minor-mode-map (kbd "C-c , ,") #'hs-toggle-hiding)
-     (define-key hs-minor-mode-map (kbd "C-c , .") #'hs-hide-all)
-     (define-key hs-minor-mode-map (kbd "C-c , :") #'hs-show-all)
-     (define-key hs-minor-mode-map (kbd "C-c , -") (lambda () (interactive) (hs-hide-level 2)))
-     (define-key hs-minor-mode-map (kbd "C-c <C-left>")  #'hs-hide-block)
-     (define-key hs-minor-mode-map (kbd "C-c <C-right>") #'hs-show-block)))
