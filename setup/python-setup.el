@@ -47,7 +47,6 @@
 
   ;; Highlight escape sequences
   (require 'highlight-escape-sequences)
-  (setq hes-simple-modes '(python-mode js-mode js2-mode))
   (hes-mode)
 
   ;; Death to trailing whitespace!
@@ -97,3 +96,18 @@
   '(add-hook 'rst-mode-hook
              (lambda () (set-variable 'show-trailing-whitespace 1))))
 (add-hook 'rst-mode-hook 'flycheck-mode)
+
+;; highlight-escape-sequences mode
+(defconst hes-python-escape-sequence-re
+  (rx (submatch
+       (and ?\\ (submatch
+                 (or (repeat 1 3 (in "0-7"))
+                     (and ?x (repeat 2 xdigit))
+                     (and ?u (repeat 4 xdigit))
+                     (and ?U (repeat 8 xdigit))
+                     ;; (any "\"\'\\abfnrtv")
+                     not-newline))))) ;; deprecated
+  "Regexp to match Python escape sequences.")
+
+(eval-after-load 'highlight-escape-sequences
+  '(add-to-list 'hes-mode-alist `(python-mode . ,hes-python-escape-sequence-re)))

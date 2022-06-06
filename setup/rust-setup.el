@@ -12,9 +12,6 @@
     (autopair-default-handle-action action pair pos-before)))
 
 (defun my-rust-mode-hook ()
-  ;; Make compilation colored
-  ;(setq-local compilation-environment (cons "CARGO_TERM_COLOR=always" compilation-environment))
-
   ;; Enable nice electric pairs
   (setq autopair-extra-pairs `(:code ((?< . ?>))))
   (setq autopair-handle-action-fns (list #'my-autopair-rust-action))
@@ -28,6 +25,9 @@
 
   ;; Default compile command
   (setq-local compile-command "cargo build ")
+
+  ;; Highlight escapes
+  (hes-mode)
 
   ;; Language server setup
   (lsp)
@@ -48,3 +48,17 @@
      ;; show doc window in a bottom popup
      (add-to-list 'display-buffer-alist '("*lsp-help" popwin:special-display-popup-window))
      ))
+
+;; highlight-escape-sequences mode
+(defconst hes-rust-escape-sequence-re
+  (rx (submatch
+       (and ?\\ (submatch
+                 (or (repeat 1 3 (in "0-7"))
+                     (and ?x (repeat 2 xdigit))
+                     (and ?u ?{ (repeat 4 xdigit) ?})
+                     ;; (any "\"\'\\nrt0")
+                     not-newline))))) ;; deprecated
+  "Regexp to match Rust escape sequences.")
+
+(eval-after-load 'highlight-escape-sequences
+  '(add-to-list 'hes-mode-alist `(rust-mode . ,hes-rust-escape-sequence-re)))
