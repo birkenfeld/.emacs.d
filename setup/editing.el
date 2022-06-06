@@ -95,11 +95,6 @@
 
 (add-hook 'compilation-mode-hook 'winnow-mode)
 
-;; Neotree: hide files otherwise hidden in find-file etc.
-;; (eval-after-load "neotree"
-;;   '(setq neo-hidden-files-regexp
-;;          (concat "\\(" (regexp-opt completion-ignored-extensions) "\\|#\\)$")))
-
 ;; Rectangle mode enhancements
 
 ;; (require 'rect)

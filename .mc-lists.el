@@ -13,6 +13,7 @@
         company-indent-or-complete-common
         company-insert-and-complete-colon
         cua-cut-region
+        cua-exchange-point-and-mark
         cua-paste
         downcase-region
         easy-kill
