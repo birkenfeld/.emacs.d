@@ -95,6 +95,10 @@
 
 (add-hook 'compilation-mode-hook 'winnow-mode)
 
+;; Abbrevs
+
+(setq-default abbrev-mode t)
+
 ;; Rectangle mode enhancements
 
 ;; (require 'rect)

@@ -73,11 +73,6 @@
 ;; Electric bindings for help mode
 (require 'ehelp)
 
-;; Abbrev file for abbrev-mode
-(setq abbrev-file-name "~/.emacs.d/saved/abbrevs")
-(when (file-exists-p abbrev-file-name)
-  (read-abbrev-file abbrev-file-name t))
-
 ;; Enable wdired, editing filenames in dired renames files
 (require 'wdired)
 (define-key dired-mode-map (kbd "r") #'wdired-change-to-wdired-mode)
