@@ -6,13 +6,6 @@
 (require 'popwin)
 (add-to-list 'display-buffer-alist '("*Python Doc*" popwin:special-display-popup-window))
 
-(defun company-insert-and-complete ()
-  (interactive)
-  ;;  (company-complete-selection)  ; in case it's already completing
-  (company-abort)
-  (self-insert-command 1)
-  (company-complete))
-
 (eval-after-load 'python
   '(define-key python-mode-map (kbd ".") #'company-insert-and-complete))
 
@@ -57,9 +50,6 @@
   (setq hes-simple-modes '(python-mode js-mode js2-mode))
   (hes-mode)
 
-  ;; Reveal hidden text (folding!) when moving over it
-  ;(reveal-mode 1)
-
   ;; Death to trailing whitespace!
   (set-variable 'show-trailing-whitespace 1)
 
@@ -77,10 +67,6 @@
   (define-key python-mode-map (kbd "C-c #") #'comment-move-before-line)
 
   (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p t t)
-
-  ;; set up hide-show mode
-  (hs-minor-mode)
-  (hideshowvis-minor-mode)
 
   ;; No auto-fill please
   (auto-fill-mode 0)

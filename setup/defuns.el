@@ -586,3 +586,17 @@ downcased, no preceding underscore."
       (when (looking-back "[:;,]" nil)
         (backward-char))
       (insert ")"))))
+
+(defun company-insert-and-complete ()
+  (interactive)
+  ;;  (company-complete-selection)  ; in case it's already completing
+  (company-abort)
+  (self-insert-command 1)
+  (company-complete))
+
+(defun company-insert-and-complete-colon ()
+  ;; Insert and complete, but only on double colon.
+  (interactive)
+  (if (looking-back ":")
+      (company-insert-and-complete)
+    (self-insert-command 1)))

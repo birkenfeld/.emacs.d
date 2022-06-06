@@ -11,13 +11,6 @@
                                (or (looking-at " <") (looking-at "<<"))))
     (autopair-default-handle-action action pair pos-before)))
 
-(defun company-insert-and-complete-colon ()
-  ;; Insert and complete, but only on double colon.
-  (interactive)
-  (if (looking-back ":")
-      (company-insert-and-complete)
-    (self-insert-command 1)))
-
 (defun my-rust-mode-hook ()
   ;; Make compilation colored
   ;(setq-local compilation-environment (cons "CARGO_TERM_COLOR=always" compilation-environment))
