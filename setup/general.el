@@ -123,15 +123,12 @@
 ;; Make some mode line displays smaller
 (when (require 'diminish nil 'noerror)
   (eval-after-load "reveal" '(diminish 'reveal-mode))
-  (eval-after-load "eproject" '(diminish 'eproject-mode))
   (eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
   (eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
-  (eval-after-load "autopair" '(diminish 'autopair-mode " ()"))
+  (eval-after-load "autopair" '(diminish 'autopair-mode))
   (eval-after-load "which-key" '(diminish 'which-key-mode))
-  (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y")))
-
-;; Make yasnippet less noisy
-(setq yas-verbosity 3)
+  (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y"))
+)
 
 ;; M-x enhancement
 (require 'smex)

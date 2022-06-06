@@ -1,4 +1,4 @@
-;;; python-isort-autoloads.el --- automatically extracted autoloads
+;;; python-isort-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -12,7 +12,7 @@
  (autoload 'python-isort-region "python-isort" nil t)
  (autoload 'python-isort-on-save-mode "python-isort" nil t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "python-isort" '("python-isort-")))
+(register-definition-prefixes "python-isort" '("python-isort-"))
 
 ;;;***
 

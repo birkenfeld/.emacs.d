@@ -37,24 +37,8 @@
   (setq-local compile-command "cargo build ")
 
   ;; Language server setup
-  (yas-minor-mode 1)
   (lsp)
-  )
-
-(defun my-rust-compile-color-hook ()
-  "Used to interpret cargo's colored output"
-  ;(ansi-color-apply-on-region compilation-filter-start (point))
-  )
-
-;; (defadvice compilation-start (around add-ansi-color-hook activate)
-;;   (if (eq major-mode 'rustic-mode)
-;;       (let ((compilation-start-hook (cons
-;;                                      (lambda (proc) (add-hook 'compilation-filter-hook
-;;                                                               'my-rust-compile-color-hook
-;;                                                               nil t))
-;;                                      compilation-start-hook)))
-;;         ad-do-it)
-;;     ad-do-it))
+)
 
 (eval-after-load "rust-mode"
   '(progn

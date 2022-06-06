@@ -127,7 +127,6 @@
 
      (add-hook 'markdown-mode-hook
                (lambda ()
-                 (define-key markdown-mode-map (kbd "<tab>") #'yas-expand)
                  (setq imenu-generic-expression
                        markdown-imenu-generic-expression)))
 
