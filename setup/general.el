@@ -123,6 +123,10 @@
   (eval-after-load "autopair" '(diminish 'autopair-mode))
   (eval-after-load "which-key" '(diminish 'which-key-mode))
   (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y"))
+  (eval-after-load "company" '(diminish 'company-mode "."))
+  (eval-after-load "lsp-mode" '(diminish 'lsp-mode " LSP"))
+  (diminish 'abbrev-mode)
+  (diminish 'eldoc-mode)
 )
 
 ;; M-x enhancement
