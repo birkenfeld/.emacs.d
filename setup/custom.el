@@ -100,6 +100,7 @@
  '(completion-resolve-behaviour 'reject)
  '(completion-use-echo nil)
  '(completions-detailed t)
+ '(confirm-kill-processes nil)
  '(context-menu-mode t)
  '(copyright-names-regexp "Georg Brandl")
  '(cscope-display-cscope-buffer nil)
@@ -298,7 +299,7 @@
  '(nxml-slash-auto-complete-flag t)
  '(outline-blank-line t t)
  '(package-selected-packages
-   '(dap-mode ftable python-isort rust-mode lsp-ui company-lsp lsp-mode xcscope rust-auto-use flycheck-lilypond verilog-mode csharp-mode docker-compose-mode dockerfile-mode goto-char-preview isearch-project rmsbolt dynamic-spaces ialign winnow auto-minor-mode json-navigator groovy-mode 0xc f digit-groups plur fullframe kurecolor adaptive-wrap easy-repeat shell-pop autopair disaster fill-column-indicator highlight-parentheses which-key zeal-at-point nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jinja2-mode change-inner toml-mode protobuf-mode flycheck-rust idomenu highlight-indentation web-mode company pos-tip pyvenv irony projectile realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree smooth-scrolling smex session rainbow-mode pretty-mode powerline persp-projectile page-break-lines nose markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous ibuffer-projectile highlight-symbol highlight-escape-sequences highlight hideshowvis haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode))
+   '(project-mode-line-tag ibuffer-project dap-mode ftable python-isort rust-mode lsp-ui company-lsp lsp-mode xcscope rust-auto-use flycheck-lilypond verilog-mode csharp-mode docker-compose-mode dockerfile-mode goto-char-preview isearch-project rmsbolt dynamic-spaces ialign winnow auto-minor-mode json-navigator groovy-mode 0xc f digit-groups plur fullframe kurecolor adaptive-wrap easy-repeat shell-pop autopair disaster fill-column-indicator highlight-parentheses which-key zeal-at-point nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jinja2-mode change-inner toml-mode protobuf-mode flycheck-rust idomenu highlight-indentation web-mode company pos-tip pyvenv irony realgud paradox discover yaml-mode wgrep volatile-highlights vlf virtualenv undo-tree smooth-scrolling smex session rainbow-mode pretty-mode powerline page-break-lines nose markdown-mode magit-gh-pulls magit-gerrit lua-mode keywiz js2-mode ido-ubiquitous highlight-symbol highlight-escape-sequences highlight hideshowvis haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region elpy easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -315,20 +316,6 @@
  '(preview-scale-function 'preview-scale-from-face t)
  '(preview-transparent-color t)
  '(project-list-file "~/.emacs.d/saved/projects")
- '(projectile-cache-file "/home/gbr/.emacs.d/saved/projectile.cache")
- '(projectile-global-mode t)
- '(projectile-globally-ignored-directories
-   '(".idea" ".eunit" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".tox" ".svn" "build" "_build"))
- '(projectile-globally-ignored-files '("TAGS" ".tags"))
- '(projectile-idle-timer-hook nil)
- '(projectile-known-projects-file "/home/gbr/.emacs.d/saved/projectile-bookmarks.eld")
- '(projectile-mode t nil (projectile))
- '(projectile-mode-line '(:eval (format " P[%s]" (projectile-project-name))))
- '(projectile-mode-line-prefix "P")
- '(projectile-sort-order 'recently-active)
- '(projectile-tags-command
-   "ctags --languages=-HTML,JavaScript --python-kinds=-iv -Re %s")
- '(projectile-use-git-grep t)
  '(pulse-flag nil)
  '(python-fill-docstring-style 'pep-257-nn)
  '(python-indent-guess-indent-offset nil)
@@ -570,7 +557,8 @@
  '(which-key-separator " > ")
  '(windmove-wrap-around t)
  '(x86-lookup-pdf "/home/gbr/x86.pdf")
- '(xhtml-multi-mode t))
+ '(xhtml-multi-mode t)
+ '(xref-search-program 'ripgrep))
 
 
 (custom-set-faces

@@ -4,10 +4,6 @@
       (append '(("\\.rs$" . rust-mode))
               auto-mode-alist))
 
-(defun compile-now ()
-  (interactive)
-  (compile compile-command))
-
 (defun my-autopair-rust-action (action pair pos-before)
   (unless (and (eq action 'opening)
                (eq pair ?>)
@@ -36,6 +32,9 @@
   (setq whitespace-style '(face trailing tabs lines-tail empty))
   (require 'whitespace)
   (whitespace-mode 1)
+
+  ;; Default compile command
+  (setq-local compile-command "cargo build ")
 
   ;; Language server setup
   (yas-minor-mode 1)
@@ -67,7 +66,6 @@
      (define-key rust-mode-map (kbd "C-c C-d") #'lsp-describe-thing-at-point)
 
      ;; some bindings
-     ;; (define-key rust-mode-map (kbd "C-c C-c") #'compile-now)
      (define-key rust-mode-map (kbd "RET") #'maybe-comment-indent-new-line)
 
      ;; show doc window in a bottom popup

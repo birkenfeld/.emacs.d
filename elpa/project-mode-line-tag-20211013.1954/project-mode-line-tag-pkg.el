@@ -1,0 +1,2 @@
+;;; Generated package description from project-mode-line-tag.el  -*- no-byte-compile: t -*-
+(define-package "project-mode-line-tag" "20211013.1954" "Display a buffer's project in its mode line" '((emacs "25.1")) :stars '("") :commit "69d44e5495185587ee8577f8b9d616063d6bd7f8" :authors '(("Fritz Grabo" . "hello@fritzgrabo.com")) :maintainer '("Fritz Grabo" . "hello@fritzgrabo.com") :keywords '("convenience") :url "https://github.com/fritzgrabo/project-mode-line-tag")

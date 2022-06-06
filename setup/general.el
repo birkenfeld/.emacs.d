@@ -36,6 +36,7 @@
 (put 'upcase-region    'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page   'disabled nil)
+(put 'scroll-left      'disabled nil)
 
 ;; Remove trailing whitespaces before saving (now local)
 ;(add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -158,7 +159,9 @@
 (add-hook 'buffer-menu-mode-hook #'dircolors)
 
 ;; Ibuffer: sort by projects
-(add-hook 'ibuffer-mode-hook 'ibuffer-projectile-set-filter-groups)
+(add-hook 'ibuffer-hook
+  (lambda ()
+    (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))))
 
 ;; Automatically revert buffers (helpful with git)
 (global-auto-revert-mode t)
@@ -169,26 +172,5 @@
   (save-some-buffers t))
 (add-hook 'focus-out-hook 'save-all)
 
-;; No query about running processes
-(require 'cl)
-(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-           (flet ((process-list ())) ad-do-it))
-
-;; tabbar
-;; (require 'tabbar)
-;; (global-set-key [C-prior] 'tabbar-backward)
-;; (global-set-key [C-next] 'tabbar-forward)
-;; ;; kill buffer on left click, switch mode on right click
-;; (defun my-tabbar-home-function (event)
-;;   (let ((mouse-button (event-basic-type event)))
-;;     (cond
-;;      ((eq mouse-button 'mouse-3)
-;;       (tabbar-buffer-show-groups (not tabbar--buffer-show-groups)))
-;;      ((eq mouse-button 'mouse-1)
-;;       (kill-buffer nil))
-;;      )))
-;; (add-hook 'tabbar-init-hook
-;;           (lambda () (setq tabbar-home-function 'my-tabbar-home-function))
-;;           t)  ; append
-;;(tabbar-mode 1)
-;;(tabbar-mwheel-mode 1)
+;; For fastnav
+(set-variable 'lazy-highlight-face 'hl-line)

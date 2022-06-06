@@ -42,10 +42,6 @@
 (define-key elpy-mode-map (kbd "<M-right>") nil)
 (define-key elpy-mode-map (kbd "<C-return>") nil)
 
-(define-key elpy-mode-map (kbd "C-M-.") #'projectile-find-next-tag)
-(define-key elpy-mode-map (kbd "C-c C-b") #'pop-tag-mark)
-;;(define-key elpy-mode-map (kbd "M-SPC") #'company-complete)
-
 (require 'popwin)
 (add-to-list 'display-buffer-alist '("*Python Doc*" popwin:special-display-popup-window))
 

@@ -139,3 +139,11 @@
 
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+
+;; Treemacs --------------------------------------------------------------------
+
+(eval-after-load "treemacs"
+  '(progn
+     ;; Open files and expand dirs with single click
+     (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
+     ))

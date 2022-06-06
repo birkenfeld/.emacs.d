@@ -312,12 +312,11 @@
 ;; ---- Projects
 
 ;; Search
-(global-set-key (kbd "<f2>") #'projectile-grep)
-(global-set-key (kbd "S-<f2>") #'projectile-ag)
+(global-set-key (kbd "<f2>") #'project-find-regexp)
 
 ;; Compile project
-(global-set-key (kbd "<f5>")   #'projectile-recompile-project)
-(global-set-key (kbd "S-<f5>") #'projectile-compile-project)
+(global-set-key (kbd "<f5>")   #'project-recompile)
+(global-set-key (kbd "S-<f5>") #'project-compile)
 
 ;; ---- Mouse
 
