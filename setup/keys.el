@@ -24,7 +24,7 @@
 (global-set-key (kbd "<f8>") #'font-lock-fontify-buffer)
 
 ;; Speedbar in our frame? sure.
-(global-set-key (kbd "<f9>") #'sr-speedbar-toggle)
+(global-set-key (kbd "<f9>") #'treemacs)
 
 ;; Switch menu-bar on/off
 (global-set-key (kbd "<f10>") #'menu-bar-mode)
