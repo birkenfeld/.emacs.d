@@ -70,13 +70,6 @@
 ;; Nice config file modes
 (require 'generic-x)
 
-;; Electric bindings for help mode
-(require 'ehelp)
-
-;; Enable wdired, editing filenames in dired renames files
-(require 'wdired)
-(define-key dired-mode-map (kbd "r") #'wdired-change-to-wdired-mode)
-
 ;; Highlight XXX style code tags in source files
 (font-lock-add-keywords 'python-mode
  '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\):?" 1 font-lock-warning-face prepend)))
@@ -161,4 +154,11 @@
 (set-variable 'lazy-highlight-face 'hl-line)
 
 ;; Dired: add functionality
-(eval-after-load 'dired '(require 'dired-x))
+(eval-after-load 'dired
+  '(progn
+     ;; Some more bindings
+     (require 'dired-x)
+     ;; Enable wdired, editing filenames in dired renames files
+     (require 'wdired)
+     (define-key dired-mode-map (kbd "r") #'wdired-change-to-wdired-mode)
+     ))
