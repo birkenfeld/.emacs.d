@@ -75,19 +75,23 @@
   "Buffers that should not get a header-line with buffer name.")
 
 (defun ph--make-header ()
-  ""
-  (list
-   (powerline-raw " " 'fringe)
-   (funcall (pl/slant left) 'fringe 'header-line)
-   (powerline-raw "  ")
-
-   (if (buffer-file-name)
-       (let* ((ph--full-header (abbreviate-file-name buffer-file-name))
-              (ph--header (file-name-directory ph--full-header)))
-         (concat (powerline-raw ph--header 'path-header-directory-face)
-                 (powerline-raw (file-name-nondirectory buffer-file-name)
-                                'path-header-filename-face)))
-     (powerline-buffer-id))))
+  "Make the actual display elements of the header."
+  (append
+   (list
+    (powerline-raw " " 'fringe)
+    (funcall (pl/slant left) 'fringe 'header-line)
+    (powerline-raw "  "))
+   (if (bound-and-true-p lsp-headerline--string)
+       (list
+        (when (project-current)
+          (powerline-raw (concat (project-root (project-current)) " ")
+                         'path-header-directory-face))
+        (powerline-raw lsp-headerline--string))
+     (list
+      (when (buffer-file-name)
+        (powerline-raw (file-name-directory (abbreviate-file-name buffer-file-name))
+                       'path-header-directory-face))
+      (powerline-buffer-id)))))
   
 (defun ph--display-header ()
   "Display path on headerline."
