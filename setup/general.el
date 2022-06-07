@@ -1,8 +1,5 @@
 ;; General setup of sane defaults
 
-;; Scroll one line at a time
-(setq scroll-step 1)
-
 ;; Make "yes or no" "y or n"
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -15,13 +12,6 @@
 
 ;; Prefer UTF-8 coding system
 (prefer-coding-system 'utf-8)
-
-;; Make all backups in a single directory
-(setq backup-directory-alist
-      `(("." . ,(expand-file-name "~/.emacs.d/saved/backups"))))
-
-;; Make backups of files, even when they're in version control
-(setq vc-make-backup-files t)
 
 ;; Put game scores in a different directory
 (setq gamegrid-user-score-file-directory
@@ -38,15 +28,10 @@
 (put 'narrow-to-page   'disabled nil)
 (put 'scroll-left      'disabled nil)
 
-;; Remove trailing whitespaces before saving (now local)
-;(add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; Update copyright headers before saving
 (add-hook 'before-save-hook 'copyright-update)
 ;; But don't try to update GPL versions
 (setq copyright-current-gpl-version nil)
-
-;; Make file executable if it's a script (now local)
-;(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;; Useful hippie-expand functions
 (setq hippie-expand-try-functions-list
@@ -60,9 +45,7 @@
         try-complete-lisp-symbol))
 
 ;; Save point position between sessions
-(require 'saveplace)
-(setq-default save-place t)
-(setq save-place-file (expand-file-name "places" user-emacs-directory))
+(save-place-mode 1)
 
 ;; Auto-fill in text mode
 (add-hook 'text-mode-hook 'auto-fill-mode)
@@ -117,7 +100,7 @@
 (global-set-key (kbd "M-x") #'smex)
 
 ;; Smooth scrolling (keep cursor away from screen edges)
-(require 'smooth-scrolling)
+(smooth-scrolling-mode 1)
 
 ;; Keep region when undoing in region
 (defadvice undo-tree-undo (around keep-region activate)
@@ -152,13 +135,3 @@
 
 ;; For fastnav
 (set-variable 'lazy-highlight-face 'hl-line)
-
-;; Dired: add functionality
-(eval-after-load 'dired
-  '(progn
-     ;; Some more bindings
-     (require 'dired-x)
-     ;; Enable wdired, editing filenames in dired renames files
-     (require 'wdired)
-     (define-key dired-mode-map (kbd "r") #'wdired-change-to-wdired-mode)
-     ))

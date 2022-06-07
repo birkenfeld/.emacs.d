@@ -33,6 +33,24 @@
 
 ;; Dired: better navigation of Ctrl-Home/End -----------------------------------
 
+;; Dired: add functionality
+(eval-after-load 'dired
+  '(progn
+     ;; Some more bindings
+     (require 'dired-x)
+     ;; Enable wdired, editing filenames in dired renames files
+     (require 'wdired)
+     (define-key dired-mode-map (kbd "r") #'wdired-change-to-wdired-mode)
+     (define-key dired-mode-map [remap beginning-of-buffer] #'dired-back-to-top)
+     (define-key dired-mode-map [remap end-of-buffer] #'dired-jump-to-bottom)
+     (define-key dired-mode-map "e" #'wdired-change-to-wdired-mode)
+     ))
+
+(eval-after-load 'wdired
+  '(progn
+     (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) #'dired-back-to-top)
+     (define-key wdired-mode-map (vector 'remap 'end-of-buffer) #'dired-jump-to-bottom)))
+
 (defun dired-back-to-top ()
   (interactive)
   (beginning-of-buffer)
@@ -42,16 +60,6 @@
   (interactive)
   (end-of-buffer)
   (dired-next-line -1))
-
-(define-key dired-mode-map [remap beginning-of-buffer] #'dired-back-to-top)
-(define-key dired-mode-map [remap end-of-buffer] #'dired-jump-to-bottom)
-
-(define-key dired-mode-map "e" #'wdired-change-to-wdired-mode)
-
-(eval-after-load "wdired"
-  '(progn
-     (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) #'dired-back-to-top)
-     (define-key wdired-mode-map (vector 'remap 'end-of-buffer) #'dired-jump-to-bottom)))
 
 ;; Shell/terminal --------------------------------------------------------------
 
