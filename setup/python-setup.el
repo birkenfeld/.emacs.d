@@ -30,11 +30,8 @@
   (setq ffap-alist (remove '(python-mode . python-ffap-module-path) ffap-alist))
   (setq ffap-alist (remove '(inferior-python-mode . python-ffap-module-path) ffap-alist))
 
-  ;; Enable nice electric pairs like in textmate
-  (autopair-mode 1)
-  (setq autopair-handle-action-fns
-        (list #'autopair-default-handle-action
-              #'autopair-python-triple-quote-action))
+  ;; Enable nice electric pairs
+  (electric-pair-mode 1)
 
   ;; Highlight whitespace mistakes
   (setq whitespace-style '(face trailing tabs lines-tail empty))

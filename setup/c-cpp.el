@@ -56,14 +56,12 @@
 (add-hook 'c-mode-hook 'c-select-style)
 (add-hook 'c-mode-hook 'c-or-cpp-header)
 (add-hook 'c++-mode-hook 'c-select-style)
-;; c-subword-mode became subword-mode in Emacs 23.2
-(add-hook 'c-mode-hook (lambda ()
-  (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
-(add-hook 'c++-mode-hook (lambda ()
-  (if (fboundp 'subword-mode) (subword-mode) (c-subword-mode))))
-;; Enable nice electric pairs like in textmate
-(add-hook 'c-mode-hook 'autopair-mode)
-(add-hook 'c++-mode-hook 'autopair-mode)
+;; Navigate by word parts
+(add-hook 'c-mode-hook 'subword-mode)
+(add-hook 'c++-mode-hook 'subword-mode)
+;; Enable nice electric pairs
+(add-hook 'c-mode-hook 'electric-pair-mode)
+(add-hook 'c++-mode-hook 'electric-pair-mode)
 
 ;; Display C++ Doygen doc comments differently
 (font-lock-add-keywords 'c++-mode '(("///.*$" 0 font-lock-doc-face prepend)))

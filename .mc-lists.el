@@ -4,7 +4,6 @@
 (setq mc/cmds-to-run-for-all
       '(
         LilyPond-electric-close-paren
-        autopair-extra-insert-opening
         browse-kill-ring-insert-and-quit
         c-electric-pound
         c-electric-semi&comma

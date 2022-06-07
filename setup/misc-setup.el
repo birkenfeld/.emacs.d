@@ -12,17 +12,7 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
 ;; Some nice keybindings
-(define-key emacs-lisp-mode-map (kbd "M-.") #'find-function-at-point)
 (define-key lisp-mode-shared-map (kbd "C-c v") #'eval-buffer)
-
-;; auto-pair `' in elisp comments and docstrings
-(defun my-emacs-lisp-mode-hook ()
-  (autopair-mode)
-  (push '(?` . ?')
-        (getf autopair-extra-pairs :comment))
-  (push '(?` . ?')
-        (getf autopair-extra-pairs :string)))
-(add-hook 'emacs-lisp-mode-hook #'my-emacs-lisp-mode-hook)
 
 ;; Remove the .elc file when saving an .el file
 (defun remove-elc-on-save ()
