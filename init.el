@@ -35,6 +35,12 @@
 (require 'powerline)
 (powerline-default-theme)
 
+;; Fix the annoying "popup-buffer-is-1-line-too-small" glitch with powerline
+(setq orig-window-scroll-bar-height (symbol-function 'window-scroll-bar-height))
+(defun window-scroll-bar-height (&optional window)
+  (let ((res (funcall orig-window-scroll-bar-height window)))
+    (+ res 1)))
+
 ;; Load all files under setup/.
 ;; The files are loaded in alphabetically sorted order!
 (mapc 'load (directory-files "~/.emacs.d/setup" t "\\.el"))
