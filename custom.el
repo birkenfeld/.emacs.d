@@ -247,6 +247,8 @@
  '(lsp-enable-snippet nil)
  '(lsp-keymap-prefix "s-k")
  '(lsp-lens-enable nil)
+ '(lsp-pylsp-plugins-mccabe-enabled nil)
+ '(lsp-pylsp-plugins-pydocstyle-enabled nil)
  '(lsp-rust-analyzer-call-info-full nil)
  '(lsp-rust-analyzer-cargo-load-out-dirs-from-check t)
  '(lsp-rust-analyzer-cargo-run-build-scripts t)
