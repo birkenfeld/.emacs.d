@@ -26,3 +26,19 @@
 
 ;; full screen magit-status
 (fullframe magit-status magit-mode-quit-window)
+
+;; Nicer modeline string
+(defun vc-default-mode-line-string (backend file)
+  (let* ((backend-name (symbol-name backend))
+         (state   (vc-state file backend)))
+    (propertize
+     (cond ((or (eq state 'up-to-date)
+                (eq state 'needs-update))
+                                 "   @")
+           ((stringp state)      "LL @")
+           ((eq state 'added)    "++ @")
+           ((eq state 'conflict) "!! @")
+           ((eq state 'removed)  "-- @")
+           ((eq state 'missing)  "?? @")
+           (t                    "MM @"))
+     'face 'vc-state-base)))
