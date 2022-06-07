@@ -117,9 +117,12 @@
 (add-hook 'buffer-menu-mode-hook #'dircolors)
 
 ;; Ibuffer: sort by projects
-(add-hook 'ibuffer-hook
-  (lambda ()
-    (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))))
+(add-hook
+ 'ibuffer-hook
+ (lambda ()
+   (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))
+   (unless (eq ibuffer-sorting-mode 'project-file-relative)
+     (ibuffer-do-sort-by-project-file-relative))))
 
 ;; Automatically revert buffers (helpful with git)
 (global-auto-revert-mode t)
