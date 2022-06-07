@@ -6,21 +6,14 @@
 ;; Set up load path
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-;; Don't show so many messages on startup
-(setq inhibit-startup-message t)
-(setq inhibit-startup-echo-area-message t)
-
 ;; Enable the Emacs server, allows thin editing sessions via emacsclient
 (require 'server)
 (unless (server-running-p) (server-start))
 
-;; Load path for Python modules, must be set before loading pymacs
-(setq pymacs-load-path '("~/.emacs.d/pymacs"))
-
-;; set up our theme path
+;; Set up our theme path
 (setq custom-theme-directory "~/.emacs.d/themes")
 
-;; XXX: compatibility hack for winpoint.el
+;; Compatibility hack for winpoint.el
 (unless (fboundp 'make-variable-frame-local)
   (defun make-variable-frame-local (sym)))
 
@@ -28,8 +21,6 @@
 (require 'package)
 (add-to-list 'package-archives
              '("gnu" . "http://elpa.gnu.org/packages/") t)
-;; (add-to-list 'package-archives
-;;              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
@@ -40,21 +31,9 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
-;; No horizontal scrolling please
-(when (fboundp 'horizontal-scroll-bar-mode)
-  (horizontal-scroll-bar-mode -1))
-
 ;; Powerline: start it up right now to get the modeline early
 (require 'powerline)
-(setq powerline-height 40)
-(setq powerline-selected-window (selected-window))
 (powerline-default-theme)
-
-;; Fix the annoying "popup-buffer-is-1-line-too-small" glitch with powerline
-(setq orig-window-scroll-bar-height (symbol-function 'window-scroll-bar-height))
-(defun window-scroll-bar-height (&optional window)
-  (let ((res (funcall orig-window-scroll-bar-height window)))
-    (+ res 1)))
 
 ;; Load all files under setup/.
 ;; The files are loaded in alphabetically sorted order!
