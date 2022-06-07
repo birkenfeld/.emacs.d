@@ -56,12 +56,6 @@
   (let ((res (funcall orig-window-scroll-bar-height window)))
     (+ res 1)))
 
-;; This goes in desktop-save-hook
-(defun remove-powerline-cache ()
-  "Remove powerline cache before saving desktop file."
-  (dolist (frame (frame-list))
-    (set-frame-parameter frame 'powerline-cache nil)))
-
 ;; Load all files under setup/.
 ;; The files are loaded in alphabetically sorted order!
 (mapc 'load (directory-files "~/.emacs.d/setup" t "\\.el"))
