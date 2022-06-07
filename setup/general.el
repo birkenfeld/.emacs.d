@@ -99,9 +99,6 @@
 (smex-initialize)
 (global-set-key (kbd "M-x") #'smex)
 
-;; Smooth scrolling (keep cursor away from screen edges)
-(smooth-scrolling-mode 1)
-
 ;; Keep region when undoing in region
 (defadvice undo-tree-undo (around keep-region activate)
   (if (use-region-p)
