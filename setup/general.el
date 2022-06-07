@@ -159,3 +159,6 @@
 
 ;; For fastnav
 (set-variable 'lazy-highlight-face 'hl-line)
+
+;; Dired: add functionality
+(eval-after-load 'dired '(require 'dired-x))

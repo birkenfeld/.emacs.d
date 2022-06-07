@@ -9,16 +9,14 @@
   (electric-pair-mode 1)
 
   ;; Highlight whitespace mistakes
-  (setq whitespace-line-column 100)
-  (setq whitespace-style '(face trailing tabs lines-tail empty))
-  (require 'whitespace)
+  (setq-local whitespace-line-column 100)
   (whitespace-mode 1)
+
+  ;; Highlight escapes
+  (hes-mode 1)
 
   ;; Default compile command
   (setq-local compile-command "cargo build ")
-
-  ;; Highlight escapes
-  (hes-mode)
 
   ;; Language server setup
   (lsp)

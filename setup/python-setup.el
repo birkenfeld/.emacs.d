@@ -7,7 +7,11 @@
 (add-to-list 'display-buffer-alist '("*Python Doc*" popwin:special-display-popup-window))
 
 (eval-after-load 'python
-  '(define-key python-mode-map (kbd ".") #'company-insert-and-complete))
+  '(progn
+     (define-key python-mode-map (kbd ".") #'company-insert-and-complete)
+     (define-key python-mode-map (kbd "M-q") #'python-fill-paragraph)
+     (define-key python-mode-map (kbd "C-c #") #'comment-move-before-line)
+))
 
 (put 'font-lock-regexp-grouping-backslash 'face-alias 'font-lock-builtin-face)
 
@@ -34,20 +38,17 @@
   (electric-pair-mode 1)
 
   ;; Highlight whitespace mistakes
-  (setq whitespace-style '(face trailing tabs lines-tail empty))
-  (require 'whitespace)
   (whitespace-mode 1)
 
+  ;; Show fill column
+  (setq fill-column 79)
+  (fci-mode 1)
+
   ;; Highlight symbol at point
-  (require 'highlight-symbol)
   (highlight-symbol-mode 1)
 
   ;; Highlight escape sequences
-  (require 'highlight-escape-sequences)
-  (hes-mode)
-
-  ;; Death to trailing whitespace!
-  (set-variable 'show-trailing-whitespace 1)
+  (hes-mode 1)
 
   ;; Add some local hooks
   ;(add-hook 'before-save-hook 'delete-trailing-whitespace nil t)
@@ -55,18 +56,9 @@
   ;; Compile (<f5>) is execute
   (unless (or (file-exists-p "makefile")
               (file-exists-p "Makefile"))
-    (set (make-local-variable 'compile-command)
-         (concat "python " buffer-file-name)))
-
-  (setq fill-column 79)
-  (define-key python-mode-map (kbd "M-q") #'python-fill-paragraph)
-  (define-key python-mode-map (kbd "C-c #") #'comment-move-before-line)
+    (setq-local compile-command (concat "python " buffer-file-name)))
 
   (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p t t)
-
-  ;; No auto-fill please
-  (auto-fill-mode 0)
-  (fci-mode 1)
 
   (lsp)
   )
