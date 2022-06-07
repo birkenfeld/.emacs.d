@@ -861,7 +861,7 @@ it is disabled.
 ;;;### (autoloads nil "lsp-terraform" "lsp-terraform.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-terraform.el
 
-(register-definition-prefixes "lsp-terraform" '("construct-tf-package" "lsp-terraform-"))
+(register-definition-prefixes "lsp-terraform" '("construct-tf-package" "lsp-t"))
 
 ;;;***
 
