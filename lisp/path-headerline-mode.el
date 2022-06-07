@@ -78,7 +78,7 @@
   ""
   (list
    (powerline-raw " " 'fringe)
-   (funcall (pl/slant left) 'fringe 'path-header-filename-face)
+   (funcall (pl/slant left) 'fringe 'header-line)
    (powerline-raw "  ")
 
    (if (buffer-file-name)
