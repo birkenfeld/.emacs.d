@@ -94,12 +94,6 @@
 ;; rainbow-mode: color for color names
 (add-hook 'css-mode-hook 'rainbow-mode)
 
-;; xdict: lookup dictionary
-(autoload 'xdict-query "x-dict" nil t)
-(global-set-key (kbd "C-c d") #'xdict-query)
-(eval-after-load 'x-dict
-  '(add-hook 'xdict-mode-hook (lambda () (setq truncate-lines t))))
-
 ;; Markdown --------------------------------------------------------------------
 
 (eval-after-load "markdown-mode"
