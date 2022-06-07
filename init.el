@@ -37,7 +37,7 @@
 (package-initialize)
 
 ;; Load custom variables and faces
-(setq custom-file "~/.emacs.d/setup/custom.el")
+(setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
 ;; No horizontal scrolling please
@@ -46,7 +46,7 @@
 
 ;; Powerline: start it up right now to get the modeline early
 (require 'powerline)
-(setq powerline-height 30)
+(setq powerline-height 40)
 (setq powerline-selected-window (selected-window))
 (powerline-default-theme)
 
