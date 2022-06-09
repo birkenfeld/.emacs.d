@@ -29,7 +29,7 @@
 
 ;; Load custom variables and faces
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+(load custom-file nil t)
 
 ;; Powerline: start it up right now to get the modeline early
 (require 'powerline)
@@ -43,9 +43,9 @@
 
 ;; Load all files under setup/.
 ;; The files are loaded in alphabetically sorted order!
-(mapc 'load (directory-files "~/.emacs.d/setup" t "\\.el"))
+(mapc (lambda (f) (load f nil t)) (directory-files "~/.emacs.d/setup" t "\\.el"))
 ;; Load everything under local/ (settings that are not in the repo).
-(mapc 'load (directory-files "~/.emacs.d/local-setup" t "\\.el"))
+(mapc (lambda (f) (load f nil t)) (directory-files "~/.emacs.d/local-setup" t "\\.el"))
 
 ;; Session (saves histories, variables, ...)
 ;; To be called after all other initialization

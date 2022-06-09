@@ -310,7 +310,6 @@
  '(pulse-flag nil)
  '(python-fill-docstring-style 'pep-257-nn)
  '(python-indent-guess-indent-offset nil)
- '(python-skeleton-autoinsert nil)
  '(python-use-skeletons nil)
  '(racer-cmd "/usr/bin/racer")
  '(racer-rust-src-path

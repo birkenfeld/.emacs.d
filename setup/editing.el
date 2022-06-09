@@ -97,6 +97,18 @@
 
 (setq-default abbrev-mode t)
 
+;; Undo macros in a block
+
+(defun block-undo (fn &rest args)
+  (let ((marker (prepare-change-group)))
+    (unwind-protect (apply fn args)
+      (undo-amalgamate-change-group marker))))
+
+(dolist (fn '(kmacro-call-macro
+              kmacro-exec-ring-item
+              apply-macro-to-region-lines))
+  (advice-add fn :around #'block-undo))
+
 ;; Rectangle mode enhancements
 
 ;; (require 'rect)
