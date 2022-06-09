@@ -716,9 +716,7 @@ Show changes that are being merged.
 While committing, show the changes that are about to be committed.
 While amending, invoking the command again toggles between
 showing just the new changes or all the changes that will
-be committed.
-
-\(fn &optional ARGS)" t nil)
+be committed." t nil)
 
 (autoload 'magit-diff-buffer-file "magit-diff" "\
 Show diff for the blob or file visited in the current buffer.

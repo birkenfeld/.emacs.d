@@ -13,14 +13,7 @@
 
 ;;;***
 
-;;;### (autoloads nil "f-shortdoc" "f-shortdoc.el" (0 0 0 0))
-;;; Generated autoloads from f-shortdoc.el
-
-(register-definition-prefixes "f-shortdoc" 'nil)
-
-;;;***
-
-;;;### (autoloads nil nil ("f-pkg.el") (0 0 0 0))
+;;;### (autoloads nil nil ("f-pkg.el" "f-shortdoc.el") (0 0 0 0))
 
 ;;;***
 
