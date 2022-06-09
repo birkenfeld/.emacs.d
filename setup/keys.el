@@ -12,9 +12,6 @@
 ;; Support file and lineno finding with "filename:linenum"
 (global-set-key (kbd "C-x C-f") #'find-file-with-linenum)
 
-;; Dired
-(global-set-key (kbd "C-x C-d") #'dired)
-
 ;; Proced
 (global-set-key (kbd "C-x C-p") #'proced)
 
@@ -28,9 +25,6 @@
 
 ;; Switch menu-bar on/off
 (global-set-key (kbd "<f10>") #'menu-bar-mode)
-
-;; Fullscreen editing
-(global-set-key (kbd "<f11>") #'fullscreen)
 
 ;; Toggle line number display
 (global-set-key (kbd "C-c n") #'global-linum-mode)
@@ -121,8 +115,7 @@
 (global-set-key (kbd "C-x m") #'idomenu)
 
 ;; Grepping
-(global-set-key (kbd "C-x g") #'grep)
-(global-set-key (kbd "C-c g") #'grep-find)
+(global-set-key (kbd "C-x g") #'grep-find)
 
 ;; ---- Editing
 
@@ -160,9 +153,6 @@
 
 ;; Wrap line in parens
 (global-set-key (kbd "C-(") #'wrap-line-in-parens)
-
-;; Better mark-word
-(global-set-key (kbd "M-+") #'mark-word)
 
 ;; Redo
 (global-set-key (kbd "C-x U") #'redo)
@@ -204,9 +194,6 @@
 ;; Align word after point to same position as in previous line
 (global-set-key (kbd "C-ü") #'align-around-point-to-above)
 
-;; Killing text
-(global-set-key (kbd "C-S-k") #'kill-and-retry-line)
-
 ;; Use M-w for easy-kill if no active region
 (global-set-key (kbd "M-w") #'easy-kill)
 
@@ -222,6 +209,9 @@
 (global-set-key (kbd "M-M") #'fastnav-mark-to-char-backward)
 (global-set-key (kbd "M-z") #'fastnav-zap-up-to-char-forward)
 (global-set-key (kbd "M-Z") #'fastnav-zap-up-to-char-backward)
+
+;; Face used by fastnav (doesn't exist anymore)
+(setq lazy-highlight-face 'cua-rectangle)
 
 ;; ---- External commands
 

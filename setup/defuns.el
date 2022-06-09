@@ -34,13 +34,6 @@ using `abort-recursive-edit'."
     ;; the effect that not even switch-to-buffer would work anymore...
     (set-window-dedicated-p rightrightwin 'yes)))
 
-(defun fullscreen ()
-  "Toggle fullscreen editing."
-  (interactive)
-  (menu-bar-mode 0)
-  (set-frame-parameter nil 'fullscreen
-                       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
-
 (defun kill-other-buffer ()
   "Kill other window's buffer."
   (interactive)
@@ -337,12 +330,6 @@ returns the word count of that file."
   (if (or arg (not buffer-file-name))
       (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-
-(defun kill-and-retry-line ()
-  "Kill the entire current line and reposition point at indentation"
-  (interactive)
-  (back-to-indentation)
-  (kill-line))
 
 (defun save-region-or-current-line (arg)
   "If no region is active, copy the current line instead of nothing."

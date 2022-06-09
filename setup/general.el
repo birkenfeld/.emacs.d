@@ -44,9 +44,6 @@
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-;; Save point position between sessions
-(save-place-mode 1)
-
 ;; Auto-fill in text mode
 (add-hook 'text-mode-hook 'auto-fill-mode)
 
@@ -82,17 +79,15 @@
 (add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
 
 ;; Make some mode line displays smaller
-(when (require 'diminish nil 'noerror)
-  (eval-after-load "reveal" '(diminish 'reveal-mode))
-  (eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
-  (eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
-  (eval-after-load "which-key" '(diminish 'which-key-mode))
-  (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y"))
-  (eval-after-load "company" '(diminish 'company-mode "."))
-  (eval-after-load "lsp-mode" '(diminish 'lsp-mode " LSP"))
-  (diminish 'abbrev-mode)
-  (diminish 'eldoc-mode)
-)
+(require 'diminish)
+(diminish 'abbrev-mode)
+(diminish 'eldoc-mode)
+(eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
+(eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
+(eval-after-load "which-key" '(diminish 'which-key-mode))
+(eval-after-load "company" '(diminish 'company-mode))
+(eval-after-load "lsp-mode" '(diminish 'lsp-mode " LSP"))
+(eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y"))
 
 ;; M-x enhancement
 (require 'smex)
@@ -124,14 +119,8 @@
    (unless (eq ibuffer-sorting-mode 'project-file-relative)
      (ibuffer-do-sort-by-project-file-relative))))
 
-;; Automatically revert buffers (helpful with git)
-(global-auto-revert-mode t)
-
 ;; Save on switching away from Emacs
 (defun save-all ()
   (interactive)
   (save-some-buffers t))
 (add-hook 'focus-out-hook 'save-all)
-
-;; For fastnav
-(set-variable 'lazy-highlight-face 'hl-line)
