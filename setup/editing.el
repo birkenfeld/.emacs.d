@@ -21,13 +21,14 @@
 (global-set-key (kbd "M-p") #'dubious-backward-paragraph)
 (global-set-key (kbd "M-P") #'dubious-backward-paragraph-scroll)
 
-;; Easy repeat by last key of key sequence
-(require 'easy-repeat)
-(setq easy-repeat-command-list
-      '(flycheck-next-or-first-error
-        previous-error
-        next-error))
-(easy-repeat-mode 1)
+;; Easy repeat by last key of key sequence, only needed up to Emacs 27
+(unless (fboundp 'repeat-mode)
+  (require 'easy-repeat)
+  (setq easy-repeat-command-list
+        '(flycheck-next-or-first-error
+          previous-error
+          next-error))
+  (easy-repeat-mode 1))
 
 ;; Adaptive fill is great
 (require 'adaptive-wrap)

@@ -325,6 +325,7 @@
  '(reftex-save-parse-info t)
  '(reftex-use-multiple-selection-buffers t)
  '(reftex-vref-is-default t)
+ '(repeat-mode t)
  '(require-final-newline t)
  '(rng-nxml-auto-validate-flag nil)
  '(rst-definition-face 'font-lock-function-name-face)
