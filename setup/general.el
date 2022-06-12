@@ -86,6 +86,7 @@
 (eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
 (eval-after-load "which-key" '(diminish 'which-key-mode))
 (eval-after-load "company" '(diminish 'company-mode))
+(eval-after-load "whitespace" '(diminish 'whitespace-mode))
 (eval-after-load "lsp-mode" '(diminish 'lsp-mode " LSP"))
 (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y"))
 
