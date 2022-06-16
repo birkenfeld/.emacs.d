@@ -128,3 +128,6 @@
 
 ;; Enhanced compilation mode with color support
 (fancy-compilation-mode)
+
+;; Larger buffer for reading process output (for lsp)
+(setq read-process-output-max (* 1024 1024))
