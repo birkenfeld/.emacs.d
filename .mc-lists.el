@@ -27,6 +27,7 @@
         cycle-spacing
         describe-key
         gud-tooltip-mouse-motion
+        project-recompile
         search-for-this-word
         set-or-deactivate-rectangular-region-anchor
         smex

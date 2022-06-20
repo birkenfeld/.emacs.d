@@ -109,6 +109,24 @@
               apply-macro-to-region-lines))
   (advice-add fn :around #'block-undo))
 
+;; Fix inserting newlines without indenting in electric-pair mode
+
+(eval-after-load 'elec-pair
+  '(defun electric-pair-open-newline-between-pairs-psif ()
+     "Honour `electric-pair-open-newline-between-pairs'.
+Member of `post-self-insert-hook' if `electric-pair-mode' is on."
+     (when (and (if (functionp electric-pair-open-newline-between-pairs)
+                    (funcall electric-pair-open-newline-between-pairs)
+                  electric-pair-open-newline-between-pairs)
+                (eq last-command-event ?\n)
+                (< (1+ (point-min)) (point) (point-max))
+                (eq (save-excursion
+                      (skip-chars-backward "\t\s")
+                      (char-before (1- (point))))
+                    (matching-paren (char-after))))
+       (save-excursion (newline-and-indent)))))
+
+
 ;; Rectangle mode enhancements
 
 ;; (require 'rect)
