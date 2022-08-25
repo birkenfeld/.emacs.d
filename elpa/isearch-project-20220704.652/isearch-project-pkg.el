@@ -1,0 +1,2 @@
+;;; Generated package description from isearch-project.el  -*- no-byte-compile: t -*-
+(define-package "isearch-project" "20220704.652" "Incremental search through the whole project" '((emacs "26.1") (f "0.20.0")) :stars '(#("3" 0 1 (font-lock-face paradox-star-face))) :commit "08b1102c1f55011952aff818261a9478175a5b92" :authors '(("Shen, Jen-Chieh" . "jcs090218@gmail.com")) :maintainer '("Shen, Jen-Chieh" . "jcs090218@gmail.com") :keywords '("convenience" "search") :url "https://github.com/jcs-elpa/isearch-project")

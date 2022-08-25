@@ -1,0 +1,2 @@
+;;; Generated package description from goto-char-preview.el  -*- no-byte-compile: t -*-
+(define-package "goto-char-preview" "20220704.630" "Preview character when executing `goto-char` command" '((emacs "24.3")) :stars '(#("2" 0 1 (font-lock-face paradox-star-face))) :commit "104a04c3228b3cde2432ae802d739859f96c8509" :authors '(("Shen, Jen-Chieh" . "jcs090218@gmail.com")) :maintainer '("Shen, Jen-Chieh" . "jcs090218@gmail.com") :keywords '("convenience" "character" "navigation") :url "https://github.com/emacs-vs/goto-char-preview")

@@ -1,0 +1,2 @@
+;;; Generated package description from disaster.el  -*- no-byte-compile: t -*-
+(define-package "disaster" "20220807.2215" "Disassemble C, C++ or Fortran code under cursor" '((emacs "27")) :stars '(#("179" 0 3 (font-lock-face paradox-star-face))) :commit "e261bb4cfdc9da95a3e6b9614d79e75437c85c8b" :authors '(("Justine Tunney" . "jtunney@gmail.com") ("Abdelhak Bougouffa" . "abougouffa@fedoraproject.org")) :maintainer '("Abdelhak Bougouffa" . "abougouffa@fedoraproject.org") :keywords '("tools" "c") :url "https://github.com/jart/disaster")
