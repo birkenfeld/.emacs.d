@@ -301,7 +301,6 @@
  '(po-highlight-face 'pesche-hardspace)
  '(pop-up-windows nil)
  '(powerline-default-separator 'slant)
- '(powerline-height 40)
  '(preview-auto-cache-preamble t)
  '(preview-default-document-pt 12)
  '(preview-scale-function 'preview-scale-from-face t)
