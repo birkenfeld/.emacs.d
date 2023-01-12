@@ -1,0 +1,2 @@
+;;; Generated package description from kurecolor.el  -*- no-byte-compile: t -*-
+(define-package "kurecolor" "20221213.124" "color editing goodies" '((emacs "24.4") (s "1.12")) :stars '(#("68" 0 2 (font-lock-face paradox-star-face))) :commit "ac67ceba85839ab1ced96fad605bf023b697263f" :authors '(("Jason Milkins" . "jasonm23@gmail.com")) :maintainer '("Jason Milkins" . "jasonm23@gmail.com") :url "https://github.com/emacsfodder/kurecolor.el")
