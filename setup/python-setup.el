@@ -60,8 +60,9 @@
 
   (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p t t)
 
+  (copilot-mode 1)
   (lsp)
-  )
+)
 
 (add-hook 'python-mode-hook #'my-python-mode-hook)
 

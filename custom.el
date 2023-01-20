@@ -290,7 +290,7 @@
  '(outline-blank-line t t)
  '(package-native-compile t)
  '(package-selected-packages
-   '(fancy-compilation vlf session undo-tree project python-isort project-mode-line-tag ibuffer-project dap-mode ftable rust-mode lsp-ui company-lsp lsp-mode xcscope flycheck-lilypond verilog-mode csharp-mode docker-compose-mode dockerfile-mode goto-char-preview isearch-project rmsbolt dynamic-spaces ialign winnow auto-minor-mode json-navigator groovy-mode 0xc digit-groups fullframe kurecolor adaptive-wrap easy-repeat shell-pop disaster fill-column-indicator highlight-parentheses which-key nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jinja2-mode change-inner toml-mode protobuf-mode flycheck-rust idomenu highlight-indentation web-mode company pos-tip irony realgud paradox discover yaml-mode wgrep volatile-highlights smex rainbow-mode pretty-mode powerline page-break-lines markdown-mode magit-gh-pulls lua-mode keywiz js2-mode ido-ubiquitous highlight-symbol highlight-escape-sequences highlight haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode))
+   '(editorconfig fancy-compilation vlf session undo-tree project python-isort project-mode-line-tag ibuffer-project dap-mode ftable rust-mode lsp-ui company-lsp lsp-mode xcscope flycheck-lilypond verilog-mode csharp-mode docker-compose-mode dockerfile-mode goto-char-preview isearch-project rmsbolt dynamic-spaces ialign winnow auto-minor-mode json-navigator groovy-mode 0xc digit-groups fullframe kurecolor adaptive-wrap easy-repeat shell-pop disaster fill-column-indicator highlight-parentheses which-key nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jinja2-mode change-inner toml-mode protobuf-mode flycheck-rust idomenu highlight-indentation web-mode company pos-tip irony realgud paradox discover yaml-mode wgrep volatile-highlights smex rainbow-mode pretty-mode powerline page-break-lines markdown-mode magit-gh-pulls lua-mode keywiz js2-mode ido-ubiquitous highlight-symbol highlight-escape-sequences highlight haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -309,6 +309,7 @@
  '(pulse-flag nil)
  '(python-fill-docstring-style 'pep-257-nn)
  '(python-indent-guess-indent-offset nil)
+ '(python-skeleton-autoinsert nil)
  '(python-use-skeletons nil)
  '(racer-cmd "/usr/bin/racer")
  '(racer-rust-src-path

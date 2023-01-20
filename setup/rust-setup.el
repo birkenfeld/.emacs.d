@@ -18,7 +18,7 @@
   ;; Default compile command
   (setq-local compile-command "cargo build ")
 
-  ;; Language server setup
+  (copilot-mode 1)
   (lsp)
 )
 
