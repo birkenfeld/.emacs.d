@@ -85,7 +85,7 @@
    '(company-nxml company-css company-clang company-capf
                   (company-gtags company-etags company-keywords sane-company-dabbrev)
                   company-oddmuse company-files))
- '(company-box-scrollbar 'inherit)
+ '(company-frontends '(company-echo-metadata-frontend))
  '(company-idle-delay 1)
  '(company-quickhelp-color-background "black")
  '(company-quickhelp-delay 0.25)
@@ -116,7 +116,7 @@
  '(cursor-type '(bar . 2))
  '(custom-enabled-themes '(tango-dark-adapted))
  '(custom-safe-themes
-   '("6869717b2ebe98c6f15a03431b8bf9b52916272cb3862bd448a3ae77032f9837" "07b8a3d6bb985a266458adff96d64644a2672424b4fa307d980790762e916493" default))
+   '("b6055507dd317b368c29763790b6867f34d086996df6f1cb9a7e504d1a316e7e" default))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
@@ -567,9 +567,6 @@
  '(ack-file ((((background light)) (:inherit compilation-info :underline t))))
  '(ack-line ((nil (:inherit compilation-line-number :underline t))))
  '(ack-match ((nil (:inherit match))))
- '(company-tooltip ((t (:background "gray80" :foreground "black"))))
- '(company-tooltip-annotation-selection ((t (:inherit company-tooltip-selection :foreground "#a40000"))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection))))
  '(custom-button ((t (:inherit variable-pitch :background "lightgrey" :foreground "black" :box (:line-width 2 :style released-button)))))
  '(custom-button-pressed ((t (:inherit custom-button :background "lightgrey" :foreground "black" :box (:line-width 2 :style pressed-button)))))
  '(diff-file-header ((t (:weight bold))))
