@@ -83,7 +83,6 @@
 (diminish 'abbrev-mode)
 (diminish 'eldoc-mode)
 (eval-after-load "volatile-highlights" '(diminish 'volatile-highlights-mode))
-(eval-after-load "highlight-symbol" '(diminish 'highlight-symbol-mode))
 (eval-after-load "which-key" '(diminish 'which-key-mode))
 (eval-after-load "company" '(diminish 'company-mode))
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))

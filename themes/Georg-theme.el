@@ -49,7 +49,6 @@
  '(grep-edit-file-face ((t (:background "#77ff55" :weight bold))))
  '(header-line ((default (:inherit default)) (((class color grayscale) (background light)) (:background "grey90" :foreground "grey20" :box nil))))
  '(highlight ((((class color) (min-colors 88) (background light)) (:background "#FAFABF"))))
- '(highlight-symbol-face ((((class color) (background light)) (:background "#dfd"))))
  '(ido-first-match ((t (:inherit font-lock-function-name-face))))
  '(ido-only-match ((((class color)) (:inherit font-lock-comment-face :weight bold))))
  '(iswitchb-virtual-matches ((t (:inherit font-lock-builtin-face))))

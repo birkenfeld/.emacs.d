@@ -44,9 +44,6 @@
   (setq fill-column 79)
   (fci-mode 1)
 
-  ;; Highlight symbol at point
-  (highlight-symbol-mode 1)
-
   ;; Highlight escape sequences
   (hes-mode 1)
 
