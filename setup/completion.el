@@ -65,6 +65,10 @@
 
      (add-hook 'company-completion-started-hook 'company-turn-off-fci)
      (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
-     (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)))
+     (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci)
+
+     (require 'company-box)
+     (add-hook 'company-mode-hook 'company-box-mode)
+     ))
 
 (add-hook 'emacs-lisp-mode-hook 'company-mode)
