@@ -68,6 +68,7 @@
    `(whitespace-tab ((,xwin (:background "#502525"))))
    `(highlight-indent-face ((,xwin (:inherit fringe :background ,alum-6))
                             (,term (:inherit nil))))
+   `(fill-column-indicator ((,xwin (:foreground ,alum-5))))
    ;; Info faces
    `(Info-quoted ((,xwin (:foreground ,butter-1))))
    ;; Header/Mode line faces

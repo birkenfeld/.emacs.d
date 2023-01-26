@@ -42,7 +42,7 @@
 
   ;; Show fill column
   (setq fill-column 79)
-  (fci-mode 1)
+  (display-fill-column-indicator-mode 1)
 
   ;; Highlight escape sequences
   (hes-mode 1)

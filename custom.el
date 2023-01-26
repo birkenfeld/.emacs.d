@@ -116,7 +116,7 @@
  '(cursor-type '(bar . 2))
  '(custom-enabled-themes '(tango-dark-adapted))
  '(custom-safe-themes
-   '("b6055507dd317b368c29763790b6867f34d086996df6f1cb9a7e504d1a316e7e" default))
+   '("4a95ea4417e944d94a6090740205e2d3927f74e1668381d51a79a1f9d554c389" default))
  '(custom-theme-directory "~/.emacs.d/themes")
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
@@ -139,7 +139,6 @@
  '(expand-region-fast-keys-enabled nil)
  '(fancy-narrow-lighter "")
  '(fancy-narrow-mode t)
- '(fci-rule-color "#444444")
  '(ffap-machine-p-known 'reject)
  '(ffap-newfile-prompt t)
  '(ffap-require-prefix t)
@@ -291,7 +290,7 @@
  '(outline-blank-line t t)
  '(package-native-compile t)
  '(package-selected-packages
-   '(company-box editorconfig fancy-compilation vlf session undo-tree project python-isort project-mode-line-tag ibuffer-project dap-mode ftable rust-mode lsp-ui company-lsp lsp-mode xcscope flycheck-lilypond verilog-mode csharp-mode docker-compose-mode dockerfile-mode goto-char-preview isearch-project rmsbolt dynamic-spaces ialign winnow auto-minor-mode json-navigator groovy-mode 0xc digit-groups fullframe kurecolor adaptive-wrap easy-repeat shell-pop disaster fill-column-indicator highlight-parentheses which-key nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jinja2-mode change-inner toml-mode protobuf-mode flycheck-rust idomenu highlight-indentation web-mode company pos-tip irony realgud paradox discover yaml-mode wgrep volatile-highlights smex rainbow-mode pretty-mode powerline page-break-lines markdown-mode magit-gh-pulls lua-mode keywiz js2-mode ido-ubiquitous highlight-escape-sequences highlight haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode))
+   '(company-box editorconfig fancy-compilation vlf session undo-tree project python-isort project-mode-line-tag ibuffer-project dap-mode ftable rust-mode lsp-ui company-lsp lsp-mode xcscope flycheck-lilypond verilog-mode csharp-mode docker-compose-mode dockerfile-mode goto-char-preview isearch-project rmsbolt dynamic-spaces ialign winnow auto-minor-mode json-navigator groovy-mode 0xc digit-groups fullframe kurecolor adaptive-wrap easy-repeat shell-pop disaster highlight-parentheses which-key nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes jinja2-mode change-inner toml-mode protobuf-mode flycheck-rust idomenu highlight-indentation web-mode company pos-tip irony realgud paradox discover yaml-mode wgrep volatile-highlights smex rainbow-mode pretty-mode powerline page-break-lines markdown-mode magit-gh-pulls lua-mode keywiz js2-mode ido-ubiquitous highlight-escape-sequences highlight haskell-mode guru-mode goto-chg github-browse-file git-timemachine git-messenger full-ack flycheck-irony flx-ido fastnav fancy-narrow expand-region easy-kill diminish diff-hl d-mode cython-mode company-quickhelp company-irony c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half ace-window multiple-cursors winpoint try tagedit popwin ace-jump-mode))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
