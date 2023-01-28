@@ -89,6 +89,7 @@
 (eval-after-load "lsp-mode" '(diminish 'lsp-mode " LSP"))
 (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y"))
 (eval-after-load "company-box" '(diminish 'company-box-mode))
+(eval-after-load "copilot" '(diminish 'copilot-mode " COP"))
 
 ;; M-x enhancement
 (require 'smex)
