@@ -88,6 +88,7 @@
 (eval-after-load "whitespace" '(diminish 'whitespace-mode))
 (eval-after-load "lsp-mode" '(diminish 'lsp-mode " LSP"))
 (eval-after-load "yasnippet" '(diminish 'yas-minor-mode " Y"))
+(eval-after-load "company-box" '(diminish 'company-box-mode))
 
 ;; M-x enhancement
 (require 'smex)
