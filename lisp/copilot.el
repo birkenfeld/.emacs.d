@@ -28,7 +28,7 @@ Username and password are optional."
   :options '((:host string) (:port integer) (:username string) (:password string))
   :group 'copilot)
 
-(defcustom copilot-log-max message-log-max
+(defcustom copilot-log-max 1000
   "Max size of events buffer. 0 disables, nil means infinite."
   :group 'copilot
   :type 'integer)
@@ -418,6 +418,7 @@ USER-POS is the cursor position (for verification only)."
         (overlay-put ov 'start (point))
         (overlay-put ov 'uuid uuid)
         (overlay-put ov 'keymap copilot-completion-map)
+        (overlay-put ov 'priority 100)
         (setq copilot--overlay ov)
         (copilot--async-request 'notifyShown (list :uuid uuid))))))
 
