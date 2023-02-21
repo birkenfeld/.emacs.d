@@ -86,17 +86,22 @@ Username and password are optional."
   (lambda (_))
   "Simply ignore the response.")
 
+(defsubst copilot--connection-alivep ()
+  "Non-nil if the `copilot--connection' is alive."
+  (and copilot--connection
+       (zerop (process-exit-status (jsonrpc--process copilot--connection)))))
+
 (defmacro copilot--request (&rest args)
   "Send a request to the copilot agent with ARGS."
   `(progn
-     (unless copilot--connection
+     (unless (copilot--connection-alivep)
        (copilot--start-agent))
      (jsonrpc-request copilot--connection ,@args)))
 
 (cl-defmacro copilot--async-request (method params &rest args &key (success-fn #'copilot--ignore-response) &allow-other-keys)
   "Send an asynchronous request to the copilot agent."
   `(progn
-     (unless copilot--connection
+     (unless (copilot--connection-alivep)
        (copilot--start-agent))
      ;; jsonrpc will use temp buffer for callbacks, so we need to save the current buffer and restore it inside callback
      (let ((buf (current-buffer)))
@@ -300,7 +305,7 @@ Username and password are optional."
         :relativePath (copilot--get-relative-path)
         :languageId (s-chop-suffix "-mode" (symbol-name major-mode))
         :position (list :line (- (line-number-at-pos) copilot-line-bias)
-                        :character (- (point) (point-at-bol)))))
+                        :character (- (point) (line-beginning-position)))))
 
 
 (defun copilot--get-completion (callback)
@@ -403,8 +408,8 @@ USER-POS is the cursor position (for verification only)."
                         (s-blank-p (s-trim (buffer-substring-no-properties (point) user-pos))))))
       (let* ((p-completion (propertize completion 'face 'copilot-overlay-face))
              (ov (if (not (overlayp copilot--overlay))
-                     (make-overlay (point) (point-at-eol) nil nil t)
-                   (move-overlay copilot--overlay (point) (point-at-eol))
+                     (make-overlay (point) (line-end-position) nil nil t)
+                   (move-overlay copilot--overlay (point) (line-end-position))
                    copilot--overlay)))
         (if (= (overlay-start ov) (overlay-end ov)) ; end of line
             (progn
