@@ -1,4 +1,4 @@
-;; VC, git, magit stuff
+;; VC, git stuff
 
 (require 'fullframe)
 
@@ -21,11 +21,6 @@
   '(progn
      (fullframe vc-annotate vc-annotate-quit-window)
      (define-key vc-annotate-mode-map (kbd "q") #'vc-annotate-quit-window)))
-
-(global-set-key (kbd "C-x v x") #'magit-status)
-
-;; full screen magit-status
-(fullframe magit-status magit-mode-quit-window)
 
 ;; Nicer modeline string
 (defun vc-default-mode-line-string (backend file)
