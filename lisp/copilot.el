@@ -183,7 +183,7 @@ Username and password are optional."
     (condition-case err
         (copilot--request 'signInConfirm (list :userCode user-code))
       (jsonrpc-error
-        (message "Authentication failure: %s" (alist-get 'jsonrpc-error-message (cddr err)))))
+        (user-error "Authentication failure: %s" (alist-get 'jsonrpc-error-message (cddr err)))))
     (copilot--dbind (:user) (copilot--request 'checkStatus '(:dummy "checkStatus"))
       (message "Authenticated as GitHub user %s." user))))
 
@@ -380,7 +380,7 @@ To work around posn problems with after-string property.")
 (defconst copilot-completion-map (make-sparse-keymap)
   "Keymap for Copilot completion overlay.")
 
-(defun copilot-display-overlay-completion (completion uuid line col user-pos)
+(defun copilot--display-overlay-completion (completion uuid line col user-pos)
   "Show COMPLETION with UUID in overlay at LINE and COL.
 For Copilot, COL is always 0.
 USER-POS is the cursor position (for verification only)."
@@ -389,17 +389,11 @@ USER-POS is the cursor position (for verification only)."
   (save-excursion
     (widen)
     (goto-char (point-min))
-    (if (= (line-end-position line) (1- (point-max)))
-        ; special case if the last line is empty
-        (progn
-          (goto-char (point-max))
-          (newline)
-          (forward-char -1))
-      (forward-line line)
-      (forward-char col))
+    (forward-line line)
+    (forward-char col)
 
     ; remove common prefix
-    (let* ((cur-line (s-chop-suffix "\n" (or (thing-at-point 'line) "")))
+    (let* ((cur-line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
            (common-prefix-len (length (s-shared-start completion cur-line))))
       (setq completion (substring completion common-prefix-len))
       (forward-char common-prefix-len))
@@ -415,6 +409,7 @@ USER-POS is the cursor position (for verification only)."
                    copilot--overlay)))
         (if (= (overlay-start ov) (overlay-end ov)) ; end of line
             (progn
+              (overlay-put ov 'after-string "")
               (setq copilot--real-posn (cons (point) (posn-at-point)))
               (put-text-property 0 1 'cursor t p-completion)
               (overlay-put ov 'display "")
@@ -461,36 +456,29 @@ Use TRANSFORM-FN to transform completion if provided."
   (interactive "p")
   (setq n-word (or n-word 1))
   (copilot-accept-completion (lambda (completion)
-                               (let* ((blank-regexp '(any blank "\r" "\n"))
-                                      (separator-regexp (rx-to-string
-                                                         `(seq
-                                                           (not ,blank-regexp)
-                                                           (1+ ,blank-regexp))))
-                                      (words (s-split-up-to separator-regexp completion n-word))
-                                      (remain (if (<= (length words) n-word)
-                                                  ""
-                                                (cl-first (last words))))
-                                      (length (- (length completion) (length remain)))
-                                      (prefix (substring completion 0 length)))
-                                 (s-trim-right prefix)))))
+                               (with-temp-buffer
+                                 (insert completion)
+                                 (goto-char (point-min))
+                                 (forward-word n-word)
+                                 (buffer-substring-no-properties (point-min) (point))))))
 
 (defun copilot-accept-completion-by-line (n-line)
   "Accept first N-LINE lines of completion."
   (interactive "p")
   (setq n-line (or n-line 1))
   (copilot-accept-completion (lambda (completion)
-                               (let* ((lines (s-split-up-to (rx anychar (? "\r") "\n") completion n-line))
-                                      (remain (if (<= (length lines) n-line)
-                                                  ""
-                                                (cl-first (last lines))))
-                                      (length (- (length completion) (length remain)))
-                                      (prefix (substring completion 0 length)))
-                                 prefix))))
+                               (with-temp-buffer
+                                 (insert completion)
+                                 (goto-char (point-min))
+                                 (forward-line n-line)
+                                 (buffer-substring-no-properties (point-min) (point))))))
+
 
 (defun copilot--show-completion (completion)
   "Show COMPLETION."
-  (copilot--dbind (:text :uuid :range (:start (:line :character))) completion
-    (copilot-display-overlay-completion text uuid line character (point))))
+  (when (copilot--satisfy-display-predicates)
+    (copilot--dbind (:text :uuid :range (:start (:line :character))) completion
+      (copilot--display-overlay-completion text uuid line character (point)))))
 
 (defun copilot-complete ()
   "Complete at the current point."
@@ -515,19 +503,47 @@ Use TRANSFORM-FN to transform completion if provided."
 
 (defcustom copilot-disable-predicates nil
   "A list of predicate functions with no argument to disable Copilot.
-Copilot will be disabled if any predicate returns t."
+Copilot will not be triggered if any predicate returns t."
   :type '(repeat function)
   :group 'copilot)
 
 (defcustom copilot-enable-predicates '(evil-insert-state-p copilot--buffer-changed)
   "A list of predicate functions with no argument to enable Copilot.
-Copilot will be enabled only if all predicates return t."
+Copilot will be triggered only if all predicates return t."
   :type '(repeat function)
   :group 'copilot)
 
+(defcustom copilot-disable-display-predicates nil
+  "A list of predicate functions with no argument to disable Copilot.
+Copilot will not show completions if any predicate returns t."
+  :type '(repeat function)
+  :group 'copilot)
+
+(defcustom copilot-enable-display-predicates nil
+  "A list of predicate functions with no argument to enable Copilot.
+Copilot will show completions only if all predicates return t."
+  :type '(repeat function)
+  :group 'copilot)
+
+(defmacro copilot--satisfy-predicates (enable disable)
+  "Return t if satisfy all predicates in ENABLE and none in DISABLE."
+  `(and (cl-every (lambda (pred)
+                    (if (functionp pred) (funcall pred) t))
+                  ,enable)
+        (cl-notany (lambda (pred)
+                     (if (functionp pred) (funcall pred) nil))
+                   ,disable)))
+
+(defun copilot--satisfy-trigger-predicates ()
+  "Return t if all trigger predicates are satisfied."
+  (copilot--satisfy-predicates copilot-enable-predicates copilot-disable-predicates))
+
+(defun copilot--satisfy-display-predicates ()
+  "Return t if all display predicates are satisfied."
+  (copilot--satisfy-predicates copilot-enable-display-predicates copilot-disable-display-predicates))
+
 (defvar copilot-mode-map (make-sparse-keymap)
   "Keymap for Copilot minor mode.
-
 Use this for custom bindings in `copilot-mode'.")
 
 ;;;###autoload
@@ -583,7 +599,8 @@ If so, update the overlays and continue. COMMAND is the
 command that triggered `post-command-hook'.
 "
   (when (and (eq command 'self-insert-command)
-             (copilot--overlay-visible))
+             (copilot--overlay-visible)
+             (copilot--satisfy-display-predicates))
     (let* ((ov copilot--overlay)
            (display (overlay-get ov 'display))
            (after-string (overlay-get ov 'after-string))
@@ -596,13 +613,16 @@ command that triggered `post-command-hook'.
         ;; synchronize it. This can happen with modes that insert characters,
         ;; like electric-pair or smartparens
         (cond ((and (not copilot-state-eolp) (eolp))
-                (overlay-put ov 'display "")
-                (setq after-string completion))
+               (overlay-put ov 'display "")
+               (setq after-string completion))
               ((and copilot-state-eolp (not (eolp)))
-                (setq after-string (substring after-string 1))))
+               (setq after-string (substring after-string 1))))
         ;; Update the overlays
         (if (eolp)
-            (ignore-errors (put-text-property 1 2 'cursor t after-string))
+            (progn
+              (overlay-put ov 'after-string "")
+              (setq copilot--real-posn (cons (point) (posn-at-point)))
+              (ignore-errors (put-text-property 1 2 'cursor t after-string)))
           (overlay-put ov 'display (substring after-string 0 1)))
         (overlay-put ov 'after-string (substring after-string 1))
         (move-overlay ov (point) (overlay-end ov))))))
@@ -612,12 +632,7 @@ command that triggered `post-command-hook'.
   (when (and (buffer-live-p buffer)
              (equal (current-buffer) buffer)
              copilot-mode
-             (cl-every (lambda (pred)
-                         (if (functionp pred) (funcall pred) t))
-                       copilot-enable-predicates)
-             (cl-notany (lambda (pred)
-                          (if (functionp pred) (funcall pred) nil))
-                        copilot-disable-predicates))
+             (copilot--satisfy-trigger-predicates))
         (copilot-complete)))
 
 (provide 'copilot)
