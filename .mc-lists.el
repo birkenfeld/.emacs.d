@@ -5,6 +5,7 @@
       '(
         LilyPond-electric-close-paren
         browse-kill-ring-insert-and-quit
+        c-electric-colon
         c-electric-pound
         c-electric-semi&comma
         c-electric-slash
