@@ -35,4 +35,5 @@
         suspend-frame
         swiper-mc
         wgrep-finish-edit
+        yank-rectangle
         ))
