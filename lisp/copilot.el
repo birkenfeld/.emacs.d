@@ -159,7 +159,7 @@ Enabling event logging may slightly affect performance."
                                                          :stderr (get-buffer-create "*copilot stderr*")
                                                          :noquery t)))
              (message "Copilot agent started.")
-             (copilot--request 'initialize '(:capabilities 'nil))
+             (copilot--request 'initialize '(:capabilities (:workspace (:workspaceFolders t))))
              (copilot--async-request 'setEditorInfo
                                      `(:editorInfo (:name "Emacs" :version ,emacs-version)
                                        :editorPluginInfo (:name "copilot.el" :version ,copilot-version)
@@ -247,8 +247,28 @@ Enabling event logging may slightly affect performance."
 ;; Auto completion
 ;;
 
+;; based on https://code.visualstudio.com/docs/languages/identifiers
+;; (more here https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
 (defvar copilot-major-mode-alist '(("rustic" . "rust")
-                                   ("cperl" . "perl"))
+                                   ("cperl" . "perl")
+                                   ("c++" . "cpp")
+                                   ("objc" . "objective-c")
+                                   ("cuda" . "cuda-cpp")
+                                   ("docker-compose" . "dockercompose")
+                                   ("coffee" . "coffeescript")
+                                   ("js" . "javascript")
+                                   ("js2" . "javascript")
+                                   ("js2-jsx" . "javascriptreact")
+                                   ("typescript-tsx" . "typescriptreact")
+                                   ("rjsx" . "typescriptreact")
+                                   ("less-css" . "less")
+                                   ("text" . "plaintext")
+                                   ("ess-r" . "r")
+                                   ("enh-ruby" . "ruby")
+                                   ("shell-script" . "shellscript")
+                                   ("sh" . "shellscript")
+                                   ("visual-basic" . "vb")
+                                   ("nxml" . "xml"))
   "Alist mapping major mode names (with -mode removed) to copilot language ID's.")
 
 (defconst copilot--indentation-alist
@@ -535,8 +555,12 @@ Use TRANSFORM-FN to transform completion if provided."
            (t-completion (funcall (or transform-fn #'identity) completion)))
       (copilot--async-request 'notifyAccepted (list :uuid uuid))
       (copilot-clear-overlay t)
-      (delete-region start end)
-      (insert t-completion)
+      (if (eq major-mode 'vterm-mode)
+          (progn
+            (vterm-delete-region start end)
+            (vterm-insert t-completion))
+        (delete-region start end)
+        (insert t-completion))
       ; if it is a partial completion
       (when (and (s-prefix-p t-completion completion)
                  (not (s-equals-p t-completion completion)))
