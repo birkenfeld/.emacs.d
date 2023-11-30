@@ -571,6 +571,7 @@
  '(eldoc-highlight-function-argument ((t (:inherit ido-first-match))))
  '(fancy-compilation-default-face ((t (:inherit default))))
  '(fixed-pitch ((t nil)))
+ '(fixed-pitch-serif ((t nil)))
  '(flx-highlight-face ((t nil)))
  '(font-latex-sectioning-2-face ((t (:inherit font-latex-sectioning-3-face :height 1.2))))
  '(hexl-address-region ((t (:inherit font-lock-constant-face))))
