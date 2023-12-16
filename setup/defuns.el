@@ -320,9 +320,9 @@ returns the word count of that file."
   (interactive)
   (unwind-protect
       (progn
-        (linum-mode 1)
+        (display-line-numbers-mode 1)
         (goto-line (read-number "Goto line: ")))
-    (linum-mode -1)))
+    (display-line-numbers-mode -1)))
 
 (defun sudo-edit (&optional arg)
   "Edit current or specified file as root using sudo."

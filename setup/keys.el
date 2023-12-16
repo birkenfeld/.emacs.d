@@ -27,7 +27,7 @@
 (global-set-key (kbd "<f10>") #'menu-bar-mode)
 
 ;; Toggle line number display
-(global-set-key (kbd "C-c n") #'global-linum-mode)
+(global-set-key (kbd "C-c n") #'global-display-line-numbers-mode)
 
 ;; Font size management
 (global-set-key (kbd "C-x C-+") #'increase-font-size)
@@ -103,7 +103,7 @@
 ;; better C-a behavior: toggle indentation/start of line
 (global-set-key [remap move-beginning-of-line] #'prelude-move-beginning-of-line)
 
-;; Goto line with linum turned on
+;; Goto line with line numbers turned on
 (global-set-key [remap goto-line] #'goto-line-with-feedback)
 
 ;; Bookmarks
