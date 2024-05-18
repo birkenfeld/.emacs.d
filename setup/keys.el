@@ -154,7 +154,8 @@
 ;; Wrap line in parens
 (global-set-key (kbd "C-(") #'wrap-line-in-parens)
 
-;; Redo
+;; Undo and redo
+(global-set-key (kbd "C-x u") #'vundo)
 (global-set-key (kbd "C-x U") #'redo)
 
 ;; cycle whitespace at the point
