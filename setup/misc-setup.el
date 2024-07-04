@@ -138,3 +138,10 @@
      ;; Open files and expand dirs with single click
      (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action)
      ))
+
+;; Verilog ---------------------------------------------------------------------
+
+(eval-after-load "verilog-mode"
+  '(progn
+     (add-hook 'verilog-mode-hook (lambda () (abbrev-mode 0)))
+     ))
