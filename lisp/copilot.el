@@ -92,6 +92,10 @@ performance."
   :group 'copilot
   :type 'string)
 
+(defcustom copilot-server-args nil
+  "Additional arguments to pass to the Copilot server."
+  :group 'copilot
+  :type '(repeat string))
 
 (defcustom copilot-max-char 100000
   "Maximum number of characters to send to Copilot, -1 means no limit."
@@ -105,13 +109,17 @@ performance."
   :type '(repeat function))
 
 (defcustom copilot-indent-offset-warning-disable nil
-  "Disable warning when copilot--infer-indentation-offset cannot find
-indentation offset."
+  "Disable indentation warnings.
+
+Warning occurs when the function `copilot--infer-indentation-offset' cannot
+find indentation offset."
   :group 'copilot
   :type 'boolean)
 
 (defcustom copilot-indentation-alist
-  (append '((latex-mode tex-indent-basic)
+  (append '((emacs-lisp-mode lisp-indent-offset)
+            (latex-mode tex-indent-basic)
+            (lisp-mode lisp-indent-offset)
             (nxml-mode nxml-child-indent)
             (python-mode python-indent py-indent-offset python-indent-offset)
             (python-ts-mode python-indent py-indent-offset python-indent-offset)
@@ -162,7 +170,8 @@ You may adjust this variable at your own risk."
 (defvar-local copilot--last-doc-version 0
   "The document version of the last completion.")
 (defvar-local copilot--doc-version 0
-  "The document version of the current buffer. Incremented after each change.")
+  "The document version of the current buffer.
+Incremented after each change.")
 
 (defun copilot--buffer-changed ()
   "Return non-nil if the buffer has changed since last completion."
@@ -261,7 +270,11 @@ Use this for custom bindings in `copilot-mode'.")
      (jsonrpc-notify copilot--connection ,@args)))
 
 (cl-defmacro copilot--async-request (method params &rest args &key (success-fn #'copilot--ignore-response) &allow-other-keys)
-  "Send an asynchronous request to the copilot agent."
+  "Send an asynchronous request to the copilot agent.
+
+Arguments METHOD, PARAMS and ARGS are used in function `jsonrpc-async-request'.
+
+SUCCESS-FN is the CALLBACK."
   `(progn
      (unless (copilot--connection-alivep)
        (copilot--start-agent))
@@ -270,8 +283,9 @@ Use this for custom bindings in `copilot-mode'.")
        (jsonrpc-async-request copilot--connection
                               ,method ,params
                               :success-fn (lambda (result)
-                                            (with-current-buffer buf
-                                              (funcall ,success-fn result)))
+                                            (if (buffer-live-p buf)
+                                                (with-current-buffer buf
+                                                  (funcall ,success-fn result))))
                               ,@args))))
 
 (defun copilot--make-connection ()
@@ -282,8 +296,10 @@ Use this for custom bindings in `copilot-mode'.")
                   :name "copilot"
                   :notification-dispatcher #'copilot--handle-notification
                   :process (make-process :name "copilot agent"
-                                         :command (list copilot-node-executable
-                                                        copilot--server-executable)
+                                         :command (append
+                                                   (list copilot-node-executable
+                                                         copilot--server-executable)
+                                                   copilot-server-args)
                                          :coding 'utf-8-emacs-unix
                                          :connection-type 'pipe
                                          :stderr (get-buffer-create "*copilot stderr*")
@@ -416,7 +432,7 @@ automatically, browse to %s." user-code verification-uri))
 (defvar copilot-major-mode-alist '(("rustic" . "rust")
                                    ("cperl" . "perl")
                                    ("c++" . "cpp")
-                                   ("clojurec" . "clojure")
+                                   ("clojure" . "clojure")
                                    ("clojurescript" . "clojure")
                                    ("objc" . "objective-c")
                                    ("cuda" . "cuda-cpp")
@@ -454,11 +470,17 @@ automatically, browse to %s." user-code verification-uri))
         (while (and (not (assq mode copilot-indentation-alist))
                     (setq mode (get mode 'derived-mode-parent))))
         (when mode
-          (cl-some (lambda (s)
-                     ;; s can be a symbol or a number.
-                     (cond ((numberp s) s)
-                           ((and (boundp s) (numberp (symbol-value s))) (symbol-value s))))
-                   (alist-get mode copilot-indentation-alist))))
+          (let ((indent-spec (alist-get mode copilot-indentation-alist)))
+            (cond
+             ((listp indent-spec)
+              (cl-some (lambda (s)
+                         (cond ((numberp s) s)
+                               ((and (boundp s) (numberp (symbol-value s)))
+                                (symbol-value s))))
+                       indent-spec))
+             ((functionp indent-spec) ; editorconfig 0.11.0+
+              ;; This points to a setter, which do not call
+              nil)))))
       (progn
         (when (and
                (not copilot-indent-offset-warning-disable)
@@ -587,7 +609,7 @@ automatically, browse to %s." user-code verification-uri))
                    (copilot--show-completion completion))))))))
 
 (defsubst copilot--overlay-visible ()
-  "Return whether the `copilot--overlay' is avaiable."
+  "Return whether the `copilot--overlay' is available."
   (and (overlayp copilot--overlay)
        (overlay-buffer copilot--overlay)))
 
@@ -679,7 +701,7 @@ To work around posn problems with after-string property.")
   "Keymap for Copilot completion overlay.")
 
 (defun copilot--posn-advice (&rest args)
-  "Remap posn if in copilot-mode."
+  "Remap posn if in copilot-mode with ARGS."
   (when copilot-mode
     (let ((pos (or (car-safe args) (point))))
       (when (and copilot--real-posn
@@ -737,8 +759,8 @@ To work around posn problems with after-string property.")
 (defun copilot--display-overlay-completion (completion uuid start end)
   "Show COMPLETION with UUID between START and END.
 
-(save-excursion) is not necessary since there is only one caller, and they are
-already saving an excursion. This is also a private function."
+`save-excursion' is not necessary since there is only one caller, and they are
+already saving an excursion.  This is also a private function."
   (copilot-clear-overlay)
   (when (and (s-present-p completion)
              (or (= start (point))      ; up-to-date completion
@@ -752,7 +774,8 @@ already saving an excursion. This is also a private function."
       (copilot--async-request 'notifyShown (list :uuid uuid)))))
 
 (defun copilot-clear-overlay (&optional is-accepted)
-  "Clear Copilot overlay. If IS-ACCEPTED is nil, notify rejected."
+  "Clear Copilot overlay.
+If IS-ACCEPTED is nil, notify rejected."
   (interactive)
   (when (copilot--overlay-visible)
     (unless is-accepted
@@ -763,8 +786,9 @@ already saving an excursion. This is also a private function."
     (setq copilot--real-posn nil)))
 
 (defun copilot-accept-completion (&optional transform-fn)
-  "Accept completion. Return t if there is a completion.
-Use TRANSFORM-FN to transform completion if provided."
+  "Accept completion.
+Return t if there is a completion.  Use TRANSFORM-FN to transform completion if
+provided."
   (interactive)
   (when (copilot--overlay-visible)
     (let* ((completion (overlay-get copilot--overlay 'completion))
@@ -836,7 +860,7 @@ Use TRANSFORM-FN to transform completion if provided."
                 (copilot--display-overlay-completion balanced-text uuid start end)))))))))
 
 (defun copilot--on-doc-focus (window)
-  "Notify that the document has been focussed or opened."
+  "Notify that the document WINDOW has been focussed or opened."
   ;; When switching windows, this function is called twice, once for the
   ;; window losing focus and once for the window gaining focus. We only want to
   ;; send a notification for the window gaining focus and only if the buffer has
@@ -853,27 +877,30 @@ Use TRANSFORM-FN to transform completion if provided."
                                                  :text (copilot--get-source)))))))
 
 (defun copilot--on-doc-change (&optional beg end chars-replaced)
-  "Notify that the document has changed."
-  (let* ((is-before-change (eq chars-replaced nil))
+  "Notify that the document has changed.
+
+Arguments BEG, END, and CHARS-REPLACED are metadata for region changed."
+  (let* ((is-before-change (null chars-replaced))
          (is-after-change (not is-before-change))
          ;; for a deletion, the post-change beginning and end are at the same place.
          (is-insertion (and is-after-change (not (equal beg end))))
          (is-deletion (and is-before-change (not (equal beg end)))))
     (when (or is-insertion is-deletion)
       (save-restriction
-        (widen)
-        (let* ((range-start (list :line (- (line-number-at-pos beg) copilot--line-bias)
-                                  :character (- beg (save-excursion (goto-char beg) (line-beginning-position)))))
-               (range-end (if is-insertion range-start
-                            (list :line (- (line-number-at-pos end) copilot--line-bias)
-                                  :character (- end (save-excursion (goto-char end) (line-beginning-position))))))
-               (text (if is-insertion (buffer-substring-no-properties beg end) ""))
-               (content-changes (vector (list :range (list :start range-start :end range-end)
-                                              :text text))))
-          (cl-incf copilot--doc-version)
-          (copilot--notify 'textDocument/didChange
-                           (list :textDocument (list :uri (copilot--get-uri) :version copilot--doc-version)
-                                 :contentChanges content-changes)))))))
+        (save-match-data
+          (widen)
+          (let* ((range-start (list :line (- (line-number-at-pos beg) copilot--line-bias)
+                                    :character (- beg (save-excursion (goto-char beg) (line-beginning-position)))))
+                 (range-end (if is-insertion range-start
+                              (list :line (- (line-number-at-pos end) copilot--line-bias)
+                                    :character (- end (save-excursion (goto-char end) (line-beginning-position))))))
+                 (text (if is-insertion (buffer-substring-no-properties beg end) ""))
+                 (content-changes (vector (list :range (list :start range-start :end range-end)
+                                                :text text))))
+            (cl-incf copilot--doc-version)
+            (copilot--notify 'textDocument/didChange
+                             (list :textDocument (list :uri (copilot--get-uri) :version copilot--doc-version)
+                                   :contentChanges content-changes))))))))
 
 (defun copilot--on-doc-close (&rest _args)
   "Notify that the document has been closed."
@@ -966,8 +993,8 @@ Copilot will show completions only if all predicates return t."
 
 (defun copilot--self-insert (command)
   "Handle the case where the char just inserted is the start of the completion.
-If so, update the overlays and continue. COMMAND is the
-command that triggered `post-command-hook'."
+If so, update the overlays and continue.  COMMAND is the command that triggered
+in `post-command-hook'."
   (when (and (eq command 'self-insert-command)
              (copilot--overlay-visible)
              (copilot--satisfy-display-predicates))
@@ -1016,8 +1043,7 @@ command that triggered `post-command-hook'."
       (compilation-start
        (mapconcat
         #'shell-quote-argument
-        (-filter (lambda (cmd) (not (null cmd)))
-                 command)
+        (-filter (lambda (cmd) cmd) command)
         " ")
        t
        (lambda (&rest _)
