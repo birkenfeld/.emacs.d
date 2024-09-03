@@ -105,7 +105,13 @@ EXIT-CODE-SUCCESS-P
   lambda, quoted symbol or sharp-quoted symbol.  If not supplied,
   the code is considered successful if it is `zerop'.
 
-(fn NAME &key PROGRAM ARGS (MODE t) (STDIN t) (STDOUT t) INPUT-FILE LIGHTER KEYMAP GROUP (EXIT-CODE-SUCCESS-P \\='zerop))" nil t)
+WORKING-DIRECTORY
+
+  Directory where your reformatter program is started. If provided, this
+  should be a form that evaluates to a string at runtime. Default is the
+  value of `default-directory' in the buffer.
+
+(fn NAME &key PROGRAM ARGS (MODE t) (STDIN t) (STDOUT t) INPUT-FILE LIGHTER KEYMAP GROUP (EXIT-CODE-SUCCESS-P \\='zerop) WORKING-DIRECTORY)" nil t)
 (function-put 'reformatter-define 'lisp-indent-function 'defun)
 (register-definition-prefixes "reformatter" '("reformatter-"))
 
