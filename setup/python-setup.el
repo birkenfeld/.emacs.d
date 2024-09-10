@@ -81,7 +81,7 @@
               auto-mode-alist))
 (eval-after-load 'rst
   '(add-hook 'rst-mode-hook
-             (lambda () (set-variable 'show-trailing-whitespace 1))))
+             (lambda () (set-variable 'show-trailing-whitespace t))))
 (add-hook 'rst-mode-hook 'flycheck-mode)
 
 ;; highlight-escape-sequences mode

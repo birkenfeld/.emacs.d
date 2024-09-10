@@ -211,6 +211,9 @@
 (global-set-key (kbd "M-z") #'fastnav-zap-up-to-char-forward)
 (global-set-key (kbd "M-Z") #'fastnav-zap-up-to-char-backward)
 
+;; Symbol operations
+(global-set-key (kbd "M-ü") #'symbol-overlay-put)
+
 ;; Face used by fastnav (doesn't exist anymore)
 (setq lazy-highlight-face 'cua-rectangle)
 

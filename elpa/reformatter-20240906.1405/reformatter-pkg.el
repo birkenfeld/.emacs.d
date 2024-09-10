@@ -1,6 +1,6 @@
-(define-package "reformatter" "20240903.948" "Define commands which run reformatters on the current buffer"
+(define-package "reformatter" "20240906.1405" "Define commands which run reformatters on the current buffer"
   '((emacs "24.3"))
-  :commit "e7216e8d89bfeb9da76733c0b3bcaf2ecb4adfbd" :authors
+  :commit "155b235f6c76f2f5790aa53798c7a7e36ce5aded" :authors
   '(("Steve Purcell" . "steve@sanityinc.com"))
   :maintainers
   '(("Steve Purcell" . "steve@sanityinc.com"))

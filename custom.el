@@ -279,26 +279,25 @@
  '(outline-blank-line t)
  '(package-native-compile t)
  '(package-selected-packages
-   '(jsonrpc noccur vundo gptel company-box editorconfig fancy-compilation vlf
-             session project python-isort project-mode-line-tag ibuffer-project
-             dap-mode ftable rust-mode lsp-ui company-lsp xcscope
-             flycheck-lilypond verilog-mode csharp-mode docker-compose-mode
-             dockerfile-mode goto-char-preview isearch-project rmsbolt
-             dynamic-spaces ialign winnow auto-minor-mode json-navigator
-             groovy-mode 0xc digit-groups fullframe kurecolor adaptive-wrap
-             easy-repeat shell-pop disaster highlight-parentheses which-key
-             nasm-mode x86-lookup pdf-tools unicode-troll-stopper toggle-quotes
-             jinja2-mode change-inner toml-mode protobuf-mode flycheck-rust
-             idomenu highlight-indentation web-mode company pos-tip realgud
-             paradox discover yaml-mode wgrep volatile-highlights smex
-             rainbow-mode pretty-mode powerline page-break-lines lua-mode keywiz
-             js2-mode ido-ubiquitous highlight-escape-sequences highlight
-             haskell-mode guru-mode goto-chg github-browse-file git-timemachine
-             git-messenger full-ack flx-ido fastnav fancy-narrow expand-region
-             easy-kill diminish diff-hl d-mode cython-mode company-quickhelp
-             c-eldoc browse-kill-ring bm auctex anzu ag ack-and-a-half
-             ace-window multiple-cursors winpoint try tagedit popwin
-             ace-jump-mode))
+   '(0xc ace-jump-mode ace-window ack-and-a-half adaptive-wrap ag anzu auctex
+         auto-minor-mode bm browse-kill-ring c-eldoc change-inner company
+         company-box company-lsp company-quickhelp csharp-mode cython-mode
+         d-mode dap-mode diff-hl digit-groups diminish disaster discover
+         docker-compose-mode dockerfile-mode dynamic-spaces easy-kill
+         easy-repeat editorconfig expand-region fancy-compilation fancy-narrow
+         fastnav flx-ido flycheck-lilypond flycheck-rust ftable full-ack
+         fullframe git-messenger git-timemachine github-browse-file
+         goto-char-preview goto-chg gptel groovy-mode guru-mode haskell-mode
+         highlight highlight-escape-sequences highlight-indentation
+         highlight-parentheses ialign ibuffer-project ido-ubiquitous idomenu
+         isearch-project jinja2-mode js2-mode json-navigator jsonrpc keywiz
+         kurecolor lsp-ui lua-mode multiple-cursors nasm-mode noccur
+         page-break-lines paradox pdf-tools popwin pos-tip powerline pretty-mode
+         project project-mode-line-tag protobuf-mode python-isort rainbow-mode
+         realgud rmsbolt rust-mode session shell-pop smex symbol-overlay tagedit
+         toggle-quotes toml-mode try unicode-troll-stopper verilog-mode vlf
+         volatile-highlights vundo web-mode wgrep which-key winnow winpoint
+         x86-lookup xcscope yaml-mode))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)

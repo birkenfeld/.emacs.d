@@ -1184,11 +1184,11 @@ commands are aliases for."
       (cond
        ((memq car '(:info :info*)))
        ((keywordp car)
-        (error "Need command, `:info' or `:info*', got `%s'" car))
+        (error "Need command, argument, `:info' or `:info*'; got `%s'" car))
        ((symbolp car)
         (setq args (plist-put args :command (macroexp-quote pop))))
        ((and (commandp car)
-             (not (stringp car)))
+             (eq (car-safe car) 'lambda))
         (let ((cmd pop)
               (sym (intern
                     (format
@@ -1200,10 +1200,7 @@ commands are aliases for."
                       `(prog1 ',sym
                          (put ',sym 'interactive-only t)
                          (put ',sym 'completion-predicate #'transient--suffix-only)
-                         (defalias ',sym
-                           ,(if (eq (car-safe cmd) 'lambda)
-                                cmd
-                              (macroexp-quote cmd))))))))
+                         (defalias ',sym ,cmd))))))
        ((or (stringp car)
             (and car (listp car)))
         (let ((arg pop)
@@ -1229,10 +1226,8 @@ commands are aliases for."
                  (setq args (plist-put args :reader (macroexp-quote pop))))
                 ((not (string-suffix-p "=" arg))
                  (setq class 'transient-switch))
-                (t
-                 (setq class 'transient-option)))))
-       (t
-        (error "Needed command or argument, got %S" car)))
+                ((setq class 'transient-option)))))
+       ((error "Need command, argument, `:info' or `:info*'; got %s" car)))
       (while (keywordp car)
         (let ((key pop)
               (val pop))

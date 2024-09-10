@@ -14,19 +14,19 @@
 (autoload 'gptel-mode "gptel" "\
 Minor mode for interacting with LLMs.
 
-This is a minor mode.  If called interactively, toggle the `GPTel
-mode' mode.  If the prefix argument is positive, enable the mode,
-and if it is zero or negative, disable the mode.
+This is a minor mode.  If called interactively, toggle the `GPTel mode'
+mode.  If the prefix argument is positive, enable the mode, and if it is
+zero or negative, disable the mode.
 
-If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
-the mode if ARG is nil, omitted, or is a positive number.
-Disable the mode if ARG is a negative number.
+If called from Lisp, toggle the mode if ARG is `toggle'.  Enable the
+mode if ARG is nil, omitted, or is a positive number.  Disable the mode
+if ARG is a negative number.
 
 To check whether the minor mode is enabled in the current buffer,
-evaluate `gptel-mode'.
+evaluate the variable `gptel-mode'.
 
-The mode's hook is called both when the mode is enabled and when
-it is disabled.
+The mode's hook is called both when the mode is enabled and when it is
+disabled.
 
 (fn &optional ARG)" t)
 (autoload 'gptel-send "gptel" "\
@@ -388,6 +388,12 @@ and provide sources used by the model to generate the response.
 (fn NAME &key CURL-ARGS STREAM KEY (HEADER (lambda nil (when-let (key (gptel--get-api-key)) \\=`((\"Authorization\" \\=\\, (concat \"Bearer \" key)))))) (HOST \"localhost:8001\") (PROTOCOL \"http\") (MODELS \\='(\"private-gpt\")) (ENDPOINT \"/v1/chat/completions\") (CONTEXT t) (SOURCES t))")
 (function-put 'gptel-make-privategpt 'lisp-indent-function 1)
 (register-definition-prefixes "gptel-privategpt" '("gptel--privategpt-parse-sources"))
+
+
+;;; Generated autoloads from gptel-rewrite.el
+
+ (autoload 'gptel-rewrite-menu "gptel-rewrite" nil t)
+(register-definition-prefixes "gptel-rewrite" '("gptel-"))
 
 
 ;;; Generated autoloads from gptel-transient.el
