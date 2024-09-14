@@ -282,7 +282,7 @@
    '(0xc ace-jump-mode ace-window ack-and-a-half adaptive-wrap ag anzu auctex
          auto-minor-mode bm browse-kill-ring c-eldoc change-inner company
          company-box company-lsp company-quickhelp csharp-mode cython-mode
-         d-mode dap-mode diff-hl digit-groups diminish disaster discover
+         dap-mode diff-hl digit-groups diminish disaster discover
          docker-compose-mode dockerfile-mode dynamic-spaces easy-kill
          easy-repeat editorconfig expand-region fancy-compilation fancy-narrow
          fastnav flx-ido flycheck-lilypond flycheck-rust ftable full-ack
@@ -294,10 +294,10 @@
          kurecolor lsp-ui lua-mode multiple-cursors nasm-mode noccur
          page-break-lines paradox pdf-tools popwin pos-tip powerline pretty-mode
          project project-mode-line-tag protobuf-mode python-isort rainbow-mode
-         realgud rmsbolt rust-mode session shell-pop smex symbol-overlay tagedit
-         toggle-quotes toml-mode try unicode-troll-stopper verilog-mode vlf
-         volatile-highlights vundo web-mode wgrep which-key winnow winpoint
-         x86-lookup xcscope yaml-mode))
+         realgud rmsbolt rust-mode session shell-pop show-font smex
+         symbol-overlay tagedit toggle-quotes toml-mode try
+         unicode-troll-stopper verilog-mode vlf volatile-highlights vundo
+         web-mode wgrep which-key winnow winpoint x86-lookup xcscope yaml-mode))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
@@ -395,7 +395,7 @@
  '(tooltip-delay 1)
  '(tooltip-short-delay 0.5)
  '(tramp-debug-buffer nil)
- '(tramp-persistency-file-name "/home/gbr/.emacs.d/saved/tramp")
+ '(tramp-persistency-file-name "~/.emacs.d/saved/tramp")
  '(tramp-syntax 'default nil (tramp))
  '(tramp-verbose 5 nil (tramp))
  '(transient-mark-mode 1)
