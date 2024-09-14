@@ -198,11 +198,6 @@
 ;; Use M-w for easy-kill if no active region
 (global-set-key (kbd "M-w") #'easy-kill)
 
-;; More neat bindings for C-x 8
-(global-set-key (kbd "C-x 8 t m") (lambda () (interactive) (insert "™")))
-(global-set-key (kbd "C-x 8 ( c )") (lambda () (interactive)  (insert "©")))
-(global-set-key (kbd "C-x 8 8") (lambda () (interactive)  (insert "∞")))
-
 ;; Fast jumping / killing etc. to next occurrence of a character
 (global-set-key (kbd "M-j") #'fastnav-jump-to-char-forward)
 (global-set-key (kbd "M-J") #'fastnav-jump-to-char-backward)

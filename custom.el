@@ -412,6 +412,7 @@
  '(vc-delete-logbuf-window nil)
  '(vc-git-grep-template
    "git --no-pager grep --recurse-submodules -n <C> -e <R> -- <F>")
+ '(warning-display-at-bottom nil)
  '(warning-suppress-types '((comp)))
  '(wdired-allow-to-change-permissions t)
  '(web-mode-code-indent-offset 2)
