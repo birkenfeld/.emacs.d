@@ -23,7 +23,7 @@
  "javascript"
  '((indent-tabs-mode . nil)
    (fill-column      . 78)
-   (c-basic-offset   . 2)
+   (c-basic-offset   . 4)
    (c-offsets-alist  . ((substatement-open . 0)
                         (inextern-lang . 0)
                         (arglist-intro . +)
@@ -38,6 +38,7 @@
 
 (add-to-list 'c-default-style '(c-mode . "python-new"))
 (add-to-list 'c-default-style '(c++-mode . "python-new"))
+(add-to-list 'c-default-style '(js-mode . "javascript"))
 (add-to-list 'c-default-style '(ecmascript-mode . "javascript"))
 
 (defun c-select-style ()

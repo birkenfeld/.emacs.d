@@ -28,6 +28,9 @@
         cycle-spacing
         describe-key
         gud-tooltip-mouse-motion
+        lsp
+        lsp-ui-doc--handle-mouse-movement
+        next-error
         project-recompile
         search-for-this-word
         set-or-deactivate-rectangular-region-anchor
