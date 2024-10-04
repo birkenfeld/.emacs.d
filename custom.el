@@ -342,7 +342,6 @@
  '(rst-mode-lazy nil)
  '(rust-blink-matching-angle-brackets nil)
  '(rust-indent-method-chain t)
- '(rust-mode-treesitter-derive t)
  '(rustic-ansi-faces
    ["black" "#ff4b4b" "#8ae234" "#fce94f" "#8cc4ff" "#e6a8df" "#729fcf" "white"])
  '(save-abbrevs 'silently)
