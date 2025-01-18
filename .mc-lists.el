@@ -20,6 +20,7 @@
         indent-for-tab-command
         kill-region
         prelude-move-beginning-of-line
+        yaml-electric-dash-and-dot
         ))
 
 (setq mc/cmds-to-run-once

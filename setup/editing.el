@@ -86,7 +86,7 @@
   (rrm/keyboard-quit))
 
 (defun my-markdown-mode-hook ()
-  (set-variable 'show-trailing-whitespace 1)
+  (set-variable 'show-trailing-whitespace t)
   )
 
 (add-hook 'markdown-mode-hook #'my-markdown-mode-hook)
