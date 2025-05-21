@@ -280,7 +280,7 @@
  '(package-native-compile t)
  '(package-selected-packages
    '(0xc ace-jump-mode ace-window ack-and-a-half adaptive-wrap ag anzu auctex
-         auto-minor-mode bm browse-kill-ring c-eldoc change-inner company
+         auto-minor-mode bm browse-kill-ring c-eldoc ccls change-inner company
          company-ansible company-box company-lsp company-quickhelp copilot
          copilot-chat csharp-mode cython-mode dap-mode diff-hl digit-groups
          diminish disaster discover docker-compose-mode dockerfile-mode
@@ -293,11 +293,11 @@
          ido-ubiquitous idomenu isearch-project jinja2-mode js2-mode
          json-navigator jsonrpc keywiz kurecolor lsp-ui lua-mode
          multiple-cursors nasm-mode noccur page-break-lines paradox pdf-tools
-         popwin pos-tip powerline pretty-mode project project-mode-line-tag
-         protobuf-mode python-isort rainbow-mode realgud rmsbolt rust-mode
-         session shell-pop show-font smex symbol-overlay tagedit toggle-quotes
-         toml-mode try unicode-troll-stopper verilog-mode vlf
-         volatile-highlights vundo web-mode wgrep which-key winnow winpoint
+         platformio-mode popwin pos-tip powerline pretty-mode project
+         project-mode-line-tag protobuf-mode python-isort rainbow-mode realgud
+         rmsbolt rust-mode session shell-pop show-font smex symbol-overlay
+         tagedit toggle-quotes toml-mode try unicode-troll-stopper verilog-mode
+         vlf volatile-highlights vundo web-mode wgrep which-key winnow winpoint
          x86-lookup xcscope yaml-mode))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)

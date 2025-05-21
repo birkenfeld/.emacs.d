@@ -18,6 +18,24 @@
                               (block-close . c-snug-do-while)))
    (c-block-comment-prefix . "* ")))
 
+;; C style used in Arduino/PlatformIO
+(c-add-style
+ "platformio"
+ '((indent-tabs-mode . nil)
+   (fill-column      . 118)
+   (c-basic-offset   . 2)
+   (c-offsets-alist  . ((substatement-open . 0)
+                        (inextern-lang . 0)
+                        (arglist-intro . +)
+                        (knr-argdecl-intro . +)))
+   (c-hanging-braces-alist . ((brace-list-open)
+                              (brace-list-intro)
+                              (brace-list-close)
+                              (brace-entry-open)
+                              (substatement-open after)
+                              (block-close . c-snug-do-while)))
+   (c-block-comment-prefix . "")))
+
 ;; Style used mostly for JavaScript
 (c-add-style
  "javascript"
@@ -43,10 +61,11 @@
 
 (defun c-select-style ()
   "Hack: Select the C style to use from buffer indentation."
-  (save-excursion
-    (if (re-search-forward "^\t" 3000 t)
-        (c-set-style "python")
-      (c-set-style "python-new"))))
+  (when (not platformio-mode)
+    (save-excursion
+      (if (re-search-forward "^\t" 3000 t)
+          (c-set-style "python")
+        (c-set-style "python-new")))))
 
 (defun c-or-cpp-header ()
   (when (string-match "\\.h$" buffer-file-name)
@@ -101,3 +120,12 @@
        (company-mode 1)
        )
      (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)))
+
+;; PlatformIO
+(add-hook 'c++-mode-hook (lambda ()
+                           (require 'platformio-mode)
+                           (lsp-deferred)
+                           (platformio-conditionally-enable)))
+
+(add-hook 'platformio-mode-hook (lambda ()
+                                  (c-set-style "platformio")))
