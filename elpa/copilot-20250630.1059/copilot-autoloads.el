@@ -36,6 +36,8 @@ evaluate the variable `copilot-mode'.
 The mode's hook is called both when the mode is enabled and when it is
 disabled.
 
+\\{copilot-mode-map}
+
 (fn &optional ARG)" t)
 (put 'global-copilot-mode 'globalized-minor-mode t)
 (defvar global-copilot-mode nil "\

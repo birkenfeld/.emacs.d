@@ -9,8 +9,8 @@
 ;;             Bozhidar Batsov <bozhidar@batsov.dev>
 ;; URL: https://github.com/copilot-emacs/copilot.el
 ;; Package-Requires: ((emacs "27.2") (editorconfig "0.8.2") (jsonrpc "1.0.14") (f "0.20.0"))
-;; Package-Version: 20250622.1126
-;; Package-Revision: acea1487a5d4
+;; Package-Version: 20250630.1059
+;; Package-Revision: 4f51b3c21c42
 ;; Keywords: convenience copilot
 
 ;; The MIT License (MIT)
@@ -711,7 +711,9 @@ automatically, browse to %s." user-code verification-uri))
   (save-restriction
     (widen)
     (list :version copilot--doc-version
-          :tabSize tab-width
+          :tabSize (copilot--infer-indentation-offset)
+          ;; indentSize doesn't not appear to be used, but has been in this code
+          ;; base from the start. For now leave it as is.
           :indentSize (copilot--infer-indentation-offset)
           :insertSpaces (if indent-tabs-mode :json-false t)
           :path (buffer-file-name)
