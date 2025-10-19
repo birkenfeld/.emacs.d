@@ -237,6 +237,8 @@
  '(lsp-keymap-prefix "s-k")
  '(lsp-lens-enable nil)
  '(lsp-modeline-code-actions-segments '(count icon name))
+ '(lsp-pylsp-configuration-sources ["ruff"])
+ '(lsp-pylsp-plugins-flake8-enabled nil)
  '(lsp-pylsp-plugins-mccabe-enabled nil)
  '(lsp-pylsp-plugins-pydocstyle-enabled nil)
  '(lsp-rust-analyzer-call-info-full nil)
