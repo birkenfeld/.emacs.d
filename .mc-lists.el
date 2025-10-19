@@ -20,6 +20,7 @@
         indent-for-tab-command
         kill-region
         prelude-move-beginning-of-line
+        yaml-electric-backspace
         yaml-electric-dash-and-dot
         ))
 
