@@ -109,6 +109,7 @@
  '(cscope-display-cscope-buffer nil)
  '(css-electric-brace-behavior t)
  '(css-electric-semi-behavior t)
+ '(css-indent-offset 2)
  '(cua-auto-tabify-rectangles nil)
  '(cua-enable-cua-keys nil)
  '(cua-enable-cursor-indications t)
