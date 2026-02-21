@@ -105,7 +105,6 @@
  '(completions-detailed t)
  '(confirm-kill-processes nil)
  '(context-menu-mode t)
- '(copyright-names-regexp "Georg Brandl")
  '(cscope-display-cscope-buffer nil)
  '(css-electric-brace-behavior t)
  '(css-electric-semi-behavior t)
@@ -415,7 +414,8 @@
  '(vc-delete-logbuf-window nil)
  '(vc-git-grep-template
    "git --no-pager grep --recurse-submodules -n <C> -e <R> -- <F>")
- '(warning-display-at-bottom nil)
+ '(warning-suppress-log-types
+   '((copilot copilot-exceeds-max-char) (copilot copilot-no-mode-indent)))
  '(warning-suppress-types '((comp)))
  '(wdired-allow-to-change-permissions t)
  '(web-mode-code-indent-offset 2)

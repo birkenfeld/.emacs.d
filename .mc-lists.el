@@ -17,6 +17,7 @@
         cua-paste
         downcase-region
         easy-kill
+        electric-pair-delete-pair
         indent-for-tab-command
         kill-region
         prelude-move-beginning-of-line

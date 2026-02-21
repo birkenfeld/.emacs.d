@@ -28,11 +28,6 @@
 (put 'narrow-to-page   'disabled nil)
 (put 'scroll-left      'disabled nil)
 
-;; Update copyright headers before saving
-(add-hook 'before-save-hook 'copyright-update)
-;; But don't try to update GPL versions
-(setq copyright-current-gpl-version nil)
-
 ;; Useful hippie-expand functions
 (setq hippie-expand-try-functions-list
       '(try-complete-file-name-partially
