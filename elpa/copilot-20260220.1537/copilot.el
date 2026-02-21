@@ -9,8 +9,8 @@
 ;;             Bozhidar Batsov <bozhidar@batsov.dev>
 ;; URL: https://github.com/copilot-emacs/copilot.el
 ;; Package-Requires: ((emacs "27.2") (editorconfig "0.8.2") (jsonrpc "1.0.14") (compat "30") (track-changes "1.4"))
-;; Package-Version: 20260219.2146
-;; Package-Revision: a62c1a573371
+;; Package-Version: 20260220.1537
+;; Package-Revision: 092e6524e965
 ;; Keywords: convenience copilot
 
 ;; The MIT License (MIT)
@@ -475,12 +475,14 @@ recently updated session."
   (and copilot--connection
        (zerop (process-exit-status (jsonrpc--process copilot--connection)))))
 
-(defmacro copilot--request (&rest args)
-  "Send a request to the copilot server with ARGS."
+(defmacro copilot--request (method &optional params &rest args)
+  "Send a request to the copilot server for METHOD with PARAMS and ARGS.
+When PARAMS is nil, send an empty JSON object so the server does not
+reject the request with a schema-validation error."
   `(progn
      (unless (copilot--connection-alivep)
        (copilot--start-server))
-     (jsonrpc-request copilot--connection ,@args)))
+     (jsonrpc-request copilot--connection ,method (or ,params (make-hash-table)) ,@args)))
 
 (defmacro copilot--notify (&rest args)
   "Send a notification to the copilot server with ARGS."
@@ -1291,15 +1293,13 @@ provided."
         (copilot-clear-overlay t)
         (if (derived-mode-p 'vterm-mode)
             (progn
-              (vterm-delete-region start end)
+              (unless is-partial (vterm-delete-region start end))
               (vterm-insert t-completion))
-          (delete-region start end)
+          (unless is-partial (delete-region start end))
           (insert t-completion))
         ;; if it is a partial completion, show remaining text
         (when is-partial
-          (let ((ov (copilot--get-overlay)))
-            (overlay-put ov 'tail-length (- (line-end-position) (point)))
-            (copilot--set-overlay-text ov (string-remove-prefix t-completion completion)))))
+          (copilot--set-overlay-text (copilot--get-overlay) (string-remove-prefix t-completion completion))))
       t)))
 
 (defmacro copilot--define-accept-completion-by-action (func-name action)

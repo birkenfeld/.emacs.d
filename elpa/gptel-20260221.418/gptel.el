@@ -3,8 +3,8 @@
 ;; Copyright (C) 2023-2025  Karthik Chikmagalur
 
 ;; Author: Karthik Chikmagalur <karthik.chikmagalur@gmail.com>
-;; Package-Version: 20260220.522
-;; Package-Revision: c8b9ced94512
+;; Package-Version: 20260221.418
+;; Package-Revision: fdc604710ba0
 ;; Package-Requires: ((emacs "27.1") (transient "0.7.4") (compat "30.1.0.0"))
 ;; Keywords: convenience, tools
 ;; URL: https://github.com/karthink/gptel
@@ -967,7 +967,10 @@ To enable this face for responses, `gptel-highlight-methods' must be set."
   :group 'gptel)
 
 (defface gptel-response-fringe-highlight
-  '((t :inherit outline-1 :height reset))
+  ;; NOTE: Remove conditional after we drop Emacs 28.1 (#1254)
+  (if (< emacs-major-version 29)
+      '((t :inherit outline-1 :height 1.0))
+    '((t :inherit outline-1 :height reset)))
   "LLM response fringe/margin face when using `gptel-highlight-mode'.
 
 To enable response highlights in the fringe, `gptel-highlight-methods'
