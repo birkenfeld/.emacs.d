@@ -417,7 +417,8 @@
  '(vc-git-grep-template
    "git --no-pager grep --recurse-submodules -n <C> -e <R> -- <F>")
  '(warning-suppress-log-types
-   '((copilot copilot-exceeds-max-char) (copilot copilot-no-mode-indent)))
+   '((native-compiler) (copilot copilot-exceeds-max-char)
+     (copilot copilot-no-mode-indent)))
  '(warning-suppress-types '((comp)))
  '(wdired-allow-to-change-permissions t)
  '(web-mode-code-indent-offset 2)
