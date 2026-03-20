@@ -144,8 +144,6 @@
  '(ffap-newfile-prompt t)
  '(ffap-require-prefix t)
  '(fill-column 80)
- '(flash-isearch-mode t)
- '(flash-jump-position 'end)
  '(flx-ido-mode nil)
  '(flycheck-check-syntax-automatically '(save idle-change mode-enabled))
  '(flycheck-completion-system 'ido)
@@ -289,7 +287,7 @@
          copilot-chat csharp-mode cython-mode dap-mode diff-hl digit-groups
          diminish disaster discover docker-compose-mode dockerfile-mode
          dynamic-spaces easy-kill easy-repeat editorconfig expand-region
-         fancy-compilation fancy-narrow fastnav flash flx-ido flycheck-lilypond
+         fancy-compilation fancy-narrow fastnav flx-ido flycheck-lilypond
          flycheck-rust ftable full-ack fullframe git-messenger git-timemachine
          github-browse-file goto-char-preview goto-chg gptel groovy-mode
          guru-mode haskell-mode highlight highlight-escape-sequences
