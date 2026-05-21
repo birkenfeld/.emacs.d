@@ -284,7 +284,7 @@
    '(0xc ace-jump-mode ace-window ack-and-a-half adaptive-wrap ag anzu auctex
          auto-minor-mode bm browse-kill-ring c-eldoc ccls change-inner company
          company-ansible company-box company-lsp company-quickhelp copilot
-         copilot-chat csharp-mode cython-mode dap-mode diff-hl digit-groups
+         csharp-mode cython-mode dap-mode diff-hl digit-groups
          diminish disaster discover docker-compose-mode dockerfile-mode
          dynamic-spaces easy-kill easy-repeat editorconfig expand-region
          fancy-compilation fancy-narrow fastnav flx-ido flycheck-lilypond
