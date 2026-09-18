@@ -95,6 +95,8 @@
  '(company-require-match nil)
  '(company-tooltip-align-annotations t)
  '(company-tooltip-minimum-width 40)
+ '(compare-ignore-whitespace t)
+ '(compare-windows-whitespace "\\s-+")
  '(compilation-ask-about-save nil)
  '(compilation-scroll-output 'first-error)
  '(completion-auto-show 'tooltip)
@@ -233,6 +235,7 @@
  '(kill-whole-line t)
  '(lazy-highlight-cleanup nil)
  '(list-directory-brief-switches "-1")
+ '(lsp-enable-on-type-formatting nil)
  '(lsp-enable-snippet nil)
  '(lsp-keymap-prefix "s-k")
  '(lsp-lens-enable nil)
@@ -284,23 +287,22 @@
    '(0xc ace-jump-mode ace-window ack-and-a-half adaptive-wrap ag anzu auctex
          auto-minor-mode bm browse-kill-ring c-eldoc ccls change-inner company
          company-ansible company-box company-lsp company-quickhelp copilot
-         csharp-mode cython-mode dap-mode diff-hl digit-groups
-         diminish disaster discover docker-compose-mode dockerfile-mode
-         dynamic-spaces easy-kill easy-repeat editorconfig expand-region
-         fancy-compilation fancy-narrow fastnav flx-ido flycheck-lilypond
-         flycheck-rust ftable full-ack fullframe git-messenger git-timemachine
-         github-browse-file goto-char-preview goto-chg gptel groovy-mode
-         guru-mode haskell-mode highlight highlight-escape-sequences
-         highlight-indentation highlight-parentheses ialign ibuffer-project
-         ido-ubiquitous idomenu isearch-project jinja2-mode js2-mode
-         json-navigator jsonrpc keywiz kurecolor lsp-ui lua-mode
-         multiple-cursors nasm-mode noccur page-break-lines paradox pdf-tools
-         platformio-mode popwin pos-tip powerline pretty-mode project
-         project-mode-line-tag protobuf-mode python-isort rainbow-mode realgud
-         rmsbolt rust-mode session shell-pop show-font smex symbol-overlay
-         tagedit toggle-quotes toml-mode try unicode-troll-stopper verilog-mode
-         vlf volatile-highlights vundo web-mode wgrep which-key winnow winpoint
-         x86-lookup xcscope yaml-mode))
+         csharp-mode cython-mode dap-mode diff-hl digit-groups diminish disaster
+         discover docker-compose-mode dockerfile-mode dynamic-spaces easy-kill
+         easy-repeat editorconfig expand-region fancy-compilation fancy-narrow
+         fastnav flx-ido flycheck-lilypond flycheck-rust ftable full-ack
+         fullframe git-messenger git-timemachine github-browse-file
+         goto-char-preview goto-chg gptel groovy-mode guru-mode haskell-mode
+         highlight highlight-escape-sequences highlight-indentation
+         highlight-parentheses ialign ibuffer-project ido-ubiquitous idomenu
+         isearch-project jinja2-mode js2-mode json-navigator jsonrpc keywiz
+         kurecolor lsp-ui lua-mode multiple-cursors nasm-mode noccur
+         page-break-lines paradox pdf-tools platformio-mode popwin pos-tip
+         powerline pretty-mode project project-mode-line-tag protobuf-mode
+         python-isort rainbow-mode realgud rmsbolt rust-mode session shell-pop
+         show-font smex symbol-overlay tagedit toggle-quotes toml-mode try
+         unicode-troll-stopper verilog-mode vlf volatile-highlights vundo
+         web-mode wgrep which-key winnow winpoint x86-lookup xcscope yaml-mode))
  '(page-break-lines-char 8213)
  '(paradox-execute-asynchronously nil)
  '(paradox-github-token t)
